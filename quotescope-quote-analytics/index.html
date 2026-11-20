@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuoteScope — Quote Analytics Console · Estimates &amp; Quotes</title>
+<meta name="description" content="A premium quote & estimation analytics console template: six KPIs, estimate evolution, status donut, price composition, 5×5 risk matrix, sensitivity analysis, forecast vs actual, rank analysis and an operational quote queue. Static demo with fictional data — no backend.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<!-- Tailwind intentionally not loaded via CDN: all styling is self-contained
+     custom CSS (proven layout), so the demo renders identically offline. -->
+<style>
+/* QuoteScope — Quote Analytics Console (B2, 2026-11-17).
+   Faithful rebuild of an admin "Estimates & quotes" console screen:
+   grouped dark sidebar (6 groups, 26 consoles), multi-tab shell, eyebrow + H1,
+   6 KPI cards, 4-series evolution chart with period pills, status donut,
+   7-segment price composition + 6-row finance table, 5×5 risk matrix,
+   sensitivity bars (workload ×0.8–×1.2), forecast vs actual, rank analysis,
+   operational list with filters, open-a-dossier form. Brand neutral, data 100%
+   fictional (USD), no backend. Skin: Stitch "Luminous Ink Analytics"
+   (project 5315727241679557046) — deep ink #06090e, glass, indigo/teal/violet.
+   Deviations from the Stitch mockup corrected towards the real screen:
+   evolution Y-axis = integer file counts (not $k), real 13-status workflow,
+   composition segments in source order, source table columns, no invented
+   "Revision / Branch" field, no extra dashboard buttons. Dark by default. */
+:root{
+  --paper:#06090e; --ink:#e6edf3; --muted:#8b98a9; --faint:#64748b;
+  --primary:#6366f1; --teal:#14b8a6; --violet:#8b5cf6; --amber:#f59e0b;
+  --emerald:#10b981; --rose:#f43f5e; --blue:#5b8def; --orange:#f97316;
+  --success:#34d399; --warning:#fbbf24; --critical:#fb7185;
+  --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
+  --surface:#0b111a; --surface-2:#111a26; --soft:#0d1624;
+  --glass-bg:rgba(11,17,26,.78); --glass-border:rgba(255,255,255,.09);
+  --glass-shadow:0 12px 34px rgba(0,0,0,.42);
+  --aurora-1:rgba(99,102,241,.14); --aurora-2:rgba(20,184,166,.11); --aurora-3:rgba(139,92,246,.10);
+  --sidebar:#0b111a; --sidebar-line:#060b10; --sidebar-text:#e7f2ff; --sidebar-muted:#94a3b8;
+  --focus:#14b8a6; --gold:#fbbf24;
+  --sans:'Inter',system-ui,-apple-system,sans-serif;
+  --display:'Plus Jakarta Sans','Inter',system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+html[data-theme="light"]{
+  --paper:#f4f6fb; --ink:#0f1d29; --muted:#52616b; --faint:#7d8b98;
+  --primary:#4f46e5; --teal:#0d9488; --violet:#7c3aed; --amber:#d97706;
+  --emerald:#059669; --rose:#e11d48; --blue:#2563eb; --orange:#ea580c;
+  --success:#0e9f6e; --warning:#c2570c; --critical:#dc2626;
+  --line:#d5e1e7; --line-strong:#b9cbd8;
+  --surface:#ffffff; --surface-2:#f2f6fa; --soft:#eaf3f8;
+  --glass-bg:rgba(255,255,255,.78); --glass-border:rgba(255,255,255,.8);
+  --glass-shadow:0 10px 34px rgba(15,29,41,.10);
+  --aurora-1:rgba(99,102,241,.12); --aurora-2:rgba(20,184,166,.10); --aurora-3:rgba(139,92,246,.09);
+  --focus:#0d9488;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--sans);color:var(--ink);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  background:
+    radial-gradient(900px 480px at 12% -8%, var(--aurora-1), transparent 62%),
+    radial-gradient(820px 460px at 88% -4%, var(--aurora-2), transparent 62%),
+    radial-gradient(760px 440px at 50% 112%, var(--aurora-3), transparent 62%),
+    var(--paper);
+  background-attachment:fixed}
+a{color:inherit}
+::selection{background:var(--teal);color:#fff}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+h1,h2,h3{font-family:var(--display)}
+button{font:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* ---------- Shell : sidebar sombre + contenu ---------- */
+.app-shell{display:grid;grid-template-columns:264px minmax(0,1fr);min-height:100dvh}
+.app-sidebar{background:linear-gradient(180deg,#0b1118,#0d1520 55%,#101a2a);border-right:1px solid var(--sidebar-line);padding:20px 14px;display:flex;flex-direction:column;gap:8px;position:sticky;top:0;height:100dvh;color:var(--sidebar-text);overflow:hidden;z-index:60}
+.app-sidebar nav{flex:1 1 auto;min-height:0;overflow-y:auto;scrollbar-width:thin}
+.brand{display:flex;align-items:center;gap:11px;padding:2px 8px 16px;border-bottom:1px solid #162330;margin-bottom:6px}
+.brand-mark{flex:0 0 auto;width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#14b8a6);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:18px;box-shadow:0 0 16px rgba(99,102,241,.45)}
+.brand-name{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.01em;line-height:1.2}
+.brand-sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#7d93a5}
+.app-nav-group{margin-top:10px}
+.app-nav-group h3{margin:0 8px 5px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#6b8296;font-weight:600}
+.app-nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13.5px;font-weight:500;color:#aebfce;text-decoration:none;min-height:38px;cursor:pointer}
+.app-nav-item:hover{background:#162330;color:#fff}
+.app-nav-item.is-active{background:#162e3d;color:#fff;font-weight:600;box-shadow:inset 2px 0 0 var(--teal)}
+.app-nav-item.is-sub{padding-left:38px;font-size:13px;color:#8fa6b8}
+.app-nav-ico{flex:0 0 auto;width:16px;height:16px;display:inline-grid;place-items:center;color:#7d93a5;font-size:14px}
+.app-nav-item.is-active .app-nav-ico{color:var(--teal)}
+.sidebar-search-wrap{position:sticky;bottom:0;z-index:2;margin:12px 0 0;padding:12px 8px 4px;background:#101a2a;border-top:1px solid #162330}
+.sidebar-search{position:relative;margin:0 0 2px}
+.sidebar-search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#7d93a5;pointer-events:none}
+.sidebar-search input{width:100%;min-height:38px;padding:8px 12px 8px 36px;border:1px solid #22384a;border-radius:999px;background:rgba(255,255,255,.06);color:#e8f0f5;font:inherit;font-size:13px}
+.sidebar-search input::placeholder{color:#7d93a5}
+.sidebar-search-empty{margin:8px 10px 0;font-size:12px;color:#7d93a5}
+.app-user{margin-top:auto;border-top:1px solid #162330;padding-top:14px;display:flex;align-items:center;gap:10px}
+.app-avatar{flex:0 0 auto;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#f97316);color:#231a05;display:grid;place-items:center;font-weight:800;font-size:12px}
+.app-user-name{font-size:13.5px;font-weight:700;line-height:1.25}
+.app-user-role{font-size:11.5px;color:#7d93a5}
+.app-signout{margin-left:auto;flex:0 0 auto;width:32px;height:32px;border:1px solid #22384a;border-radius:50%;background:transparent;color:#8fa6b8;cursor:pointer;font-size:15px;line-height:1}
+.app-signout:hover{color:#fff;border-color:var(--teal)}
+
+.app-main{min-width:0;display:flex;flex-direction:column}
+.app-topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;padding:12px 28px;background:var(--glass-bg);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);border-bottom:1px solid var(--glass-border)}
+.menu-btn{display:none;width:40px;height:40px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink);cursor:pointer;font-size:18px;align-items:center;justify-content:center;flex:0 0 auto}
+.breadcrumb{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.breadcrumb strong{color:var(--ink);font-weight:700}
+.topbar-search{margin-left:auto;position:relative;flex:0 1 320px}
+.topbar-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.topbar-search input{width:100%;min-height:40px;padding:9px 12px 9px 38px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px}
+.topbar-search input::placeholder{color:var(--muted)}
+.icon-btn{position:relative;width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.icon-btn:hover{border-color:var(--teal);color:var(--teal)}
+.bell-dot{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--rose);border:2px solid var(--surface)}
+.theme-glyph{font-size:15px;line-height:1}
+.feed-panel{position:absolute;top:calc(100% + 10px);right:0;width:min(430px,calc(100vw - 24px));z-index:90;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:8px;box-shadow:0 24px 60px rgba(9,30,43,.20)}
+.feed-panel[hidden]{display:none}
+.feed-head{display:flex;align-items:center;justify-content:space-between;padding:8px 10px 4px}
+.feed-head strong{font-size:13.5px}
+.feed-head button{background:none;border:none;color:var(--teal);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.notif-item{display:flex;gap:10px;padding:10px;border-radius:12px}
+.notif-item:hover{background:var(--soft)}
+.notif-ico{flex:0 0 auto;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:14px;background:rgba(20,184,166,.14);color:var(--teal)}
+.notif-item p{margin:0;font-size:13px;line-height:1.45}
+.notif-item time{font-size:11.5px;color:var(--muted)}
+.topbar-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#f97316);color:#231a05;display:grid;place-items:center;font-weight:800;font-size:12px;flex:0 0 auto;border:none;cursor:pointer}
+
+/* ---------- Barre d'onglets multi-vues (like the admin shell) ---------- */
+.tab-bar{position:sticky;top:65px;z-index:45;display:flex;align-items:stretch;gap:4px;padding:6px 12px 0;background:var(--glass-bg);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);border-bottom:1px solid var(--glass-border);overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.qs-tab{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:8px 12px;border:1px solid transparent;border-bottom:none;border-radius:10px 10px 0 0;background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.qs-tab:hover{color:var(--ink);background:var(--soft)}
+.qs-tab.is-active{background:var(--surface);color:var(--ink);border-color:var(--line);box-shadow:0 -4px 14px rgba(0,0,0,.18)}
+.qs-tab-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.qs-tab-close{margin-left:2px;width:18px;height:18px;border-radius:50%;display:inline-grid;place-items:center;font-size:13px;line-height:1;color:var(--muted)}
+.qs-tab-close:hover{background:var(--danger-soft,rgba(244,63,94,.15));color:var(--critical)}
+.qs-tab-add{flex:0 0 auto;width:34px;min-height:38px;border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;border-radius:8px}
+.qs-tab-add:hover{color:var(--ink);background:var(--soft)}
+.qs-tab-hint{margin-left:auto;align-self:center;font-size:11.5px;color:var(--faint);white-space:nowrap;padding:0 6px}
+.qs-tab-hint kbd{font-family:var(--mono);font-size:10.5px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:var(--surface)}
+.qs-tab-picker{position:fixed;z-index:120;width:250px;max-height:min(420px,80vh);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.qs-tab-picker button{display:flex;align-items:center;gap:9px;width:100%;padding:9px 10px;border:none;background:transparent;color:var(--ink);font-size:13.5px;font-weight:500;border-radius:9px;cursor:pointer;text-align:left}
+.qs-tab-picker button:hover{background:var(--soft)}
+.qs-picker-note{display:block;padding:6px 10px 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- Page ---------- */
+.page{padding:28px 32px 56px;max-width:1240px;margin:0 auto;width:100%}
+.eyebrow{margin:0 0 8px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:600}
+.page h1{margin:0 0 8px;font-size:34px;line-height:1.12;letter-spacing:-.02em;font-weight:800}
+.page-intro{margin:0 0 22px;color:var(--muted);max-width:72ch}
+.page-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:9px 16px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font-size:13.5px;font-weight:600;cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--teal)}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#14b8a6);border-color:transparent;color:#fff;box-shadow:0 6px 20px rgba(99,102,241,.35)}
+.btn-primary:hover{filter:brightness(1.08);border-color:transparent}
+.btn-ghost{background:transparent}
+.panel{background:var(--glass-bg);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);border:1px solid var(--glass-border);border-radius:16px;padding:22px 24px;margin-bottom:18px;box-shadow:var(--glass-shadow)}
+.panel h2{margin:0 0 4px;font-size:19px;font-weight:700;letter-spacing:-.01em}
+.sec-note{margin:0 0 16px;color:var(--muted);font-size:13.5px}
+.sec-note:last-child{margin-bottom:0}
+.dim{transition:opacity 200ms ease}
+
+/* ---------- KPI ---------- */
+.kpi-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.kpi-card{border:1px solid var(--line);border-radius:14px;padding:15px 16px;background:var(--surface);position:relative;overflow:hidden;transition:transform 180ms ease,border-color 180ms ease,box-shadow 180ms ease}
+.kpi-card::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--kc,#6366f1);opacity:.9}
+.kpi-card:hover{transform:translateY(-2px);border-color:var(--line-strong);box-shadow:0 10px 26px rgba(0,0,0,.28)}
+.kpi-label{margin:0 0 6px;color:var(--muted);font-size:12.5px;font-weight:600}
+.kpi-value{margin:0;font-family:var(--display);font-size:27px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.kpi-hint{margin:7px 0 0;color:var(--muted);font-size:12px}
+
+/* ---------- Pilules de période / légendes ---------- */
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pill{min-height:34px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer}
+.pill:hover{color:var(--ink);border-color:var(--line-strong)}
+.pill.is-active{background:linear-gradient(135deg,#6366f1,#14b8a6);border-color:transparent;color:#fff}
+.chart-readout{margin:0 0 6px;min-height:20px;font-size:13.5px}
+.chart-readout strong{font-weight:700}
+.legend{list-style:none;display:flex;gap:16px;flex-wrap:wrap;margin:10px 0 0;padding:0}
+.legend li{display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer}
+.legend .dot{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.chart-wrap{width:100%}
+.chart-wrap svg{display:block;width:100%;height:auto}
+.bar-grow{transform-box:fill-box;transform-origin:bottom;animation:grow 800ms cubic-bezier(.22,1,.36,1) both}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.fade-up{animation:fadeUp 600ms cubic-bezier(.22,1,.36,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- Donut ---------- */
+.donut-flex{display:flex;gap:28px;flex-wrap:wrap;align-items:center}
+.donut-box{position:relative;width:168px;height:168px;flex:0 0 auto}
+.donut-box svg{display:block}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;text-align:center}
+.donut-center b{font-family:var(--display);font-size:26px;font-weight:800;line-height:1.05}
+.donut-center span{font-size:11px;color:var(--muted)}
+.donut-legend{list-style:none;margin:0;padding:0;min-width:280px;flex:1}
+.donut-legend li{display:flex;align-items:center;gap:9px;padding:4px 6px;border-radius:8px;font-size:13.5px;cursor:pointer}
+.donut-legend li:hover{background:var(--soft)}
+.donut-legend .dot{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.donut-legend .ct{margin-left:auto;font-weight:700}
+
+/* ---------- Barre de composition ---------- */
+.comp-bar{display:flex;height:30px;border-radius:8px;overflow:hidden;width:100%;border:1px solid var(--line)}
+.comp-seg{min-width:3px;cursor:pointer;transition:opacity 200ms ease,flex-grow 200ms ease}
+.comp-legend{list-style:none;margin:12px 0 0;padding:0}
+.comp-legend li{display:flex;align-items:center;gap:9px;padding:4px 6px;border-radius:8px;font-size:13.5px;cursor:pointer}
+.comp-legend li:hover{background:var(--soft)}
+.comp-legend .dot{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.comp-legend .ct{margin-left:auto;font-weight:700;white-space:nowrap}
+
+/* ---------- Tableaux ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:560px}
+.tbl th{padding:10px 12px;text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);background:var(--soft);white-space:nowrap}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tbody tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover{background:var(--soft)}
+.tbl td.num,.tbl th.num{text-align:right}
+.tbl .sub{color:var(--muted);font-size:12.5px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;border:1px solid transparent}
+.badge .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+
+/* ---------- Matrice de risques ---------- */
+.risk-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;max-width:440px}
+.risk-cell{border-radius:6px;padding:11px 0;text-align:center;font-weight:700;color:#fff;cursor:pointer;border:1px solid transparent}
+.risk-cell:hover{border-color:#fff}
+.risk-readout{margin:10px 0 0;min-height:20px;font-size:13.5px}
+.risk-cats{margin:14px 0 0;padding:0;list-style:none}
+.risk-cats li{display:flex;gap:9px;align-items:center;padding:5px 0;font-size:13.5px}
+.risk-cats .ct{margin-left:auto;font-weight:700}
+
+/* ---------- Sensibilité ---------- */
+.sens-list{list-style:none;margin:0;padding:0}
+.sens-row{display:flex;align-items:center;gap:12px;margin-bottom:9px;cursor:pointer}
+.sens-label{width:56px;flex:0 0 auto;font-size:13px;font-weight:600}
+.sens-track{flex:1;height:16px;background:var(--soft);border-radius:5px;overflow:hidden}
+.sens-fill{display:block;height:16px;border-radius:5px;background:var(--teal);transition:width 900ms cubic-bezier(.22,1,.36,1)}
+.sens-fill.is-base{background:var(--primary)}
+.sens-val{width:132px;flex:0 0 auto;text-align:right;font-weight:700;font-size:13.5px}
+
+/* ---------- Filtres / formulaires ---------- */
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field>span{font-size:12px;font-weight:600;color:var(--muted)}
+.field select,.field input[type="text"]{min-height:40px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px}
+.field select:focus-visible,.field input:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.list-count{margin:0 0 10px;font-size:13px;color:var(--muted)}
+.empty-note{padding:18px;text-align:center;color:var(--muted)}
+.open-link{color:var(--teal);font-weight:600;text-decoration:none}
+.open-link:hover{text-decoration:underline}
+.form-note{margin:10px 0 0;color:var(--muted);font-size:13px}
+.form-ok{margin-top:12px;padding:12px 14px;border-radius:12px;background:rgba(16,185,129,.13);border:1px solid rgba(16,185,129,.35);font-size:13.5px}
+.form-ok[hidden]{display:none}
+
+/* ---------- Consoles secondaires ---------- */
+.console-panel h2{margin:0 0 4px;font-size:19px}
+.console-note{margin:16px 0 0;font-size:13px;color:var(--muted)}
+.console-note strong{color:var(--ink)}
+.mini-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.mini-stat{border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:var(--surface)}
+.mini-stat p{margin:0 0 4px;color:var(--muted);font-size:12px;font-weight:600}
+.mini-stat b{font-family:var(--display);font-size:21px}
+.console-search{width:100%;max-width:340px;min-height:40px;padding:9px 14px;border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px;margin-bottom:12px}
+
+/* ---------- Toast / pied ---------- */
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,80px);z-index:200;background:var(--surface);border:1px solid var(--line-strong);color:var(--ink);border-radius:12px;padding:12px 18px;font-size:13.5px;font-weight:600;box-shadow:0 18px 44px rgba(0,0,0,.4);opacity:0;transition:transform 300ms ease,opacity 300ms ease;pointer-events:none;max-width:min(92vw,560px);text-align:center}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.page-foot{margin-top:8px;color:var(--faint);font-size:12.5px;text-align:center}
+.drawer-scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55;border:none;display:none}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1180px){.kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:860px){
+  .app-shell{grid-template-columns:minmax(0,1fr)}
+  .app-sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;transform:translateX(-102%);transition:transform 280ms ease;box-shadow:0 0 60px rgba(0,0,0,.5)}
+  .app-sidebar.open{transform:none}
+  .drawer-scrim.show{display:block}
+  .menu-btn{display:inline-flex}
+  .page{padding:20px 16px 48px}
+  .page h1{font-size:27px}
+  .app-topbar{padding:10px 14px}
+  .topbar-search{display:none}
+  .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tab-bar{top:61px}
+  .qs-tab-hint{display:none}
+  .panel{padding:18px 16px}
+}
+@media (max-width:560px){.kpi-grid{grid-template-columns:minmax(0,1fr)}.donut-flex{gap:16px}.sens-val{width:104px}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+
+<body>
+<button class="drawer-scrim" id="drawerScrim" aria-label="Close navigation"></button>
+<div class="app-shell">
+  <!-- ============ Sidebar (coque admin : 6 groupes, 26 consoles) ============ -->
+  <aside class="app-sidebar" id="appSidebar" aria-label="Administration navigation">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">Q</span>
+      <span><span class="brand-name">QuoteScope</span><br><span class="brand-sub">Quote Analytics</span></span>
+    </div>
+    <nav id="sideNav" aria-label="Consoles">
+      <div class="app-nav-group"><h3>Pilotage</h3>
+        <a class="app-nav-item" data-console="overview" href="#overview"><span class="app-nav-ico" aria-hidden="true">▦</span>Overview</a>
+        <a class="app-nav-item is-sub" data-console="pilotage" href="#pilotage"><span class="app-nav-ico" aria-hidden="true">◎</span>Program Control</a>
+        <a class="app-nav-item is-sub" data-console="notifications" href="#notifications"><span class="app-nav-ico" aria-hidden="true">♪</span>Notifications</a>
+      </div>
+      <div class="app-nav-group"><h3>People</h3>
+        <a class="app-nav-item" data-console="users" href="#users"><span class="app-nav-ico" aria-hidden="true">◉</span>Users</a>
+        <a class="app-nav-item" data-console="staff" href="#staff"><span class="app-nav-ico" aria-hidden="true">⚿</span>Staff &amp; Permissions</a>
+        <a class="app-nav-item" data-console="applications" href="#applications"><span class="app-nav-ico" aria-hidden="true">▤</span>Applications</a>
+      </div>
+      <div class="app-nav-group"><h3>Operations</h3>
+        <a class="app-nav-item" data-console="projects" href="#projects"><span class="app-nav-ico" aria-hidden="true">▣</span>Projects &amp; Proposals</a>
+        <a class="app-nav-item is-sub is-active" data-console="estimates" href="#estimates" aria-current="page"><span class="app-nav-ico" aria-hidden="true">✎</span>Estimates &amp; Quotes</a>
+        <a class="app-nav-item is-sub" data-console="external" href="#external"><span class="app-nav-ico" aria-hidden="true">◍</span>External Projects</a>
+        <a class="app-nav-item is-sub" data-console="mandates" href="#mandates"><span class="app-nav-ico" aria-hidden="true">✦</span>Dev-CP Mandates</a>
+        <a class="app-nav-item" data-console="missions" href="#missions"><span class="app-nav-ico" aria-hidden="true">➤</span>Missions</a>
+        <a class="app-nav-item is-sub" data-console="internal" href="#internal"><span class="app-nav-ico" aria-hidden="true">▧</span>Internal Missions</a>
+        <a class="app-nav-item is-sub" data-console="incidents" href="#incidents"><span class="app-nav-ico" aria-hidden="true">⚠</span>Incidents</a>
+      </div>
+      <div class="app-nav-group"><h3>Finance</h3>
+        <a class="app-nav-item" data-console="finance" href="#finance"><span class="app-nav-ico" aria-hidden="true">◈</span>Financial Center</a>
+        <a class="app-nav-item is-sub" data-console="payouts" href="#payouts"><span class="app-nav-ico" aria-hidden="true">➢</span>Payouts</a>
+        <a class="app-nav-item is-sub" data-console="invoices" href="#invoices"><span class="app-nav-ico" aria-hidden="true">▦</span>Invoices</a>
+        <a class="app-nav-item is-sub" data-console="subscriptions" href="#subscriptions"><span class="app-nav-ico" aria-hidden="true">▤</span>Subscriptions</a>
+        <a class="app-nav-item is-sub" data-console="pricing" href="#pricing"><span class="app-nav-ico" aria-hidden="true">✓</span>Quotes &amp; Pricing</a>
+      </div>
+      <div class="app-nav-group"><h3>Support</h3>
+        <a class="app-nav-item" data-console="disputes" href="#disputes"><span class="app-nav-ico" aria-hidden="true">⛨</span>Disputes</a>
+        <a class="app-nav-item is-sub" data-console="warranty" href="#warranty"><span class="app-nav-ico" aria-hidden="true">✦</span>Warranty</a>
+        <a class="app-nav-item is-sub" data-console="support" href="#support"><span class="app-nav-ico" aria-hidden="true">➢</span>Consolidated Support</a>
+      </div>
+      <div class="app-nav-group"><h3>Governance</h3>
+        <a class="app-nav-item" data-console="security" href="#security"><span class="app-nav-ico" aria-hidden="true">⛨</span>Security &amp; Integrations</a>
+        <a class="app-nav-item" data-console="audit" href="#audit"><span class="app-nav-ico" aria-hidden="true">▤</span>Audit Journal</a>
+        <a class="app-nav-item is-sub" data-console="reports" href="#reports"><span class="app-nav-ico" aria-hidden="true">▧</span>Reports &amp; Exports</a>
+        <a class="app-nav-item" data-console="settings" href="#settings"><span class="app-nav-ico" aria-hidden="true">✎</span>Settings</a>
+        <a class="app-nav-item is-sub" data-console="articles" href="#articles"><span class="app-nav-ico" aria-hidden="true">▦</span>Articles</a>
+      </div>
+      <p class="sidebar-search-empty" id="sideSearchEmpty" hidden>No console matches this search.</p>
+    </nav>
+    <div class="sidebar-search-wrap">
+      <div class="sidebar-search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="text" id="sideSearch" placeholder="Search consoles…  (Ctrl K)" aria-label="Search consoles">
+      </div>
+    </div>
+    <div class="app-user">
+      <span class="app-avatar" aria-hidden="true">AM</span>
+      <span><span class="app-user-name">Alex Morgan</span><br><span class="app-user-role">Studio Admin</span></span>
+      <button class="app-signout" id="signOutBtn" type="button" title="Sign out" aria-label="Sign out">↪</button>
+    </div>
+  </aside>
+
+  <!-- ============ Contenu ============ -->
+  <div class="app-main">
+    <header class="app-topbar">
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Open navigation">☰</button>
+      <p class="breadcrumb" id="breadcrumb">QuoteScope Console &nbsp;›&nbsp; <strong>Estimates &amp; Quotes</strong></p>
+      <div class="topbar-search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="text" id="topSearch" placeholder="Search the quote queue…" aria-label="Search the quote queue">
+      </div>
+      <button class="icon-btn" id="themeBtn" type="button" title="Switch light / dark theme" aria-label="Switch theme"><span class="theme-glyph" id="themeGlyph">☾</span></button>
+      <div style="position:relative">
+        <button class="icon-btn" id="bellBtn" type="button" title="Notifications" aria-label="Notifications" aria-expanded="false">♪<span class="bell-dot" aria-hidden="true"></span></button>
+        <div class="feed-panel" id="feedPanel" hidden>
+          <div class="feed-head"><strong>Notifications</strong><button type="button" id="feedClose">Mark all read</button></div>
+          <div class="notif-item"><span class="notif-ico" aria-hidden="true">✎</span><div><p><strong>QS-2026-0135</strong> moved to admin review — commercial validation pending.</p><time>12 min ago</time></div></div>
+          <div class="notif-item"><span class="notif-ico" aria-hidden="true">⚠</span><div><p><strong>2 blocking questions</strong> on QS-2026-0138 — client reply awaited.</p><time>1 h ago</time></div></div>
+          <div class="notif-item"><span class="notif-ico" aria-hidden="true">✓</span><div><p><strong>QS-2026-0120</strong> approved — proposal ready to generate.</p><time>Yesterday</time></div></div>
+        </div>
+      </div>
+      <button class="topbar-avatar" type="button" title="Alex Morgan — Studio Admin" aria-label="Account">AM</button>
+    </header>
+
+    <div class="tab-bar" id="tabBar" role="tablist" aria-label="Open consoles"></div>
+
+    <main class="page" id="mainView">
+      <p class="eyebrow">Governance · Commercial</p>
+      <h1>Estimates &amp; Quotes</h1>
+      <p class="page-intro">Steering the estimation engine: indicators computed from quote files and actually recorded calculations. Fictional demo data — no real client, no real amount.</p>
+      <div class="page-actions">
+        <a class="btn btn-primary" href="#open-dossier" id="newDraftBtn">＋ Open a dossier</a>
+        <a class="btn btn-ghost" href="#quote-list">View the operational queue ↓</a>
+      </div>
+
+      <!-- §1 Indicateurs -->
+      <section class="panel fade-up" aria-labelledby="h-kpi">
+        <h2 id="h-kpi">Indicators</h2>
+        <p class="sec-note">Live from the quote files and the pricing engine — nothing here is simulated.</p>
+        <div class="kpi-grid" id="kpiGrid"></div>
+      </section>
+
+      <!-- §2 Évolution -->
+      <section class="panel fade-up" aria-labelledby="h-evo">
+        <h2 id="h-evo">Estimate evolution</h2>
+        <div class="pill-row" id="periodPills" role="group" aria-label="Period">
+          <button class="pill" type="button" data-period="week">Per week</button>
+          <button class="pill is-active" type="button" data-period="month">Per month</button>
+          <button class="pill" type="button" data-period="quarter">Per quarter</button>
+          <button class="pill" type="button" data-period="year">Per year</button>
+        </div>
+        <p class="chart-readout" id="evoReadout" aria-live="polite"><span class="muted">Hover a bar for its exact value.</span></p>
+        <div class="chart-wrap" id="evoChart" role="img" aria-label="Estimate evolution by period"></div>
+        <ul class="legend" id="evoLegend"></ul>
+        <p class="sec-note" style="margin-top:12px">“Approved” and “Declined” are dated at the file's last update; “Client-accepted” at the proposal acceptance date.</p>
+      </section>
+
+      <!-- §3 Répartition des statuts -->
+      <section class="panel fade-up" aria-labelledby="h-status">
+        <h2 id="h-status">Status breakdown</h2>
+        <div class="donut-flex" style="margin-top:14px">
+          <div class="donut-box" id="donutBox" role="img" aria-label="Quote files by status"></div>
+          <ul class="donut-legend" id="donutLegend"></ul>
+        </div>
+      </section>
+
+      <!-- §4 Analyse financière -->
+      <section class="panel fade-up" aria-labelledby="h-fin">
+        <h2 id="h-fin">Financial analysis of estimates</h2>
+        <div style="margin-top:14px">
+          <div class="comp-bar" id="compBar" role="img" aria-label="Price composition (incl. tax)"></div>
+          <ul class="comp-legend" id="compLegend"></ul>
+        </div>
+        <div class="tbl-wrap" style="margin-top:18px">
+          <table class="tbl">
+            <tbody id="finTable"></tbody>
+          </table>
+        </div>
+        <p class="sec-note" style="margin-top:12px">Internal aggregates: visible only in this console, never client-facing.</p>
+      </section>
+
+      <!-- §5 Analyse des risques -->
+      <section class="panel fade-up" aria-labelledby="h-risk">
+        <h2 id="h-risk">Risk analysis</h2>
+        <div style="margin-top:14px">
+          <div class="risk-grid" id="riskGrid" role="img" aria-label="Risk criticality matrix (probability × impact)"></div>
+          <p class="risk-readout" id="riskReadout" aria-live="polite"><span class="muted">Horizontal: probability (1 → 5) · Vertical: impact (5 at top → 1 at bottom). Hover a cell for detail.</span></p>
+        </div>
+        <div class="tbl-wrap" style="margin-top:14px">
+          <table class="tbl"><tbody id="riskTable"></tbody></table>
+        </div>
+        <h3 style="margin:18px 0 4px;font-size:15px">Most frequent categories</h3>
+        <ul class="risk-cats" id="riskCats"></ul>
+        <p class="sec-note" style="margin-top:12px">The detail and justification of each risk live in the concerned file.</p>
+      </section>
+
+      <!-- §6 Sensibilité -->
+      <section class="panel fade-up" aria-labelledby="h-sens">
+        <h2 id="h-sens">Estimate sensitivity</h2>
+        <p class="sec-note">Last recorded calculation (project <strong class="num">QS-2026-0141</strong>): effect of a workload variation on the incl.-tax price. Read-only — no simulation ever changes a recorded quote.</p>
+        <ul class="sens-list" id="sensList"></ul>
+      </section>
+
+      <!-- §7 Prévisionnel / réel -->
+      <section class="panel fade-up" aria-labelledby="h-fva">
+        <h2 id="h-fva">Forecast vs actual</h2>
+        <div class="tbl-wrap" style="margin-top:14px">
+          <table class="tbl">
+            <thead><tr><th>Project</th><th class="num">Estimated cost</th><th class="num">Actual cost</th><th class="num">Variance</th><th class="num">Estimated hours</th><th class="num">Estimated duration</th></tr></thead>
+            <tbody id="fvaTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- §8 Rangs -->
+      <section class="panel fade-up" aria-labelledby="h-rank">
+        <h2 id="h-rank">Analysis by mission rank</h2>
+        <div class="tbl-wrap" style="margin-top:14px">
+          <table class="tbl">
+            <thead><tr><th>Rank</th><th class="num">Files</th><th class="num">Avg internal cost</th><th class="num">Avg price (incl. tax)</th><th class="num">Avg hours</th></tr></thead>
+            <tbody id="rankTable"></tbody>
+          </table>
+        </div>
+        <p class="sec-note" style="margin-top:12px">Technical rank of the mission (validated on the file, otherwise the project's rank) — unrelated to any developer's level.</p>
+      </section>
+
+      <!-- §9 Liste opérationnelle -->
+      <section class="panel fade-up" id="quote-list" aria-labelledby="h-list">
+        <h2 id="h-list">Operational quote list</h2>
+        <form class="filters" id="quoteFilters">
+          <label class="field"><span>Status</span>
+            <select name="f_status" id="fStatus"><option value="">All</option></select>
+          </label>
+          <label class="field"><span>Period</span>
+            <select name="f_period" id="fPeriod">
+              <option value="">All</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option>
+            </select>
+          </label>
+          <label class="field"><span>Validated rank</span>
+            <select name="f_rank" id="fRank"><option value="">All</option><option>D</option><option>C</option><option>B</option><option>A</option><option>S</option></select>
+          </label>
+          <button class="btn" type="submit">Filter</button>
+          <button class="btn btn-ghost" type="button" id="resetFilters">Reset</button>
+        </form>
+        <p class="list-count" id="listCount" aria-live="polite"></p>
+        <div class="tbl-wrap">
+          <table class="tbl" style="min-width:760px;table-layout:fixed">
+            <colgroup><col style="width:18%"><col style="width:18%"><col style="width:5%"><col style="width:8%"><col style="width:7%"><col style="width:12%"><col style="width:13%"><col style="width:11%"><col style="width:8%"></colgroup>
+            <thead><tr><th>Project</th><th>Status</th><th>Rank</th><th class="num">Blocking questions</th><th class="num">Major risks</th><th class="num">Last amount (incl. tax)</th><th>Expected action</th><th>Updated</th><th></th></tr></thead>
+            <tbody id="quoteTable"></tbody>
+          </table>
+        </div>
+        <p class="empty-note" id="listEmpty" hidden>No file matches these filters.</p>
+      </section>
+
+      <!-- §10 Ouvrir un dossier -->
+      <section class="panel fade-up" id="open-dossier" aria-labelledby="h-open">
+        <h2 id="h-open">Open an estimation file</h2>
+        <p class="sec-note">The file freezes the project's request (description, features, deadline, indicative budget) at opening time: the analysis works on that frozen copy, never on the evolving request.</p>
+        <form class="filters" id="openForm" style="margin-bottom:0">
+          <label class="field" style="flex:1 1 320px"><span>Project</span>
+            <select name="project" id="openProject" required></select>
+          </label>
+          <button class="btn btn-primary" type="submit">Open the estimation file</button>
+        </form>
+        <p class="form-ok" id="openOk" hidden></p>
+      </section>
+
+      <p class="page-foot">QuoteScope is a fictional demo template. All names, projects, figures and amounts are invented for illustration — no backend, no real data, no real transaction.</p>
+    </main>
+
+    <!-- Consoles secondaires (panneaux simplifiés) -->
+    <div class="page" id="consolePanels" hidden></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const TODAY = new Date("2026-11-17T12:00:00");
+const fmt$ = n => "$" + Math.round(n).toLocaleString("en-US");
+const fmtInt = n => n.toLocaleString("en-US");
+const pct = (v, t) => t > 0 ? Math.round(v / t * 1000) / 10 : 0;
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 3400);
+}
+
+/* ================= Fictional dataset (100% invented, USD) ================= */
+const STATUSES = [
+  { code:"BROUILLON", label:"Draft", color:"#8fa3b8", count:26 },
+  { code:"ANALYSE_EN_COURS", label:"In analysis", color:"#5b8def", count:19 },
+  { code:"CLARIFICATIONS_REQUISES", label:"Clarifications required", color:"#e5a93d", count:9 },
+  { code:"ESTIMATION_PROVISOIRE", label:"Provisional estimate", color:"#7c6bd9", count:13 },
+  { code:"ESTIMATION_TERMINEE", label:"Estimate complete", color:"#4f9da6", count:10 },
+  { code:"EN_CONTROLE", label:"In admin review", color:"#e07b39", count:18 },
+  { code:"REVISION_DEMANDEE", label:"Revision requested", color:"#c2543a", count:5 },
+  { code:"APPROUVE", label:"Approved", color:"#2e7d5b", count:11 },
+  { code:"TRANSMIS", label:"Sent to client", color:"#6ea8d8", count:13 },
+  { code:"ACCEPTE", label:"Accepted", color:"#1f9d74", count:12 },
+  { code:"REFUSE", label:"Declined", color:"#d64545", count:4 },
+  { code:"EXPIRE", label:"Expired", color:"#6b7a8a", count:2 },
+];
+const TOTAL_FILES = STATUSES.reduce((s, x) => s + x.count, 0); // 142
+const KPI = [
+  { label:"Quote files (total)", value:TOTAL_FILES, kind:"int", color:"#6366f1" },
+  { label:"Awaiting validation", value:18, kind:"int", hint:"Status “In admin review”", color:"#e07b39" },
+  { label:"Awaiting clarification", value:9, kind:"int", hint:"Blocking questions or file in clarification", color:"#e5a93d" },
+  { label:"Sent to clients", value:13, kind:"int", hint:"12 accepted", color:"#14b8a6" },
+  { label:"Total quote value", value:4890000, kind:"money", hint:"Latest scenario of each file", color:"#8b5cf6" },
+  { label:"Forecast commercial margin", value:1075800, kind:"money", hint:"30.6% of estimated internal cost", color:"#10b981" },
+];
+const SERIES = [
+  { key:"created", label:"Created", color:"#6366f1" },
+  { key:"approved", label:"Approved", color:"#10b981" },
+  { key:"refused", label:"Declined", color:"#f43f5e" },
+  { key:"accepted", label:"Client-accepted", color:"#14b8a6" },
+];
+const TIMELINE = {
+  month: [
+    { bucket:"Dec 25", created:9, approved:7, refused:1, accepted:6 },
+    { bucket:"Jan 26", created:12, approved:9, refused:1, accepted:8 },
+    { bucket:"Feb 26", created:10, approved:8, refused:2, accepted:7 },
+    { bucket:"Mar 26", created:14, approved:11, refused:1, accepted:9 },
+    { bucket:"Apr 26", created:11, approved:9, refused:0, accepted:8 },
+    { bucket:"May 26", created:13, approved:10, refused:2, accepted:9 },
+    { bucket:"Jun 26", created:15, approved:12, refused:1, accepted:10 },
+    { bucket:"Jul 26", created:12, approved:10, refused:1, accepted:8 },
+    { bucket:"Aug 26", created:14, approved:11, refused:2, accepted:9 },
+    { bucket:"Sep 26", created:16, approved:13, refused:1, accepted:11 },
+    { bucket:"Oct 26", created:13, approved:10, refused:1, accepted:9 },
+    { bucket:"Nov 26", created:12, approved:10, refused:2, accepted:8 },
+  ],
+  week: [
+    { bucket:"W40", created:3, approved:2, refused:0, accepted:2 },
+    { bucket:"W41", created:4, approved:3, refused:1, accepted:2 },
+    { bucket:"W42", created:3, approved:3, refused:0, accepted:2 },
+    { bucket:"W43", created:5, approved:4, refused:0, accepted:3 },
+    { bucket:"W44", created:4, approved:3, refused:1, accepted:3 },
+    { bucket:"W45", created:3, approved:2, refused:0, accepted:2 },
+    { bucket:"W46", created:4, approved:3, refused:0, accepted:3 },
+    { bucket:"W47", created:3, approved:3, refused:1, accepted:2 },
+  ],
+  quarter: [
+    { bucket:"Q4 25", created:31, approved:24, refused:4, accepted:21 },
+    { bucket:"Q1 26", created:36, approved:28, refused:4, accepted:24 },
+    { bucket:"Q2 26", created:39, approved:31, refused:4, accepted:27 },
+    { bucket:"Q3 26", created:42, approved:34, refused:4, accepted:28 },
+  ],
+  year: [
+    { bucket:"2024", created:96, approved:74, refused:11, accepted:58 },
+    { bucket:"2025", created:128, approved:101, refused:14, accepted:79 },
+    { bucket:"2026", created:148, approved:117, refused:15, accepted:97 },
+  ],
+};
+const FIN_PARTS = [
+  { label:"Labour", value:2102700, color:"#5b8def" },
+  { label:"Direct costs", value:684600, color:"#14b8a6" },
+  { label:"Indirect costs", value:440100, color:"#8fa3b8" },
+  { label:"Risk reserve", value:293400, color:"#e5a93d" },
+  { label:"Commercial margin", value:1075800, color:"#10b981" },
+  { label:"Fees (management + sales)", value:146700, color:"#8b5cf6" },
+  { label:"Taxes", value:146700, color:"#f97316" },
+];
+const FIN_TTC = FIN_PARTS.reduce((s, p) => s + p.value, 0); // 4,890,000
+const FIN_COST = 2102700 + 684600 + 440100 + 293400; // 3,520,800
+const FIN_HT = FIN_TTC - 146700;
+const RISK_MATRIX = { // "probability x impact": count
+  "1x5":1, "2x5":2, "3x5":2, "4x5":1, "5x5":1,
+  "1x4":2, "2x4":3, "3x4":3, "4x4":3, "5x4":2,
+  "1x3":3, "2x3":4, "3x3":5, "4x3":2, "5x3":2,
+  "1x2":5, "2x2":6, "3x2":4, "4x2":3, "5x2":1,
+  "1x1":8, "2x1":7, "3x1":6, "4x1":5, "5x1":6,
+};
+const RISK_TOTAL = Object.values(RISK_MATRIX).reduce((s, v) => s + v, 0); // 87
+const RISK_CRIT = 11; // score >= 15
+const RISK_CATS = [
+  { label:"Architecture complexity", count:14 },
+  { label:"Vendor API dependencies", count:9 },
+  { label:"Compliance & data localization", count:6 },
+  { label:"Scope creep in phase 2", count:5 },
+  { label:"Team availability", count:4 },
+];
+const SENSITIVITY = {
+  project:"QS-2026-0141", base:486200,
+  rows:[
+    { factor:0.8, price:388960 }, { factor:0.9, price:437580 },
+    { factor:1.0, price:486200 }, { factor:1.1, price:534820 }, { factor:1.2, price:583440 },
+  ],
+};
+const FVA = [
+  { ref:"QS-2025-0098", title:"Meridian Payments Gateway", est:412000, act:438500, hours:1240, days:86 },
+  { ref:"QS-2025-0104", title:"Atlas Field Operations", est:298400, act:287100, hours:860, days:61 },
+  { ref:"QS-2025-0111", title:"Beacon Retail Suite", est:524800, act:551200, hours:1480, days:104 },
+  { ref:"QS-2025-0122", title:"Northwind Analytics", est:187600, act:179900, hours:540, days:38 },
+  { ref:"QS-2025-0130", title:"Cobalt Health Portal", est:356300, act:371000, hours:1020, days:72 },
+];
+const RANKS = [
+  { rank:"S", count:17, avgCost:28400, avgPrice:41200, avgHours:212 },
+  { rank:"A", count:32, avgCost:21800, avgPrice:31600, avgHours:164 },
+  { rank:"B", count:41, avgCost:16400, avgPrice:23900, avgHours:121 },
+  { rank:"C", count:34, avgCost:11200, avgPrice:16300, avgHours:88 },
+  { rank:"D", count:18, avgCost:6800, avgPrice:9900, avgHours:54 },
+];
+const EXPECTED = {
+  BROUILLON:"Start analysis", ANALYSE_EN_COURS:"Continue analysis",
+  CLARIFICATIONS_REQUISES:"Follow up clarifications", ESTIMATION_PROVISOIRE:"Complete estimate",
+  ESTIMATION_TERMINEE:"Quality check to perform", EN_CONTROLE:"Commercial validation pending",
+  REVISION_DEMANDEE:"Process revision", APPROUVE:"Generate proposal",
+  TRANSMIS:"Awaiting client decision", ACCEPTE:"Onboard the project",
+  REFUSE:"Archive the file", EXPIRE:"Renew or archive",
+};
+const QUOTES = [
+  { ref:"QS-2026-0141", title:"Harbor Logistics Platform", status:"ANALYSE_EN_COURS", rank:"B", blocking:2, risks:1, amount:486200, daysAgo:0, version:2 },
+  { ref:"QS-2026-0138", title:"Lumen E-commerce Rebuild", status:"CLARIFICATIONS_REQUISES", rank:"A", blocking:3, risks:2, amount:312800, daysAgo:1, version:3 },
+  { ref:"QS-2026-0135", title:"Vertex Banking Onboarding", status:"EN_CONTROLE", rank:"S", blocking:0, risks:1, amount:742500, daysAgo:2, version:4 },
+  { ref:"QS-2026-0132", title:"Atlas Field Operations", status:"BROUILLON", rank:"C", blocking:1, risks:0, amount:198400, daysAgo:3, version:1 },
+  { ref:"QS-2026-0129", title:"Beacon Retail Suite", status:"ESTIMATION_PROVISOIRE", rank:"B", blocking:0, risks:2, amount:524800, daysAgo:4, version:2 },
+  { ref:"QS-2026-0126", title:"Cobalt Health Portal", status:"REVISION_DEMANDEE", rank:"A", blocking:1, risks:1, amount:356300, daysAgo:5, version:3 },
+  { ref:"QS-2026-0123", title:"Northwind Analytics", status:"TRANSMIS", rank:"B", blocking:0, risks:0, amount:187600, daysAgo:6, version:2 },
+  { ref:"QS-2026-0120", title:"Meridian Payments Gateway", status:"APPROUVE", rank:"S", blocking:0, risks:1, amount:412000, daysAgo:7, version:5 },
+];
+const OPEN_PROJECTS = [
+  { ref:"QS-2026-0144", title:"Solstice Travel Platform" },
+  { ref:"QS-2026-0145", title:"Ember Media Dashboard" },
+  { ref:"QS-2026-0146", title:"Keystone Legal Workspace" },
+  { ref:"QS-2026-0147", title:"Drift Fitness App" },
+  { ref:"QS-2026-0148", title:"Aurora IoT Console" },
+];
+function statusOf(code){ return STATUSES.find(s => s.code === code) || { label:code, color:"#8fa3b8" }; }
+function fmtDate(daysAgo){
+  const d = new Date(TODAY); d.setDate(d.getDate() - daysAgo);
+  return d.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
+}
+function countUp(el, target, money){
+  if (REDUCED) { el.textContent = money ? fmt$(target) : fmtInt(target); return; }
+  const t0 = performance.now(), dur = 900;
+  (function tick(t){
+    const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+    const v = Math.round(target * e);
+    el.textContent = money ? fmt$(v) : fmtInt(v);
+    if (p < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+
+/* ================= §1 KPIs ================= */
+let kpiAnimated = false;
+function renderKPIs(){
+  $("#kpiGrid").innerHTML = KPI.map((k, i) => `
+    <div class="kpi-card fade-up" style="--kc:${k.color};animation-delay:${i * 70}ms">
+      <p class="kpi-label">${k.label}</p>
+      <p class="kpi-value num" data-kpi="${i}">${k.kind === "money" ? fmt$(k.value) : fmtInt(k.value)}</p>
+      ${k.hint ? `<p class="kpi-hint">${k.hint}</p>` : ""}
+    </div>`).join("");
+  // Count-up once, on first render, for every card at once: the final value is
+  // already in the DOM, so a capture or a re-render never shows "0".
+  if (!kpiAnimated && !REDUCED) {
+    kpiAnimated = true;
+    $$("#kpiGrid .kpi-value").forEach(el => {
+      const k = KPI[+el.dataset.kpi];
+      countUp(el, k.value, k.kind === "money");
+    });
+  }
+}
+
+/* ================= §2 Evolution chart ================= */
+let evoPeriod = "month", evoHoverSeries = null;
+function renderEvo(){
+  const rows = TIMELINE[evoPeriod];
+  const max = Math.max(1, ...rows.flatMap(r => SERIES.map(s => r[s.key])));
+  const step = Math.max(1, Math.ceil(max / 4));
+  const yMax = step * 4;
+  const W = 960, H = 250, L = 40, B = 28, T = 12, iw = W - L - 14, ih = H - T - B;
+  const gw = iw / rows.length, bw = Math.min(13, (gw - 14) / 4);
+  let svg = `<svg viewBox="0 0 ${W} ${H}" role="presentation">`;
+  for (let g = 0; g <= 4; g++){
+    const y = T + ih - (g * step / yMax) * ih;
+    svg += `<line x1="${L}" y1="${y}" x2="${W - 14}" y2="${y}" stroke="rgba(148,163,184,.16)" stroke-width="1"/>`;
+    svg += `<text x="${L - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#8b98a9">${g * step}</text>`;
+  }
+  rows.forEach((r, gi) => {
+    const gx = L + gi * gw;
+    SERIES.forEach((s, si) => {
+      const v = r[s.key], h = v / yMax * ih, x = gx + (gw - bw * 4 - 12) / 2 + si * (bw + 4), y = T + ih - h;
+      const dim = evoHoverSeries !== null && evoHoverSeries !== si;
+      svg += `<rect class="${REDUCED ? "" : "bar-grow"}" style="animation-delay:${(gi * 4 + si) * 28}ms;opacity:${dim ? .25 : 1};cursor:pointer" data-g="${gi}" data-s="${si}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw}" height="${Math.max(h, v > 0 ? 2 : 0).toFixed(1)}" rx="2.5" fill="${s.color}"><title>${r.bucket} — ${s.label}: ${v}</title></rect>`;
+    });
+    svg += `<text x="${gx + gw / 2}" y="${H - 8}" text-anchor="middle" font-size="11" fill="#8b98a9">${r.bucket}</text>`;
+  });
+  svg += "</svg>";
+  $("#evoChart").innerHTML = svg;
+  $("#evoLegend").innerHTML = SERIES.map((s, si) => `
+    <li class="dim" data-s="${si}" style="opacity:${evoHoverSeries === null || evoHoverSeries === si ? 1 : .4}">
+      <span class="dot" style="background:${s.color}"></span>${s.label}
+    </li>`).join("");
+  $$("#evoChart rect").forEach(rect => {
+    rect.addEventListener("mouseenter", () => {
+      const r = rows[+rect.dataset.g], s = SERIES[+rect.dataset.s];
+      /* Hover pass 2026-11-18 : mise en évidence de la barre survolée (le readout donne la valeur exacte) */
+      rect.style.filter = "brightness(1.4)";
+      rect.setAttribute("stroke", "#e8eef5");
+      rect.setAttribute("stroke-width", "1.5");
+      $("#evoReadout").innerHTML = `<strong>${r.bucket}</strong> — ${s.label}: <strong class="num">${r[s.key]}</strong>`;
+    });
+    rect.addEventListener("mouseleave", () => {
+      rect.style.filter = "";
+      rect.removeAttribute("stroke");
+      rect.removeAttribute("stroke-width");
+      $("#evoReadout").innerHTML = `<span class="muted">Hover a bar for its exact value.</span>`;
+    });
+  });
+  $$("#evoLegend li").forEach(li => {
+    li.addEventListener("mouseenter", () => { evoHoverSeries = +li.dataset.s; renderEvo(); });
+    li.addEventListener("mouseleave", () => { evoHoverSeries = null; renderEvo(); });
+  });
+}
+$$("#periodPills .pill").forEach(p => p.addEventListener("click", () => {
+  $$("#periodPills .pill").forEach(x => x.classList.remove("is-active"));
+  p.classList.add("is-active");
+  evoPeriod = p.dataset.period;
+  renderEvo();
+}));
+
+/* ================= §3 Status donut ================= */
+let donutHover = null;
+function renderDonut(){
+  const total = TOTAL_FILES, R = 62, C = 2 * Math.PI * R;
+  let off = 0;
+  const segs = STATUSES.filter(s => s.count > 0).map(s => {
+    const len = s.count / total * C, seg = { ...s, len, off };
+    off += len; return seg;
+  });
+  $("#donutBox").innerHTML = `
+    <svg width="168" height="168" viewBox="0 0 168 168">
+      <circle cx="84" cy="84" r="${R}" fill="none" stroke="rgba(148,163,184,.14)" stroke-width="20"/>
+      ${segs.map(s => `<circle class="dim" data-code="${s.code}" cx="84" cy="84" r="${R}" fill="none" stroke="${s.color}" stroke-width="20" stroke-dasharray="${(s.len - 1.5).toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-s.off).toFixed(1)}" transform="rotate(-90 84 84)" style="opacity:${donutHover === null || donutHover === s.code ? 1 : .25};cursor:pointer"><title>${s.label}: ${s.count} (${pct(s.count, total)}%)</title></circle>`).join("")}
+    </svg>
+    <div class="donut-center"><b class="num" id="donutCenterNum">${donutHover ? statusOf(donutHover).count : total}</b><span>${donutHover ? statusOf(donutHover).label.slice(0, 20) : "files"}</span></div>`;
+  $("#donutLegend").innerHTML = STATUSES.map(s => `
+    <li class="dim" data-code="${s.code}" style="opacity:${donutHover === null || donutHover === s.code ? 1 : .4}">
+      <span class="dot" style="background:${s.color}"></span>${s.label}
+      <span class="ct num">${s.count} (${pct(s.count, total)}%)</span>
+    </li>`).join("");
+  const bind = el => {
+    el.addEventListener("mouseenter", () => { donutHover = el.dataset.code; renderDonut(); });
+    el.addEventListener("mouseleave", () => { donutHover = null; renderDonut(); });
+  };
+  $$("#donutBox circle[data-code]").forEach(bind);
+  $$("#donutLegend li").forEach(bind);
+}
+
+/* ================= §4 Financial composition ================= */
+let compHover = null;
+function renderComp(){
+  $("#compBar").innerHTML = FIN_PARTS.map((p, i) => `
+    <div class="comp-seg" data-i="${i}" title="${p.label}: ${fmt$(p.value)} (${pct(p.value, FIN_TTC)}%)"
+      style="width:${pct(p.value, FIN_TTC)}%;background:${p.color};opacity:${compHover === null || compHover === i ? 1 : .3}"></div>`).join("");
+  $("#compLegend").innerHTML = FIN_PARTS.map((p, i) => `
+    <li class="dim" data-i="${i}" style="opacity:${compHover === null || compHover === i ? 1 : .4}">
+      <span class="dot" style="background:${p.color}"></span>${p.label}
+      <span class="ct num">${fmt$(p.value)} (${pct(p.value, FIN_TTC)}%)</span>
+    </li>`).join("");
+  const bind = el => {
+    el.addEventListener("mouseenter", () => { compHover = +el.dataset.i; renderComp(); });
+    el.addEventListener("mouseleave", () => { compHover = null; renderComp(); });
+  };
+  $$("#compBar .comp-seg").forEach(bind);
+  $$("#compLegend li").forEach(bind);
+  const marginRate = Math.round(FIN_PARTS[4].value / FIN_COST * 1000) / 10;
+  $("#finTable").innerHTML = [
+    ["Estimated internal cost (latest calculation per file)", fmt$(FIN_COST)],
+    ["Proposed price excl. tax", fmt$(FIN_HT)],
+    ["Proposed price incl. tax", fmt$(FIN_TTC)],
+    ["Forecast margin", fmt$(FIN_PARTS[4].value)],
+    ["Margin rate (on cost)", marginRate + " %"],
+    ["Price excl. tax − cost gap", fmt$(FIN_HT - FIN_COST) + " (margin + fees)"],
+  ].map(r => `<tr><th scope="row" style="text-align:left;font-weight:600;text-transform:none;letter-spacing:0;font-size:13.5px">${r[0]}</th><td class="num" style="text-align:right;font-weight:700">${r[1]}</td></tr>`).join("");
+}
+
+/* ================= §5 Risks ================= */
+function criticity(p, i){
+  const score = p * i;
+  if (score >= 15) return { score, level:"critical", color:"#d64545" };
+  if (score >= 10) return { score, level:"high", color:"#e07b39" };
+  if (score >= 5) return { score, level:"moderate", color:"#e5a93d" };
+  return { score, level:"low", color:"#4caf7d" };
+}
+function renderRisk(){
+  let html = "";
+  for (let impact = 5; impact >= 1; impact--){
+    for (let p = 1; p <= 5; p++){
+      const count = RISK_MATRIX[`${p}x${impact}`] || 0, c = criticity(p, impact);
+      html += `<div class="risk-cell" tabindex="0" data-p="${p}" data-i="${impact}" data-count="${count}"
+        title="Probability ${p}/5 × impact ${impact}/5 — ${c.level} (score ${c.score}): ${count} risk(s)"
+        style="background:${c.color};opacity:${count > 0 ? .92 : .25}">${count > 0 ? count : "·"}</div>`;
+    }
+  }
+  $("#riskGrid").innerHTML = html;
+  const show = cell => {
+    const p = +cell.dataset.p, i = +cell.dataset.i, n = +cell.dataset.count, c = criticity(p, i);
+    $("#riskReadout").innerHTML = `Probability <strong>${p}/5</strong> × impact <strong>${i}/5</strong> — criticality <strong>${c.level}</strong> (score ${c.score}): <strong class="num">${n}</strong> risk(s)`;
+  };
+  const reset = () => { $("#riskReadout").innerHTML = `<span class="muted">Horizontal: probability (1 → 5) · Vertical: impact (5 at top → 1 at bottom). Hover a cell for detail.</span>`; };
+  $$("#riskGrid .risk-cell").forEach(cell => {
+    cell.addEventListener("mouseenter", () => show(cell));
+    cell.addEventListener("mouseleave", reset);
+    cell.addEventListener("focus", () => show(cell));
+    cell.addEventListener("blur", reset);
+  });
+  $("#riskTable").innerHTML = [
+    ["Risks tracked (all files)", RISK_TOTAL],
+    ["Of which critical (score ≥ 15, open or mitigated)", RISK_CRIT],
+    ["Gross exposure (potential costs, open or mitigated)", fmt$(486500)],
+    ["Risks with potential delay", 14],
+    ["Risks without a priced cost", 11],
+  ].map(r => `<tr><th scope="row" style="text-align:left;font-weight:600;text-transform:none;letter-spacing:0;font-size:13.5px">${r[0]}</th><td class="num" style="text-align:right;font-weight:700">${typeof r[1] === "number" ? fmtInt(r[1]) : r[1]}</td></tr>`).join("");
+  $("#riskCats").innerHTML = RISK_CATS.map(c => `<li><span aria-hidden="true">▸</span>${c.label}<span class="ct num">${c.count} risk(s)</span></li>`).join("");
+}
+
+/* ================= §6 Sensitivity ================= */
+function renderSens(){
+  const max = Math.max(...SENSITIVITY.rows.map(r => r.price));
+  $("#sensList").innerHTML = SENSITIVITY.rows.map((r, i) => `
+    <li class="sens-row dim" data-i="${i}">
+      <span class="sens-label num">${r.factor === 1 ? "Base" : (r.factor > 1 ? "+" : "") + Math.round((r.factor - 1) * 100) + " %"}</span>
+      <span class="sens-track"><span class="sens-fill ${r.factor === 1 ? "is-base" : ""}" style="width:${(r.price / max * 100).toFixed(1)}%" title="Workload × ${r.factor} → ${fmt$(r.price)}"></span></span>
+      <strong class="sens-val num">${fmt$(r.price)}</strong>
+    </li>`).join("");
+  $$("#sensList .sens-row").forEach(row => {
+    row.addEventListener("mouseenter", () => $$("#sensList .sens-row").forEach(x => x.style.opacity = x === row ? 1 : .55));
+    row.addEventListener("mouseleave", () => $$("#sensList .sens-row").forEach(x => x.style.opacity = 1));
+  });
+}
+
+/* ================= §7 & §8 Tables ================= */
+function renderFva(){
+  $("#fvaTable").innerHTML = FVA.map(r => {
+    const v = r.act - r.est, neg = v < 0;
+    return `<tr><td><strong class="num" style="white-space:nowrap">${r.ref}</strong><br><span class="sub">${r.title}</span></td>
+      <td class="num">${fmt$(r.est)}</td><td class="num">${fmt$(r.act)}</td>
+      <td class="num" style="color:${neg ? "var(--success)" : "var(--critical)"};font-weight:700">${neg ? "−" : "+"}${fmt$(Math.abs(v))}</td>
+      <td class="num">${fmtInt(r.hours)} h</td><td class="num">${r.days} d</td></tr>`;
+  }).join("");
+}
+function renderRanks(){
+  $("#rankTable").innerHTML = RANKS.map(r => `<tr><td><strong>${r.rank}</strong></td>
+    <td class="num">${r.count}</td><td class="num">${fmt$(r.avgCost)}</td>
+    <td class="num">${fmt$(r.avgPrice)}</td><td class="num">${r.avgHours} h</td></tr>`).join("");
+}
+
+/* ================= §9 Operational list + filters ================= */
+let listQuery = "";
+function renderQuoteFilters(){
+  const sel = $("#fStatus");
+  sel.innerHTML = `<option value="">All</option>` + STATUSES.map(s => `<option value="${s.code}">${s.label}</option>`).join("");
+}
+function renderQuotes(){
+  const fS = $("#fStatus").value, fP = $("#fPeriod").value, fR = $("#fRank").value;
+  const q = listQuery.trim().toLowerCase();
+  const visible = QUOTES.filter(row => {
+    if (fS && row.status !== fS) return false;
+    if (fR && row.rank !== fR) return false;
+    if (fP && row.daysAgo > +fP) return false;
+    if (q && !(row.ref + " " + row.title + " " + statusOf(row.status).label).toLowerCase().includes(q)) return false;
+    return true;
+  });
+  $("#quoteTable").innerHTML = visible.map(row => {
+    const st = statusOf(row.status);
+    return `<tr>
+      <td><strong class="num" style="white-space:nowrap">${row.ref}</strong><br><span class="sub">${row.title}</span></td>
+      <td><span class="badge" style="color:${st.color};background:${st.color}1f;border-color:${st.color}55"><span class="dot"></span>${st.label} (v${row.version})</span></td>
+      <td><strong>${row.rank}</strong></td>
+      <td class="num">${row.blocking}</td>
+      <td class="num">${row.risks}</td>
+      <td class="num">${row.amount ? fmt$(row.amount) : "—"}</td>
+      <td>${EXPECTED[row.status] || "—"}</td>
+      <td class="num">${fmtDate(row.daysAgo)}</td>
+      <td><a class="open-link" href="#" data-open="${row.ref}">Open</a></td>
+    </tr>`;
+  }).join("");
+  $("#listCount").textContent = `Showing ${visible.length} of ${QUOTES.length} file(s).`;
+  $("#listEmpty").hidden = visible.length > 0;
+  $$("#quoteTable [data-open]").forEach(a => a.addEventListener("click", e => {
+    e.preventDefault();
+    toast(`Opening ${a.dataset.open} — demo only: the file console is not part of this template.`);
+  }));
+}
+$("#quoteFilters").addEventListener("submit", e => { e.preventDefault(); renderQuotes(); });
+["fStatus", "fPeriod", "fRank"].forEach(id => $("#" + id).addEventListener("change", renderQuotes));
+$("#resetFilters").addEventListener("click", () => {
+  $("#fStatus").value = ""; $("#fPeriod").value = ""; $("#fRank").value = ""; listQuery = ""; $("#topSearch").value = "";
+  renderQuotes();
+});
+
+/* ================= §10 Open a dossier ================= */
+function renderOpenProjects(){
+  $("#openProject").innerHTML = `<option value="" disabled selected>Choose a project…</option>` +
+    OPEN_PROJECTS.map((p, i) => `<option value="${i}">${p.ref} — ${p.title}</option>`).join("");
+}
+$("#openForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const idx = $("#openProject").value;
+  if (idx === "" || idx === null) return;
+  const p = OPEN_PROJECTS[+idx];
+  const ref = p.ref;
+  QUOTES.unshift({ ref, title:p.title, status:"BROUILLON", rank:"—", blocking:0, risks:0, amount:null, daysAgo:0, version:1 });
+  STATUSES.find(s => s.code === "BROUILLON").count += 1;
+  KPI[0].value += 1;
+  OPEN_PROJECTS.splice(+idx, 1);
+  renderOpenProjects(); renderQuotes(); renderKPIs(); renderDonut();
+  const ok = $("#openOk");
+  ok.hidden = false;
+  ok.innerHTML = `✓ File <strong class="num">${ref}</strong> opened for <strong>${p.title}</strong> — the request is frozen as of today, analysis starts in “Draft”. It now tops the operational queue.`;
+  toast(`File ${ref} opened — added to the queue as Draft.`);
+  document.getElementById("quote-list").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block:"start" });
+});
+
+/* ================= Sidebar search / drawer / topbar ================= */
+$("#sideSearch").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  let any = false;
+  $$("#sideNav .app-nav-group").forEach(g => {
+    let groupHit = false;
+    g.querySelectorAll(".app-nav-item").forEach(a => {
+      const hit = !q || a.textContent.toLowerCase().includes(q);
+      a.style.display = hit ? "" : "none";
+      if (hit) groupHit = true;
+    });
+    g.style.display = groupHit ? "" : "none";
+    if (groupHit) any = true;
+  });
+  $("#sideSearchEmpty").hidden = any || !q;
+});
+document.addEventListener("keydown", e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); $("#sideSearch").focus(); }
+  if (e.key === "Escape") { $("#feedPanel").hidden = true; closeTabPicker(); setDrawer(false); }
+});
+const sidebar = $("#appSidebar"), scrim = $("#drawerScrim");
+function setDrawer(open){
+  sidebar.classList.toggle("open", open);
+  scrim.classList.toggle("show", open);
+}
+$("#menuBtn").addEventListener("click", () => setDrawer(true));
+scrim.addEventListener("click", () => setDrawer(false));
+$("#topSearch").addEventListener("input", e => { listQuery = e.target.value; renderQuotes(); });
+$("#topSearch").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); if (activeTabId !== "estimates") activateTab("estimates"); document.getElementById("quote-list").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); }
+});
+$("#signOutBtn").addEventListener("click", () => toast("Demo only — sign-out is disabled in this template."));
+$("#themeBtn").addEventListener("click", () => {
+  const html = document.documentElement;
+  const next = html.dataset.theme === "dark" ? "light" : "dark";
+  html.dataset.theme = next;
+  $("#themeGlyph").textContent = next === "dark" ? "☾" : "☀";
+  try { localStorage.setItem("quotescope.theme", next); } catch(e){}
+});
+try {
+  const savedTheme = localStorage.getItem("quotescope.theme");
+  if (savedTheme === "light" || savedTheme === "dark") {
+    document.documentElement.dataset.theme = savedTheme;
+    $("#themeGlyph").textContent = savedTheme === "dark" ? "☾" : "☀";
+  }
+} catch(e){}
+$("#bellBtn").addEventListener("click", e => {
+  e.stopPropagation();
+  const p = $("#feedPanel"); p.hidden = !p.hidden;
+  $("#bellBtn").setAttribute("aria-expanded", String(!p.hidden));
+});
+$("#feedClose").addEventListener("click", () => {
+  $("#feedPanel").hidden = true;
+  const dot = document.querySelector(".bell-dot"); if (dot) dot.remove();
+  toast("All notifications marked as read.");
+});
+document.addEventListener("click", e => {
+  if (!e.target.closest("#feedPanel") && !e.target.closest("#bellBtn")) $("#feedPanel").hidden = true;
+});
+$("#newDraftBtn").addEventListener("click", () => setTimeout(() => $("#openProject").focus(), 400));
+
+/* ================= Multi-tab engine (admin shell behaviour) ================= */
+const CONSOLES = {
+  estimates:{ title:"Estimates & Quotes", color:"#14b8a6", desc:"Quote & estimation analytics — the console on this page." },
+  overview:{ title:"Overview", color:"#6366f1", desc:"Superadmin overview: governance at a glance." },
+  pilotage:{ title:"Program Control", color:"#8b5cf6", desc:"Project steering (GPI): progress, milestones and alerts." },
+  notifications:{ title:"Notifications", color:"#f59e0b", desc:"Notification center: issued, queued and failed sends." },
+  users:{ title:"Users", color:"#5b8def", desc:"User accounts: clients, developers and staff." },
+  staff:{ title:"Staff & Permissions", color:"#7c6bd9", desc:"Internal staff, roles and access rights." },
+  applications:{ title:"Applications", color:"#4f9da6", desc:"Recruitment pipeline: applications under review." },
+  projects:{ title:"Projects & Proposals", color:"#6366f1", desc:"All projects and their commercial proposals." },
+  external:{ title:"External Projects", color:"#14b8a6", desc:"Projects run outside the standard pipeline." },
+  mandates:{ title:"Dev-CP Mandates", color:"#e07b39", desc:"Developer–client project mandates." },
+  missions:{ title:"Missions", color:"#10b981", desc:"Missions assigned to developers." },
+  internal:{ title:"Internal Missions", color:"#8fa3b8", desc:"Internal missions and studio operations." },
+  incidents:{ title:"Incidents", color:"#f43f5e", desc:"Incidents: blocking issues and their resolution." },
+  finance:{ title:"Financial Center", color:"#10b981", desc:"Platform finances: client funds vs platform revenue." },
+  payouts:{ title:"Payouts", color:"#2e7d5b", desc:"Payouts to developers and partners." },
+  invoices:{ title:"Invoices", color:"#5b8def", desc:"Invoices issued and their payment status." },
+  subscriptions:{ title:"Subscriptions", color:"#8b5cf6", desc:"Subscription plans and active subscribers." },
+  pricing:{ title:"Quotes & Pricing", color:"#e5a93d", desc:"Pricing grids and commercial policy." },
+  disputes:{ title:"Disputes", color:"#f43f5e", desc:"Disputes and arbitration between parties." },
+  warranty:{ title:"Warranty", color:"#e07b39", desc:"Care warranty: coverage and claims." },
+  support:{ title:"Consolidated Support", color:"#14b8a6", desc:"Support tickets across all channels." },
+  security:{ title:"Security & Integrations", color:"#6366f1", desc:"Security controls, 2FA and integrations." },
+  audit:{ title:"Audit Journal", color:"#8fa3b8", desc:"Immutable audit trail of admin actions." },
+  reports:{ title:"Reports & Exports", color:"#4f9da6", desc:"Reports, exports and scheduled deliveries." },
+  settings:{ title:"Settings", color:"#7c6bd9", desc:"Platform settings and configuration." },
+  articles:{ title:"Articles", color:"#e5a93d", desc:"Editorial articles and guides." },
+};
+const POOL_TITLES = ["Harbor Logistics Platform","Lumen E-commerce Rebuild","Vertex Banking Onboarding","Atlas Field Operations","Beacon Retail Suite","Cobalt Health Portal","Northwind Analytics","Meridian Payments Gateway","Solstice Travel Platform","Ember Media Dashboard"];
+const POOL_OWNERS = ["Alex Morgan","Priya Nair","Tom Becker","Sara Lindqvist","Omar Haddad","Julia Ferrand"];
+const POOL_STATUS = ["Open","In review","Approved","Pending","Closed"];
+let tabs = [{ id:"estimates" }], activeTabId = "estimates", tabScroll = {};
+const MAX_TABS = 8;
+const tabBar = $("#tabBar"), mainView = $("#mainView"), panelsWrap = $("#consolePanels"), breadcrumb = $("#breadcrumb");
+function hashSeed(str){ let h = 7; for (const c of str) h = (h * 31 + c.charCodeAt(0)) % 997; return h; }
+function buildPanel(id){
+  if (document.getElementById("console-" + id)) return;
+  const def = CONSOLES[id], seed = hashSeed(id);
+  const pick = (arr, k) => arr[(seed + k * 3) % arr.length];
+  const stats = [
+    { label:"Items", value: 18 + seed % 60 },
+    { label:"Open", value: 3 + seed % 12 },
+    { label:"This month", value: 5 + seed % 20 },
+    { label:"Change", value: "+" + (4 + seed % 18) + "%" },
+  ];
+  const rows = [0,1,2,3,4].map(k => ({
+    ref: "QS-2026-0" + (100 + (seed + k * 7) % 48),
+    title: pick(POOL_TITLES, k),
+    status: pick(POOL_STATUS, k),
+    owner: pick(POOL_OWNERS, k),
+    updated: fmtDate((seed + k * 2) % 21),
+  }));
+  const sec = document.createElement("section");
+  sec.className = "panel console-panel"; sec.id = "console-" + id;
+  sec.innerHTML = `
+    <p class="eyebrow">${def.title}</p>
+    <h2>${def.title}</h2>
+    <p class="sec-note">${def.desc}</p>
+    <div class="mini-stats">${stats.map(s => `<div class="mini-stat"><p>${s.label}</p><b class="num">${s.value}</b></div>`).join("")}</div>
+    <input class="console-search" type="text" placeholder="Search this console…" aria-label="Search this console">
+    <div class="tbl-wrap"><table class="tbl" style="min-width:640px">
+      <thead><tr><th>Reference</th><th>Item</th><th>Status</th><th>Owner</th><th>Updated</th></tr></thead>
+      <tbody>${rows.map(r => `<tr><td class="num"><strong>${r.ref}</strong></td><td>${r.title}</td><td>${r.status}</td><td>${r.owner}</td><td class="num">${r.updated}</td></tr>`).join("")}</tbody>
+    </table></div>
+    <p class="console-note" hidden>No item matches this search.</p>
+    <p class="console-note"><strong>Simplified console view.</strong> The full console lives in the product. All names, figures and projects are fictional — no backend, no real funds, no real data.</p>`;
+  panelsWrap.appendChild(sec);
+  const input = sec.querySelector(".console-search"), empty = sec.querySelector(".console-note[hidden]");
+  input.addEventListener("input", () => {
+    const q = input.value.trim().toLowerCase();
+    let visible = 0;
+    sec.querySelectorAll("tbody tr").forEach(tr => {
+      const hit = !q || tr.textContent.toLowerCase().includes(q);
+      tr.style.display = hit ? "" : "none";
+      if (hit) visible++;
+    });
+    empty.hidden = visible > 0;
+  });
+}
+function renderTabs(){
+  tabBar.querySelectorAll(".qs-tab,.qs-tab-hint,.qs-tab-add").forEach(n => n.remove());
+  tabs.forEach(t => {
+    const def = CONSOLES[t.id] || CONSOLES.estimates;
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "qs-tab" + (t.id === activeTabId ? " is-active" : "");
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", String(t.id === activeTabId));
+    b.title = def.title + (t.id === "estimates" ? " — home view" : " — console (middle-click to close)");
+    b.innerHTML = `<span class="qs-tab-dot" style="background:${def.color}"></span><span>${def.title}</span>` +
+      (t.id === "estimates" ? "" : `<span class="qs-tab-close" role="button" aria-label="Close ${def.title} tab" tabindex="-1">×</span>`);
+    b.addEventListener("click", e => {
+      if (e.target.closest(".qs-tab-close")) { e.stopPropagation(); closeTab(t.id); return; }
+      activateTab(t.id);
+    });
+    b.addEventListener("auxclick", e => { if (e.button === 1) { e.preventDefault(); closeTab(t.id); } });
+    tabBar.appendChild(b);
+  });
+  const add = document.createElement("button");
+  add.type = "button"; add.className = "qs-tab-add";
+  add.setAttribute("aria-label", "Open a new tab"); add.title = "Open a new tab"; add.textContent = "+";
+  add.addEventListener("click", e => { e.stopPropagation(); toggleTabPicker(add); });
+  tabBar.appendChild(add);
+  const hint = document.createElement("span");
+  hint.className = "qs-tab-hint";
+  hint.innerHTML = "<kbd>Ctrl</kbd>+click opens a new tab · middle-click closes";
+  tabBar.appendChild(hint);
+}
+let tabPicker = null;
+function closeTabPicker(){ if (tabPicker) { tabPicker.remove(); tabPicker = null; } }
+function toggleTabPicker(anchor){
+  if (tabPicker) { closeTabPicker(); return; }
+  const r = anchor.getBoundingClientRect();
+  tabPicker = document.createElement("div");
+  tabPicker.className = "qs-tab-picker";
+  tabPicker.setAttribute("role", "menu");
+  tabPicker.setAttribute("aria-label", "Choose a page for the new tab");
+  tabPicker.innerHTML = `<span class="qs-picker-note">Open in a new tab</span>` + Object.entries(CONSOLES).map(([id, def]) =>
+    `<button type="button" role="menuitem" data-pick="${id}"><span class="qs-tab-dot" style="background:${def.color}"></span>${def.title}</button>`).join("");
+  document.body.appendChild(tabPicker);
+  tabPicker.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 260)) + "px";
+  tabPicker.style.top = (r.bottom + 6) + "px";
+  tabPicker.addEventListener("click", e => {
+    const b = e.target.closest("[data-pick]");
+    if (!b) return;
+    closeTabPicker();
+    openConsole(b.dataset.pick, { newTab: true });
+  });
+}
+document.addEventListener("click", e => {
+  if (tabPicker && !e.target.closest(".qs-tab-picker") && !e.target.closest(".qs-tab-add")) closeTabPicker();
+});
+function persistTabs(){
+  try { sessionStorage.setItem("quotescope.tabs.v1", JSON.stringify({ tabs: tabs.map(t => t.id), active: activeTabId })); } catch(e){}
+}
+function activateTab(id){
+  if (!CONSOLES[id]) id = "estimates";
+  tabScroll[activeTabId] = window.scrollY;
+  activeTabId = id;
+  if (!tabs.some(t => t.id === id)) tabs.push({ id });
+  const isHome = id === "estimates";
+  if (isHome) {
+    panelsWrap.hidden = true;
+    mainView.style.display = "";
+    $$(".console-panel").forEach(p => p.style.display = "none");
+  } else {
+    buildPanel(id);
+    mainView.style.display = "none";
+    panelsWrap.hidden = false;
+    $$(".console-panel").forEach(p => p.style.display = p.id === "console-" + id ? "" : "none");
+  }
+  $$(".app-nav-item").forEach(a => {
+    const on = a.dataset.console === id;
+    a.classList.toggle("is-active", on);
+    if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+  const def = CONSOLES[id];
+  breadcrumb.innerHTML = `QuoteScope Console &nbsp;›&nbsp; <strong>${def.title}</strong>`;
+  document.title = `QuoteScope — ${def.title} · Quote Analytics Console`;
+  renderTabs();
+  window.scrollTo(0, tabScroll[id] || 0);
+  persistTabs();
+}
+function openConsole(id, opts){
+  const newTab = !!(opts && opts.newTab);
+  if (!CONSOLES[id]) id = "estimates";
+  if (tabs.some(t => t.id === id)) { activateTab(id); return; }
+  if (newTab && tabs.length < MAX_TABS) { tabs.push({ id }); activateTab(id); return; }
+  const cur = tabs.find(t => t.id === activeTabId) || tabs[0];
+  cur.id = id;
+  activateTab(id);
+}
+function closeTab(id){
+  if (id === "estimates" || tabs.length <= 1) return;
+  const idx = tabs.findIndex(t => t.id === id);
+  if (idx === -1) return;
+  tabs.splice(idx, 1);
+  if (activeTabId === id) activateTab(tabs[Math.max(0, idx - 1)].id);
+  else { renderTabs(); persistTabs(); }
+}
+$$("a[data-console]").forEach(a => {
+  a.addEventListener("click", e => {
+    e.preventDefault();
+    openConsole(a.dataset.console, { newTab: e.ctrlKey || e.metaKey });
+    setDrawer(false);
+  });
+  a.addEventListener("auxclick", e => {
+    if (e.button === 1) { e.preventDefault(); openConsole(a.dataset.console, { newTab: true }); }
+  });
+});
+$$('a[href^="#"]:not([data-console])').forEach(a => {
+  a.addEventListener("click", () => { if (activeTabId !== "estimates") activateTab("estimates"); });
+});
+try {
+  const saved = JSON.parse(sessionStorage.getItem("quotescope.tabs.v1") || "null");
+  if (saved && Array.isArray(saved.tabs) && saved.tabs.length && saved.tabs.every(id => CONSOLES[id])) {
+    tabs = saved.tabs.map(id => ({ id }));
+    activeTabId = CONSOLES[saved.active] ? saved.active : tabs[0].id;
+  }
+} catch(e){}
+
+/* ================= Init ================= */
+renderKPIs(); renderEvo(); renderDonut(); renderComp(); renderRisk(); renderSens();
+renderFva(); renderRanks(); renderQuoteFilters(); renderQuotes(); renderOpenProjects();
+activateTab(activeTabId);
+</script>
+</body>
+</html>
