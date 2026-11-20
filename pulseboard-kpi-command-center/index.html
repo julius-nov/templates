@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pulseboard — KPI Command Center</title>
+<meta name="description" content="Pulseboard is a premium dark-mode KPI command-center dashboard template: live metrics, revenue pulse chart, signals feed and targets. Single-file HTML + Tailwind."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: { extend: {
+    colors: {
+      void: '#0A0E14', panel: '#121826', elevated: '#1A2234', hairline: '#1E2638',
+      ink: '#F1F5F9', sub: '#94A3B8', faint: '#7C8AA0',
+      lime: '#B8F135', cyan: '#38E1FF', amber: '#FFB224', alert: '#FF4D4D'
+    },
+    fontFamily: {
+      display: ['"Space Grotesk"', 'sans-serif'],
+      body: ['Inter', 'sans-serif'],
+      mono: ['"JetBrains Mono"', 'monospace']
+    }
+  }}
+};
+</script>
+<style>
+  html { scrollbar-color: #2A3348 #0A0E14; }
+  body { background: #0A0E14; }
+  ::selection { background: rgba(184,241,53,.28); color: #F1F5F9; }
+  .num { font-variant-numeric: tabular-nums; }
+  .panel { background: rgba(18,24,38,.88); border: 1px solid #1E2638; border-radius: 6px; backdrop-filter: blur(12px); }
+  .panel-hover { transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+  .panel-hover:hover, .panel-hover:focus-visible { border-color: rgba(184,241,53,.55); box-shadow: 0 0 0 1px rgba(184,241,53,.25), 0 8px 28px rgba(0,0,0,.45); }
+  .panel-hover:hover .tile-value, button:focus-visible .tile-value { transform: translateY(-2px); }
+  .tile-value { transition: transform .2s ease; display: inline-block; }
+  .chip { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .06em; }
+  .label-t { font-family: "JetBrains Mono", monospace; font-size: 11px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: #94A3B8; }
+  /* pulsing status dot */
+  @keyframes pulse-ring { 0% { transform: scale(.9); opacity: .9; } 50% { transform: scale(1.9); opacity: .15; } 100% { transform: scale(.9); opacity: .9; } }
+  .pulse-dot { position: relative; }
+  .pulse-dot::after { content: ""; position: absolute; inset: -4px; border-radius: 9999px; border: 1px solid currentColor; animation: pulse-ring 2s ease-out infinite; }
+  /* entrance */
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .rise { animation: rise .55s cubic-bezier(.22,.8,.3,1) both; }
+  .rise-1 { animation-delay: .04s; } .rise-2 { animation-delay: .10s; } .rise-3 { animation-delay: .16s; }
+  .rise-4 { animation-delay: .22s; } .rise-5 { animation-delay: .28s; } .rise-6 { animation-delay: .34s; }
+  /* ticker marquee */
+  @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .ticker-track { display: inline-flex; white-space: nowrap; animation: ticker-scroll 46s linear infinite; will-change: transform; }
+  .ticker-track:hover { animation-play-state: paused; }
+  /* threshold bar shimmer on update */
+  .thresh { transition: width .7s cubic-bezier(.22,.8,.3,1); }
+  /* chart draw */
+  .chart-line { stroke-dasharray: 1200; stroke-dashoffset: 1200; animation: draw 1.1s cubic-bezier(.22,.8,.3,1) forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .chart-area { animation: fadein .9s ease .15s both; }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+  /* drawer */
+  #drawer { transition: transform .32s cubic-bezier(.22,.8,.3,1); }
+  #drawer-overlay { transition: opacity .25s ease; }
+  /* toast */
+  @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .toast-in { animation: toast-in .3s ease both; }
+  /* focus */
+  :focus-visible { outline: 2px solid #B8F135; outline-offset: 2px; border-radius: 4px; }
+  /* gauge */
+  .gauge-arc { transition: stroke-dashoffset 1s cubic-bezier(.22,.8,.3,1); }
+  /* feed item */
+  .feed-item { transition: background .15s ease; }
+  .feed-item:hover { background: rgba(26,34,52,.7); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    .ticker-track { animation: none; }
+  }
+</style>
+</head>
+<body class="bg-void text-ink font-body antialiased">
+<div class="min-h-screen lg:flex">
+
+  <!-- ============ SIDEBAR (desktop) ============ -->
+  <aside class="hidden lg:flex lg:flex-col lg:w-[232px] lg:shrink-0 lg:sticky lg:top-0 lg:h-screen border-r border-hairline bg-[#0C1119]/90 px-4 py-5">
+    <div class="flex items-center gap-2.5 px-1">
+      <span class="relative flex h-2.5 w-2.5"><span class="pulse-dot absolute inline-flex h-full w-full rounded-full bg-lime text-lime"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-lime"></span></span>
+      <span class="font-display font-700 tracking-tight text-[19px] font-bold">PULSEBOARD</span>
+    </div>
+    <p class="mt-1 px-1 font-mono text-[10px] tracking-[.14em] text-faint">SYS_NODE // 01</p>
+
+    <p class="label-t mt-8 mb-2 px-1">Operations modules</p>
+    <nav class="space-y-1" aria-label="Operations modules">
+      <button data-module="Mission Overview" class="nav-item w-full flex items-center gap-3 rounded px-3 py-2.5 text-left text-[13px] font-medium bg-lime text-[#0A0E14]"><span aria-hidden="true">▦</span> Mission Overview</button>
+      <button data-module="Revenue Streams" class="nav-item w-full flex items-center gap-3 rounded px-3 py-2.5 text-left text-[13px] font-medium text-sub hover:bg-elevated hover:text-ink transition-colors"><span aria-hidden="true">◈</span> Revenue Streams</button>
+      <button data-module="Telemetry &amp; Health" class="nav-item w-full flex items-center gap-3 rounded px-3 py-2.5 text-left text-[13px] font-medium text-sub hover:bg-elevated hover:text-ink transition-colors"><span aria-hidden="true">∿</span> Telemetry &amp; Health</button>
+      <button data-module="Incidents &amp; Alerts" class="nav-item w-full flex items-center gap-3 rounded px-3 py-2.5 text-left text-[13px] font-medium text-sub hover:bg-elevated hover:text-ink transition-colors"><span aria-hidden="true">⚠</span> Incidents &amp; Alerts <span class="ml-auto rounded bg-alert/15 text-alert px-1.5 py-0.5 font-mono text-[10px]">2</span></button>
+      <button data-module="Command Audit" class="nav-item w-full flex items-center gap-3 rounded px-3 py-2.5 text-left text-[13px] font-medium text-sub hover:bg-elevated hover:text-ink transition-colors"><span aria-hidden="true">▤</span> Command Audit</button>
+      <button data-module="System Settings" class="nav-item w-full flex items-center gap-3 rounded px-3 py-2.5 text-left text-[13px] font-medium text-sub hover:bg-elevated hover:text-ink transition-colors"><span aria-hidden="true">⚙</span> System Settings</button>
+    </nav>
+
+    <div class="mt-auto space-y-4 px-1 pb-12">
+      <div>
+        <div class="flex justify-between font-mono text-[10px] tracking-widest text-faint"><span>DATALINK PWR</span><span class="text-lime num">99.98%</span></div>
+        <div class="mt-1.5 h-1 rounded bg-[#1A2234] overflow-hidden"><div class="h-full bg-lime" style="width:99.98%"></div></div>
+      </div>
+      <div>
+        <div class="flex justify-between font-mono text-[10px] tracking-widest text-faint"><span>BANDWIDTH</span><span class="text-lime num">4.2 GB/S</span></div>
+        <div class="mt-1.5 h-1 rounded bg-[#1A2234] overflow-hidden"><div class="h-full bg-cyan" style="width:72%"></div></div>
+      </div>
+      <p class="font-mono text-[10px] leading-relaxed tracking-wider text-faint">DEMO DATA — ALL FIGURES<br/>FICTIONAL, FOR DISPLAY ONLY.</p>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="flex-1 min-w-0 pb-16">
+
+    <!-- Top bar -->
+    <header class="sticky top-0 z-30 border-b border-hairline bg-[#0A0E14]/85 backdrop-blur-md">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 sm:px-6 py-3">
+        <div class="flex items-center gap-2 lg:hidden">
+          <span class="relative flex h-2.5 w-2.5"><span class="pulse-dot absolute inline-flex h-full w-full rounded-full bg-lime text-lime"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-lime"></span></span>
+          <span class="font-display text-[17px] font-bold tracking-tight">PULSEBOARD</span>
+        </div>
+        <div class="hidden sm:flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-lime"></span>
+          <span class="chip text-lime">SIGNAL ACTIVE</span>
+        </div>
+        <div class="hidden md:flex items-center gap-2 text-sub">
+          <span aria-hidden="true">◷</span>
+          <span class="font-mono text-xs num" id="clock">UTC --:--:--</span>
+        </div>
+        <span class="hidden md:inline-flex items-center gap-1.5 rounded-full border border-lime/40 bg-lime/10 px-2.5 py-1 chip text-lime"><span class="h-1.5 w-1.5 rounded-full bg-lime"></span>ALL SYSTEMS NOMINAL</span>
+        <div class="ml-auto flex items-center gap-3">
+          <div class="flex rounded border border-hairline bg-panel p-0.5" role="group" aria-label="Time range">
+            <button data-range="24H" class="range-btn rounded px-2.5 sm:px-3 py-1.5 font-mono text-[11px] tracking-wider bg-lime text-[#0A0E14] font-semibold" aria-pressed="true">24H</button>
+            <button data-range="7D" class="range-btn rounded px-2.5 sm:px-3 py-1.5 font-mono text-[11px] tracking-wider text-sub hover:text-ink" aria-pressed="false">7D</button>
+            <button data-range="30D" class="range-btn rounded px-2.5 sm:px-3 py-1.5 font-mono text-[11px] tracking-wider text-sub hover:text-ink" aria-pressed="false">30D</button>
+          </div>
+          <div class="hidden sm:flex items-center gap-2.5 rounded border border-hairline bg-panel pl-1 pr-3 py-1">
+            <span class="flex h-7 w-7 items-center justify-center rounded bg-elevated font-mono text-[11px] font-bold text-lime">AM</span>
+            <span class="leading-tight"><span class="block text-[12px] font-semibold">Alex Morgan</span><span class="block font-mono text-[10px] tracking-widest text-faint">OPS_DIRECTOR</span></span>
+          </div>
+        </div>
+      </div>
+      <!-- Mobile module nav -->
+      <nav class="lg:hidden flex gap-2 overflow-x-auto px-4 pb-3" aria-label="Operations modules (mobile)">
+        <button data-module="Mission Overview" class="nav-item shrink-0 rounded-full bg-lime px-3 py-1.5 text-[12px] font-semibold text-[#0A0E14]">Mission Overview</button>
+        <button data-module="Revenue Streams" class="nav-item shrink-0 rounded-full border border-hairline bg-panel px-3 py-1.5 text-[12px] text-sub">Revenue Streams</button>
+        <button data-module="Telemetry &amp; Health" class="nav-item shrink-0 rounded-full border border-hairline bg-panel px-3 py-1.5 text-[12px] text-sub">Telemetry &amp; Health</button>
+        <button data-module="Incidents &amp; Alerts" class="nav-item shrink-0 rounded-full border border-hairline bg-panel px-3 py-1.5 text-[12px] text-sub">Incidents &amp; Alerts · 2</button>
+        <button data-module="Command Audit" class="nav-item shrink-0 rounded-full border border-hairline bg-panel px-3 py-1.5 text-[12px] text-sub">Command Audit</button>
+      </nav>
+    </header>
+
+    <main class="px-4 sm:px-6 pt-5 space-y-5 max-w-[1560px] mx-auto">
+
+      <!-- Mission deck strip -->
+      <section class="panel rise rise-1 flex flex-wrap items-center gap-x-5 gap-y-3 px-4 sm:px-5 py-4" aria-label="Mission deck">
+        <div class="flex items-center gap-2.5">
+          <span class="h-2 w-2 rounded-full bg-lime"></span>
+          <h1 class="font-display text-lg sm:text-xl font-bold tracking-tight">MISSION DECK <span class="font-mono text-xs font-medium tracking-[.14em] text-faint ml-1">SECTOR_07</span></h1>
+        </div>
+        <span class="hidden md:inline-flex items-center gap-2 font-mono text-[11px] tracking-wider text-cyan"><span aria-hidden="true">▣</span> INGEST: <span class="num">1.2M PKTS/SEC</span></span>
+        <span class="hidden sm:inline-flex items-center gap-2 rounded border border-lime/30 bg-lime/5 px-2.5 py-1 chip text-lime"><span class="h-1.5 w-1.5 rounded-full bg-lime"></span>LIVE TELEMETRY STREAM</span>
+        <div class="ml-auto flex items-center gap-2.5">
+          <div class="flex rounded border border-hairline bg-[#0A0E14] p-0.5" role="group" aria-label="Stream mode">
+            <button id="mode-realtime" class="mode-btn rounded px-3 py-1.5 font-mono text-[11px] tracking-wider bg-elevated text-ink font-semibold" aria-pressed="true">REALTIME</button>
+            <button id="mode-aggregated" class="mode-btn rounded px-3 py-1.5 font-mono text-[11px] tracking-wider text-sub hover:text-ink" aria-pressed="false">AGGREGATED</button>
+          </div>
+          <button id="calibrate-btn" class="rounded bg-lime px-3.5 py-2 font-mono text-[11px] font-bold tracking-wider text-[#0A0E14] hover:shadow-[0_0_16px_rgba(184,241,53,.4)] transition-shadow">⚙ CALIBRATE</button>
+        </div>
+      </section>
+
+      <!-- Hero KPIs -->
+      <section aria-label="Key metrics" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <button class="hero-tile panel panel-hover rise rise-2 text-left p-5" data-metric="mrr">
+          <div class="flex items-start justify-between gap-2">
+            <p class="label-t">Monthly Recurring<br/>Revenue</p>
+            <span class="chip rounded bg-lime/10 text-lime px-2 py-1" data-field="mrr-delta">↗ +12.4%</span>
+          </div>
+          <p class="mt-4 font-mono text-[34px] sm:text-[38px] leading-none font-bold num"><span class="tile-value" data-field="mrr-value">$128,400</span></p>
+          <p class="mt-2 font-mono text-[11px] tracking-wider text-faint">ARR RUN-RATE: <span class="text-sub num" data-field="mrr-sub">$1,540,800</span></p>
+          <svg class="mt-3 w-full h-8" viewBox="0 0 200 32" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,26 25,24 50,22 75,20 100,18 125,15 150,12 175,9 200,5" fill="none" stroke="#B8F135" stroke-width="1.5"/><polygon points="0,26 25,24 50,22 75,20 100,18 125,15 150,12 175,9 200,5 200,32 0,32" fill="rgba(184,241,53,.10)"/></svg>
+          <span class="sr-only">Open MRR detail</span>
+        </button>
+        <button class="hero-tile panel panel-hover rise rise-2 text-left p-5" data-metric="users">
+          <div class="flex items-start justify-between gap-2">
+            <p class="label-t">Active Users<br/>(30D)</p>
+            <span class="chip rounded bg-lime/10 text-lime px-2 py-1" data-field="users-delta">↗ +8.1%</span>
+          </div>
+          <p class="mt-4 font-mono text-[34px] sm:text-[38px] leading-none font-bold num"><span class="tile-value" data-field="users-value">48,210</span></p>
+          <p class="mt-2 font-mono text-[11px] tracking-wider text-faint">PEAK CONCURRENT: <span class="text-sub num">4,820</span></p>
+          <svg class="mt-3 w-full h-8" viewBox="0 0 200 32" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,24 25,25 50,21 75,23 100,17 125,18 150,13 175,10 200,6" fill="none" stroke="#38E1FF" stroke-width="1.5"/><polygon points="0,24 25,25 50,21 75,23 100,17 125,18 150,13 175,10 200,6 200,32 0,32" fill="rgba(56,225,255,.10)"/></svg>
+          <span class="sr-only">Open active users detail</span>
+        </button>
+        <button class="hero-tile panel panel-hover rise rise-3 text-left p-5" data-metric="churn">
+          <div class="flex items-start justify-between gap-2">
+            <p class="label-t">Customer Churn<br/>Rate</p>
+            <span class="chip rounded bg-lime/10 text-lime px-2 py-1" data-field="churn-delta">↘ −0.4pt</span>
+          </div>
+          <p class="mt-4 font-mono text-[34px] sm:text-[38px] leading-none font-bold num"><span class="tile-value" data-field="churn-value">1.9%</span></p>
+          <p class="mt-2 font-mono text-[11px] tracking-wider text-faint">GROSS CHURN: <span class="text-sub num">$2,410/MO</span> · BENCHMARK &lt; 2.5%</p>
+          <svg class="mt-3 w-full h-8" viewBox="0 0 200 32" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,10 25,12 50,11 75,15 100,16 125,19 150,21 175,23 200,25" fill="none" stroke="#B8F135" stroke-width="1.5"/><polygon points="0,10 25,12 50,11 75,15 100,16 125,19 150,21 175,23 200,25 200,32 0,32" fill="rgba(184,241,53,.10)"/></svg>
+          <span class="sr-only">Open churn detail</span>
+        </button>
+        <button class="hero-tile panel panel-hover rise rise-3 text-left p-5" data-metric="nrr">
+          <div class="flex items-start justify-between gap-2">
+            <p class="label-t">Net Revenue<br/>Retention</p>
+            <span class="chip rounded bg-lime/10 text-lime px-2 py-1" data-field="nrr-delta">↗ +3.0pt</span>
+          </div>
+          <p class="mt-4 font-mono text-[34px] sm:text-[38px] leading-none font-bold num text-lime"><span class="tile-value" data-field="nrr-value">118%</span></p>
+          <p class="mt-2 font-mono text-[11px] tracking-wider text-faint">EXPANSION SURPLUS: <span class="text-sub num">+$14.2K</span> · TARGET 115%</p>
+          <svg class="mt-3 w-full h-8" viewBox="0 0 200 32" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,26 25,24 50,25 75,21 100,20 125,16 150,15 175,10 200,7" fill="none" stroke="#B8F135" stroke-width="1.5"/><polygon points="0,26 25,24 50,25 75,21 100,20 125,16 150,15 175,10 200,7 200,32 0,32" fill="rgba(184,241,53,.10)"/></svg>
+          <span class="sr-only">Open retention detail</span>
+        </button>
+      </section>
+
+      <!-- Command wall -->
+      <section aria-label="Core subsystem telemetry">
+        <div class="flex flex-wrap items-center gap-2 mb-3 px-1">
+          <h2 class="label-t !text-[12px] !text-ink">▦ Core Subsystem Telemetry Array</h2>
+          <span class="ml-auto font-mono text-[11px] tracking-widest text-faint">8 OF 8 MONITORS ENGAGED</span>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="wall">
+          <button class="wall-tile panel panel-hover rise rise-3 text-left p-4" data-metric="conversion">
+            <div class="flex items-center justify-between gap-1"><span class="label-t">Conversion rate</span><span class="h-1.5 w-1.5 rounded-full bg-lime shrink-0" title="Nominal"></span></div>
+            <p class="mt-2.5 font-mono text-[26px] leading-none font-semibold num"><span class="tile-value">3.8%</span></p>
+            <p class="mt-2 font-mono text-[11px] text-lime num">+0.4pt <span class="text-faint">· TGT 3.5%</span></p>
+            <div class="mt-2.5 h-1 rounded bg-[#1A2234] overflow-hidden"><div class="thresh h-full bg-lime" style="width:76%"></div></div>
+          </button>
+          <button class="wall-tile panel panel-hover rise rise-3 text-left p-4" data-metric="aov">
+            <div class="flex items-center justify-between gap-1"><span class="label-t">Avg. order value</span><span class="h-1.5 w-1.5 rounded-full bg-cyan shrink-0" title="Active stream"></span></div>
+            <p class="mt-2.5 font-mono text-[26px] leading-none font-semibold num"><span class="tile-value">$86.40</span></p>
+            <p class="mt-2 font-mono text-[11px] text-lime num">+$3.20 <span class="text-faint">· TGT $80</span></p>
+            <div class="mt-2.5 h-1 rounded bg-[#1A2234] overflow-hidden"><div class="thresh h-full bg-cyan" style="width:86%"></div></div>
+          </button>
+          <button class="wall-tile panel panel-hover rise rise-4 text-left p-4" data-metric="cac">
+            <div class="flex items-center justify-between gap-1"><span class="label-t">Blended CAC</span><span class="h-1.5 w-1.5 rounded-full bg-lime shrink-0" title="Nominal"></span></div>
+            <p class="mt-2.5 font-mono text-[26px] leading-none font-semibold num"><span class="tile-value">$42.10</span></p>
+            <p class="mt-2 font-mono text-[11px] text-lime num">−$4.50 <span class="text-faint">· CAP $55</span></p>
+            <div class="mt-2.5 h-1 rounded bg-[#1A2234] overflow-hidden"><div class="thresh h-full bg-lime" style="width:64%"></div></div>
+          </button>
+          <button class="wall-tile panel panel-hover rise rise-4 text-left p-4" data-metric="ltv">
+            <div class="flex items-center justify-between gap-1"><span class="label-t">Avg. LTV</span><span class="h-1.5 w-1.5 rounded-full bg-lime shrink-0" title="Nominal"></span></div>
+            <p class="mt-2.5 font-mono text-[26px] leading-none font-semibold num"><span class="tile-value">$512.00</span></p>
+            <p class="mt-2 font-mono text-[11px] text-lime num">+$28.00 <span class="text-faint">· 12.1× CAC</span></p>
+            <div class="mt-2.5 h-1 rounded bg-[#1A2234] overflow-hidden"><div class="thresh h-full bg-lime" style="width:82%"></div></div>
+          </button>
+          <button class="wall-tile panel panel-hover rise rise-4 text-left p-4" data-metric="tickets">
+            <div class="flex items-center justify-between gap-1"><span class="label-t">Support tickets</span><span class="h-1.5 w-1.5 rounded-full bg-amber shrink-0" title="Caution"></span></div>
+            <p class="mt-2.5 font-mono text-[26px] leading-none font-semibold num"><span class="tile-value">34 <span class="text-[15px] text-amber">OPEN</span></span></p>
+            <p class="mt-2 font-mono text-[11px] text-amber num">2 ESCALATED <span class="text-faint">· SLA 45M</span></p>
+            <div class="mt-2.5 h-1 rounded bg-[#1A2234] overflow-hidden"><div class="thresh h-full bg-amber" style="width:45%"></div></div>
+          </button>
+          <button class="wall-tile panel panel-hover rise rise-5 text-left p-4" data-metric="uptime">
+            <div class="flex items-center justify-between gap-1"><span class="label-t">Core uptime</span><span class="h-1.5 w-1.5 rounded-full bg-lime shrink-0" title="Nominal"></span></div>
+            <p class="mt-2.5 font-mono text-[26px] leading-none font-semibold num"><span class="tile-value">99.98%</span></p>
+            <p class="mt-2 font-mono text-[11px] text-lime num">NOMINAL <span class="text-faint">· SLA 99.95</span></p>
+            <div class="mt-2.5 h-1 rounded bg-[#1A2234] overflow-hidden"><div class="thresh h-full bg-lime" style="width:99%"></div></div>
+          </button>
+          <button class="wall-tile panel panel-hover rise rise-5 text-left p-4" data-metric="nps">
+            <div class="flex items-center justify-between gap-1"><span class="label-t">Global NPS</span><span class="h-1.5 w-1.5 rounded-full bg-lime shrink-0" title="Nominal"></span></div>
+            <p class="mt-2.5 font-mono text-[26px] leading-none font-semibold num"><span class="tile-value">+62</span></p>
+            <p class="mt-2 font-mono text-[11px] text-lime num">TOP TIER <span class="text-faint">· N=4,180</span></p>
+            <div class="mt-2.5 h-1 rounded bg-[#1A2234] overflow-hidden"><div class="thresh h-full bg-lime" style="width:81%"></div></div>
+          </button>
+          <button class="wall-tile panel panel-hover rise rise-5 text-left p-4" data-metric="burn">
+            <div class="flex items-center justify-between gap-1"><span class="label-t">Burn multiple</span><span class="h-1.5 w-1.5 rounded-full bg-cyan shrink-0" title="Active stream"></span></div>
+            <p class="mt-2.5 font-mono text-[26px] leading-none font-semibold num"><span class="tile-value">1.4×</span></p>
+            <p class="mt-2 font-mono text-[11px] text-lime num">EFFICIENT <span class="text-faint">· CAP &lt;1.5×</span></p>
+            <div class="mt-2.5 h-1 rounded bg-[#1A2234] overflow-hidden"><div class="thresh h-full bg-cyan" style="width:70%"></div></div>
+          </button>
+        </div>
+      </section>
+
+      <!-- Chart + Feed -->
+      <section class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="panel rise rise-4 xl:col-span-2 p-5">
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <div>
+              <h2 class="font-display text-lg font-bold tracking-tight flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-lime"></span>Revenue Pulse — Dynamic Run-Rate</h2>
+              <p class="mt-1 font-mono text-[10px] tracking-[.14em] text-faint"><span id="chart-cadence-label">30-DAY SAMPLING CADENCE // RECONCILED LEDGER</span></p>
+            </div>
+            <div class="ml-auto flex rounded border border-hairline bg-[#0A0E14] p-0.5" role="group" aria-label="Chart granularity">
+              <button data-gran="hourly" class="gran-btn rounded px-3 py-1.5 font-mono text-[11px] tracking-wider text-sub hover:text-ink" aria-pressed="false">HOURLY</button>
+              <button data-gran="daily" class="gran-btn rounded px-3 py-1.5 font-mono text-[11px] tracking-wider bg-lime text-[#0A0E14] font-semibold" aria-pressed="true">DAILY</button>
+              <button data-gran="weekly" class="gran-btn rounded px-3 py-1.5 font-mono text-[11px] tracking-wider text-sub hover:text-ink" aria-pressed="false">WEEKLY</button>
+            </div>
+          </div>
+          <div class="mt-4 grid grid-cols-3 gap-3">
+            <div class="rounded border border-hairline bg-[#0A0E14]/60 px-3 py-2.5"><p class="label-t !text-[10px]">Peak amplitude</p><p class="mt-1 font-mono text-[13px] sm:text-lg font-semibold num" id="stat-peak">$131,840</p></div>
+            <div class="rounded border border-hairline bg-[#0A0E14]/60 px-3 py-2.5"><p class="label-t !text-[10px]">30D gross volume</p><p class="mt-1 font-mono text-[13px] sm:text-lg font-semibold num" id="stat-volume">$3,842,100</p></div>
+            <div class="rounded border border-hairline bg-[#0A0E14]/60 px-3 py-2.5"><p class="label-t !text-[10px]">Median daily run</p><p class="mt-1 font-mono text-[13px] sm:text-lg font-semibold text-cyan num" id="stat-median">$127,900</p></div>
+          </div>
+          <p class="mt-3 font-mono text-[11px] tracking-wider text-lime">✓ BENCHMARK EXCEEDED (<span id="stat-bench">+6.8%</span>)</p>
+          <div class="relative mt-2" id="chart-wrap">
+            <svg id="chart" class="w-full h-[240px] sm:h-[280px]" viewBox="0 0 720 280" preserveAspectRatio="none" role="img" aria-label="Revenue area chart, last 30 days"></svg>
+            <div id="chart-tip" class="pointer-events-none absolute hidden rounded border border-hairline bg-[#0A0E14] px-3 py-2 font-mono text-[11px] shadow-xl z-10 whitespace-nowrap"></div>
+          </div>
+          <div class="mt-1 flex justify-between font-mono text-[10px] tracking-widest text-faint" id="chart-xlabels"></div>
+        </div>
+
+        <div class="panel rise rise-5 p-5 flex flex-col min-h-[420px]">
+          <div class="flex items-center gap-2">
+            <h2 class="font-display text-lg font-bold tracking-tight">Telemetry Feed</h2>
+            <span class="ml-auto chip rounded bg-lime/10 text-lime px-2 py-1">STREAM_LIVE</span>
+          </div>
+          <div class="mt-4 flex gap-1.5" role="group" aria-label="Feed filter">
+            <button data-feed="all" class="feed-btn rounded px-3 py-1.5 font-mono text-[11px] tracking-wider bg-lime text-[#0A0E14] font-semibold" aria-pressed="true">ALL (5)</button>
+            <button data-feed="alert" class="feed-btn rounded px-3 py-1.5 font-mono text-[11px] tracking-wider border border-hairline text-sub hover:text-ink" aria-pressed="false">ALERTS (2)</button>
+            <button data-feed="contract" class="feed-btn rounded px-3 py-1.5 font-mono text-[11px] tracking-wider border border-hairline text-sub hover:text-ink" aria-pressed="false">CONTRACTS (1)</button>
+          </div>
+          <ul id="feed-list" class="mt-3 flex-1 space-y-1.5"></ul>
+          <button id="feed-archive" class="mt-4 w-full rounded border border-hairline bg-[#0A0E14]/60 px-3 py-2.5 font-mono text-[11px] tracking-wider text-sub hover:text-ink hover:border-cyan/50 transition-colors">INSPECT LOG ARCHIVE (2,410 EVENTS) →</button>
+        </div>
+      </section>
+
+      <!-- Table + Targets -->
+      <section class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="panel rise rise-5 xl:col-span-2 p-5">
+          <div class="flex flex-wrap items-center gap-2">
+            <h2 class="font-display text-lg font-bold tracking-tight flex items-center gap-2"><span class="text-lime" aria-hidden="true">✓</span>Top Signals by Key Account</h2>
+            <button id="sort-btn" class="ml-auto font-mono text-[11px] tracking-wider text-sub hover:text-ink border border-hairline rounded px-2.5 py-1.5">SORT: ARR_DESC ↓</button>
+          </div>
+          <div class="mt-4 overflow-x-auto -mx-1 px-1">
+            <table class="w-full min-w-[560px] text-left border-collapse">
+              <thead>
+                <tr class="font-mono text-[10px] tracking-[.12em] text-faint border-b border-hairline">
+                  <th scope="col" class="py-2.5 pr-3 font-semibold">ACCOUNT</th>
+                  <th scope="col" class="py-2.5 pr-3 font-semibold">PLAN TIER</th>
+                  <th scope="col" class="py-2.5 pr-3 font-semibold text-right">ARR / MRR</th>
+                  <th scope="col" class="py-2.5 pr-3 font-semibold">HEALTH</th>
+                  <th scope="col" class="py-2.5 font-semibold text-right">30D TREND</th>
+                </tr>
+              </thead>
+              <tbody id="accounts-body" class="text-[13px]"></tbody>
+            </table>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-x-4 gap-y-1 justify-between font-mono text-[10px] tracking-widest text-faint">
+            <span>TOP 5 CONTRIBUTING 52.8% OF MONTHLY REVENUE POOL</span>
+            <span class="text-cyan">INDEX: NOMINAL</span>
+          </div>
+        </div>
+
+        <div class="panel rise rise-6 p-5">
+          <div class="flex items-center gap-2">
+            <h2 class="font-display text-lg font-bold tracking-tight">Quarterly Targets</h2>
+            <span class="ml-auto chip rounded bg-lime/10 text-lime px-2 py-1">Q4 EXECUTION</span>
+          </div>
+          <div class="mt-5 grid grid-cols-3 gap-2 text-center" id="gauges"></div>
+          <div class="mt-5 rounded border border-hairline bg-[#0A0E14]/60 px-3 py-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] tracking-wider">
+            <span class="text-faint">PROJECTED COMPLETION: <span class="text-ink">NOV 28</span></span>
+            <span class="text-faint">CONFIDENCE <span class="text-lime num">96.4%</span></span>
+          </div>
+          <button id="targets-btn" class="mt-4 w-full rounded bg-lime px-3 py-2.5 font-mono text-[11px] font-bold tracking-wider text-[#0A0E14] hover:shadow-[0_0_16px_rgba(184,241,53,.4)] transition-shadow">VIEW FULL Q4 PLAN →</button>
+        </div>
+      </section>
+
+      <p class="px-1 font-mono text-[10px] leading-relaxed tracking-wider text-faint">PULSEBOARD IS A DESIGN TEMPLATE. ALL COMPANIES, PEOPLE AND FIGURES ARE FICTIONAL DEMO DATA — NO REAL BUSINESS INFORMATION IS SHOWN OR COLLECTED.</p>
+    </main>
+  </div>
+</div>
+
+<!-- Ticker -->
+<footer class="fixed bottom-0 left-0 right-0 z-30 border-t border-hairline bg-[#0A0E14]/92 backdrop-blur-md overflow-hidden" aria-label="Live metrics ticker">
+  <div class="flex items-center h-9">
+    <span class="shrink-0 z-10 bg-[#0A0E14] pl-4 pr-3 font-mono text-[10px] font-bold tracking-[.14em] text-lime flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-lime"></span>STREAM BROADCAST</span>
+    <div class="overflow-hidden flex-1"><div class="ticker-track font-mono text-[11px] tracking-wider text-sub" id="ticker"></div></div>
+  </div>
+</footer>
+
+<!-- Detail drawer -->
+<div id="drawer-overlay" class="fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none" aria-hidden="true"></div>
+<aside id="drawer" class="fixed top-0 right-0 bottom-0 z-50 w-full max-w-[380px] translate-x-full border-l border-hairline bg-[#0C1119] shadow-2xl flex flex-col" role="dialog" aria-modal="true" aria-labelledby="drawer-title" tabindex="-1">
+  <div class="flex items-start justify-between gap-3 px-5 py-4 border-b border-hairline">
+    <div>
+      <p class="label-t" id="drawer-kicker">Metric detail</p>
+      <h3 id="drawer-title" class="mt-1 font-display text-xl font-bold tracking-tight">—</h3>
+    </div>
+    <button id="drawer-close" class="rounded border border-hairline px-2.5 py-1.5 text-sub hover:text-ink" aria-label="Close detail panel">✕</button>
+  </div>
+  <div class="flex-1 overflow-y-auto px-5 py-5 space-y-5">
+    <div>
+      <p class="label-t">Current value</p>
+      <p class="mt-2 font-mono text-[36px] leading-none font-bold num" id="drawer-value">—</p>
+      <p class="mt-2 font-mono text-[12px] text-lime num" id="drawer-delta">—</p>
+    </div>
+    <div>
+      <p class="label-t mb-2">Threshold</p>
+      <div class="h-1.5 rounded bg-[#1A2234] overflow-hidden"><div id="drawer-bar" class="thresh h-full bg-lime" style="width:50%"></div></div>
+      <p class="mt-2 font-mono text-[11px] text-faint" id="drawer-target">—</p>
+    </div>
+    <div>
+      <p class="label-t mb-2">Last 12 periods</p>
+      <svg id="drawer-spark" class="w-full h-16" viewBox="0 0 320 64" preserveAspectRatio="none" aria-hidden="true"></svg>
+    </div>
+    <p class="text-[13px] leading-relaxed text-sub" id="drawer-desc">—</p>
+    <div class="rounded border border-hairline bg-panel px-4 py-3 font-mono text-[11px] leading-relaxed tracking-wider text-faint" id="drawer-meta">—</div>
+  </div>
+  <div class="border-t border-hairline px-5 py-4">
+    <button id="drawer-action" class="w-full rounded bg-lime px-3 py-2.5 font-mono text-[11px] font-bold tracking-wider text-[#0A0E14] hover:shadow-[0_0_16px_rgba(184,241,53,.4)] transition-shadow">OPEN FULL REPORT →</button>
+  </div>
+</aside>
+
+<!-- Toasts -->
+<div id="toasts" class="fixed bottom-12 right-4 z-[60] space-y-2 w-[320px] max-w-[calc(100vw-2rem)]" aria-live="polite"></div>
+
+<script>
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fmtInt = n => Math.round(n).toLocaleString('en-US');
+const fmtMoney = n => '$' + fmtInt(n);
+
+/* ---------- Data (fictional demo data) ---------- */
+const RANGES = {
+  '24H': { mrr: 128400, mrrD: '+12.4%', mrrSub: '$1,540,800', users: 48210, usersD: '+8.1%', churn: 1.9, churnD: '−0.4pt', nrr: 118, nrrD: '+3.0pt',
+           peak: '$131,840', volume: '$3,842,100', median: '$127,900', bench: '+6.8%', base: 118000, end: 128400, n: 24, cadence: '24-HOUR SAMPLING CADENCE // RECONCILED LEDGER', labels: ['00:00','04:00','08:00','12:00','16:00','20:00','NOW'] },
+  '7D':  { mrr: 121850, mrrD: '+9.2%',  mrrSub: '$1,462,200', users: 45930, usersD: '+5.4%', churn: 2.1, churnD: '−0.2pt', nrr: 116, nrrD: '+2.1pt',
+           peak: '$126,300', volume: '$852,400',  median: '$121,600', bench: '+4.1%', base: 108000, end: 121850, n: 28, cadence: '7-DAY SAMPLING CADENCE // RECONCILED LEDGER', labels: ['MON','TUE','WED','THU','FRI','SAT','SUN'] },
+  '30D': { mrr: 114200, mrrD: '+18.7%', mrrSub: '$1,370,400', users: 41780, usersD: '+14.6%', churn: 2.4, churnD: '−0.6pt', nrr: 112, nrrD: '+5.2pt',
+           peak: '$128,400', volume: '$3,410,900', median: '$113,800', bench: '+9.3%', base: 96000,  end: 114200, n: 30, cadence: '30-DAY SAMPLING CADENCE // RECONCILED LEDGER', labels: ['DAY 01','DAY 06','DAY 12','DAY 18','DAY 24','DAY 30'] }
+};
+let range = '24H', gran = 'daily';
+
+function seededSeries(seed, n, base, end) {
+  let s = seed; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const t = i / (n - 1);
+    const trend = base + (end - base) * (t * t * 0.35 + t * 0.65);
+    out.push(Math.round(trend + (rnd() - 0.5) * (end - base) * 0.09));
+  }
+  out[n - 1] = end;
+  return out;
+}
+const GRAN = {
+  hourly: r => ({ data: seededSeries(41, 24, r.base * 0.98, r.end), labels: ['00:00','04:00','08:00','12:00','16:00','20:00','NOW'] }),
+  daily:  r => ({ data: seededSeries(7, r.n, r.base, r.end), labels: r.labels }),
+  weekly: r => ({ data: seededSeries(13, 5, r.base * 1.02, r.end * 0.99), labels: ['WEEK 1','WEEK 2','WEEK 3','WEEK 4','WEEK 5'] })
+};
+
+/* ---------- Count-up ---------- */
+function animateNum(el, to, format) {
+  if (reduced) { el.textContent = format(to); return; }
+  const from = 0, t0 = performance.now(), dur = 750;
+  (function tick(t) {
+    const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+    el.textContent = format(from + (to - from) * e);
+    if (p < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+
+/* ---------- Range switching ---------- */
+function applyRange() {
+  const r = RANGES[range];
+  animateNum($('[data-field="mrr-value"]'), r.mrr, fmtMoney);
+  $('[data-field="mrr-delta"]').textContent = '↗ ' + r.mrrD;
+  $('[data-field="mrr-sub"]').textContent = r.mrrSub;
+  animateNum($('[data-field="users-value"]'), r.users, fmtInt);
+  $('[data-field="users-delta"]').textContent = '↗ ' + r.usersD;
+  animateNum($('[data-field="churn-value"]'), r.churn, v => v.toFixed(1) + '%');
+  $('[data-field="churn-delta"]').textContent = '↘ ' + r.churnD;
+  animateNum($('[data-field="nrr-value"]'), r.nrr, v => Math.round(v) + '%');
+  $('[data-field="nrr-delta"]').textContent = '↗ ' + r.nrrD;
+  $('#stat-peak').textContent = r.peak;
+  $('#stat-volume').textContent = r.volume;
+  $('#stat-median').textContent = r.median;
+  $('#stat-bench').textContent = r.bench;
+  $('#chart-cadence-label').textContent = r.cadence;
+  drawChart();
+}
+$$('.range-btn').forEach(b => b.addEventListener('click', () => {
+  if (b.dataset.range === range) return;
+  range = b.dataset.range;
+  $$('.range-btn').forEach(x => {
+    const on = x === b;
+    x.setAttribute('aria-pressed', on);
+    x.className = 'range-btn rounded px-2.5 sm:px-3 py-1.5 font-mono text-[11px] tracking-wider ' + (on ? 'bg-lime text-[#0A0E14] font-semibold' : 'text-sub hover:text-ink');
+  });
+  applyRange();
+  toast('Range switched to ' + range + ' — all KPIs and the revenue pulse re-rendered.');
+}));
+
+/* ---------- Chart ---------- */
+const CH = { w: 720, h: 280, pl: 52, pr: 14, pt: 18, pb: 30 };
+function smoothPath(pts) {
+  let d = `M ${pts[0][0]},${pts[0][1]}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+    const c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
+    const c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
+    d += ` C ${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+  }
+  return d;
+}
+let chartData = [];
+function drawChart() {
+  const r = RANGES[range];
+  const { data, labels } = GRAN[gran](r);
+  chartData = data;
+  const min = Math.min(...data, 80000) * 0.985, max = Math.max(...data, 140000) * 1.01;
+  const X = i => CH.pl + (i / (data.length - 1)) * (CH.w - CH.pl - CH.pr);
+  const Y = v => CH.pt + (1 - (v - min) / (max - min)) * (CH.h - CH.pt - CH.pb);
+  const pts = data.map((v, i) => [X(i), Y(v)]);
+  const line = smoothPath(pts);
+  const area = line + ` L ${X(data.length - 1)},${CH.h - CH.pb} L ${X(0)},${CH.h - CH.pb} Z`;
+  const benchY = Y(120000);
+  let grid = '';
+  [80000, 100000, 120000, 140000].forEach(v => {
+    grid += `<line x1="${CH.pl}" y1="${Y(v)}" x2="${CH.w - CH.pr}" y2="${Y(v)}" stroke="#1E2638" stroke-width="1"/><text x="${CH.pl - 8}" y="${Y(v) + 4}" fill="#7C8AA0" font-size="10" font-family="JetBrains Mono" text-anchor="end">$${v / 1000}k</text>`;
+  });
+  $('#chart').innerHTML = `
+    <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#B8F135" stop-opacity=".28"/><stop offset="100%" stop-color="#B8F135" stop-opacity="0"/>
+    </linearGradient></defs>
+    ${grid}
+    <line x1="${CH.pl}" y1="${benchY}" x2="${CH.w - CH.pr}" y2="${benchY}" stroke="#38E1FF" stroke-width="1" stroke-dasharray="4 4" opacity=".7"/>
+    <text x="${CH.w - CH.pr}" y="${benchY - 6}" fill="#38E1FF" font-size="10" font-family="JetBrains Mono" text-anchor="end">Q3 BENCHMARK ($120K)</text>
+    <path class="chart-area" d="${area}" fill="url(#ag)"/>
+    <path class="chart-line" d="${line}" fill="none" stroke="#B8F135" stroke-width="2"/>
+    <circle id="chart-dot" r="5" fill="#0A0E14" stroke="#B8F135" stroke-width="2" style="display:none"/>
+    <line id="chart-cross" stroke="#B8F135" stroke-width="1" opacity=".5" style="display:none"/>`;
+  $('#chart-xlabels').innerHTML = labels.map(l => `<span>${l}</span>`).join('');
+  const svg = $('#chart');
+  svg.onmousemove = e => {
+    const rect = svg.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width * CH.w;
+    const i = Math.max(0, Math.min(data.length - 1, Math.round((px - CH.pl) / (CH.w - CH.pl - CH.pr) * (data.length - 1))));
+    const dot = $('#chart-dot'), cross = $('#chart-cross'), tip = $('#chart-tip');
+    dot.setAttribute('cx', X(i)); dot.setAttribute('cy', Y(data[i])); dot.style.display = '';
+    cross.setAttribute('x1', X(i)); cross.setAttribute('x2', X(i));
+    cross.setAttribute('y1', CH.pt); cross.setAttribute('y2', CH.h - CH.pb); cross.style.display = '';
+    tip.textContent = `${labels[Math.min(i, labels.length - 1)] || 'DAY ' + (i + 1)} · ${fmtMoney(data[i])}`;
+    tip.classList.remove('hidden');
+    const tx = Math.min(rect.width - 150, Math.max(0, (X(i) / CH.w) * rect.width + 12));
+    tip.style.left = tx + 'px'; tip.style.top = '8px';
+  };
+  svg.onmouseleave = () => { $('#chart-dot').style.display = 'none'; $('#chart-cross').style.display = 'none'; $('#chart-tip').classList.add('hidden'); };
+}
+$$('.gran-btn').forEach(b => b.addEventListener('click', () => {
+  if (b.dataset.gran === gran) return;
+  gran = b.dataset.gran;
+  $$('.gran-btn').forEach(x => {
+    const on = x === b;
+    x.setAttribute('aria-pressed', on);
+    x.className = 'gran-btn rounded px-3 py-1.5 font-mono text-[11px] tracking-wider ' + (on ? 'bg-lime text-[#0A0E14] font-semibold' : 'text-sub hover:text-ink');
+  });
+  drawChart();
+}));
+
+/* ---------- Feed ---------- */
+const FEED = [
+  { cat: 'contract', dot: 'bg-lime', title: 'CONTRACT SIGNED', time: '14:28:10', body: 'Enterprise tier: <b class="text-ink">HyperScale Corp</b> ($34,800/yr ARR) committed.' },
+  { cat: 'alert', dot: 'bg-amber', title: 'CHURN RISK ANOMALY', time: '14:15:42', body: '<b class="text-ink">CloudStream Media</b> account usage decreased −42% DoD.' },
+  { cat: 'alert', dot: 'bg-alert', title: 'WEBHOOK DISPATCH FAILURE', time: '13:58:02', body: 'Payment processor rejected settlement on invoice <b class="text-ink">#INV-8921</b>.' },
+  { cat: 'info', dot: 'bg-cyan', title: 'TELEMETRY ENGAGED', time: '12:44:19', body: 'AI Telemetry Copilot adopted by <b class="text-ink">820 active accounts</b> this morning.' },
+  { cat: 'info', dot: 'bg-lime', title: 'MESH ROLLOUT 100%', time: '11:10:05', body: 'v4.8.2 edge router mesh healthy across <b class="text-ink">14 operational points</b> of presence.' }
+];
+function renderFeed(filter) {
+  const list = $('#feed-list');
+  const items = FEED.filter(f => filter === 'all' || f.cat === filter);
+  list.innerHTML = items.length ? items.map(f => `
+    <li><button class="feed-item w-full text-left rounded border border-hairline bg-[#0A0E14]/50 px-3.5 py-3" data-feed-title="${f.title}">
+      <span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full ${f.dot} shrink-0"></span>
+      <span class="font-mono text-[11px] font-bold tracking-wider">${f.title}</span>
+      <span class="ml-auto font-mono text-[11px] text-faint num shrink-0">${f.time}</span></span>
+      <span class="mt-1.5 block pl-4 text-[12.5px] leading-relaxed text-sub">${f.body}</span>
+    </button></li>`).join('')
+    : '<li class="rounded border border-dashed border-hairline px-4 py-8 text-center font-mono text-[11px] tracking-wider text-faint">NO EVENTS IN THIS FILTER — STREAM NOMINAL</li>';
+  $$('#feed-list [data-feed-title]').forEach(b => b.addEventListener('click', () => toast('Event « ' + b.dataset.feedTitle + ' » — full log entry is a demo placeholder.')));
+}
+$$('.feed-btn').forEach(b => b.addEventListener('click', () => {
+  $$('.feed-btn').forEach(x => {
+    const on = x === b;
+    x.setAttribute('aria-pressed', on);
+    x.className = 'feed-btn rounded px-3 py-1.5 font-mono text-[11px] tracking-wider ' + (on ? 'bg-lime text-[#0A0E14] font-semibold' : 'border border-hairline text-sub hover:text-ink');
+  });
+  renderFeed(b.dataset.feed);
+}));
+$('#feed-archive').addEventListener('click', () => toast('Log archive (2,410 events) — browsing the full archive is outside this demo template.'));
+
+/* ---------- Accounts table ---------- */
+const ACCOUNTS = [
+  { name: 'Acme Global Inc.', plan: 'ENTERPRISE', mrr: 24500, health: 94, trend: '+8.4%', good: true },
+  { name: 'Nexus Quantum Labs', plan: 'ENTERPRISE+', mrr: 18200, health: 88, trend: '+12.1%', good: true },
+  { name: 'Vertex Autonomous', plan: 'GROWTH', mrr: 9800, health: 62, trend: '−4.0%', good: false },
+  { name: 'OmniCorp Global', plan: 'SCALE', mrr: 7400, health: 91, trend: '+3.2%', good: true },
+  { name: 'Synthetix Protocol', plan: 'STARTUP', mrr: 4100, health: 79, trend: '+15.4%', good: true }
+];
+let sortDesc = true;
+function renderAccounts() {
+  const rows = [...ACCOUNTS].sort((a, b) => sortDesc ? b.mrr - a.mrr : a.mrr - b.mrr);
+  $('#accounts-body').innerHTML = rows.map(a => {
+    const col = a.health >= 85 ? '#B8F135' : a.health >= 70 ? '#38E1FF' : '#FFB224';
+    const dot = a.health >= 85 ? 'bg-lime' : a.health >= 70 ? 'bg-cyan' : 'bg-amber';
+    return `<tr class="border-b border-white/[.04] hover:bg-elevated/60 transition-colors">
+      <td class="py-3 pr-3 font-medium"><span class="inline-flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full ${dot}"></span>${a.name}</span></td>
+      <td class="py-3 pr-3"><span class="font-mono text-[11px] tracking-wider text-cyan">${a.plan}</span></td>
+      <td class="py-3 pr-3 text-right font-mono num">${fmtMoney(a.mrr)}/mo</td>
+      <td class="py-3 pr-3"><span class="flex items-center gap-2"><span class="h-1.5 w-28 max-w-[90px] rounded bg-[#1A2234] overflow-hidden inline-block"><span class="block h-full" style="width:${a.health}%;background:${col}"></span></span><span class="font-mono num">${a.health}</span></span></td>
+      <td class="py-3 text-right font-mono num ${a.good ? 'text-lime' : 'text-amber'}">${a.trend}</td>
+    </tr>`;
+  }).join('');
+  $('#sort-btn').textContent = sortDesc ? 'SORT: ARR_DESC ↓' : 'SORT: ARR_ASC ↑';
+}
+$('#sort-btn').addEventListener('click', () => { sortDesc = !sortDesc; renderAccounts(); });
+
+/* ---------- Gauges ---------- */
+const GAUGES = [
+  { pct: 78, color: '#B8F135', label: 'REVENUE', sub: '$3.12M / $4.0M', note: 'ON PACE', noteColor: 'text-lime' },
+  { pct: 64, color: '#38E1FF', label: 'ACTIVATION', sub: 'TGT: 70%', note: '−6.0pt DELTA', noteColor: 'text-cyan' },
+  { pct: 91, color: '#B8F135', label: 'RETENTION', sub: 'TGT: 90%', note: 'MET (+1pt)', noteColor: 'text-lime' }
+];
+(function renderGauges() {
+  const C = 2 * Math.PI * 44;
+  $('#gauges').innerHTML = GAUGES.map(g => `
+    <div>
+      <div class="relative mx-auto h-[104px] w-[104px]">
+        <svg class="h-full w-full -rotate-90" viewBox="0 0 104 104" aria-hidden="true">
+          <circle cx="52" cy="52" r="44" fill="none" stroke="#1A2234" stroke-width="8"/>
+          <circle class="gauge-arc" cx="52" cy="52" r="44" fill="none" stroke="${g.color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}"/>
+        </svg>
+        <span class="absolute inset-0 flex items-center justify-center font-mono text-xl font-bold num" data-gauge="${g.pct}">0%</span>
+      </div>
+      <p class="mt-2 font-mono text-[10px] font-bold tracking-[.12em]">${g.label}</p>
+      <p class="mt-0.5 font-mono text-[10px] text-faint num">${g.sub}</p>
+      <p class="mt-0.5 font-mono text-[10px] font-bold ${g.noteColor}">${g.note}</p>
+    </div>`).join('');
+  requestAnimationFrame(() => setTimeout(() => {
+    $$('.gauge-arc').forEach((arc, i) => { arc.style.strokeDashoffset = C * (1 - GAUGES[i].pct / 100); });
+    $$('[data-gauge]').forEach(el => animateNum(el, +el.dataset.gauge, v => Math.round(v) + '%'));
+  }, 150));
+})();
+$('#targets-btn').addEventListener('click', () => toast('Full Q4 plan — the detailed quarterly plan view is outside this demo template.'));
+
+/* ---------- Ticker ---------- */
+const TICKS = [
+  ['MRR RUN-RATE:', '$1.54M', '[+14.2%]', 'text-lime'], ['LATENCY P99:', '24.2ms', '[OPTIMAL]', 'text-cyan'],
+  ['CASH RUNWAY:', '28 MONTHS', '', 'text-lime'], ['MAGIC NUMBER:', '1.82', '[TOP DECILE]', 'text-cyan'],
+  ['ACTIVE SESSIONS:', '3,491', '', 'text-lime'], ['GLOBAL INCIDENTS:', '0 ACTIVE', '', 'text-lime'],
+  ['STRIPE WEBHOOKS:', '99.99% OK', '', 'text-cyan'], ['MRR_VELOCITY:', '$428,910/mo', '▲ +4.8%', 'text-lime'],
+  ['API_THROUGHPUT:', '84.2k req/s', 'STABLE', 'text-cyan'], ['INGESTION_LATENCY:', '14.2ms', '▼ −1.1ms', 'text-lime'],
+  ['GLOBAL_ERROR_RATE:', '0.0018%', 'NOMINAL', 'text-lime'], ['NODES_ONLINE:', '512/512', '100%', 'text-cyan']
+];
+(function renderTicker() {
+  const chunk = TICKS.map(([k, v, tag, c]) =>
+    `<span class="mx-4 inline-flex items-center gap-1.5"><span class="text-lime">●</span><span class="text-faint">${k}</span><span class="text-ink num font-semibold">${v}</span><span class="${c}">${tag}</span></span>`).join('');
+  $('#ticker').innerHTML = chunk + chunk;
+})();
+
+/* ---------- Clock + realtime jitter ---------- */
+function tickClock() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  $('#clock').textContent = `UTC ${p(d.getUTCHours())}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())}`;
+}
+tickClock(); setInterval(tickClock, 1000);
+let liveTimer = null;
+function setLive(on) {
+  $('#mode-realtime').setAttribute('aria-pressed', on);
+  $('#mode-aggregated').setAttribute('aria-pressed', !on);
+  $('#mode-realtime').className = 'mode-btn rounded px-3 py-1.5 font-mono text-[11px] tracking-wider ' + (on ? 'bg-elevated text-ink font-semibold' : 'text-sub hover:text-ink');
+  $('#mode-aggregated').className = 'mode-btn rounded px-3 py-1.5 font-mono text-[11px] tracking-wider ' + (!on ? 'bg-elevated text-ink font-semibold' : 'text-sub hover:text-ink');
+  clearInterval(liveTimer);
+  if (on) liveTimer = setInterval(() => {
+    const el = $('[data-field="mrr-value"]');
+    const jitter = RANGES[range].mrr + Math.round((Math.random() - 0.5) * 240);
+    el.textContent = fmtMoney(jitter);
+  }, 4000);
+}
+$('#mode-realtime').addEventListener('click', () => { setLive(true); toast('Realtime stream resumed — values tick live every few seconds.'); });
+$('#mode-aggregated').addEventListener('click', () => { setLive(false); toast('Aggregated mode — live ticking paused, values frozen at last reconcile.'); });
+setLive(true);
+
+/* ---------- Calibrate ---------- */
+$('#calibrate-btn').addEventListener('click', e => {
+  const b = e.currentTarget;
+  b.disabled = true; b.textContent = '◌ CALIBRATING…'; b.classList.add('opacity-70');
+  setTimeout(() => {
+    b.disabled = false; b.textContent = '⚙ CALIBRATE'; b.classList.remove('opacity-70');
+    toast('Calibration complete — all 8 monitors re-baselined against Q3 benchmarks.');
+  }, 1600);
+});
+
+/* ---------- Nav modules ---------- */
+$$('.nav-item').forEach(b => b.addEventListener('click', () => {
+  $$('.nav-item').forEach(x => {
+    const on = x === b;
+    if (x.classList.contains('rounded-full')) {
+      x.className = 'nav-item shrink-0 rounded-full px-3 py-1.5 text-[12px] ' + (on ? 'bg-lime font-semibold text-[#0A0E14]' : 'border border-hairline bg-panel text-sub');
+    } else {
+      x.className = 'nav-item w-full flex items-center gap-3 rounded px-3 py-2.5 text-left text-[13px] font-medium transition-colors ' + (on ? 'bg-lime text-[#0A0E14]' : 'text-sub hover:bg-elevated hover:text-ink');
+    }
+  });
+  if (b.dataset.module !== 'Mission Overview') toast('Module « ' + b.dataset.module + ' » — this template ships the Mission Overview screen live; other modules are navigation placeholders.');
+}));
+
+/* ---------- Drawer ---------- */
+const METRICS = {
+  mrr: { title: 'Monthly Recurring Revenue', value: '$128,400', delta: '↗ +12.4% vs prior period', bar: 86, target: 'TARGET $135,000 · 95% OF THE WAY THERE', desc: 'Subscription revenue recognised in the current month, net of discounts and excluding one-off charges. Expansion from existing accounts contributes +$14.2K this period.', meta: 'SOURCE: BILLING LEDGER // RECONCILED DAILY<br/>UPDATED: 14:38 UTC · CONFIDENCE 99.2%', spark: [96, 99, 101, 98, 104, 108, 106, 112, 116, 120, 124, 128] },
+  users: { title: 'Active Users (30D)', value: '48,210', delta: '↗ +8.1% vs prior period', bar: 74, target: 'TARGET 52,000 MAU · PEAK CONCURRENT 4,820', desc: 'Unique accounts with at least one billable event in the trailing 30 days. Growth is driven by the AI Telemetry Copilot rollout adopted by 820 accounts this morning.', meta: 'SOURCE: PRODUCT ANALYTICS // SESSIONISED<br/>UPDATED: 14:38 UTC · CONFIDENCE 98.7%', spark: [38, 39, 41, 40, 42, 43, 44, 45, 46, 47, 47, 48] },
+  churn: { title: 'Customer Churn Rate', value: '1.9%', delta: '↘ −0.4pt vs prior period — IMPROVING', bar: 24, target: 'BENCHMARK < 2.5% · GROSS CHURN $2,410/MO', desc: 'Share of accounts cancelling in the period. The downward trend follows the save-play rollout; CloudStream Media is the only account currently flagged at risk.', meta: 'SOURCE: BILLING LEDGER // CANCELLATIONS<br/>UPDATED: 14:38 UTC · CONFIDENCE 99.5%', spark: [2.6, 2.5, 2.5, 2.4, 2.3, 2.3, 2.2, 2.2, 2.1, 2.0, 2.0, 1.9] },
+  nrr: { title: 'Net Revenue Retention', value: '118%', delta: '↗ +3.0pt vs prior period', bar: 92, target: 'TARGET QUOTA 115% · EXCEEDED BY 3pt', desc: 'Revenue retained from the starting cohort including expansion and contraction, excluding new logos. Above 115% the base grows without any new sales.', meta: 'SOURCE: REVENUE LEDGER // COHORT Q3<br/>UPDATED: 14:38 UTC · CONFIDENCE 98.9%', spark: [108, 109, 110, 111, 111, 112, 113, 114, 115, 116, 117, 118] },
+  conversion: { title: 'Conversion Rate', value: '3.8%', delta: '↗ +0.4pt vs prior period', bar: 76, target: 'TARGET 3.5% · EXCEEDED', desc: 'Share of qualified trials converting to a paid plan within 14 days. The new onboarding checklist lifted activation, which feeds directly into conversion.', meta: 'SOURCE: FUNNEL ANALYTICS<br/>WINDOW: TRAILING 30 DAYS', spark: [3.1, 3.2, 3.2, 3.3, 3.4, 3.3, 3.5, 3.5, 3.6, 3.7, 3.7, 3.8] },
+  aov: { title: 'Average Order Value', value: '$86.40', delta: '↗ +$3.20 vs prior period', bar: 86, target: 'TARGET $80 · EXCEEDED BY $6.40', desc: 'Mean value per completed order. Bundle prompts at checkout are the main driver; enterprise add-ons push the top decile above $240.', meta: 'SOURCE: ORDER LEDGER<br/>WINDOW: TRAILING 30 DAYS', spark: [78, 79, 80, 80, 81, 82, 82, 83, 84, 85, 86, 86] },
+  cac: { title: 'Blended CAC', value: '$42.10', delta: '↘ −$4.50 vs prior period — IMPROVING', bar: 64, target: 'CAP $55 · WELL INSIDE CAP', desc: 'Fully loaded acquisition cost per new paying account across paid and organic channels. Organic now supplies 61% of new accounts, pulling the blend down.', meta: 'SOURCE: FINANCE // CHANNEL SPEND<br/>WINDOW: TRAILING 30 DAYS', spark: [52, 51, 50, 49, 48, 48, 47, 46, 45, 44, 43, 42] },
+  ltv: { title: 'Average LTV', value: '$512.00', delta: '↗ +$28.00 vs prior period', bar: 82, target: 'RATIO 12.1× CAC · HEALTHY (TARGET > 3×)', desc: 'Expected lifetime revenue per account at current retention and expansion. At 12.1× CAC the unit economics leave ample room to scale acquisition.', meta: 'SOURCE: COHORT MODEL // 24-MONTH HORIZON<br/>UPDATED: WEEKLY', spark: [460, 465, 470, 472, 478, 482, 486, 492, 496, 502, 508, 512] },
+  tickets: { title: 'Support Tickets', value: '34 open', delta: '↗ 2 escalated — SLA 45 MIN', bar: 45, target: 'QUEUE CAP 50 · 2 ESCALATIONS ACTIVE', desc: 'Open tickets across all channels. Two are escalated past first response SLA; both are billing-related and owned by the on-call operator.', meta: 'SOURCE: HELPDESK // LIVE QUEUE<br/>UPDATED: REALTIME', spark: [28, 30, 29, 32, 31, 34, 33, 36, 35, 33, 32, 34] },
+  uptime: { title: 'Core Uptime', value: '99.98%', delta: '↗ NOMINAL — ZERO INCIDENTS THIS PERIOD', bar: 99, target: 'SLA 99.95% · 512/512 NODES ONLINE', desc: 'Availability of the core API and ingest pipeline over the trailing 30 days. The only downtime was a 9-minute partial degradation on day 12.', meta: 'SOURCE: STATUS PROBES // 60-SECOND INTERVAL<br/>UPDATED: REALTIME', spark: [99.9, 99.95, 99.97, 99.96, 99.98, 99.98, 99.97, 99.99, 99.98, 99.98, 99.98, 99.98] },
+  nps: { title: 'Global NPS', value: '+62', delta: '↗ TOP TIER — N=4,180 RESPONSES', bar: 81, target: 'TOP TIER THRESHOLD +50 · EXCEEDED', desc: 'Net Promoter Score from the rolling in-app survey. Promoters cite the telemetry feed and the new onboarding; detractors cite pricing clarity.', meta: 'SOURCE: IN-APP SURVEY // ROLLING 90 DAYS<br/>UPDATED: DAILY', spark: [54, 55, 56, 56, 57, 58, 58, 59, 60, 60, 61, 62] },
+  burn: { title: 'Burn Multiple', value: '1.4×', delta: '↗ EFFICIENT — BELOW THE 1.5× CAP', bar: 70, target: 'CAP < 1.5× · NET BURN $86K/MO', desc: 'Net burn divided by net new ARR. Below 1.5× the business adds a dollar of ARR for less than $1.50 of burn — efficient growth for this stage.', meta: 'SOURCE: FINANCE // MONTHLY CLOSE<br/>UPDATED: MONTHLY', spark: [1.8, 1.7, 1.7, 1.6, 1.6, 1.5, 1.5, 1.5, 1.4, 1.4, 1.4, 1.4] }
+};
+let lastFocus = null;
+function openDrawer(key) {
+  const m = METRICS[key]; if (!m) return;
+  lastFocus = document.activeElement;
+  $('#drawer-kicker').textContent = 'METRIC DETAIL // ' + key.toUpperCase();
+  $('#drawer-title').textContent = m.title;
+  $('#drawer-value').textContent = m.value;
+  $('#drawer-delta').textContent = m.delta;
+  $('#drawer-bar').style.width = m.bar + '%';
+  $('#drawer-target').textContent = m.target;
+  $('#drawer-desc').textContent = m.desc;
+  $('#drawer-meta').innerHTML = m.meta;
+  const min = Math.min(...m.spark), max = Math.max(...m.spark);
+  const pts = m.spark.map((v, i) => [i / (m.spark.length - 1) * 320, 56 - ((v - min) / (max - min || 1)) * 48]);
+  const sparkSvg = $('#drawer-spark');
+  sparkSvg.innerHTML = `<polyline points="${pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}" fill="none" stroke="#B8F135" stroke-width="2"/><polygon points="${pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')} 320,64 0,64" fill="rgba(184,241,53,.10)"/><circle id="spark-dot" r="4" fill="#0A0E14" stroke="#B8F135" stroke-width="2" style="display:none"/>`;
+  /* Hover pass 2026-11-18 : survol du sparkline — point + infobulle avec la valeur exacte du point */
+  const SPARK_FMT = { mrr: v => '$' + v + 'K', users: v => v + 'K', churn: v => v + '%', nrr: v => v + '%', conversion: v => v + '%', aov: v => '$' + v.toFixed(2), cac: v => '$' + v.toFixed(2), ltv: v => '$' + v.toFixed(2), tickets: v => '' + v, uptime: v => v + '%', nps: v => '+' + v, burn: v => v + '×' };
+  sparkSvg._spark = { data: m.spark, pts, fmt: SPARK_FMT[key] || (v => '' + v) };
+  if (!sparkSvg._hoverWired) {
+    sparkSvg._hoverWired = true;
+    sparkSvg.style.cursor = 'crosshair';
+    const tip = document.createElement('div');
+    tip.id = 'spark-tip';
+    tip.setAttribute('aria-hidden', 'true');
+    tip.style.cssText = 'position:fixed;z-index:80;pointer-events:none;display:none;background:#0A0E14;border:1px solid #26314A;border-radius:4px;padding:6px 9px;font-family:JetBrains Mono,monospace;font-size:11px;color:#E7EEF7;box-shadow:0 10px 24px rgba(0,0,0,.45);white-space:nowrap';
+    document.body.appendChild(tip);
+    sparkSvg.addEventListener('mousemove', e => {
+      const s = sparkSvg._spark; if (!s) return;
+      const rect = sparkSvg.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width * 320;
+      const i = Math.max(0, Math.min(s.data.length - 1, Math.round(px / 320 * (s.data.length - 1))));
+      const dot = $('#spark-dot');
+      dot.setAttribute('cx', s.pts[i][0]); dot.setAttribute('cy', s.pts[i][1]); dot.style.display = '';
+      tip.textContent = 'PERIOD ' + (i + 1) + ' / ' + s.data.length + ' · ' + s.fmt(s.data[i]);
+      tip.style.display = 'block';
+      tip.style.left = Math.min(e.clientX + 14, window.innerWidth - 170) + 'px';
+      tip.style.top = (e.clientY + 16) + 'px';
+    });
+    sparkSvg.addEventListener('mouseleave', () => {
+      const dot = $('#spark-dot'); if (dot) dot.style.display = 'none';
+      tip.style.display = 'none';
+    });
+  }
+  const d = $('#drawer'), o = $('#drawer-overlay');
+  d.classList.remove('translate-x-full'); o.classList.remove('opacity-0', 'pointer-events-none');
+  document.body.style.overflow = 'hidden';
+  $('#drawer-close').focus();
+}
+function closeDrawer() {
+  $('#drawer').classList.add('translate-x-full');
+  const o = $('#drawer-overlay');
+  o.classList.add('opacity-0', 'pointer-events-none');
+  document.body.style.overflow = '';
+  if (lastFocus) lastFocus.focus();
+}
+$$('.hero-tile, .wall-tile').forEach(t => t.addEventListener('click', () => openDrawer(t.dataset.metric)));
+$('#drawer-close').addEventListener('click', closeDrawer);
+$('#drawer-overlay').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+$('#drawer-action').addEventListener('click', () => { closeDrawer(); toast('Full report — the deep-dive report view is outside this demo template.'); });
+
+/* ---------- Toasts ---------- */
+function toast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast-in rounded border border-lime/40 bg-[#121826] px-4 py-3 text-[12.5px] leading-relaxed text-ink shadow-2xl flex items-start gap-2.5';
+  el.innerHTML = '<span class="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-lime"></span><span>' + msg + '</span>';
+  $('#toasts').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 320); }, 4200);
+}
+
+/* ---------- Init ---------- */
+renderFeed('all');
+renderAccounts();
+applyRange();
+</script>
+</body>
+</html>
