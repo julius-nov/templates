@@ -1,1 +1,1133 @@
-<!-- placeholder - will be replaced by upload -->
+<!DOCTYPE html><html lang="en" class="dark"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Northwind Admin — Control Tower</title>
+  <meta name="description" content="Northwind Admin — a dark-first admin panel template: live user directory, activity analytics and workspace guardrails.">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'deep-ink': '#070B12',
+        'dark-glass': '#0E1524',
+        'emerald-accent': '#10B981',
+        'copper-amber': '#F59E0B',
+        'background': '#070B12',
+        'on-background': '#F1F5F9',
+        'surface': '#0E1524',
+        'on-surface': '#F1F5F9',
+        'surface-container-low': '#0A101C',
+        'on-surface-container-low': '#CBD5E1',
+        'surface-container': '#131C31',
+        'on-surface-container': '#F1F5F9',
+        'surface-container-high': '#18233C',
+        'on-surface-container-high': '#F8FAFC',
+        'surface-variant': '#1E293B',
+        'on-surface-variant': '#94A3B8',
+        'outline': '#334155',
+        'outline-variant': '#1E293B',
+        'primary': '#10B981',
+        'on-primary': '#070B12',
+        'primary-container': '#064E3B',
+        'on-primary-container': '#A7F3D0',
+        'secondary': '#F59E0B',
+        'on-secondary': '#070B12',
+        'secondary-container': '#451A03',
+        'on-secondary-container': '#FDE68A',
+        'tertiary': '#38BDF8',
+        'on-tertiary': '#070B12',
+        'tertiary-container': '#0C4A6E',
+        'on-tertiary-container': '#BAE6FD',
+        'success': '#10B981',
+        'on-success': '#070B12',
+        'warning': '#F59E0B',
+        'on-warning': '#070B12',
+        'error': '#FB7185',
+        'on-error': '#070B12',
+        'error-container': '#4C0519',
+        'on-error-container': '#FECDD3',
+      },
+      borderRadius: {
+        'sm': '4px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '20px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '32px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Inter"', 'sans-serif'],
+        'headline': ['"Inter"', 'sans-serif'],
+        'title': ['"Inter"', 'sans-serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'label': ['"Inter"', 'sans-serif'],
+        'mono': ['"JetBrains Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-lg': ['36px', { lineHeight: '44px', letterSpacing: '-0.9px', fontWeight: '700' }],
+        'display-lg-mobile': ['28px', { lineHeight: '34px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'headline-lg': ['28px', { lineHeight: '34px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'headline-md': ['22px', { lineHeight: '28px', letterSpacing: '-0.35px', fontWeight: '700' }],
+        'headline-sm': ['18px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '600' }],
+        'title-md': ['15px', { lineHeight: '22px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-lg': ['15px', { lineHeight: '22px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-md': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'label-md': ['12px', { lineHeight: '16px', letterSpacing: '0.1px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.6px', fontWeight: '600' }],
+        'mono-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '150ms',
+        'surface-enter': '250ms',
+        'surface-exit': '150ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'surface-enter': '0ms',
+        'surface-exit': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'surface-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+        'surface-exit': 'cubic-bezier(0.3, 0, 1, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined, .material-symbols-rounded, .material-symbols-sharp, .material-icons {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      line-height: 1 !important;
+      box-sizing: content-box;
+      overflow: hidden;
+      white-space: nowrap;
+      direction: ltr;
+      vertical-align: middle;
+    }
+  </style>
+  <style id="nw-overrides">
+    /* Light theme overrides (dark is the default) */
+    html.light .bg-background{background-color:#F4F6FA}
+    html.light .bg-background\/80{background-color:rgba(244,246,250,.85)}
+    html.light .bg-background\/90{background-color:rgba(244,246,250,.92)}
+    html.light .bg-surface{background-color:#FFFFFF}
+    html.light .bg-surface-container-low{background-color:#EEF1F6}
+    html.light .bg-surface-container{background-color:#E9EDF3}
+    html.light .bg-surface-container-high{background-color:#DFE6F0}
+    html.light .bg-surface-variant{background-color:#E2E8F0}
+    html.light .bg-surface-container\/50{background-color:rgba(233,237,243,.5)}
+    html.light .hover\:bg-surface-container\/50:hover{background-color:rgba(233,237,243,.55)}
+    html.light .hover\:bg-surface-container:hover{background-color:#E9EDF3}
+    html.light .hover\:bg-surface-container-high:hover{background-color:#DFE6F0}
+    html.light .bg-primary-container{background-color:#D1FAE5}
+    html.light .bg-secondary-container{background-color:#FEF3C7}
+    html.light .bg-tertiary-container{background-color:#E0F2FE}
+    html.light .bg-error-container{background-color:#FFE4E6}
+    html.light .text-on-background,html.light .text-on-surface,html.light .text-on-surface-container-high{color:#0F172A}
+    html.light .hover\:text-on-surface:hover{color:#0F172A}
+    html.light .text-on-surface-variant{color:#64748B}
+    html.light .text-on-surface-container-low{color:#475569}
+    html.light .text-on-primary-container{color:#065F46}
+    html.light .text-on-secondary-container{color:#92400E}
+    html.light .text-on-tertiary-container{color:#075985}
+    html.light .text-on-error-container{color:#9F1239}
+    html.light .border-outline-variant{border-color:#E2E8F0}
+    html.light .border-outline{border-color:#CBD5E1}
+    html.light .divide-outline-variant>:not([hidden])~:not([hidden]){border-color:#E2E8F0}
+    /* Fields: the Tailwind forms plugin whitens inputs — force the palette */
+    html.dark .field{background-color:#0E1524!important;color:#F1F5F9!important;border-color:#1E293B!important}
+    html.light .field{background-color:#FFFFFF!important;color:#0F172A!important;border-color:#E2E8F0!important}
+    .field::placeholder{color:#94A3B8}
+    /* Entrance */
+    @keyframes nw-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .reveal{animation:nw-rise .5s cubic-bezier(.2,0,0,1) both}
+    @media (prefers-reduced-motion: reduce){
+      *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;scroll-behavior:auto!important}
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body antialiased selection:bg-primary/30 selection:text-on-surface">
+  <div class="min-h-screen flex bg-background text-on-background" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="sidebar-backdrop" class="fixed inset-0 z-30 bg-background/80 backdrop-blur-sm hidden lg:hidden" aria-hidden="true" onclick="toggleSidebar(false)"></div>
+
+    <!-- Left Grouped Sidebar -->
+    <aside id="sidebar-drawer" aria-label="Primary navigation" class="fixed inset-y-0 left-0 z-40 w-64 min-h-[1024px] bg-surface-container-low border-r border-outline-variant flex flex-col justify-between transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-surface-enter ease-surface-enter shrink-0" data-stitch-vh="min-h-[1024px]===min-h-screen">
+      <div class="flex flex-col gap-gutter-lg p-gutter-md">
+        <!-- Brand Header -->
+        <div class="flex items-center justify-between px-gutter-sm pt-gutter-xs">
+          <a href="#overview" class="flex items-center gap-gutter-sm group">
+            <div class="w-8 h-8 rounded bg-primary-container border border-primary/40 flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">explore</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-headline text-title-md text-on-surface tracking-tight" data-design-text-token="title-md">Northwind</span>
+              <span class="font-label text-label-sm text-on-surface-variant uppercase" data-design-text-token="label-sm">Control Tower</span>
+            </div>
+          </a>
+          <button type="button" class="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container" aria-label="Close navigation" onclick="toggleSidebar(false)">
+            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
+          </button>
+        </div>
+
+        <!-- Navigation Groups -->
+        <nav class="flex flex-col gap-gutter-lg">
+          <!-- Group: Core -->
+          <div class="flex flex-col gap-1">
+            <span class="px-gutter-sm pb-1 font-label text-label-sm uppercase text-on-surface-variant" data-design-text-token="label-sm">Core</span>
+            <a href="#overview" aria-current="page" class="flex items-center gap-gutter-sm px-gutter-sm py-2 rounded bg-surface-container border border-outline-variant text-on-surface">
+              <span class="material-symbols-outlined text-[18px] text-primary" aria-hidden="true">dashboard</span>
+              <span class="font-label text-label-lg" data-design-text-token="label-lg">Overview</span>
+            </a>
+            <a href="#users" class="flex items-center justify-between gap-gutter-sm px-gutter-sm py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 transition-colors duration-state-change ease-state-change">
+              <span class="flex items-center gap-gutter-sm">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">group</span>
+                <span class="font-body text-body-md" data-design-text-token="body-md">Users</span>
+              </span>
+              <span class="font-mono text-mono-sm text-on-surface-variant tabular-nums" data-design-text-token="mono-sm">24.8k</span>
+            </a>
+            <a href="#orders" class="flex items-center gap-gutter-sm px-gutter-sm py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 transition-colors duration-state-change ease-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">receipt_long</span>
+              <span class="font-body text-body-md" data-design-text-token="body-md">Orders</span>
+            </a>
+          </div>
+
+          <!-- Group: Operations -->
+          <div class="flex flex-col gap-1">
+            <span class="px-gutter-sm pb-1 font-label text-label-sm uppercase text-on-surface-variant" data-design-text-token="label-sm">Operations</span>
+            <a href="#content" class="flex items-center gap-gutter-sm px-gutter-sm py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 transition-colors duration-state-change ease-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">article</span>
+              <span class="font-body text-body-md" data-design-text-token="body-md">Content</span>
+            </a>
+            <a href="#analytics" class="flex items-center gap-gutter-sm px-gutter-sm py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 transition-colors duration-state-change ease-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">monitoring</span>
+              <span class="font-body text-body-md" data-design-text-token="body-md">Analytics</span>
+            </a>
+          </div>
+
+          <!-- Group: System -->
+          <div class="flex flex-col gap-1">
+            <span class="px-gutter-sm pb-1 font-label text-label-sm uppercase text-on-surface-variant" data-design-text-token="label-sm">System</span>
+            <a href="#settings" class="flex items-center gap-gutter-sm px-gutter-sm py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 transition-colors duration-state-change ease-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">settings</span>
+              <span class="font-body text-body-md" data-design-text-token="body-md">Settings</span>
+            </a>
+          </div>
+        </nav>
+      </div>
+
+      <!-- Pinned User Card at Bottom -->
+      <div class="p-gutter-md border-t border-outline-variant">
+        <div class="flex items-center justify-between gap-gutter-sm p-gutter-sm rounded-md bg-surface border border-outline-variant">
+          <div class="flex items-center gap-gutter-sm min-w-0">
+            <div class="w-9 h-9 rounded-full bg-primary-container border border-primary/40 flex items-center justify-center shrink-0">
+              <span class="font-label text-label-md text-on-primary-container" data-design-text-token="label-md">AV</span>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="font-label text-label-lg text-on-surface truncate" data-design-text-token="label-lg">Alexandra Vance</span>
+              <span class="font-body text-body-sm text-on-surface-variant truncate" data-design-text-token="body-sm">VP Operations</span>
+            </div>
+          </div>
+          <button type="button" aria-label="Account options" class="text-on-surface-variant hover:text-on-surface p-1 rounded transition-colors duration-state-change ease-state-change">
+            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">unfold_more</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Column -->
+    <div class="flex-1 flex flex-col min-w-0">
+
+      <!-- Top Bar -->
+      <header class="sticky top-0 z-20 h-16 bg-background/90 backdrop-blur-md border-b border-outline-variant px-gutter-md lg:px-gutter-xl flex items-center justify-between gap-gutter-md">
+        <div class="flex items-center gap-gutter-md flex-1 max-w-md">
+          <button type="button" aria-label="Open navigation menu" onclick="toggleSidebar(true)" class="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded bg-surface border border-outline-variant text-on-surface-variant hover:text-on-surface">
+            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">menu</span>
+          </button>
+
+          <!-- Command Search Field -->
+          <div class="relative flex-1">
+            <span class="material-symbols-outlined text-[18px] text-on-surface-variant absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">search</span>
+            <input type="search" id="top-search" aria-label="Search commands, users, or orders" placeholder="Search users, orders, or telemetry..." class="field w-full h-9 pl-9 pr-14 rounded bg-surface border border-outline-variant text-body-sm text-on-surface placeholder:text-on-surface-variant focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/40 transition-colors duration-state-change ease-state-change">
+            <kbd class="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-sm bg-surface-container border border-outline text-mono-sm font-mono text-on-surface-variant absolute right-2 top-1/2 -translate-y-1/2">⌘K</kbd>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-gutter-sm">
+          <!-- Notification Bell with Badge -->
+          <button id="bell-btn" data-component-id="button-icon" data-component-type="button" data-component-variant="icon" type="button" aria-label="Notifications (3 unread)" class="relative inline-flex items-center justify-center w-9 h-9 rounded bg-surface border border-outline-variant text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors duration-state-change ease-state-change">
+            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">notifications</span>
+            <span id="notif-badge" data-component-id="badge-numeric" data-component-type="badge" data-component-variant="numeric" aria-hidden="true" class="absolute -top-1 -right-1 inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-secondary text-on-secondary font-label text-label-sm tabular-nums">
+              <span data-design-text-token="label-sm">3</span>
+            </span>
+          </button>
+
+          <!-- Top Bar Avatar -->
+          <button id="theme-toggle" type="button" aria-label="Switch to light theme" class="inline-flex items-center justify-center w-9 h-9 rounded bg-surface border border-outline-variant text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors duration-state-change ease-state-change">
+            <span class="material-symbols-outlined text-[20px]" id="theme-icon" aria-hidden="true">light_mode</span>
+          </button>
+          <button type="button" aria-label="Alexandra Vance profile" class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-surface-container border border-outline text-on-surface hover:border-primary/60 transition-colors duration-state-change ease-state-change">
+            <span class="font-label text-label-md text-on-surface" data-design-text-token="label-md">AV</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="flex-1 px-gutter-md lg:px-gutter-xl py-gutter-lg lg:py-gutter-xl flex flex-col gap-gutter-lg max-w-[1440px] w-full mx-auto">
+
+        <!-- Greeting Header -->
+        <section class="flex flex-col sm:flex-row sm:items-end justify-between gap-gutter-md">
+          <div class="flex flex-col gap-1">
+            <h1 class="font-headline text-display-lg-mobile lg:text-display-lg text-on-surface text-balance" data-design-text-token="display-lg">Good morning, Alexandra</h1>
+            <p class="font-body text-body-md text-on-surface-variant tabular-nums" data-design-text-token="body-md">Wednesday, November 18, 2026 · All production clusters nominal</p>
+          </div>
+          <div class="flex items-center gap-gutter-sm shrink-0">
+            <!-- COMPONENT: button-with-icon -->
+            <button id="new-user-btn" data-component-id="button-with-icon" data-component-type="button" data-component-variant="with-icon" type="button" class="inline-flex items-center justify-center gap-gutter-sm px-gutter-md py-2.5 rounded bg-primary text-on-primary hover:bg-emerald-accent/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 transition-colors duration-state-change ease-state-change shrink-0">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">person_add</span>
+              <span class="font-label text-label-lg" data-design-text-token="label-lg">New user</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Row of 4 KPI Cards with Sparklines and Delta Badges -->
+        <section aria-label="Key performance indicators" class="reveal grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-gutter-md items-stretch">
+
+          <!-- KPI 1: Total users -->
+          <!-- COMPONENT: card-elevated -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="h-full bg-surface border border-outline-variant rounded-md p-gutter-lg flex flex-col justify-between gap-gutter-md">
+            <header class="flex items-center justify-between gap-gutter-sm">
+              <h2 class="font-label text-label-md text-on-surface-variant" data-design-text-token="label-md">Total users</h2>
+              <span data-component-id="badge-success" data-component-type="badge" data-component-variant="success" role="status" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label text-label-sm tabular-nums">
+                <span data-design-text-token="label-sm">+12.4%</span>
+              </span>
+            </header>
+            <div class="flex items-end justify-between gap-gutter-md">
+              <p class="font-headline text-headline-lg text-on-surface tabular-nums" id="kpi-total-users" data-countup="24812" data-design-text-token="headline-lg">24,812</p>
+              <svg viewBox="0 0 88 28" class="w-[88px] h-7 shrink-0" aria-hidden="true">
+                <path d="M2 24 L16 20 L30 22 L44 14 L58 16 L72 8 L86 4" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+          </article>
+
+          <!-- KPI 2: Monthly revenue -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="h-full bg-surface border border-outline-variant rounded-md p-gutter-lg flex flex-col justify-between gap-gutter-md">
+            <header class="flex items-center justify-between gap-gutter-sm">
+              <h2 class="font-label text-label-md text-on-surface-variant" data-design-text-token="label-md">Monthly revenue</h2>
+              <span data-component-id="badge-success" data-component-type="badge" data-component-variant="success" role="status" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label text-label-sm tabular-nums">
+                <span data-design-text-token="label-sm">+8.1%</span>
+              </span>
+            </header>
+            <div class="flex items-end justify-between gap-gutter-md">
+              <p class="font-headline text-headline-lg text-on-surface tabular-nums" data-countup="184200" data-format="currency" data-design-text-token="headline-lg">$184,200</p>
+              <svg viewBox="0 0 88 28" class="w-22 h-7 shrink-0" aria-hidden="true">
+                <path d="M2 22 L16 21 L30 17 L44 18 L58 11 L72 9 L86 5" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+          </article>
+
+          <!-- KPI 3: Active sessions -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="h-full bg-surface border border-outline-variant rounded-md p-gutter-lg flex flex-col justify-between gap-gutter-md">
+            <header class="flex items-center justify-between gap-gutter-sm">
+              <h2 class="font-label text-label-md text-on-surface-variant" data-design-text-token="label-md">Active sessions</h2>
+              <span data-component-id="badge-success" data-component-type="badge" data-component-variant="success" role="status" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label text-label-sm tabular-nums">
+                <span data-design-text-token="label-sm">+4.3%</span>
+              </span>
+            </header>
+            <div class="flex items-end justify-between gap-gutter-md">
+              <p class="font-headline text-headline-lg text-on-surface tabular-nums" data-countup="3482" data-design-text-token="headline-lg">3,482</p>
+              <svg viewBox="0 0 88 28" class="w-22 h-7 shrink-0" aria-hidden="true">
+                <path d="M2 18 L16 14 L30 19 L44 12 L58 14 L72 7 L86 9" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+          </article>
+
+          <!-- KPI 4: Open tickets -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="h-full bg-surface border border-outline-variant rounded-md p-gutter-lg flex flex-col justify-between gap-gutter-md">
+            <header class="flex items-center justify-between gap-gutter-sm">
+              <h2 class="font-label text-label-md text-on-surface-variant" data-design-text-token="label-md">Open tickets</h2>
+              <span data-component-id="badge-warning" data-component-type="badge" data-component-variant="warning" role="status" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label text-label-sm tabular-nums">
+                <span data-design-text-token="label-sm">-6.9%</span>
+              </span>
+            </header>
+            <div class="flex items-end justify-between gap-gutter-md">
+              <p class="font-headline text-headline-lg text-on-surface tabular-nums" data-countup="27" data-design-text-token="headline-lg">27</p>
+              <svg viewBox="0 0 88 28" class="w-22 h-7 shrink-0" aria-hidden="true">
+                <path d="M2 8 L16 12 L30 10 L44 16 L58 14 L72 20 L86 22" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+          </article>
+        </section>
+
+        <!-- Primary 12-Column Grid: Chart + Users Table (8 cols) | Activity Feed + Quick Settings (4 cols) -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-gutter-lg items-start">
+
+          <!-- Left 8 Columns -->
+          <div class="xl:col-span-8 flex flex-col gap-gutter-lg min-w-0">
+
+            <!-- Large Activity Area Chart -->
+            <section aria-label="Platform activity chart" class="reveal bg-surface border border-outline-variant rounded-md p-gutter-lg flex flex-col gap-gutter-md" style="animation-delay:.08s">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-gutter-md">
+                <div class="flex flex-col gap-1">
+                  <div class="flex items-center gap-gutter-sm flex-wrap">
+                    <h2 class="font-headline text-headline-sm text-on-surface" data-design-text-token="headline-sm">Platform activity</h2>
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container border border-outline-variant font-label text-label-sm text-on-surface-container-low tabular-nums" data-design-text-token="label-sm">
+                      <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                      <span id="chart-summary-pill">1.42M requests</span>
+                    </span>
+                  </div>
+                  <p class="font-body text-body-sm text-on-surface-variant" data-design-text-token="body-sm">Authenticated API throughput &amp; webhook events</p>
+                </div>
+
+                <!-- Period Pills -->
+                <div role="tablist" aria-label="Chart timeframe" class="inline-flex items-center p-1 rounded bg-surface-container-low border border-outline-variant self-start sm:self-auto shrink-0">
+                  <button type="button" role="tab" aria-selected="false" data-period="7D" onclick="setChartPeriod(&#39;7D&#39;)" class="period-pill px-3 py-1 rounded-sm font-label text-label-md text-on-surface-variant hover:text-on-surface transition-colors duration-state-change ease-state-change">7D</button>
+                  <button type="button" role="tab" aria-selected="true" data-period="30D" onclick="setChartPeriod(&#39;30D&#39;)" class="period-pill px-3 py-1 rounded-sm font-label text-label-md bg-surface-container-high text-on-surface border border-outline-variant transition-colors duration-state-change ease-state-change">30D</button>
+                  <button type="button" role="tab" aria-selected="false" data-period="90D" onclick="setChartPeriod(&#39;90D&#39;)" class="period-pill px-3 py-1 rounded-sm font-label text-label-md text-on-surface-variant hover:text-on-surface transition-colors duration-state-change ease-state-change">90D</button>
+                </div>
+              </div>
+
+              <!-- SVG Area Chart -->
+              <div class="w-full pt-gutter-sm">
+                <svg id="activity-chart-svg" viewBox="0 0 720 240" class="w-full h-56 overflow-visible" role="img" aria-label="Platform activity area chart">
+                  <defs>
+                    <linearGradient id="emeraldAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#10B981" stop-opacity="0.32"></stop>
+                      <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"></stop>
+                    </linearGradient>
+                    <linearGradient id="amberAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.18"></stop>
+                      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0.0"></stop>
+                    </linearGradient>
+                  </defs>
+
+                  <!-- Horizontal Gridlines -->
+                  <line x1="0" y1="30" x2="720" y2="30" stroke="#1E293B" stroke-dasharray="4 4"></line>
+                  <line x1="0" y1="85" x2="720" y2="85" stroke="#1E293B" stroke-dasharray="4 4"></line>
+                  <line x1="0" y1="140" x2="720" y2="140" stroke="#1E293B" stroke-dasharray="4 4"></line>
+                  <line x1="0" y1="195" x2="720" y2="195" stroke="#1E293B"></line>
+
+                  <!-- Secondary Series (Webhook Events - Amber) -->
+                  <path id="chart-amber-area" d="M0 170 C90 165, 150 148, 220 152 C290 156, 360 132, 440 138 C520 144, 610 116, 720 120 L720 195 L0 195 Z" fill="url(#amberAreaGrad)"></path>
+                  <path id="chart-amber-line" d="M0 170 C90 165, 150 148, 220 152 C290 156, 360 132, 440 138 C520 144, 610 116, 720 120" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"></path>
+
+                  <!-- Primary Series (API Requests - Emerald) -->
+                  <path id="chart-emerald-area" d="M0 148 C80 142, 140 110, 220 116 C300 122, 360 72, 440 82 C520 92, 600 48, 720 42 L720 195 L0 195 Z" fill="url(#emeraldAreaGrad)"></path>
+                  <path id="chart-emerald-line" d="M0 148 C80 142, 140 110, 220 116 C300 122, 360 72, 440 82 C520 92, 600 48, 720 42" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"></path>
+
+                  <!-- Highlight Point -->
+                  <circle id="chart-dot" cx="440" cy="82" r="5" fill="#10B981" stroke="#0E1524" stroke-width="2"></circle>
+
+                  <!-- X-Axis Labels -->
+                  <g id="chart-x-labels" fill="#94A3B8" font-family="Inter, sans-serif" font-size="11" font-weight="500">
+                    <text x="0" y="220">Oct 20</text>
+                    <text x="140" y="220">Oct 26</text>
+                    <text x="280" y="220">Nov 01</text>
+                    <text x="420" y="220">Nov 07</text>
+                    <text x="560" y="220">Nov 13</text>
+                    <text x="684" y="220">Nov 18</text>
+                  </g>
+                </svg>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-gutter-md pt-gutter-sm border-t border-outline-variant">
+                <div class="flex items-center gap-gutter-lg">
+                  <span class="inline-flex items-center gap-2 font-body text-body-sm text-on-surface-container-low" data-design-text-token="body-sm">
+                    <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+                    API requests
+                  </span>
+                  <span class="inline-flex items-center gap-2 font-body text-body-sm text-on-surface-container-low" data-design-text-token="body-sm">
+                    <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+                    Webhook dispatches
+                  </span>
+                </div>
+                <span class="font-mono text-mono-sm text-on-surface-variant tabular-nums" data-design-text-token="mono-sm">99.98% uptime</span>
+              </div>
+            </section>
+
+            <!-- Users Table -->
+            <section aria-label="Team and user directory" class="reveal bg-surface border border-outline-variant rounded-md overflow-hidden flex flex-col" style="animation-delay:.16s">
+              <div class="px-gutter-lg py-gutter-md border-b border-outline-variant flex items-center justify-between gap-gutter-md">
+                <div class="flex flex-col gap-0.5 min-w-0">
+                  <h2 class="font-headline text-headline-sm text-on-surface" data-design-text-token="headline-sm">Users</h2>
+                  <p class="font-body text-body-sm text-on-surface-variant" data-design-text-token="body-sm"><span id="users-count-label">Showing 5 of 12 members</span> · Workspace members and access roles</p>
+                </div>
+                <button id="view-all-btn" data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" type="button" class="shrink-0 inline-flex items-center justify-center gap-gutter-xs px-3 py-1.5 rounded bg-surface-container border border-outline text-on-surface hover:bg-surface-container-high transition-colors duration-state-change ease-state-change whitespace-nowrap">
+                  <span class="font-label text-label-md" data-design-text-token="label-md">View all</span>
+                </button>
+              </div>
+
+              <!-- COMPONENT: table-standard -->
+              <div class="px-gutter-lg pt-gutter-md pb-gutter-sm flex flex-wrap items-center gap-2">
+                <div class="flex items-center gap-1 p-1 rounded bg-surface-container-low border border-outline-variant" role="group" aria-label="Filter by role">
+                  <button type="button" data-role="All" class="role-pill px-2.5 py-1 rounded-sm font-label text-label-md bg-surface-container-high text-on-surface border border-outline-variant transition-colors duration-state-change ease-state-change">All</button>
+                  <button type="button" data-role="Admin" class="role-pill px-2.5 py-1 rounded-sm font-label text-label-md text-on-surface-variant hover:text-on-surface transition-colors duration-state-change ease-state-change">Admin</button>
+                  <button type="button" data-role="Editor" class="role-pill px-2.5 py-1 rounded-sm font-label text-label-md text-on-surface-variant hover:text-on-surface transition-colors duration-state-change ease-state-change">Editor</button>
+                  <button type="button" data-role="Viewer" class="role-pill px-2.5 py-1 rounded-sm font-label text-label-md text-on-surface-variant hover:text-on-surface transition-colors duration-state-change ease-state-change">Viewer</button>
+                </div>
+                <select id="status-filter" aria-label="Filter by status" class="field h-8 px-2 rounded bg-surface border border-outline-variant text-body-sm text-on-surface">
+                  <option value="All">All statuses</option>
+                  <option value="Active">Active</option>
+                  <option value="Invited">Invited</option>
+                  <option value="Suspended">Suspended</option>
+                </select>
+              </div>
+              <div data-component-id="table-standard" data-component-type="table" data-component-variant="standard" class="w-full overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[620px]">
+                  <thead>
+                    <tr class="border-b border-outline-variant bg-surface-container-low">
+                      <th scope="col" class="px-gutter-lg py-3 font-label text-label-sm uppercase text-on-surface-variant">
+                        <button type="button" data-sort="name" class="inline-flex items-center gap-1 hover:text-on-surface">Member <span class="sort-ind" data-ind="name"></span></button>
+                      </th>
+                      <th scope="col" class="px-gutter-md py-3 font-label text-label-sm uppercase text-on-surface-variant">
+                        <button type="button" data-sort="role" class="inline-flex items-center gap-1 hover:text-on-surface">Role <span class="sort-ind" data-ind="role"></span></button>
+                      </th>
+                      <th scope="col" class="px-gutter-md py-3 font-label text-label-sm uppercase text-on-surface-variant">
+                        <button type="button" data-sort="status" class="inline-flex items-center gap-1 hover:text-on-surface">Status <span class="sort-ind" data-ind="status"></span></button>
+                      </th>
+                      <th scope="col" class="px-gutter-lg py-3 text-right font-label text-label-sm uppercase text-on-surface-variant">
+                        <span data-design-text-token="label-sm">Actions</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="users-tbody" class="divide-y divide-outline-variant"></tbody>
+                </table>
+              </div>
+            </section>
+
+          </div>
+
+          <!-- Right 4 Columns: Recent Activity Feed + Quick Settings Panel -->
+          <div class="xl:col-span-4 flex flex-col gap-gutter-lg">
+
+            <!-- Recent Activity Feed -->
+            <section aria-label="Recent activity" class="reveal bg-surface border border-outline-variant rounded-md p-gutter-lg flex flex-col gap-gutter-md" style="animation-delay:.24s">
+              <header class="flex items-center justify-between gap-gutter-sm">
+                <h2 class="font-headline text-headline-sm text-on-surface" data-design-text-token="headline-sm">Recent activity</h2>
+                <span class="font-label text-label-sm uppercase text-primary" data-design-text-token="label-sm">Live</span>
+              </header>
+
+              <ul id="activity-list" class="flex flex-col divide-y divide-outline-variant">
+                <li class="py-3 first:pt-0 last:pb-0 flex items-center gap-gutter-sm">
+                  <span class="w-2 h-2 rounded-full bg-primary shrink-0" aria-hidden="true"></span>
+                  <div class="flex flex-col gap-0.5 flex-1 min-w-0">
+                    <p class="font-body text-body-sm text-on-surface text-pretty" data-design-text-token="body-sm">
+                      <span class="font-semibold">Elena Rostova</span> promoted key <span class="font-mono text-mono-sm text-on-surface-container-low">prod-eu-04</span>
+                    </p>
+                    <span class="font-label text-label-md text-on-surface-variant tabular-nums" data-design-text-token="label-md">2m ago</span>
+                  </div>
+                </li>
+
+                <li class="py-3 first:pt-0 last:pb-0 flex items-center gap-gutter-sm">
+                  <span class="w-2 h-2 rounded-full bg-secondary shrink-0" aria-hidden="true"></span>
+                  <div class="flex flex-col gap-0.5 flex-1 min-w-0">
+                    <p class="font-body text-body-sm text-on-surface text-pretty" data-design-text-token="body-sm">
+                      <span class="font-semibold">Billing webhook</span> retried invoice #NW-8841
+                    </p>
+                    <span class="font-label text-label-md text-on-surface-variant tabular-nums" data-design-text-token="label-md">18m ago</span>
+                  </div>
+                </li>
+
+                <li class="py-3 first:pt-0 last:pb-0 flex items-center gap-gutter-sm">
+                  <span class="w-2 h-2 rounded-full bg-primary shrink-0" aria-hidden="true"></span>
+                  <div class="flex flex-col gap-0.5 flex-1 min-w-0">
+                    <p class="font-body text-body-sm text-on-surface text-pretty" data-design-text-token="body-sm">
+                      <span class="font-semibold">Sofia Lindqvist</span> accepted workspace invite
+                    </p>
+                    <span class="font-label text-label-md text-on-surface-variant tabular-nums" data-design-text-token="label-md">1h ago</span>
+                  </div>
+                </li>
+
+                <li class="py-3 first:pt-0 last:pb-0 flex items-center gap-gutter-sm">
+                  <span class="w-2 h-2 rounded-full bg-tertiary shrink-0" aria-hidden="true"></span>
+                  <div class="flex flex-col gap-0.5 flex-1 min-w-0">
+                    <p class="font-body text-body-sm text-on-surface text-pretty" data-design-text-token="body-sm">
+                      <span class="font-semibold">Marcus Kim</span> exported Q4 cohort CSV
+                    </p>
+                    <span class="font-label text-label-md text-on-surface-variant tabular-nums" data-design-text-token="label-md">3h ago</span>
+                  </div>
+                </li>
+              </ul>
+            </section>
+
+            <!-- Quick Settings Panel with Toggles -->
+            <section aria-label="Quick settings" class="reveal bg-surface border border-outline-variant rounded-md p-gutter-lg flex flex-col gap-gutter-md" style="animation-delay:.32s">
+              <header class="flex flex-col gap-0.5">
+                <h2 class="font-headline text-headline-sm text-on-surface" data-design-text-token="headline-sm">Quick settings</h2>
+                <p class="font-body text-body-sm text-on-surface-variant" data-design-text-token="body-sm">Immediate workspace guardrails</p>
+              </header>
+
+              <div class="flex flex-col gap-gutter-md">
+                <!-- Toggle 1: Enforce SSO -->
+                <div data-component-id="toggle-description" data-component-type="toggle" data-component-variant="with-description" class="flex items-center justify-between gap-gutter-md">
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="font-label text-label-lg text-on-surface" data-design-text-token="label-lg">Enforce SAML SSO</span>
+                    <span class="font-body text-body-sm text-on-surface-variant" id="qs-sso-desc" data-design-text-token="body-sm">Require SSO for admin seats</span>
+                  </div>
+                  <button type="button" role="switch" aria-checked="true" aria-describedby="qs-sso-desc" onclick="toggleSwitch(this)" class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border border-transparent bg-primary transition-colors duration-state-change ease-state-change focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
+                    <span class="switch-thumb pointer-events-none inline-block h-5 w-5 translate-x-5 rounded-full bg-on-primary shadow-sm transition-transform duration-state-change ease-state-change"></span>
+                  </button>
+                </div>
+
+                <!-- Toggle 2: Anomaly Alerts -->
+                <div data-component-id="toggle-description" data-component-type="toggle" data-component-variant="with-description" class="flex items-center justify-between gap-gutter-md">
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="font-label text-label-lg text-on-surface" data-design-text-token="label-lg">Anomaly alerts</span>
+                    <span class="font-body text-body-sm text-on-surface-variant" id="qs-alerts-desc" data-design-text-token="body-sm">Alert on latency &gt; 250ms</span>
+                  </div>
+                  <button type="button" role="switch" aria-checked="true" aria-describedby="qs-alerts-desc" onclick="toggleSwitch(this)" class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border border-transparent bg-primary transition-colors duration-state-change ease-state-change focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
+                    <span class="switch-thumb pointer-events-none inline-block h-5 w-5 translate-x-5 rounded-full bg-on-primary shadow-sm transition-transform duration-state-change ease-state-change"></span>
+                  </button>
+                </div>
+
+                <!-- Toggle 3: Auto-provision seats -->
+                <div data-component-id="toggle-description" data-component-type="toggle" data-component-variant="with-description" class="flex items-center justify-between gap-gutter-md">
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="font-label text-label-lg text-on-surface" data-design-text-token="label-lg">Auto-provision seats</span>
+                    <span class="font-body text-body-sm text-on-surface-variant" id="qs-seats-desc" data-design-text-token="body-sm">Assign Viewer on first login</span>
+                  </div>
+                  <button type="button" role="switch" aria-checked="false" aria-describedby="qs-seats-desc" onclick="toggleSwitch(this)" class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border border-outline bg-surface-variant transition-colors duration-state-change ease-state-change focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
+                    <span class="switch-thumb pointer-events-none inline-block h-5 w-5 translate-x-0 rounded-full bg-on-surface-variant transition-transform duration-state-change ease-state-change"></span>
+                  </button>
+                </div>
+
+                <!-- Toggle 4: Maintenance mode -->
+                <div data-component-id="toggle-description" data-component-type="toggle" data-component-variant="with-description" class="flex items-center justify-between gap-gutter-md">
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="font-label text-label-lg text-on-surface" data-design-text-token="label-lg">Maintenance mode</span>
+                    <span class="font-body text-body-sm text-on-surface-variant" id="qs-maint-desc" data-design-text-token="body-sm">Pause public write API</span>
+                  </div>
+                  <button type="button" role="switch" aria-checked="false" aria-describedby="qs-maint-desc" onclick="toggleSwitch(this)" class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border border-outline bg-surface-variant transition-colors duration-state-change ease-state-change focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
+                    <span class="switch-thumb pointer-events-none inline-block h-5 w-5 translate-x-0 rounded-full bg-on-surface-variant transition-transform duration-state-change ease-state-change"></span>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+
+      <footer class="pt-2 pb-1 text-center">
+          <p class="font-body text-body-sm text-on-surface-variant">Demo data — all names, figures and events are fictional · Northwind Admin is a standalone UI template by JULIUS VIBE STUDIO</p>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <!-- Notifications panel -->
+  <div id="notif-panel" class="fixed z-50 hidden w-[340px] max-w-[calc(100vw-2rem)] bg-surface border border-outline-variant rounded-md shadow-lg overflow-hidden" role="dialog" aria-label="Notifications">
+    <div class="px-4 py-3 border-b border-outline-variant flex items-center justify-between">
+      <h3 class="font-label text-label-lg text-on-surface">Notifications</h3>
+      <button id="notif-read-all" type="button" class="font-label text-label-md text-primary hover:underline">Mark all read</button>
+    </div>
+    <ul id="notif-list" class="flex flex-col divide-y divide-outline-variant">
+      <li class="notif-item px-4 py-3 flex items-start gap-3">
+        <span class="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0"></span>
+        <div class="min-w-0"><p class="font-body text-body-sm text-on-surface"><span class="font-semibold">Elena Rostova</span> promoted key <span class="font-mono text-mono-sm text-on-surface-container-low">prod-eu-04</span></p><span class="font-label text-label-md text-on-surface-variant">2m ago</span></div>
+      </li>
+      <li class="notif-item px-4 py-3 flex items-start gap-3">
+        <span class="w-2 h-2 rounded-full bg-secondary mt-1.5 shrink-0"></span>
+        <div class="min-w-0"><p class="font-body text-body-sm text-on-surface"><span class="font-semibold">Billing webhook</span> retried invoice #NW-8841</p><span class="font-label text-label-md text-on-surface-variant">18m ago</span></div>
+      </li>
+      <li class="notif-item px-4 py-3 flex items-start gap-3">
+        <span class="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0"></span>
+        <div class="min-w-0"><p class="font-body text-body-sm text-on-surface"><span class="font-semibold">Sofia Lindqvist</span> accepted workspace invite</p><span class="font-label text-label-md text-on-surface-variant">1h ago</span></div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- User detail drawer -->
+  <div id="drawer-backdrop" class="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm hidden" onclick="closeDrawer()"></div>
+  <aside id="user-drawer" aria-label="User details" class="fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-surface border-l border-outline-variant translate-x-full transition-transform duration-300 ease-out flex flex-col">
+    <div class="px-5 py-4 border-b border-outline-variant flex items-center justify-between gap-3">
+      <h3 class="font-headline text-headline-sm text-on-surface">Member details</h3>
+      <button type="button" aria-label="Close details" onclick="closeDrawer()" class="inline-flex items-center justify-center w-8 h-8 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container"><span class="material-symbols-outlined text-[20px]">close</span></button>
+    </div>
+    <div id="drawer-body" class="flex-1 overflow-y-auto px-5 py-5"></div>
+    <div class="px-5 py-4 border-t border-outline-variant flex flex-col gap-2">
+      <button id="drawer-toggle-status" type="button" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded bg-primary text-on-primary font-label text-label-lg hover:bg-emerald-accent/90 transition-colors">Suspend member</button>
+      <button id="drawer-resend" type="button" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded bg-surface-container border border-outline text-on-surface font-label text-label-lg hover:bg-surface-container-high transition-colors">Resend invite</button>
+      <button id="drawer-remove" type="button" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded border border-error/30 text-error font-label text-label-lg hover:bg-error-container transition-colors">Remove member</button>
+    </div>
+  </aside>
+
+  <!-- New user modal -->
+  <div id="new-user-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-background/80 backdrop-blur-sm" onclick="closeNewUserModal()"></div>
+    <div class="relative w-full max-w-md bg-surface border border-outline-variant rounded-lg p-6 flex flex-col gap-4">
+      <div class="flex items-start justify-between gap-3">
+        <div><h3 class="font-headline text-headline-sm text-on-surface">Invite a new user</h3>
+        <p class="font-body text-body-sm text-on-surface-variant">They receive an e-mail invite and join as Invited.</p></div>
+        <button type="button" aria-label="Close" onclick="closeNewUserModal()" class="inline-flex items-center justify-center w-8 h-8 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container shrink-0"><span class="material-symbols-outlined text-[20px]">close</span></button>
+      </div>
+      <form id="new-user-form" class="flex flex-col gap-4" novalidate>
+        <label class="flex flex-col gap-1.5">
+          <span class="font-label text-label-md text-on-surface">Full name</span>
+          <input id="nu-name" type="text" required placeholder="e.g. Maya Chen" class="field h-10 px-3 rounded bg-surface border border-outline-variant text-body-md text-on-surface focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/40">
+        </label>
+        <label class="flex flex-col gap-1.5">
+          <span class="font-label text-label-md text-on-surface">Work e-mail</span>
+          <input id="nu-email" type="email" required placeholder="name@northwind.io" class="field h-10 px-3 rounded bg-surface border border-outline-variant text-body-md text-on-surface focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/40">
+        </label>
+        <label class="flex flex-col gap-1.5">
+          <span class="font-label text-label-md text-on-surface">Role</span>
+          <select id="nu-role" class="field h-10 px-3 rounded bg-surface border border-outline-variant text-body-md text-on-surface focus:border-primary focus:outline-none">
+            <option>Viewer</option><option>Editor</option><option>Admin</option>
+          </select>
+        </label>
+        <p id="nu-error" class="hidden font-body text-body-sm text-error"></p>
+        <div class="flex items-center justify-end gap-2">
+          <button type="button" onclick="closeNewUserModal()" class="px-4 py-2.5 rounded bg-surface-container border border-outline text-on-surface font-label text-label-lg hover:bg-surface-container-high transition-colors">Cancel</button>
+          <button type="submit" class="px-4 py-2.5 rounded bg-primary text-on-primary font-label text-label-lg hover:bg-emerald-accent/90 transition-colors">Send invite</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Row actions menu -->
+  <div id="row-menu" class="fixed z-50 hidden w-48 bg-surface border border-outline-variant rounded-md shadow-lg overflow-hidden py-1" role="menu"></div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed z-[60] bottom-5 left-1/2 -translate-x-1/2 translate-y-3 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-3 px-4 py-3 rounded-md bg-surface-container-high border border-outline-variant shadow-lg max-w-[calc(100vw-2rem)]">
+    <span id="toast-msg" class="font-body text-body-md text-on-surface"></span>
+    <button id="toast-undo" type="button" class="hidden font-label text-label-md text-primary hover:underline shrink-0">Undo</button>
+  </div>
+
+  <script>
+    function toggleSidebar(open) {
+      const drawer = document.getElementById('sidebar-drawer');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      if (open) {
+        drawer.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      } else {
+        drawer.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    function toggleSwitch(btn) {
+      const checked = btn.getAttribute('aria-checked') === 'true';
+      const next = !checked;
+      btn.setAttribute('aria-checked', String(next));
+      const thumb = btn.querySelector('.switch-thumb');
+      if (next) {
+        btn.classList.remove('bg-surface-variant', 'border-outline');
+        btn.classList.add('bg-primary', 'border-transparent');
+        thumb.classList.remove('translate-x-0', 'bg-on-surface-variant');
+        thumb.classList.add('translate-x-5', 'bg-on-primary');
+      } else {
+        btn.classList.remove('bg-primary', 'border-transparent');
+        btn.classList.add('bg-surface-variant', 'border-outline');
+        thumb.classList.remove('translate-x-5', 'bg-on-primary');
+        thumb.classList.add('translate-x-0', 'bg-on-surface-variant');
+      }
+    }
+
+    const chartDatasets = {
+      '7D': {
+        summary: '348K requests',
+        emeraldLine: 'M0 154 C110 138, 180 120, 260 128 C340 136, 420 96, 510 88 C600 80, 660 54, 720 48',
+        amberLine: 'M0 176 C110 170, 180 158, 260 162 C340 166, 420 144, 510 140 C600 136, 660 124, 720 122',
+        labels: ['Nov 12', 'Nov 13', 'Nov 14', 'Nov 15', 'Nov 16', 'Nov 18'],
+        dot: { x: 510, y: 88 }
+      },
+      '30D': {
+        summary: '1.42M requests',
+        emeraldLine: 'M0 148 C80 142, 140 110, 220 116 C300 122, 360 72, 440 82 C520 92, 600 48, 720 42',
+        amberLine: 'M0 170 C90 165, 150 148, 220 152 C290 156, 360 132, 440 138 C520 144, 610 116, 720 120',
+        labels: ['Oct 20', 'Oct 26', 'Nov 01', 'Nov 07', 'Nov 13', 'Nov 18'],
+        dot: { x: 440, y: 82 }
+      },
+      '90D': {
+        summary: '4.18M requests',
+        emeraldLine: 'M0 168 C90 156, 170 136, 250 130 C330 124, 410 92, 490 76 C570 60, 645 46, 720 32',
+        amberLine: 'M0 182 C90 176, 170 162, 250 158 C330 154, 410 136, 490 128 C570 120, 645 110, 720 104',
+        labels: ['Aug 21', 'Sep 08', 'Sep 26', 'Oct 14', 'Nov 01', 'Nov 18'],
+        dot: { x: 490, y: 76 }
+      }
+    };
+
+    function setChartPeriod(period) {
+      const data = chartDatasets[period];
+      if (!data) return;
+      document.getElementById('chart-summary-pill').textContent = data.summary;
+      document.getElementById('chart-emerald-line').setAttribute('d', data.emeraldLine);
+      document.getElementById('chart-emerald-area').setAttribute('d', data.emeraldLine + ' L720 195 L0 195 Z');
+      document.getElementById('chart-amber-line').setAttribute('d', data.amberLine);
+      document.getElementById('chart-amber-area').setAttribute('d', data.amberLine + ' L720 195 L0 195 Z');
+      const dot = document.getElementById('chart-dot');
+      if (dot) { dot.setAttribute('cx', data.dot.x); dot.setAttribute('cy', data.dot.y); }
+      const labelEls = document.querySelectorAll('#chart-x-labels text');
+      data.labels.forEach((txt, idx) => { if (labelEls[idx]) labelEls[idx].textContent = txt; });
+      document.querySelectorAll('.period-pill').forEach((pill) => {
+        const active = pill.getAttribute('data-period') === period;
+        pill.setAttribute('aria-selected', String(active));
+        if (active) {
+          pill.classList.add('bg-surface-container-high', 'text-on-surface', 'border', 'border-outline-variant');
+          pill.classList.remove('text-on-surface-variant');
+        } else {
+          pill.classList.remove('bg-surface-container-high', 'text-on-surface', 'border', 'border-outline-variant');
+          pill.classList.add('text-on-surface-variant');
+        }
+      });
+    }
+
+    /* ---------------- Northwind Admin — functional demo ---------------- */
+    const $ = (s, r) => (r || document).querySelector(s);
+    const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+    const USERS = [
+      { id: 1,  name: 'Elena Rostova',  email: 'elena.rostova@northwind.io', role: 'Admin',  status: 'Active',    tone: 'emerald', joined: 'Mar 2023', last: '2m ago' },
+      { id: 2,  name: 'Marcus Kim',     email: 'marcus.kim@northwind.io',    role: 'Editor', status: 'Active',    tone: 'amber',   joined: 'Jun 2023', last: '18m ago' },
+      { id: 3,  name: 'Sofia Lindqvist',email: 'sofia.l@northwind.io',       role: 'Editor', status: 'Invited',   tone: 'sky',     joined: 'Nov 2026', last: 'Invite sent 1h ago' },
+      { id: 4,  name: 'Devon Patel',    email: 'devon.patel@northwind.io',   role: 'Viewer', status: 'Active',    tone: 'slate',   joined: 'Aug 2024', last: '3h ago' },
+      { id: 5,  name: 'Aria Nakamura',  email: 'aria.n@northwind.io',        role: 'Viewer', status: 'Suspended', tone: 'rose',    joined: 'Jan 2024', last: 'Suspended 2d ago' },
+      { id: 6,  name: 'Jonas Weber',    email: 'jonas.weber@northwind.io',   role: 'Admin',  status: 'Active',    tone: 'amber',   joined: 'Feb 2023', last: '26m ago' },
+      { id: 7,  name: 'Priya Sharma',   email: 'priya.sharma@northwind.io',  role: 'Editor', status: 'Active',    tone: 'sky',     joined: 'May 2024', last: '1h ago' },
+      { id: 8,  name: 'Lucas Moreau',   email: 'lucas.moreau@northwind.io',  role: 'Viewer', status: 'Invited',   tone: 'slate',   joined: 'Nov 2026', last: 'Invite sent 3h ago' },
+      { id: 9,  name: 'Amara Diallo',   email: 'amara.diallo@northwind.io',  role: 'Editor', status: 'Active',    tone: 'emerald', joined: 'Sep 2023', last: '44m ago' },
+      { id: 10, name: 'Chen Wei',       email: 'chen.wei@northwind.io',      role: 'Viewer', status: 'Active',    tone: 'sky',     joined: 'Jul 2024', last: '2h ago' },
+      { id: 11, name: 'Ingrid Berg',    email: 'ingrid.berg@northwind.io',   role: 'Admin',  status: 'Invited',   tone: 'rose',    joined: 'Nov 2026', last: 'Invite sent 5h ago' },
+      { id: 12, name: 'Tomas Silva',    email: 'tomas.silva@northwind.io',   role: 'Viewer', status: 'Suspended', tone: 'slate',   joined: 'Oct 2023', last: 'Suspended 6d ago' }
+    ];
+    const TONES = {
+      emerald: { av: 'bg-primary-container border-primary/30', tx: 'text-on-primary-container' },
+      amber:   { av: 'bg-secondary-container border-secondary/30', tx: 'text-on-secondary-container' },
+      sky:     { av: 'bg-tertiary-container border-tertiary/30', tx: 'text-on-tertiary-container' },
+      slate:   { av: 'bg-surface-container-high border-outline', tx: 'text-on-surface-container-high' },
+      rose:    { av: 'bg-error-container border-error/30', tx: 'text-on-error-container' }
+    };
+    const ROLE_BADGE = {
+      Admin: 'bg-primary-container text-on-primary-container',
+      Editor: 'bg-secondary-container text-on-secondary-container',
+      Viewer: 'bg-surface-variant text-on-surface-container-low'
+    };
+    const STATUS_DOT = { Active: 'bg-primary', Invited: 'bg-secondary', Suspended: 'bg-error' };
+
+    let totalUsers = 24812;
+    let nextId = 13;
+    const state = { query: '', role: 'All', status: 'All', sortKey: 'name', sortDir: 1, showAll: false };
+    let selectedUserId = null;
+    let lastRemoved = null;
+    let toastTimer = null;
+
+    function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+    function initials(name) { return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(); }
+
+    function filteredUsers() {
+      const q = state.query;
+      let list = USERS.filter(u =>
+        (state.role === 'All' || u.role === state.role) &&
+        (state.status === 'All' || u.status === state.status) &&
+        (!q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q))
+      );
+      const k = state.sortKey;
+      list.sort((a, b) => (a[k] < b[k] ? -1 : a[k] > b[k] ? 1 : 0) * state.sortDir);
+      return list;
+    }
+
+    function rowHtml(u) {
+      const tone = TONES[u.tone];
+      return '<tr class="hover:bg-surface-container/50 transition-colors duration-state-change ease-state-change cursor-pointer" data-user="' + u.id + '">' +
+        '<td class="px-gutter-lg py-3.5"><div class="flex items-center gap-gutter-sm">' +
+          '<div class="w-9 h-9 rounded-full ' + tone.av + ' border flex items-center justify-center shrink-0"><span class="font-label text-label-md ' + tone.tx + '">' + initials(u.name) + '</span></div>' +
+          '<div class="flex flex-col min-w-0"><span class="font-label text-label-lg text-on-surface truncate">' + esc(u.name) + '</span><span class="font-body text-body-sm text-on-surface-variant truncate">' + esc(u.email) + '</span></div>' +
+        '</div></td>' +
+        '<td class="px-gutter-md py-3.5"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full ' + ROLE_BADGE[u.role] + ' font-label text-label-sm">' + u.role + '</span></td>' +
+        '<td class="px-gutter-md py-3.5"><span class="inline-flex items-center gap-2 font-body text-body-sm text-on-surface whitespace-nowrap"><span class="w-2 h-2 rounded-full ' + STATUS_DOT[u.status] + '"></span>' + u.status + '</span></td>' +
+        '<td class="px-gutter-lg py-3.5 text-right"><button type="button" aria-label="Actions for ' + esc(u.name) + '" data-menu="' + u.id + '" class="inline-flex items-center justify-center w-8 h-8 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container"><span class="material-symbols-outlined text-[20px]" aria-hidden="true">more_horiz</span></button></td>' +
+      '</tr>';
+    }
+
+    function renderUsers() {
+      const list = filteredUsers();
+      const shown = state.showAll ? list : list.slice(0, 5);
+      const tbody = $('#users-tbody');
+      tbody.innerHTML = shown.length ? shown.map(rowHtml).join('') :
+        '<tr><td colspan="4" class="px-gutter-lg py-10 text-center"><p class="font-label text-label-lg text-on-surface">No members match these filters</p><p class="font-body text-body-sm text-on-surface-variant mt-1">Try clearing the search or choosing another role.</p></td></tr>';
+      $('#users-count-label').textContent = 'Showing ' + shown.length + ' of ' + list.length + ' member' + (list.length === 1 ? '' : 's');
+      const vb = $('#view-all-btn span');
+      if (vb) vb.textContent = state.showAll ? 'Show less' : 'View all';
+      $$('#users-tbody tr[data-user]').forEach(tr => {
+        tr.addEventListener('click', e => { if (e.target.closest('[data-menu]')) return; openDrawer(+tr.dataset.user); });
+      });
+      $$('#users-tbody [data-menu]').forEach(btn => {
+        btn.addEventListener('click', e => { e.stopPropagation(); openRowMenu(+btn.dataset.menu, btn); });
+      });
+      updateSortIndicators();
+    }
+
+    function updateSortIndicators() {
+      $$('.sort-ind').forEach(el => {
+        el.textContent = el.dataset.ind === state.sortKey ? (state.sortDir === 1 ? ' ▲' : ' ▼') : '';
+      });
+    }
+
+    function updateTotalUsers() {
+      const el = $('#kpi-total-users');
+      if (el) el.textContent = totalUsers.toLocaleString('en-US');
+    }
+
+    function addFeedEvent(html, tone) {
+      const list = $('#activity-list');
+      if (!list) return;
+      const dot = tone === 'amber' ? 'bg-secondary' : tone === 'sky' ? 'bg-tertiary' : tone === 'rose' ? 'bg-error' : 'bg-primary';
+      const li = document.createElement('li');
+      li.className = 'py-3 first:pt-0 last:pb-0 flex items-center gap-gutter-sm';
+      li.innerHTML = '<span class="w-2 h-2 rounded-full ' + dot + ' shrink-0" aria-hidden="true"></span>' +
+        '<div class="flex flex-col gap-0.5 flex-1 min-w-0"><p class="font-body text-body-sm text-on-surface text-pretty">' + html + '</p>' +
+        '<span class="font-label text-label-md text-on-surface-variant tabular-nums">just now</span></div>';
+      list.prepend(li);
+      while (list.children.length > 6) list.removeChild(list.lastChild);
+    }
+
+    let toastUndoFn = null;
+    function showToast(msg, undoFn) {
+      const t = $('#toast');
+      $('#toast-msg').textContent = msg;
+      const undoBtn = $('#toast-undo');
+      toastUndoFn = undoFn || null;
+      undoBtn.classList.toggle('hidden', !undoFn);
+      t.classList.remove('opacity-0', 'translate-y-3', 'pointer-events-none');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.add('opacity-0', 'translate-y-3', 'pointer-events-none'), 4200);
+    }
+    $('#toast-undo').addEventListener('click', () => {
+      if (toastUndoFn) { toastUndoFn(); toastUndoFn = null; }
+      $('#toast').classList.add('opacity-0', 'translate-y-3', 'pointer-events-none');
+    });
+
+    /* ---- Drawer ---- */
+    function openDrawer(id) {
+      const u = USERS.find(x => x.id === id);
+      if (!u) return;
+      selectedUserId = id;
+      const tone = TONES[u.tone];
+      $('#drawer-body').innerHTML =
+        '<div class="flex items-center gap-3 mb-5">' +
+          '<div class="w-12 h-12 rounded-full ' + tone.av + ' border flex items-center justify-center shrink-0"><span class="font-headline text-headline-sm ' + tone.tx + '">' + initials(u.name) + '</span></div>' +
+          '<div class="min-w-0"><p class="font-headline text-headline-sm text-on-surface truncate">' + esc(u.name) + '</p><p class="font-body text-body-sm text-on-surface-variant truncate">' + esc(u.email) + '</p></div>' +
+        '</div>' +
+        '<dl class="flex flex-col gap-4">' +
+          '<div class="flex items-center justify-between gap-3"><dt class="font-label text-label-md text-on-surface-variant">Role</dt><dd><span class="inline-flex items-center px-2.5 py-0.5 rounded-full ' + ROLE_BADGE[u.role] + ' font-label text-label-sm">' + u.role + '</span></dd></div>' +
+          '<div class="flex items-center justify-between gap-3"><dt class="font-label text-label-md text-on-surface-variant">Status</dt><dd class="inline-flex items-center gap-2 font-body text-body-sm text-on-surface"><span class="w-2 h-2 rounded-full ' + STATUS_DOT[u.status] + '"></span>' + u.status + '</dd></div>' +
+          '<div class="flex items-center justify-between gap-3"><dt class="font-label text-label-md text-on-surface-variant">Joined</dt><dd class="font-body text-body-sm text-on-surface tabular-nums">' + u.joined + '</dd></div>' +
+          '<div class="flex items-center justify-between gap-3"><dt class="font-label text-label-md text-on-surface-variant">Last active</dt><dd class="font-body text-body-sm text-on-surface">' + u.last + '</dd></div>' +
+        '</dl>';
+      const toggleBtn = $('#drawer-toggle-status');
+      toggleBtn.textContent = u.status === 'Suspended' ? 'Reactivate member' : 'Suspend member';
+      $('#drawer-resend').style.display = u.status === 'Invited' ? '' : 'none';
+      $('#user-drawer').classList.remove('translate-x-full');
+      $('#drawer-backdrop').classList.remove('hidden');
+    }
+    function closeDrawer() {
+      $('#user-drawer').classList.add('translate-x-full');
+      $('#drawer-backdrop').classList.add('hidden');
+      selectedUserId = null;
+    }
+
+    function toggleUserStatus(id) {
+      const u = USERS.find(x => x.id === id);
+      if (!u) return;
+      u.status = u.status === 'Suspended' ? 'Active' : 'Suspended';
+      u.last = u.status === 'Suspended' ? 'Suspended just now' : 'just now';
+      renderUsers();
+      if (selectedUserId === id) openDrawer(id);
+      addFeedEvent('<span class="font-semibold">' + esc(u.name) + '</span> was ' + (u.status === 'Suspended' ? 'suspended' : 'reactivated'), u.status === 'Suspended' ? 'rose' : 'emerald');
+      showToast(u.name + (u.status === 'Suspended' ? ' suspended.' : ' reactivated.'));
+    }
+
+    function removeUser(id) {
+      const idx = USERS.findIndex(x => x.id === id);
+      if (idx < 0) return;
+      const removed = USERS[idx];
+      USERS.splice(idx, 1);
+      totalUsers = Math.max(0, totalUsers - 1);
+      updateTotalUsers();
+      renderUsers();
+      closeDrawer();
+      addFeedEvent('<span class="font-semibold">' + esc(removed.name) + '</span> was removed from the workspace', 'rose');
+      showToast(removed.name + ' removed.', () => {
+        USERS.splice(Math.min(idx, USERS.length), 0, removed);
+        totalUsers++;
+        updateTotalUsers();
+        renderUsers();
+        showToast(removed.name + ' restored.');
+      });
+    }
+
+    $('#drawer-toggle-status').addEventListener('click', () => { if (selectedUserId) toggleUserStatus(selectedUserId); });
+    $('#drawer-remove').addEventListener('click', () => { if (selectedUserId) removeUser(selectedUserId); });
+    $('#drawer-resend').addEventListener('click', () => {
+      const u = USERS.find(x => x.id === selectedUserId);
+      if (!u) return;
+      showToast('Invite resent to ' + u.email + '.');
+      addFeedEvent('Invite resent to <span class="font-semibold">' + esc(u.name) + '</span>', 'sky');
+    });
+
+    /* ---- Row menu ---- */
+    function openRowMenu(id, anchor) {
+      const u = USERS.find(x => x.id === id);
+      if (!u) return;
+      const menu = $('#row-menu');
+      menu.innerHTML =
+        '<button type="button" data-act="view" class="w-full text-left px-4 py-2 font-body text-body-md text-on-surface hover:bg-surface-container transition-colors">View details</button>' +
+        '<button type="button" data-act="toggle" class="w-full text-left px-4 py-2 font-body text-body-md text-on-surface hover:bg-surface-container transition-colors">' + (u.status === 'Suspended' ? 'Reactivate' : 'Suspend') + '</button>' +
+        '<button type="button" data-act="remove" class="w-full text-left px-4 py-2 font-body text-body-md text-error hover:bg-error-container transition-colors">Remove</button>';
+      const r = anchor.getBoundingClientRect();
+      menu.style.top = Math.min(window.innerHeight - 140, r.bottom + 6) + 'px';
+      menu.style.left = Math.max(8, r.right - 192) + 'px';
+      menu.classList.remove('hidden');
+      $$('button', menu).forEach(b => b.addEventListener('click', () => {
+        menu.classList.add('hidden');
+        if (b.dataset.act === 'view') openDrawer(id);
+        if (b.dataset.act === 'toggle') toggleUserStatus(id);
+        if (b.dataset.act === 'remove') removeUser(id);
+      }));
+    }
+
+    /* ---- Filters, sort, search ---- */
+    $$('.role-pill').forEach(btn => btn.addEventListener('click', () => {
+      state.role = btn.dataset.role;
+      $$('.role-pill').forEach(b => {
+        const on = b === btn;
+        b.classList.toggle('bg-surface-container-high', on);
+        b.classList.toggle('text-on-surface', on);
+        b.classList.toggle('border', on);
+        b.classList.toggle('border-outline-variant', on);
+        b.classList.toggle('text-on-surface-variant', !on);
+      });
+      renderUsers();
+    }));
+    $('#status-filter').addEventListener('change', e => { state.status = e.target.value; renderUsers(); });
+    $$('[data-sort]').forEach(btn => btn.addEventListener('click', () => {
+      const k = btn.dataset.sort;
+      if (state.sortKey === k) state.sortDir *= -1;
+      else { state.sortKey = k; state.sortDir = 1; }
+      renderUsers();
+    }));
+    $('#top-search').addEventListener('input', e => { state.query = e.target.value.trim().toLowerCase(); renderUsers(); });
+    $('#view-all-btn').addEventListener('click', () => { state.showAll = !state.showAll; renderUsers(); });
+
+    /* ---- New user modal ---- */
+    function openNewUserModal() {
+      const m = $('#new-user-modal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+      setTimeout(() => $('#nu-name').focus(), 50);
+    }
+    function closeNewUserModal() {
+      const m = $('#new-user-modal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+      $('#nu-error').classList.add('hidden');
+    }
+    $('#new-user-btn').addEventListener('click', openNewUserModal);
+    $('#new-user-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = $('#nu-name').value.trim();
+      const email = $('#nu-email').value.trim();
+      const role = $('#nu-role').value;
+      const err = $('#nu-error');
+      if (name.length < 2) { err.textContent = 'Please enter a full name (at least 2 characters).'; err.classList.remove('hidden'); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'Please enter a valid work e-mail address.'; err.classList.remove('hidden'); return; }
+      if (USERS.some(u => u.email.toLowerCase() === email.toLowerCase())) { err.textContent = 'A member with this e-mail already exists.'; err.classList.remove('hidden'); return; }
+      const tone = role === 'Admin' ? 'emerald' : role === 'Editor' ? 'amber' : 'sky';
+      USERS.unshift({ id: nextId++, name, email, role, status: 'Invited', tone, joined: 'Nov 2026', last: 'Invite sent just now' });
+      totalUsers++;
+      updateTotalUsers();
+      renderUsers();
+      addFeedEvent('Invite sent to <span class="font-semibold">' + esc(name) + '</span>', 'sky');
+      closeNewUserModal();
+      e.target.reset();
+      showToast('Invitation sent to ' + name + '.');
+    });
+
+    /* ---- Notifications ---- */
+    const notifPanel = $('#notif-panel');
+    function closeNotif() { notifPanel.classList.add('hidden'); }
+    $('#bell-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      if (notifPanel.classList.contains('hidden')) {
+        const r = e.currentTarget.getBoundingClientRect();
+        notifPanel.style.top = (r.bottom + 10) + 'px';
+        notifPanel.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+        notifPanel.classList.remove('hidden');
+      } else closeNotif();
+    });
+    $('#notif-read-all').addEventListener('click', () => {
+      $$('.notif-item').forEach(li => li.classList.add('opacity-60'));
+      const badge = $('#notif-badge');
+      if (badge) badge.style.display = 'none';
+      $('#bell-btn').setAttribute('aria-label', 'Notifications (all read)');
+      showToast('All notifications marked as read.');
+    });
+
+    /* ---- Theme toggle (dark is the default) ---- */
+    $('#theme-toggle').addEventListener('click', () => {
+      const root = document.documentElement;
+      const light = root.classList.toggle('light');
+      root.classList.toggle('dark', !light);
+      $('#theme-icon').textContent = light ? 'dark_mode' : 'light_mode';
+      $('#theme-toggle').setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
+    });
+
+    /* ---- Global keys / outside clicks ---- */
+    document.addEventListener('keydown', e => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); $('#top-search').focus(); $('#top-search').select(); }
+      if (e.key === 'Escape') { closeDrawer(); closeNewUserModal(); closeNotif(); $('#row-menu').classList.add('hidden'); }
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('#notif-panel') && !e.target.closest('#bell-btn')) closeNotif();
+      if (!e.target.closest('#row-menu')) $('#row-menu').classList.add('hidden');
+    });
+
+    /* ---- KPI count-up ---- */
+    function animateKpis() {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      $$('[data-countup]').forEach(el => {
+        const target = +el.dataset.countup;
+        const fmt = el.dataset.format;
+        const render = v => { el.textContent = fmt === 'currency' ? '$' + Math.round(v).toLocaleString('en-US') : Math.round(v).toLocaleString('en-US'); };
+        if (reduced) { render(target); return; }
+        const start = performance.now(), dur = 900;
+        const tick = t => {
+          const p = Math.min(1, (t - start) / dur);
+          const e2 = 1 - Math.pow(1 - p, 3);
+          render(target * e2);
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+    }
+
+    /* ---- Init ---- */
+    renderUsers();
+    animateKpis();
+    setChartPeriod('30D');
+  </script>
+
+
+</body></html>
