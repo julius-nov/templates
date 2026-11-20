@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault CRM — Sales Pipeline</title>
+<meta name="description" content="Vault CRM — a premium dark-mode sales pipeline dashboard. Drag-and-drop kanban, quota dial, conversion funnel and live KPIs. Demo data only.">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'gold': '#E8B34B', 'gold-hover': '#F3C467', 'gold-muted': '#2C2314',
+        'emerald': '#34D399', 'emerald-muted': '#0E2920',
+        'sky': '#38BDF8', 'sky-muted': '#0E2436',
+        'rose': '#FB7185', 'rose-muted': '#30131B',
+        'border-hairline': '#232C38', 'border-subtle': '#1C2430',
+        'panel-bg': '#141A22', 'panel-hover': '#18202B', 'ink-bg': '#0B0E13',
+        'text-muted': '#64748B', 'text-secondary': '#94A3B8', 'text-primary': '#F1F5F9'
+      },
+      borderRadius: { 'sm': '2px', 'DEFAULT': '4px', 'md': '6px', 'lg': '8px', 'xl': '12px', 'full': '9999px' },
+      fontFamily: {
+        'display': ['"Fraunces"', 'serif'],
+        'headline': ['"Fraunces"', 'serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'mono': ['"JetBrains Mono"', 'monospace']
+      }
+    }
+  }
+};
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  .ic { display:inline-flex; align-items:center; justify-content:center; flex:none; }
+  .ic svg { display:block; width:1em; height:1em; }
+  .dial-ticks { background: repeating-conic-gradient(from 0deg, #232C38 0deg 1deg, transparent 1deg 6deg); }
+  html { scroll-behavior: smooth; }
+  body { background:#0B0E13; }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-track { background:#0B0E13; }
+  ::-webkit-scrollbar-thumb { background:#232C38; border-radius:4px; border:2px solid #0B0E13; }
+  ::-webkit-scrollbar-thumb:hover { background:#E8B34B; }
+  .kanban-scroll { scrollbar-width: thin; }
+  /* Entrance */
+  @keyframes rise { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform: translateY(0); } }
+  .rise { animation: rise .5s cubic-bezier(.16,1,.3,1) both; }
+  .rise-1 { animation-delay:.05s } .rise-2 { animation-delay:.12s } .rise-3 { animation-delay:.19s } .rise-4 { animation-delay:.26s }
+  @keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:.35; } }
+  .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+  @keyframes dial-sweep { from { stroke-dashoffset: 301.6; } }
+  .dial-arc { transition: stroke-dashoffset .9s cubic-bezier(.16,1,.3,1); }
+  /* Hover pass 2026-11-18 : survols graphes (jauge, sparklines KPI, funnel) */
+  .dial-zone { cursor: pointer; }
+  .dial-zone:hover #dial-arc { filter: drop-shadow(0 0 7px rgba(232,179,75,.85)); }
+  .kpi-spark { cursor: pointer; transition: filter .15s ease; }
+  .kpi-spark:hover { filter: brightness(1.45); }
+  #funnel > div { transition: opacity .15s ease; }
+  #funnel .funnel-bar { transition: filter .15s ease; }
+  #funnel > div.is-hot .funnel-bar { filter: brightness(1.4); }
+  @keyframes bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .funnel-bar { transform-origin: left; animation: bar-grow .8s cubic-bezier(.16,1,.3,1) both; }
+  /* Drag & drop */
+  .deal-card { cursor: grab; transition: transform .16s cubic-bezier(.16,1,.3,1), border-color .16s, box-shadow .16s; }
+  .deal-card:hover { transform: translateY(-2px); }
+  .deal-card:active { cursor: grabbing; }
+  .deal-card.dragging { opacity:.45; transform: scale(.97) rotate(-1deg); }
+  .drop-target { outline: 1px dashed #E8B34B; outline-offset: -1px; background:#18202B; }
+  .drop-target .col-body { border-color: #E8B34B66; }
+  /* Drawer + modal */
+  #drawer { transition: transform .32s cubic-bezier(.16,1,.3,1); }
+  #drawer-backdrop, #modal-backdrop { transition: opacity .25s ease; }
+  /* Toast */
+  @keyframes toast-in { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+  .toast-in { animation: toast-in .3s cubic-bezier(.16,1,.3,1) both; }
+  .clamp-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:.01ms !important; animation-delay:0ms !important; transition-duration:.01ms !important; }
+    html { scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body class="bg-ink-bg text-text-primary font-body antialiased min-h-screen selection:bg-gold selection:text-ink-bg">
+
+<div class="w-full max-w-[1440px] mx-auto px-4 sm:px-6 py-4 flex flex-col gap-5 sm:gap-6">
+
+  <!-- 1. TOP BAR -->
+  <header class="rise rise-1 flex flex-wrap items-center gap-3 sm:gap-6 py-2.5 px-3 sm:px-4 bg-panel-bg rounded border border-border-hairline">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-ink-bg border border-gold/60 flex items-center justify-center relative shrink-0" aria-hidden="true">
+        <svg class="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.2"/>
+          <path d="M12 3.5v2M12 18.5v2M3.5 12h2M18.5 12h2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="leading-none">
+        <p class="font-display font-bold text-lg tracking-tight">VAULT <span class="text-gold">CRM</span></p>
+        <p class="font-mono text-[9px] tracking-[0.22em] text-text-muted mt-1">SALES PIPELINE · Q4</p>
+      </div>
+    </div>
+
+    <div class="flex-1 min-w-[180px] max-w-md mx-auto sm:mx-4 order-3 sm:order-none w-full sm:w-auto">
+      <label for="vault-search" class="sr-only">Search deals, companies, contacts</label>
+      <div class="relative flex items-center">
+        <span class="ic absolute left-3 text-text-muted text-lg pointer-events-none" data-ic="search"></span>
+        <input id="vault-search" type="text" placeholder="Search deals, companies, contacts…" autocomplete="off"
+          class="w-full bg-ink-bg border border-border-hairline focus:border-gold/60 text-text-primary placeholder:text-text-muted font-body text-[13px] rounded pl-9 pr-14 py-2 focus:outline-none transition-colors">
+        <div class="absolute right-2.5 flex items-center px-1.5 py-0.5 rounded bg-panel-hover border border-border-hairline pointer-events-none">
+          <span class="font-mono text-[10px] text-text-muted">⌘K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 sm:gap-4 ml-auto">
+      <div class="hidden md:flex items-center -space-x-1.5" aria-label="Team">
+        <div class="w-7 h-7 rounded-full bg-panel-hover border border-gold/50 flex items-center justify-center font-mono text-[10px] text-gold font-bold" title="Elena Rostova — Lead Closer">ER</div>
+        <div class="w-7 h-7 rounded-full bg-panel-hover border border-border-hairline flex items-center justify-center font-mono text-[10px] text-sky font-bold" title="Marcus Vance">MV</div>
+        <div class="w-7 h-7 rounded-full bg-panel-hover border border-border-hairline flex items-center justify-center font-mono text-[10px] text-emerald font-bold" title="Sarah Jenkins">SJ</div>
+        <div class="w-7 h-7 rounded-full bg-ink-bg border border-border-hairline flex items-center justify-center font-mono text-[9px] text-text-muted font-bold" title="3 more reps">+3</div>
+      </div>
+      <div class="hidden md:block h-5 w-px bg-border-hairline"></div>
+      <div class="hidden sm:flex items-center gap-2 px-2 py-1 rounded bg-panel-hover/60 border border-border-hairline">
+        <div class="w-6 h-6 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center font-mono text-[10px] text-gold font-bold">JD</div>
+        <span class="font-mono text-[11px] text-text-secondary">Julian Drake</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald pulse-dot" title="Online"></span>
+      </div>
+      <button id="new-deal-btn" type="button"
+        class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-gold hover:bg-gold-hover active:scale-[0.98] text-ink-bg font-mono text-[12px] font-semibold rounded uppercase tracking-wider transition-all border border-gold cursor-pointer">
+        <span class="ic text-base" data-ic="add"></span><span class="hidden xs:inline sm:inline">New deal</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 2. HERO STRIP: Quota Dial + 4 KPI Tiles -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-stretch">
+
+    <!-- LEFT: Safe Dial -->
+    <div class="rise rise-2 lg:col-span-4 bg-panel-bg rounded border border-border-hairline p-5 flex flex-col justify-between relative overflow-hidden">
+      <div class="flex items-center justify-between border-b border-border-subtle pb-3 mb-2">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-gold pulse-dot"></span>
+          <span class="font-mono text-[11px] tracking-[0.18em] text-text-secondary font-semibold">Q4 QUOTA — SAFE DIAL</span>
+        </div>
+        <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-gold-muted text-gold border border-gold/30 font-semibold">LIVE</span>
+      </div>
+
+      <div class="py-2 flex items-center justify-center">
+        <div class="relative w-48 h-48 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full border border-border-hairline dial-ticks p-2"></div>
+          <div class="absolute inset-2 rounded-full bg-ink-bg border border-border-hairline"></div>
+          <svg class="w-40 h-40 -rotate-90 relative z-10" viewBox="0 0 120 120" role="img" aria-label="Quota attainment gauge">
+            <circle cx="60" cy="60" r="48" stroke="#1C2430" stroke-width="7" fill="none"></circle>
+            <circle id="dial-arc" class="dial-arc" cx="60" cy="60" r="48" stroke="#E8B34B" stroke-width="7" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="301.6" fill="none"></circle>
+          </svg>
+          <div class="absolute z-20 flex flex-col items-center justify-center text-center">
+            <span id="dial-pct" class="font-display font-bold text-[40px] leading-none text-text-primary tabular-nums">0%</span>
+            <div class="mt-1.5 w-6 h-px bg-border-hairline"></div>
+            <span class="font-mono text-[10px] tracking-[0.2em] text-text-muted mt-1.5">ATTAINED</span>
+          </div>
+          <span class="absolute top-1 font-mono text-[8px] text-text-muted">0</span>
+          <span class="absolute right-1 font-mono text-[8px] text-text-muted">25</span>
+          <span class="absolute bottom-1 font-mono text-[8px] text-text-muted">50</span>
+          <span class="absolute left-1 font-mono text-[8px] text-text-muted">75</span>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-border-subtle flex items-center justify-between">
+        <div>
+          <p class="font-mono text-[10px] tracking-[0.18em] text-text-muted">PIPELINE VS QUOTA</p>
+          <div class="flex items-baseline gap-1.5 mt-1">
+            <span id="dial-value" class="font-mono text-[15px] font-bold text-gold tabular-nums">$0</span>
+            <span class="font-mono text-[11px] text-text-muted">/</span>
+            <span class="font-mono text-[11px] text-text-secondary tabular-nums">$600,000</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="font-mono text-[10px] tracking-[0.18em] text-text-muted">REMAINING</p>
+          <p id="dial-remaining" class="font-mono text-[13px] font-semibold text-text-secondary tabular-nums mt-1">$600,000</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: 4 KPI Tiles -->
+    <div class="lg:col-span-8 grid grid-cols-2 gap-3 sm:gap-4">
+      <div class="rise rise-2 bg-panel-bg rounded border border-border-hairline p-4 flex flex-col justify-between hover:border-gold/30 transition-colors">
+        <div class="flex items-center justify-between gap-2">
+          <span class="font-mono text-[10px] sm:text-[11px] tracking-[0.16em] text-text-muted font-semibold">PIPELINE VALUE</span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-muted text-emerald border border-emerald/30 font-semibold tabular-nums shrink-0">+18.2%</span>
+        </div>
+        <p id="kpi-pipeline" class="font-mono font-bold text-[26px] sm:text-[32px] leading-tight tabular-nums mt-2">$0</p>
+        <svg class="w-full h-8 text-emerald mt-1" viewBox="0 0 200 32" fill="none" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 24 L25 22 L55 26 L85 18 L115 19 L145 10 L175 14 L200 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="200" cy="4" r="2.5" fill="currentColor"></circle>
+        </svg>
+        <p class="mt-1 flex items-center justify-between text-[11px] font-mono text-text-muted"><span>vs Q3 baseline</span><span class="text-text-secondary">+$74,900</span></p>
+      </div>
+
+      <div class="rise rise-2 bg-panel-bg rounded border border-border-hairline p-4 flex flex-col justify-between hover:border-gold/30 transition-colors">
+        <div class="flex items-center justify-between gap-2">
+          <span class="font-mono text-[10px] sm:text-[11px] tracking-[0.16em] text-text-muted font-semibold">OPEN DEALS</span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-sky-muted text-sky border border-sky/30 font-semibold tabular-nums shrink-0">+5 new</span>
+        </div>
+        <p id="kpi-open" class="font-mono font-bold text-[26px] sm:text-[32px] leading-tight tabular-nums mt-2">0</p>
+        <svg class="w-full h-8 text-sky mt-1" viewBox="0 0 200 32" fill="none" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 20 L30 18 L60 22 L90 14 L120 16 L150 12 L180 8 L200 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="200" cy="6" r="2.5" fill="currentColor"></circle>
+        </svg>
+        <p class="mt-1 flex items-center justify-between text-[11px] font-mono text-text-muted"><span>Stage avg velocity</span><span class="text-text-secondary">16.4 days</span></p>
+      </div>
+
+      <div class="rise rise-3 bg-panel-bg rounded border border-border-hairline p-4 flex flex-col justify-between hover:border-gold/30 transition-colors">
+        <div class="flex items-center justify-between gap-2">
+          <span class="font-mono text-[10px] sm:text-[11px] tracking-[0.16em] text-text-muted font-semibold">WIN RATE</span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-muted text-emerald border border-emerald/30 font-semibold tabular-nums shrink-0">Q4 to date</span>
+        </div>
+        <p id="kpi-winrate" class="font-mono font-bold text-[26px] sm:text-[32px] leading-tight tabular-nums mt-2">0%</p>
+        <svg class="w-full h-8 text-gold mt-1" viewBox="0 0 200 32" fill="none" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 26 L35 25 L70 20 L105 22 L140 15 L170 12 L200 8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="200" cy="8" r="2.5" fill="currentColor"></circle>
+        </svg>
+        <p id="kpi-winrate-sub" class="mt-1 flex items-center justify-between text-[11px] font-mono text-text-muted"><span>Qualified-to-Close</span><span class="text-emerald font-semibold">—</span></p>
+      </div>
+
+      <div class="rise rise-3 bg-panel-bg rounded border border-border-hairline p-4 flex flex-col justify-between hover:border-gold/30 transition-colors">
+        <div class="flex items-center justify-between gap-2">
+          <span class="font-mono text-[10px] sm:text-[11px] tracking-[0.16em] text-text-muted font-semibold">AVG. DEAL</span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-muted text-emerald border border-emerald/30 font-semibold tabular-nums shrink-0">+8.1%</span>
+        </div>
+        <p id="kpi-avg" class="font-mono font-bold text-[26px] sm:text-[32px] leading-tight tabular-nums mt-2">$0</p>
+        <svg class="w-full h-8 text-sky mt-1" viewBox="0 0 200 32" fill="none" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 22 L30 20 L65 24 L100 16 L135 15 L165 9 L200 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="200" cy="5" r="2.5" fill="currentColor"></circle>
+        </svg>
+        <p class="mt-1 flex items-center justify-between text-[11px] font-mono text-text-muted"><span>Median ACV</span><span id="kpi-median" class="text-text-secondary tabular-nums">$0</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. PIPELINE KANBAN -->
+  <section class="rise rise-3 flex flex-col gap-3">
+    <div class="flex flex-wrap items-center justify-between gap-2 px-1">
+      <div class="flex items-center gap-2">
+        <span class="ic text-gold text-lg" data-ic="view_kanban"></span>
+        <h2 class="font-display font-semibold text-lg">Pipeline</h2>
+        <span id="kanban-count" class="font-mono text-[11px] px-2 py-0.5 rounded bg-panel-bg border border-border-hairline text-text-muted">0 DEALS</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-[11px] text-text-muted hidden md:inline">Drag cards between stages · Sort:</span>
+        <button id="sort-btn" type="button" class="font-mono text-[11px] text-gold border border-border-hairline px-2 py-1 rounded bg-panel-bg hover:border-gold/50 transition-colors cursor-pointer">Value ↓</button>
+        <button id="clear-search-btn" type="button" class="hidden font-mono text-[11px] text-text-secondary border border-border-hairline px-2 py-1 rounded bg-panel-bg hover:border-rose/50 hover:text-rose transition-colors cursor-pointer">Clear search ✕</button>
+      </div>
+    </div>
+    <p class="px-1 -mt-1 font-mono text-[11px] text-text-muted md:hidden">Swipe the board sideways →</p>
+    <div id="kanban" class="flex gap-3.5 overflow-x-auto pb-2 kanban-scroll snap-x snap-mandatory lg:grid lg:grid-cols-5 lg:overflow-visible items-start"></div>
+  </section>
+
+  <!-- 4. BOTTOM ROW: Funnel / Activity / Leaderboard -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-stretch">
+    <!-- Funnel -->
+    <div class="rise rise-4 lg:col-span-5 bg-panel-bg rounded border border-border-hairline p-5 flex flex-col">
+      <div class="flex items-center justify-between border-b border-border-subtle pb-3">
+        <div class="flex items-center gap-2">
+          <span class="ic text-gold text-lg" data-ic="filter_alt"></span>
+          <h3 class="font-display font-semibold text-base">Conversion funnel</h3>
+        </div>
+        <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-panel-hover border border-border-hairline text-text-muted">Q4 · ALL SOURCES</span>
+      </div>
+      <div id="funnel" class="flex flex-col gap-3.5 pt-4 flex-1 justify-center"></div>
+      <p class="pt-3 mt-1 border-t border-border-subtle font-mono text-[11px] text-text-muted flex justify-between">
+        <span>END-TO-END YIELD</span><span id="funnel-yield" class="text-gold font-semibold">—</span>
+      </p>
+    </div>
+
+    <!-- Activity -->
+    <div class="rise rise-4 lg:col-span-4 bg-panel-bg rounded border border-border-hairline p-5 flex flex-col">
+      <div class="flex items-center justify-between border-b border-border-subtle pb-3">
+        <div class="flex items-center gap-2">
+          <span class="ic text-gold text-lg" data-ic="history"></span>
+          <h3 class="font-display font-semibold text-base">This week</h3>
+        </div>
+        <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-panel-hover border border-border-hairline text-text-muted" id="activity-count">0 EVENTS</span>
+      </div>
+      <div id="activity" class="flex flex-col gap-2 pt-4 flex-1"></div>
+    </div>
+
+    <!-- Leaderboard -->
+    <div class="rise rise-4 lg:col-span-3 bg-panel-bg rounded border border-border-hairline p-5 flex flex-col">
+      <div class="flex items-center justify-between border-b border-border-subtle pb-3">
+        <div class="flex items-center gap-2">
+          <span class="ic text-gold text-lg" data-ic="leaderboard"></span>
+          <h3 class="font-display font-semibold text-base">Top reps</h3>
+        </div>
+        <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-panel-hover border border-border-hairline text-text-muted">Q4</span>
+      </div>
+      <div id="leaderboard" class="flex flex-col gap-2.5 pt-4 flex-1"></div>
+    </div>
+  </section>
+
+  <footer class="rise rise-4 flex flex-wrap items-center justify-between gap-2 px-1 pt-1 pb-2 border-t border-border-subtle">
+    <p class="font-mono text-[10px] tracking-[0.18em] text-text-muted">VAULT CRM — DEMO DATA · ALL FIGURES FICTIONAL</p>
+    <p class="font-mono text-[10px] tracking-[0.18em] text-text-muted">JULIUS VIBE STUDIO · SINGLE-FILE TEMPLATE</p>
+  </footer>
+</div>
+
+<!-- DEAL DRAWER -->
+<div id="drawer-backdrop" class="fixed inset-0 bg-black/60 opacity-0 pointer-events-none z-40"></div>
+<aside id="drawer" class="fixed top-0 right-0 h-full w-full max-w-[420px] bg-panel-bg border-l border-border-hairline z-50 translate-x-full flex flex-col" role="dialog" aria-modal="true" aria-label="Deal details">
+  <div class="flex items-center justify-between px-5 py-4 border-b border-border-subtle">
+    <span class="font-mono text-[11px] tracking-[0.18em] text-text-muted">DEAL FILE</span>
+    <button id="drawer-close" type="button" class="w-8 h-8 rounded border border-border-hairline flex items-center justify-center text-text-secondary hover:text-gold hover:border-gold/50 transition-colors cursor-pointer" aria-label="Close">
+      <span class="ic text-lg" data-ic="close"></span>
+    </button>
+  </div>
+  <div id="drawer-body" class="flex-1 overflow-y-auto px-5 py-5"></div>
+  <div class="px-5 py-4 border-t border-border-subtle flex flex-col gap-2">
+    <button id="drawer-advance" type="button" class="w-full py-2.5 bg-gold hover:bg-gold-hover text-ink-bg font-mono text-[12px] font-semibold rounded uppercase tracking-wider transition-colors cursor-pointer">Advance stage →</button>
+    <div class="flex gap-2">
+      <button id="drawer-won" type="button" class="flex-1 py-2 bg-emerald-muted hover:bg-emerald/25 text-emerald font-mono text-[12px] font-semibold rounded uppercase tracking-wider border border-emerald/30 transition-colors cursor-pointer">Mark won</button>
+      <button id="drawer-lost" type="button" class="flex-1 py-2 bg-rose-muted hover:bg-rose/25 text-rose font-mono text-[12px] font-semibold rounded uppercase tracking-wider border border-rose/30 transition-colors cursor-pointer">Mark lost</button>
+    </div>
+  </div>
+</aside>
+
+<!-- NEW DEAL MODAL -->
+<div id="modal-backdrop" class="fixed inset-0 bg-black/60 opacity-0 pointer-events-none z-40 flex items-center justify-center p-4">
+  <div id="modal" class="w-full max-w-[480px] bg-panel-bg border border-border-hairline rounded-lg p-6 scale-95 transition-transform" role="dialog" aria-modal="true" aria-label="New deal">
+    <div class="flex items-center justify-between">
+      <h3 class="font-display font-semibold text-xl">New deal</h3>
+      <button id="modal-close" type="button" class="w-8 h-8 rounded border border-border-hairline flex items-center justify-center text-text-secondary hover:text-gold hover:border-gold/50 transition-colors cursor-pointer" aria-label="Close">
+        <span class="ic text-lg" data-ic="close"></span>
+      </button>
+    </div>
+    <form id="new-deal-form" class="flex flex-col gap-4 mt-5">
+      <div>
+        <label for="f-company" class="font-mono text-[11px] tracking-[0.14em] text-text-muted">COMPANY *</label>
+        <input id="f-company" required type="text" placeholder="Acme Corp" class="mt-1.5 w-full bg-ink-bg border border-border-hairline focus:border-gold/60 rounded px-3 py-2.5 text-[14px] focus:outline-none transition-colors">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="f-contact" class="font-mono text-[11px] tracking-[0.14em] text-text-muted">CONTACT *</label>
+          <input id="f-contact" required type="text" placeholder="Jane Cooper" class="mt-1.5 w-full bg-ink-bg border border-border-hairline focus:border-gold/60 rounded px-3 py-2.5 text-[14px] focus:outline-none transition-colors">
+        </div>
+        <div>
+          <label for="f-role" class="font-mono text-[11px] tracking-[0.14em] text-text-muted">ROLE</label>
+          <input id="f-role" type="text" placeholder="Head of Sales" class="mt-1.5 w-full bg-ink-bg border border-border-hairline focus:border-gold/60 rounded px-3 py-2.5 text-[14px] focus:outline-none transition-colors">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="f-value" class="font-mono text-[11px] tracking-[0.14em] text-text-muted">VALUE (USD) *</label>
+          <input id="f-value" required type="number" min="100" step="100" placeholder="25000" class="mt-1.5 w-full bg-ink-bg border border-border-hairline focus:border-gold/60 rounded px-3 py-2.5 text-[14px] focus:outline-none transition-colors">
+        </div>
+        <div>
+          <label for="f-stage" class="font-mono text-[11px] tracking-[0.14em] text-text-muted">STAGE</label>
+          <select id="f-stage" class="mt-1.5 w-full bg-ink-bg border border-border-hairline focus:border-gold/60 rounded px-3 py-2.5 text-[14px] focus:outline-none transition-colors">
+            <option value="lead">Lead</option>
+            <option value="qualified">Qualified</option>
+            <option value="proposal">Proposal</option>
+            <option value="negotiation">Negotiation</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="f-next" class="font-mono text-[11px] tracking-[0.14em] text-text-muted">NEXT STEP</label>
+        <input id="f-next" type="text" placeholder="Intro call scheduled" class="mt-1.5 w-full bg-ink-bg border border-border-hairline focus:border-gold/60 rounded px-3 py-2.5 text-[14px] focus:outline-none transition-colors">
+      </div>
+      <button type="submit" class="mt-1 w-full py-2.5 bg-gold hover:bg-gold-hover text-ink-bg font-mono text-[12px] font-semibold rounded uppercase tracking-wider transition-colors cursor-pointer">Lock deal into vault →</button>
+    </form>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[60] hidden">
+  <div class="flex items-center gap-2 bg-panel-bg border border-gold/50 rounded px-4 py-2.5 shadow-2xl">
+    <span class="ic text-gold text-lg" data-ic="check_circle"></span>
+    <span id="toast-msg" class="font-mono text-[12px] text-text-primary"></span>
+  </div>
+</div>
+
+<script>
+/* ================= DATA (100% fictional demo data) ================= */
+const STAGES = [
+  { id: 'lead',        name: 'Lead',        color: '#64748B', prob: 20 },
+  { id: 'qualified',   name: 'Qualified',   color: '#38BDF8', prob: 40 },
+  { id: 'proposal',    name: 'Proposal',    color: '#E8B34B', prob: 60 },
+  { id: 'negotiation', name: 'Negotiation', color: '#38BDF8', prob: 80 },
+  { id: 'closed',      name: 'Closed',      color: '#34D399', prob: 100 },
+];
+const QUOTA = 600000;
+const OWNERS = { ER: { name: 'Elena Rostova', color: '#E8B34B' }, MV: { name: 'Marcus Vance', color: '#38BDF8' }, SJ: { name: 'Sarah Jenkins', color: '#34D399' }, JD: { name: 'Julian Drake', color: '#F1F5F9' } };
+
+let DEALS = [
+  { id: 'd01', company: 'Voltaic Energy',    contact: 'K. Lindqvist', role: 'Procurement',        value: 38000, stage: 'lead',        owner: 'MV', source: 'Inbound SQL',   next: 'Intro demo scheduled for Thursday 10:00',   history: ['Nov 14 — Discovery call booked', 'Nov 12 — Lead captured via website form'] },
+  { id: 'd02', company: 'Titan Mining Co',   contact: 'Arun Mehta',   role: 'COO',                value: 28000, stage: 'lead',        owner: 'ER', source: 'Referral',       next: 'Send capability deck by email',           history: ['Nov 15 — Referral from Nordic Capital', 'Nov 13 — First touch, email opened'] },
+  { id: 'd03', company: 'Helios Medical',    contact: 'Dr. S. Okafor',role: 'Operations Dir.',    value: 17500, stage: 'lead',        owner: 'SJ', source: 'Trade show',     next: 'Qualification call — confirm budget',        history: ['Nov 15 — Met at MedTech Expo', 'Nov 14 — Brochure sent'] },
+  { id: 'd04', company: 'Cobalt Logistics',  contact: 'M. Ferreira',  role: 'Head of Ops',        value: 12400, stage: 'lead',        owner: 'MV', source: 'Outbound',       next: 'Follow-up call after quote request',        history: ['Nov 13 — Cold outreach replied'] },
+  { id: 'd05', company: 'Vanguard Systems',  contact: 'L. Moreau',    role: 'CTO',                value: 34000, stage: 'qualified',   owner: 'ER', source: 'Inbound SQL',   next: 'Technical deep-dive with engineering',       history: ['Nov 15 — BANT qualified', 'Nov 11 — Demo completed, strong fit'] },
+  { id: 'd06', company: 'Onyx Retail Group', contact: 'P. Almeida',   role: 'VP Sales',           value: 28500, stage: 'qualified',   owner: 'SJ', source: 'Partner',        next: 'Stakeholder mapping session',             history: ['Nov 14 — Budget confirmed $25–30k', 'Nov 10 — Intro call, 3 stakeholders'] },
+  { id: 'd07', company: 'Aether Dynamics',   contact: 'T. Nakamura',  role: 'Founder',            value: 26000, stage: 'qualified',   owner: 'MV', source: 'Inbound SQL',   next: 'Share ROI calculator and case study',      history: ['Nov 13 — Qualified, decision in Dec'] },
+  { id: 'd08', company: 'Kestrel Robotics',  contact: 'A. Novak',     role: 'Procurement',        value: 22000, stage: 'qualified',   owner: 'ER', source: 'Outbound',       next: 'Confirm evaluation criteria',              history: ['Nov 12 — Qualified after 2 calls'] },
+  { id: 'd09', company: 'Strata Global Corp',contact: 'R. Haddad',    role: 'CFO',                value: 54000, stage: 'proposal',    owner: 'ER', source: 'Inbound SQL',   next: 'Proposal review meeting — Friday 14:00',    history: ['Nov 16 — Proposal v2 sent ($54,000)', 'Nov 13 — Pricing approved internally'] },
+  { id: 'd10', company: 'Meridian Wealth',   contact: 'C. Beaumont',  role: 'Managing Partner',   value: 36000, stage: 'proposal',    owner: 'MV', source: 'Referral',       next: 'Legal review of MSA terms',                history: ['Nov 15 — Proposal sent', 'Nov 09 — Demo to partners, positive'] },
+  { id: 'd11', company: 'Halcyon Foods',     contact: 'J. Osei',      role: 'COO',                value: 24500, stage: 'proposal',    owner: 'SJ', source: 'Trade show',     next: 'Answer security questionnaire',            history: ['Nov 14 — Proposal sent, awaiting sign-off'] },
+  { id: 'd12', company: 'Bluepeak Labs',     contact: 'S. Lindgren',  role: 'Lab Director',       value: 18000, stage: 'proposal',    owner: 'JD', source: 'Outbound',       next: 'Final pricing walkthrough',                history: ['Nov 12 — Proposal v1 sent'] },
+  { id: 'd13', company: 'Atlas Freight',     contact: 'D. Kovac',     role: 'CEO',                value: 32500, stage: 'negotiation', owner: 'ER', source: 'Inbound SQL',   next: 'Negotiate payment terms — 30 vs 60 days',   history: ['Nov 16 — Verbal yes, terms open', 'Nov 14 — Contract redlines exchanged'] },
+  { id: 'd14', company: 'Copperfield Legal', contact: 'H. Weiss',     role: 'Managing Partner',   value: 24000, stage: 'negotiation', owner: 'MV', source: 'Partner',        next: 'Final discount approval from finance',     history: ['Nov 15 — 8% discount requested', 'Nov 11 — Legal approved MSA'] },
+  { id: 'd15', company: 'Northgate Health',  contact: 'E. Fontaine',  role: 'CIO',                value: 21000, stage: 'negotiation', owner: 'SJ', source: 'Referral',       next: 'Security sign-off meeting',                history: ['Nov 14 — Procurement loop closed'] },
+  { id: 'd16', company: 'Solstice Media',    contact: 'G. Romano',    role: 'CMO',                value: 14500, stage: 'negotiation', owner: 'JD', source: 'Outbound',       next: 'Confirm start date and onboarding',        history: ['Nov 13 — Terms agreed, signature pending'] },
+  { id: 'd17', company: 'Nordic Capital Labs', contact: 'F. Berg',    role: 'Partner',            value: 58000, stage: 'closed',      owner: 'ER', source: 'Referral',       outcome: 'won',  next: 'Onboarding kickoff — Dec 1',            history: ['Nov 12 — WON · Contract signed $58,000', 'Nov 05 — Proposal accepted'] },
+  { id: 'd18', company: 'Zenith Cloud Core', contact: 'Y. Tanaka',    role: 'VP Engineering',     value: 45500, stage: 'closed',      owner: 'MV', source: 'Inbound SQL',   outcome: 'won',  next: 'Renewal review in 12 months',           history: ['Nov 10 — WON · Contract signed $45,500'] },
+  { id: 'd19', company: 'Pioneer Bank',      contact: 'O. Diallo',    role: 'Head of Digital',    value: 23700, stage: 'closed',      owner: 'SJ', source: 'Partner',        outcome: 'won',  next: 'Expansion conversation in Q1',          history: ['Nov 08 — WON · Contract signed $23,700'] },
+  { id: 'd20', company: 'Ironwood Capital',  contact: 'B. Strauss',   role: 'CFO',                value: 12800, stage: 'closed',      owner: 'JD', source: 'Outbound',       outcome: 'lost', next: 'Revisit in Q1 — budget frozen',           history: ['Nov 09 — LOST · Budget frozen for 2026', 'Nov 02 — Proposal declined'] },
+  { id: 'd21', company: 'Harbor & Grey',     contact: 'N. Petrova',   role: 'Operations Dir.',    value: 9400,  stage: 'closed',      owner: 'MV', source: 'Trade show',     outcome: 'lost', next: 'Nurture — check back in January',        history: ['Nov 07 — LOST · Chose incumbent vendor'] },
+  { id: 'd22', company: 'Lumen Analytics',   contact: 'W. Chen',      role: 'CTO',                value: 6100,  stage: 'closed',      owner: 'ER', source: 'Inbound SQL',   outcome: 'lost', next: 'Nurture — product fit in 6 months',       history: ['Nov 06 — LOST · Timing, revisit Q2'] },
+];
+const FUNNEL = [ { label: 'Lead', count: 128 }, { label: 'Qualified', count: 64 }, { label: 'Proposal', count: 38 }, { label: 'Negotiation', count: 21 }, { label: 'Won', count: 15 } ];
+const ACTIVITY = [
+  { icon: 'call',        color: 'sky',     title: 'Call with Strata Global — proposal review', time: 'Today · 14:00', who: 'ER' },
+  { icon: 'mail',        color: 'gold',    title: 'Proposal v2 sent to Meridian Wealth',       time: 'Today · 11:20', who: 'MV' },
+  { icon: 'handshake',   color: 'emerald', title: 'Nordic Capital Labs signed — $58,000',      time: 'Yesterday',     who: 'ER' },
+  { icon: 'groups',      color: 'sky',     title: 'Discovery meeting — Kestrel Robotics',      time: 'Yesterday',     who: 'SJ' },
+  { icon: 'description', color: 'rose',    title: 'Ironwood Capital lost — budget frozen',     time: 'Nov 09',        who: 'JD' },
+];
+const REPS = [
+  { rank: 1, medal: 'GOLD',   color: '#E8B34B', initials: 'ER', name: 'Elena Rostova',  value: 198400, quota: 96 },
+  { rank: 2, medal: 'SILVER', color: '#C0C7D1', initials: 'MV', name: 'Marcus Vance',   value: 154600, quota: 82 },
+  { rank: 3, medal: 'BRONZE', color: '#D08A4B', initials: 'SJ', name: 'Sarah Jenkins',  value: 133200, quota: 74 },
+];
+
+/* ================= HELPERS ================= */
+const $ = (s) => document.querySelector(s);
+const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let searchQuery = '';
+let sortByValue = true;
+let currentDealId = null;
+
+function animateNumber(el, target, fmt) {
+  if (reducedMotion) { el.textContent = fmt(target); return; }
+  const start = performance.now(), dur = 800;
+  function tick(t) {
+    const p = Math.min(1, (t - start) / dur), e = 1 - Math.pow(1 - p, 3);
+    el.textContent = fmt(target * e);
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+function toast(msg) {
+  const t = $('#toast'); $('#toast-msg').textContent = msg;
+  t.classList.remove('hidden'); t.firstElementChild.classList.remove('toast-in'); void t.offsetWidth;
+  t.firstElementChild.classList.add('toast-in');
+  clearTimeout(t._timer); t._timer = setTimeout(() => t.classList.add('hidden'), 2800);
+}
+
+/* ================= RENDER ================= */
+function openDeals() { return DEALS.filter(d => d.stage !== 'closed'); }
+function closedDeals() { return DEALS.filter(d => d.stage === 'closed'); }
+
+function renderAll() {
+  renderKPIs();
+  renderKanban();
+  renderFunnel();
+  renderActivity();
+  renderLeaderboard();
+}
+
+function renderKPIs() {
+  const open = openDeals();
+  const pipeline = open.reduce((s, d) => s + d.value, 0);
+  const closed = closedDeals();
+  const won = closed.filter(d => d.outcome === 'won');
+  const lost = closed.filter(d => d.outcome === 'lost');
+  const winRate = closed.length ? Math.round(won.length / closed.length * 100) : 0;
+  const avg = open.length ? pipeline / open.length : 0;
+  const values = open.map(d => d.value).sort((a, b) => a - b);
+  const median = values.length ? values[Math.floor(values.length / 2)] : 0;
+  const pct = Math.min(100, Math.round(pipeline / QUOTA * 100));
+
+  animateNumber($('#kpi-pipeline'), pipeline, money);
+  animateNumber($('#kpi-open'), open.length, (n) => String(Math.round(n)));
+  animateNumber($('#kpi-winrate'), winRate, (n) => Math.round(n) + '%');
+  animateNumber($('#kpi-avg'), avg, money);
+  $('#kpi-median').textContent = money(median);
+  $('#kpi-winrate-sub').innerHTML = '<span>Qualified-to-Close</span><span class="text-emerald font-semibold">' + won.length + ' won / ' + closed.length + ' closed</span>';
+  $('#kanban-count').textContent = DEALS.length + ' DEALS';
+
+  // Dial
+  const arc = $('#dial-arc');
+  arc.style.strokeDashoffset = (301.6 * (1 - pct / 100)).toFixed(1);
+  animateNumber($('#dial-pct'), pct, (n) => Math.round(n) + '%');
+  $('#dial-value').textContent = money(pipeline);
+  $('#dial-remaining').textContent = money(Math.max(0, QUOTA - pipeline));
+}
+
+function dealMatches(d) {
+  if (!searchQuery) return true;
+  const q = searchQuery.toLowerCase();
+  return [d.company, d.contact, d.role, d.owner, d.source, d.next].join(' ').toLowerCase().includes(q);
+}
+
+function cardHTML(d) {
+  const stage = STAGES.find(s => s.id === d.stage);
+  const owner = OWNERS[d.owner];
+  const prob = d.stage === 'closed' ? (d.outcome === 'won' ? 100 : 0) : stage.prob;
+  const statusLine = d.stage === 'closed'
+    ? (d.outcome === 'won' ? '<span class="text-emerald font-semibold">100% WON</span>' : '<span class="text-rose font-semibold">LOST</span>')
+    : '<span class="text-text-muted uppercase">Prob: <span class="text-text-secondary font-semibold">' + prob + '%</span></span>';
+  return '<article draggable="true" data-deal="' + d.id + '" class="deal-card group bg-ink-bg rounded border border-border-hairline hover:border-gold/40 p-3">'
+    + '<div class="w-full h-0.5 rounded-t mb-2.5" style="background:' + (d.stage === 'closed' && d.outcome === 'lost' ? '#FB7185' : d.stage === 'closed' ? '#34D399' : stage.color) + '"></div>'
+    + '<header class="flex items-start justify-between gap-2 mb-1.5"><div class="min-w-0">'
+    + '<h3 class="font-headline text-[13px] font-semibold text-text-primary group-hover:text-gold transition-colors leading-snug">' + d.company + '</h3>'
+    + '<p class="font-body text-[11px] text-text-muted mt-0.5">' + d.contact + ' · ' + d.role + '</p></div>'
+    + '<span class="font-mono text-[13px] font-bold text-gold tabular-nums shrink-0">' + money(d.value) + '</span></header>'
+    + '<div class="my-2 py-1.5 border-y border-border-subtle/60 flex items-center justify-between text-[10px] font-mono">' + statusLine
+    + '<span class="text-text-secondary">' + d.source + '</span></div>'
+    + '<div class="flex items-start justify-between gap-2 pt-0.5">'
+    + '<p class="font-body text-[11px] text-text-secondary clamp-2 leading-snug"><span class="text-text-muted">Next:</span> ' + d.next + '</p>'
+    + '<div class="w-5 h-5 shrink-0 rounded-full bg-panel-hover border border-border-hairline flex items-center justify-center font-mono text-[9px] font-bold" style="color:' + owner.color + '" title="' + owner.name + '">' + d.owner + '</div>'
+    + '</div></article>';
+}
+
+function renderKanban() {
+  const board = $('#kanban');
+  board.innerHTML = STAGES.map(stage => {
+    let deals = DEALS.filter(d => d.stage === stage.id && dealMatches(d));
+    if (sortByValue) deals.sort((a, b) => b.value - a.value); else deals.sort((a, b) => a.company.localeCompare(b.company));
+    const all = DEALS.filter(d => d.stage === stage.id);
+    const total = all.reduce((s, d) => s + d.value, 0);
+    const cards = deals.length
+      ? deals.map(cardHTML).join('')
+      : '<div class="border border-dashed border-border-hairline rounded p-4 text-center"><p class="font-mono text-[11px] text-text-muted">' + (searchQuery ? 'NO MATCH IN THIS STAGE' : 'NO DEALS HERE YET — DRAG ONE IN') + '</p></div>';
+    return '<div class="kanban-col w-[272px] sm:w-[300px] lg:w-auto shrink-0 snap-start bg-panel-bg rounded border border-border-hairline p-3 flex flex-col gap-3" data-stage="' + stage.id + '">'
+      + '<div class="flex items-center justify-between border-b border-border-subtle pb-2.5">'
+      + '<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:' + stage.color + '"></span>'
+      + '<span class="font-mono text-[12px] tracking-wide text-text-primary font-semibold">' + stage.name.toUpperCase() + '</span>'
+      + '<span class="min-w-5 h-5 px-1 rounded-full bg-panel-hover border border-border-hairline font-mono text-[10px] flex items-center justify-center text-text-muted">' + all.length + '</span></div>'
+      + '<span class="font-mono text-[11px] text-gold font-semibold tabular-nums">' + money(total) + '</span></div>'
+      + '<div class="col-body flex flex-col gap-2.5 min-h-[60px] rounded">' + cards + '</div></div>';
+  }).join('');
+  bindCards();
+}
+
+function renderFunnel() {
+  const max = FUNNEL[0].count;
+  $('#funnel').innerHTML = FUNNEL.map((s, i) => {
+    const conv = i === 0 ? null : (s.count / FUNNEL[i - 1].count * 100).toFixed(1) + '%';
+    const w = Math.round(s.count / max * 100);
+    const color = i === FUNNEL.length - 1 ? '#34D399' : (i === 0 ? '#E8B34B' : '#38BDF8');
+    return '<div>'
+      + '<div class="flex items-center justify-between text-xs font-mono mb-1"><span class="text-text-secondary">' + s.label.toUpperCase() + '</span>'
+      + '<span><span class="text-text-primary font-semibold tabular-nums">' + s.count + '</span>' + (conv ? ' <span class="text-emerald">· ' + conv + ' conv.</span>' : '') + '</span></div>'
+      + '<div class="w-full h-3 bg-ink-bg rounded-sm overflow-hidden border border-border-subtle"><div class="funnel-bar h-full rounded-sm" style="width:' + w + '%;background:' + color + ';animation-delay:' + (i * 0.08) + 's"></div></div></div>';
+  }).join('');
+  $('#funnel-yield').textContent = (FUNNEL[FUNNEL.length - 1].count / FUNNEL[0].count * 100).toFixed(1) + '%';
+}
+
+function renderActivity() {
+  $('#activity-count').textContent = ACTIVITY.length + ' EVENTS';
+  const colors = { sky: '#38BDF8', gold: '#E8B34B', emerald: '#34D399', rose: '#FB7185' };
+  $('#activity').innerHTML = ACTIVITY.map(a =>
+    '<div class="flex items-start gap-3 p-2.5 rounded bg-ink-bg/60 border border-border-hairline hover:border-gold/30 transition-colors">'
+    + '<span class="ic text-base shrink-0 mt-0.5" data-ic="' + a.icon + '" style="color:' + colors[a.color] + '"></span>'
+    + '<div class="flex-1 min-w-0"><p class="text-[13px] text-text-primary leading-snug">' + a.title + '</p>'
+    + '<p class="font-mono text-[10px] text-text-muted mt-1">' + a.time + ' · ' + OWNERS[a.who].name + '</p></div></div>'
+  ).join('');
+  hydrateIcons($('#activity'));
+}
+
+function renderLeaderboard() {
+  $('#leaderboard').innerHTML = REPS.map(r =>
+    '<div class="p-3 rounded bg-ink-bg border border-border-hairline relative flex items-center gap-3 hover:border-gold/30 transition-colors">'
+    + '<div class="w-9 h-9 rounded bg-panel-hover border border-border-hairline flex items-center justify-center font-mono text-[10px] font-bold shrink-0" style="color:' + r.color + '" title="' + r.name + '">' + r.initials + '</div>'
+    + '<div class="flex-1 min-w-0"><p class="text-[13px] font-semibold text-text-primary truncate">' + r.name + '</p>'
+    + '<p class="font-mono text-[10px] text-text-muted mt-0.5"><span style="color:' + r.color + '">' + r.medal + '</span> · Quota attained: ' + r.quota + '%</p></div>'
+    + '<div class="text-right shrink-0"><p class="font-mono text-[10px] text-text-muted">CLOSED VALUE</p><p class="font-mono text-[14px] font-bold tabular-nums" style="color:' + (r.rank === 1 ? '#E8B34B' : '#F1F5F9') + '">' + money(r.value) + '</p></div></div>'
+  ).join('');
+}
+
+/* ================= DRAG & DROP ================= */
+let draggedId = null;
+function bindCards() {
+  document.querySelectorAll('.deal-card').forEach(card => {
+    card.addEventListener('dragstart', (e) => {
+      draggedId = card.dataset.deal;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', draggedId);
+    });
+    card.addEventListener('dragend', () => { draggedId = null; card.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drop-target')); });
+    card.addEventListener('click', () => openDrawer(card.dataset.deal));
+  });
+  document.querySelectorAll('.kanban-col').forEach(col => {
+    col.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; col.classList.add('drop-target'); });
+    col.addEventListener('dragleave', () => col.classList.remove('drop-target'));
+    col.addEventListener('drop', (e) => {
+      e.preventDefault(); col.classList.remove('drop-target');
+      const id = e.dataTransfer.getData('text/plain') || draggedId;
+      moveDeal(id, col.dataset.stage);
+    });
+  });
+}
+function moveDeal(id, stageId) {
+  const d = DEALS.find(x => x.id === id);
+  if (!d || d.stage === stageId) return;
+  const from = STAGES.find(s => s.id === d.stage).name;
+  d.stage = stageId;
+  if (stageId === 'closed' && !d.outcome) d.outcome = 'won';
+  if (stageId !== 'closed') delete d.outcome;
+  renderAll();
+  toast(d.company + ' moved: ' + from + ' → ' + STAGES.find(s => s.id === stageId).name);
+}
+
+/* ================= DRAWER ================= */
+function openDrawer(id) {
+  const d = DEALS.find(x => x.id === id);
+  if (!d) return;
+  currentDealId = id;
+  const stage = STAGES.find(s => s.id === d.stage);
+  const owner = OWNERS[d.owner];
+  const prob = d.stage === 'closed' ? (d.outcome === 'won' ? 100 : 0) : stage.prob;
+  const outcomeBadge = d.stage === 'closed'
+    ? (d.outcome === 'won'
+      ? '<span class="font-mono text-[11px] px-2 py-0.5 rounded bg-emerald-muted text-emerald border border-emerald/30 font-semibold">WON · 100%</span>'
+      : '<span class="font-mono text-[11px] px-2 py-0.5 rounded bg-rose-muted text-rose border border-rose/30 font-semibold">LOST</span>')
+    : '<span class="font-mono text-[11px] px-2 py-0.5 rounded bg-panel-hover text-text-secondary border border-border-hairline">' + prob + '% PROBABILITY</span>';
+  $('#drawer-body').innerHTML =
+    '<div class="flex items-start justify-between gap-3"><div><h3 class="font-display font-bold text-2xl leading-tight">' + d.company + '</h3>'
+    + '<p class="text-[13px] text-text-secondary mt-1">' + d.contact + ' · ' + d.role + '</p></div>'
+    + '<span class="font-mono text-lg font-bold text-gold tabular-nums shrink-0">' + money(d.value) + '</span></div>'
+    + '<div class="flex flex-wrap gap-2 mt-4"><span class="font-mono text-[11px] px-2 py-0.5 rounded border border-border-hairline text-text-secondary" style="color:' + stage.color + '">' + stage.name.toUpperCase() + '</span>' + outcomeBadge + '</div>'
+    + '<div class="grid grid-cols-2 gap-3 mt-5">'
+    + '<div class="bg-ink-bg border border-border-hairline rounded p-3"><p class="font-mono text-[10px] tracking-[0.16em] text-text-muted">OWNER</p><p class="text-[13px] font-semibold mt-1.5">' + owner.name + '</p></div>'
+    + '<div class="bg-ink-bg border border-border-hairline rounded p-3"><p class="font-mono text-[10px] tracking-[0.16em] text-text-muted">SOURCE</p><p class="text-[13px] font-semibold mt-1.5">' + d.source + '</p></div></div>'
+    + '<div class="bg-ink-bg border border-border-hairline rounded p-3 mt-3"><p class="font-mono text-[10px] tracking-[0.16em] text-text-muted">NEXT STEP</p><p class="text-[13px] leading-relaxed mt-1.5">' + d.next + '</p></div>'
+    + '<div class="mt-5"><p class="font-mono text-[10px] tracking-[0.16em] text-text-muted mb-2">HISTORY</p>'
+    + d.history.map(h => '<div class="flex gap-2.5 py-2 border-b border-border-subtle/60 last:border-0"><span class="w-1.5 h-1.5 rounded-full bg-gold mt-1.5 shrink-0"></span><p class="text-[13px] text-text-secondary leading-snug">' + h + '</p></div>').join('') + '</div>';
+  const idx = STAGES.findIndex(s => s.id === d.stage);
+  $('#drawer-advance').style.display = (d.stage === 'closed') ? 'none' : 'block';
+  $('#drawer-advance').textContent = idx < 3 ? 'Advance to ' + STAGES[idx + 1].name + ' →' : 'Close deal →';
+  $('#drawer-won').style.display = (d.stage === 'closed' && d.outcome === 'won') ? 'none' : 'block';
+  $('#drawer-lost').style.display = (d.stage === 'closed' && d.outcome === 'lost') ? 'none' : 'block';
+  $('#drawer').style.transform = 'translateX(0)';
+  const bd = $('#drawer-backdrop');
+  bd.style.opacity = '1'; bd.style.pointerEvents = 'auto';
+}
+function closeDrawer() {
+  $('#drawer').style.transform = 'translateX(100%)';
+  const bd = $('#drawer-backdrop');
+  bd.style.opacity = '0'; bd.style.pointerEvents = 'none';
+  currentDealId = null;
+}
+$('#drawer-close').addEventListener('click', closeDrawer);
+$('#drawer-backdrop').addEventListener('click', closeDrawer);
+$('#drawer-advance').addEventListener('click', () => {
+  const d = DEALS.find(x => x.id === currentDealId); if (!d) return;
+  const idx = STAGES.findIndex(s => s.id === d.stage);
+  if (idx < 4) { moveDeal(d.id, STAGES[idx + 1].id); openDrawer(d.id); }
+});
+$('#drawer-won').addEventListener('click', () => {
+  const d = DEALS.find(x => x.id === currentDealId); if (!d) return;
+  d.stage = 'closed'; d.outcome = 'won'; renderAll(); openDrawer(d.id); toast(d.company + ' marked WON · ' + money(d.value));
+});
+$('#drawer-lost').addEventListener('click', () => {
+  const d = DEALS.find(x => x.id === currentDealId); if (!d) return;
+  d.stage = 'closed'; d.outcome = 'lost'; renderAll(); openDrawer(d.id); toast(d.company + ' marked LOST');
+});
+
+/* ================= SEARCH / SORT / MODAL ================= */
+const searchInput = $('#vault-search');
+searchInput.addEventListener('input', () => {
+  searchQuery = searchInput.value.trim();
+  $('#clear-search-btn').classList.toggle('hidden', !searchQuery);
+  renderKanban();
+});
+$('#clear-search-btn').addEventListener('click', () => {
+  searchInput.value = ''; searchQuery = '';
+  $('#clear-search-btn').classList.add('hidden'); renderKanban(); searchInput.focus();
+});
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); searchInput.focus(); searchInput.select(); }
+  if (e.key === 'Escape') { closeDrawer(); closeModal(); }
+});
+$('#sort-btn').addEventListener('click', () => {
+  sortByValue = !sortByValue;
+  $('#sort-btn').textContent = sortByValue ? 'Value ↓' : 'Name A–Z';
+  renderKanban();
+});
+function openModal() {
+  const bd = $('#modal-backdrop');
+  bd.style.opacity = '1'; bd.style.pointerEvents = 'auto';
+  $('#modal').style.transform = 'scale(1)';
+  setTimeout(() => $('#f-company').focus(), 120);
+}
+function closeModal() {
+  const bd = $('#modal-backdrop');
+  bd.style.opacity = '0'; bd.style.pointerEvents = 'none';
+  $('#modal').style.transform = 'scale(.95)';
+}
+$('#new-deal-btn').addEventListener('click', openModal);
+$('#modal-close').addEventListener('click', closeModal);
+$('#modal-backdrop').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+$('#new-deal-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const company = $('#f-company').value.trim();
+  const contact = $('#f-contact').value.trim();
+  const role = $('#f-role').value.trim() || 'Decision maker';
+  const value = Math.max(100, Math.round(Number($('#f-value').value) || 0));
+  const stage = $('#f-stage').value;
+  const next = $('#f-next').value.trim() || 'Intro call to schedule';
+  DEALS.push({ id: 'd' + Date.now(), company, contact, role, value, stage, owner: 'JD', source: 'Manual entry', next, history: ['Just now — Deal created manually'] });
+  e.target.reset();
+  closeModal(); renderAll();
+  toast(company + ' added to ' + STAGES.find(s => s.id === stage).name + ' · ' + money(value));
+});
+
+/* ================= ICONS (inline SVG — no icon-font dependency) ================= */
+const ICONS = {
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
+  add: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  view_kanban: '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="4" width="4.5" height="16" rx="1"/><rect x="9.75" y="4" width="4.5" height="10" rx="1"/><rect x="16.5" y="4" width="4.5" height="13" rx="1"/></svg>',
+  filter_alt: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18l-7 8v5.5l-4 2.5v-8L3 5z"/></svg>',
+  history: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3.5 2"/></svg>',
+  leaderboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>',
+  close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  check_circle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>',
+  call: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7.5l9 6 9-6"/></svg>',
+  handshake: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M9 14l2 2 4-4.5"/></svg>',
+  groups: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M17.5 14.6a6.5 6.5 0 0 1 4 5.4"/></svg>',
+  description: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M9 13h6M9 17h6"/></svg>',
+};
+function hydrateIcons(root) {
+  (root || document).querySelectorAll("[data-ic]").forEach((el) => { if (!el.innerHTML) el.innerHTML = ICONS[el.dataset.ic] || ""; });
+}
+
+/* ================= INIT ================= */
+hydrateIcons();
+renderAll();
+</script>
+<script>
+/* Hover pass 2026-11-18 : survols sur la jauge quota, les sparklines KPI et le funnel.
+   Infobulle unique qui suit le curseur ; valeurs exactes lues dans les données/le DOM. */
+(function(){
+  const tip = document.createElement("div");
+  tip.setAttribute("aria-hidden", "true");
+  tip.style.cssText = "position:fixed;z-index:90;pointer-events:none;display:none;background:#0D1219;border:1px solid rgba(232,179,75,.4);border-radius:6px;padding:6px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.5;color:#F1F5F9;box-shadow:0 12px 28px rgba(0,0,0,.5);white-space:nowrap";
+  document.body.appendChild(tip);
+  function show(html, e){
+    tip.innerHTML = html;
+    tip.style.display = "block";
+    move(e);
+  }
+  function move(e){
+    if (!e) return;
+    tip.style.left = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 10) + "px";
+    tip.style.top = Math.min(e.clientY + 16, window.innerHeight - tip.offsetHeight - 10) + "px";
+  }
+  function hide(){ tip.style.display = "none"; }
+  const esc = s => s.replace(/\s+/g, " ").trim();
+
+  /* --- Jauge quota --- */
+  const arc = document.getElementById("dial-arc");
+  const zone = arc ? arc.closest(".relative") : null;
+  if (zone) {
+    zone.classList.add("dial-zone");
+    zone.addEventListener("mouseenter", e => show(
+      "QUOTA — <b>" + document.getElementById("dial-pct").textContent + "</b> attained<br>" +
+      document.getElementById("dial-value").textContent + " of $600,000 · " +
+      document.getElementById("dial-remaining").textContent + " remaining", e));
+    zone.addEventListener("mousemove", move);
+    zone.addEventListener("mouseleave", hide);
+  }
+
+  /* --- Sparklines des 4 KPI : la tuile affiche label + valeur exacte + ligne de contexte --- */
+  document.querySelectorAll('svg[viewBox="0 0 200 32"]').forEach(svg => {
+    const tile = svg.closest("div");
+    if (!tile) return;
+    svg.classList.add("kpi-spark");
+    svg.removeAttribute("aria-hidden");
+    const label = tile.querySelector("span");
+    const value = tile.querySelector('p[id^="kpi-"]');
+    const footers = tile.querySelectorAll("p");
+    const foot = footers.length ? footers[footers.length - 1] : null;
+    svg.addEventListener("mouseenter", e => show(
+      "<b>" + (label ? esc(label.textContent) : "KPI") + "</b> — " + (value ? esc(value.textContent) : "") +
+      (foot ? "<br>" + esc(foot.textContent) : ""), e));
+    svg.addEventListener("mousemove", move);
+    svg.addEventListener("mouseleave", hide);
+  });
+
+  /* --- Funnel de conversion (délégation : le conteneur survit aux re-rendus) --- */
+  const funnel = document.getElementById("funnel");
+  if (funnel && typeof FUNNEL !== "undefined") {
+    funnel.addEventListener("mousemove", move);
+    funnel.addEventListener("mouseover", e => {
+      const row = e.target.closest("#funnel > div");
+      if (!row || !funnel.contains(row)) return;
+      const i = [...funnel.children].indexOf(row);
+      const s = FUNNEL[i]; if (!s) return;
+      [...funnel.children].forEach(r => { r.style.opacity = r === row ? 1 : .45; r.classList.toggle("is-hot", r === row); });
+      const share = (s.count / FUNNEL[0].count * 100).toFixed(1);
+      const conv = i === 0 ? "" : " · " + (s.count / FUNNEL[i - 1].count * 100).toFixed(1) + "% conv. from " + FUNNEL[i - 1].label;
+      show("<b>" + s.label.toUpperCase() + "</b> — " + s.count + " deals · " + share + "% of Lead" + conv, e);
+    });
+    funnel.addEventListener("mouseleave", () => {
+      [...funnel.children].forEach(r => { r.style.opacity = 1; r.classList.remove("is-hot"); });
+      hide();
+    });
+  }
+})();
+</script>
+</body>
+</html>
