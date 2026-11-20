@@ -1,0 +1,1745 @@
+<!DOCTYPE html><html lang="en" class="dark"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orbit — Program Control Tower</title>
+  <meta name="description" content="Orbit is a dark-first program control tower template: portfolio pilotage with RAG health tracking, a clickable distribution donut, live status tabs and filters, a working multi-tab console shell and detection-signal cards. Single standalone HTML + Tailwind file, no backend.">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'surface': '#06090E',
+        'on-surface': '#F1F5F9',
+        'on-surface-variant': '#94A3B8',
+        'surface-container-low': '#0B1019',
+        'surface-container': '#111827',
+        'surface-container-high': '#182235',
+        'primary': '#4F46E5',
+        'on-primary': '#FFFFFF',
+        'primary-container': '#1E1B4B',
+        'on-primary-container': '#C7D2FE',
+        'secondary': '#0F766E',
+        'on-secondary': '#FFFFFF',
+        'secondary-container': '#134E4A',
+        'on-secondary-container': '#99F6E4',
+        'tertiary': '#6D28D9',
+        'on-tertiary': '#FFFFFF',
+        'tertiary-container': '#2E1065',
+        'on-tertiary-container': '#DDD6FE',
+        'success': '#2DD4BF',
+        'on-success': '#042F2E',
+        'warning': '#FBBF24',
+        'on-warning': '#1C1917',
+        'error': '#FB7185',
+        'on-error': '#4C0519',
+        'neutral': '#94A3B8',
+        'on-neutral': '#06090E',
+        'outline': '#475569',
+        'outline-variant': '#1E293B',
+        'indigo-accent': '#818CF8',
+        'teal-accent': '#2DD4BF',
+        'amber-accent': '#FBBF24',
+        'violet-accent': '#A78BFA',
+        'rose-accent': '#FB7185',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '14px',
+        'lg': '16px',
+        'xl': '20px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '28px',
+        'page-margin': '32px',
+      },
+      fontFamily: {
+        'display': ['"Red Hat Text"', 'sans-serif'],
+        'headline': ['"Red Hat Text"', 'sans-serif'],
+        'title': ['"Radio Canada Big"', 'sans-serif'],
+        'body': ['"Radio Canada Big"', 'sans-serif'],
+        'label': ['"Radio Canada Big"', 'sans-serif'],
+        'mono': ['"Source Code Pro"', 'monospace'],
+      },
+      fontSize: {
+        'display-lg': ['36px', { lineHeight: '42px', letterSpacing: '-0.5px', fontWeight: '600' }],
+        'display-lg-mobile': ['28px', { lineHeight: '34px', letterSpacing: '-0.25px', fontWeight: '600' }],
+        'headline-lg': ['28px', { lineHeight: '34px', letterSpacing: '-0.4px', fontWeight: '600' }],
+        'headline-md': ['18px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '600' }],
+        'headline-sm': ['15px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'title-md': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-lg': ['15px', { lineHeight: '22px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-md': ['13px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['12px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '400' }],
+        'label-lg': ['13px', { lineHeight: '18px', letterSpacing: '0.1px', fontWeight: '500' }],
+        'label-md': ['12px', { lineHeight: '16px', letterSpacing: '0.2px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.5px', fontWeight: '600' }],
+        'mono-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'mono-sm': ['11px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '120ms',
+        'surface-enter': '220ms',
+        'surface-exit': '150ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'surface-enter': '0ms',
+        'surface-exit': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'surface-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+        'surface-exit': 'cubic-bezier(0.3, 0, 1, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@400;500;600;700&amp;family=Radio+Canada+Big:wght@400;500;600;700&amp;family=Source+Code+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined, .material-symbols-rounded, .material-symbols-sharp, .material-icons {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      line-height: 1 !important;
+      box-sizing: content-box;
+      overflow: hidden;
+      white-space: nowrap;
+      direction: ltr;
+      vertical-align: middle;
+    }
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.62);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 10px 30px -10px rgba(0, 0, 0, 0.55);
+    }
+    .glass-sidebar {
+      background: rgba(11, 16, 25, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .ambient-canvas {
+      background-image:
+        radial-gradient(ellipse 65% 40% at 22% 0%, rgba(79, 70, 229, 0.14), transparent 70%),
+        radial-gradient(ellipse 45% 35% at 88% 8%, rgba(45, 212, 191, 0.08), transparent 70%),
+        radial-gradient(ellipse 50% 40% at 75% 85%, rgba(109, 40, 217, 0.08), transparent 70%);
+    }
+    .donut-segment {
+      cursor: pointer;
+      transition: opacity 120ms ease-out, stroke-width 120ms ease-out;
+    }
+    .donut-segment:hover {
+      opacity: 0.88;
+    }
+    /* Hover pass 2026-11-18 : infobulle graphe + évidence des barres de progression */
+    .orbit-tip{position:fixed;z-index:120;pointer-events:none;display:none;background:rgba(10,16,30,.96);border:1px solid rgba(148,163,184,.4);border-radius:6px;padding:6px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#E7EEF7;box-shadow:0 12px 28px rgba(0,0,0,.5);white-space:nowrap}
+    [data-prog] .h-full{transition:filter .15s ease}
+    [data-prog]:hover .h-full{filter:brightness(1.5)}
+
+    /* ---- Orbit adaptation: light theme, responsive shell, motion ---- */
+    html.light .bg-surface{background-color:#F4F6FA}
+    html.light .bg-surface-container-low{background-color:#EEF1F6}
+    html.light .bg-surface-container{background-color:#E9EDF3}
+    html.light .bg-surface-container-high{background-color:#DFE6F0}
+    html.light .bg-surface-variant{background-color:#E2E8F0}
+    html.light .bg-primary-container{background-color:#E0E7FF}
+    html.light .bg-secondary-container{background-color:#CCFBF1}
+    html.light .bg-tertiary-container{background-color:#EDE9FE}
+    html.light .bg-error-container{background-color:#FFE4E6}
+    html.light .text-on-surface,html.light .text-on-surface-container-high{color:#0F172A}
+    html.light .text-on-surface-variant{color:#64748B}
+    html.light .text-on-primary-container{color:#3730A3}
+    html.light .text-on-secondary-container{color:#115E59}
+    html.light .text-on-tertiary-container{color:#5B21B6}
+    html.light .border-outline-variant{border-color:#E2E8F0}
+    html.light .border-outline{border-color:#CBD5E1}
+    html.light .divide-outline-variant>:not([hidden])~:not([hidden]){border-color:#E2E8F0}
+    html.light .glass-panel{background:rgba(255,255,255,.78);box-shadow:inset 0 1px 0 0 rgba(255,255,255,.9),0 10px 30px -12px rgba(15,23,42,.18)}
+    html.light .glass-sidebar{background:rgba(244,246,250,.92)}
+    html.light .ambient-canvas{background-image:radial-gradient(ellipse 65% 40% at 22% 0%, rgba(79,70,229,.10), transparent 70%),radial-gradient(ellipse 45% 35% at 88% 8%, rgba(15,118,110,.08), transparent 70%),radial-gradient(ellipse 50% 40% at 75% 85%, rgba(109,40,217,.07), transparent 70%)}
+    html.light .donut-track{stroke:#E2E8F0}
+    html.light .text-indigo-accent{color:#4F46E5}
+    html.light .text-teal-accent{color:#0F766E}
+    html.light .text-amber-accent{color:#B45309}
+    html.light .text-rose-accent{color:#E11D48}
+    html.light .text-violet-accent{color:#7C3AED}
+    html.light .bg-teal-accent{background-color:#0F766E}
+    html.light .bg-amber-accent{background-color:#D97706}
+    html.light .bg-rose-accent{background-color:#E11D48}
+    html.light .bg-violet-accent{background-color:#7C3AED}
+    html.light .bg-indigo-accent{background-color:#4F46E5}
+    html.light .hover\:bg-surface-container\/70:hover{background-color:rgba(233,237,243,.7)}
+    html.light .hover\:bg-surface-container\/50:hover{background-color:rgba(233,237,243,.5)}
+    html.light .hover\:bg-surface-container-high:hover{background-color:#DFE6F0}
+    html.light .hover\:bg-surface-container-high\/80:hover{background-color:rgba(223,230,240,.8)}
+    html.light select option{background-color:#FFFFFF;color:#0F172A}
+    /* Tabs */
+    #console-tab-strip{scrollbar-width:none}
+    #console-tab-strip::-webkit-scrollbar{display:none}
+    #console-tab-strip .console-tab{flex-shrink:0}
+    .console-tab .tab-close{display:none;align-items:center;justify-content:center;width:16px;height:16px;border-radius:9999px;color:inherit;opacity:.65}
+    .console-tab:hover .tab-close,.console-tab[aria-selected="true"] .tab-close{display:inline-flex}
+    .console-tab .tab-close:hover{opacity:1;background:rgba(148,163,184,.25)}
+    .console-tab .tab-label{max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .rag-legend-btn.is-active{outline:2px solid currentColor;outline-offset:-2px}
+    /* Sidebar drawer under lg */
+    @media (max-width:1023.5px){
+      #orbit-sidebar{position:fixed;left:0;top:0;bottom:0;z-index:50;transform:translateX(-102%);transition:transform .25s cubic-bezier(.2,0,0,1);height:100dvh}
+      body.sidebar-open #orbit-sidebar{transform:none}
+      body.sidebar-open #sidebar-overlay{display:block}
+    }
+    /* Entrance */
+    @keyframes orbit-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .reveal{animation:orbit-rise .5s cubic-bezier(.2,0,0,1) both}
+    .orbit-panel{animation:orbit-rise .35s cubic-bezier(.2,0,0,1) both}
+    @media (prefers-reduced-motion: reduce){
+      *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;scroll-behavior:auto!important}
+    }
+
+    html.light .bg-primary-container\/80{background-color:rgba(224,231,255,0.8)}
+    html.light .bg-secondary-container\/70{background-color:rgba(204,251,241,0.7)}
+    html.light .bg-surface-container\/50{background-color:rgba(233,237,243,0.5)}
+    html.light .bg-surface-container\/70{background-color:rgba(233,237,243,0.7)}
+    html.light .bg-surface-container\/80{background-color:rgba(233,237,243,0.8)}
+    html.light .bg-surface-container\/90{background-color:rgba(233,237,243,0.9)}
+    html.light .bg-surface-container-high\/45{background-color:rgba(223,230,240,0.45)}
+    html.light .bg-surface-container-high\/70{background-color:rgba(223,230,240,0.7)}
+    html.light .bg-surface-container-high\/80{background-color:rgba(223,230,240,0.8)}
+    html.light .bg-surface-container-high\/90{background-color:rgba(223,230,240,0.9)}
+    html.light .bg-surface-container-low\/50{background-color:rgba(238,241,246,0.5)}
+    html.light .bg-surface-container-low\/70{background-color:rgba(238,241,246,0.7)}
+    html.light .bg-surface-container-low\/75{background-color:rgba(238,241,246,0.75)}
+    html.light .bg-surface-container-low\/80{background-color:rgba(238,241,246,0.8)}
+    html.light .bg-surface-container-low\/85{background-color:rgba(238,241,246,0.85)}
+    html.light .bg-surface-container-low\/90{background-color:rgba(238,241,246,0.9)}
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased selection:bg-primary/40 selection:text-on-surface">
+  <div class="min-h-screen w-full flex ambient-canvas relative" data-stitch-vh="min-h-screen===min-h-screen">
+
+    <!-- Left Dark Sidebar -->
+    <aside id="orbit-sidebar" class="w-64 shrink-0 min-h-screen glass-sidebar border-r border-outline-variant flex flex-col justify-between sticky top-0 self-start" data-stitch-vh="min-h-screen===min-h-screen">
+      <div class="flex flex-col">
+        <!-- Brand Mark -->
+        <div class="h-14 px-gutter-md flex items-center justify-between border-b border-outline-variant/70">
+          <div class="flex items-center gap-gutter-sm">
+            <div class="w-8 h-8 rounded bg-primary-container border border-indigo-accent/40 flex items-center justify-center shadow-sm">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="8" stroke="#818CF8" stroke-width="1.75" stroke-dasharray="3 2"></circle>
+                <circle cx="12" cy="12" r="3.2" fill="#2DD4BF"></circle>
+                <circle cx="18.2" cy="7.4" r="1.8" fill="#A78BFA"></circle>
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <span data-design-text-token="headline-sm" class="font-headline text-headline-sm text-on-surface tracking-tight">Orbit</span>
+              <span data-design-text-token="label-sm" class="font-label text-label-sm text-on-surface-variant">Control Tower</span>
+            </div>
+          </div>
+          <span class="px-1.5 py-0.5 rounded-sm bg-surface-container-high border border-outline-variant font-mono text-mono-sm text-indigo-accent">v4.2</span>
+        </div>
+
+        <!-- Navigation Groups -->
+        <nav aria-label="Primary navigation" class="px-3 py-gutter-md flex flex-col gap-gutter-md overflow-y-auto">
+          <!-- Group: Pilotage -->
+          <div class="flex flex-col gap-gutter-xs">
+            <div class="px-2.5 pb-1">
+              <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase text-on-surface-variant">Pilotage</span>
+            </div>
+            <a href="#overview" data-nav-item="Overview" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">dashboard</span>
+              <span data-design-text-token="label-lg" class="font-label text-label-lg">Overview</span>
+            </a>
+            <a href="#program-control" data-nav-item="Program Control" aria-current="page" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm bg-primary-container/80 text-on-primary-container border border-indigo-accent/30 transition-colors duration-state-change">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[18px] text-indigo-accent" aria-hidden="true">radar</span>
+                <span data-design-text-token="label-lg" class="font-label text-label-lg">Program Control</span>
+              </span>
+              <span class="w-1.5 h-1.5 rounded-full bg-teal-accent" aria-hidden="true"></span>
+            </a>
+            <a href="#ai-assistant" data-nav-item="AI Assistant" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[18px] text-violet-accent" aria-hidden="true">smart_toy</span>
+                <span data-design-text-token="label-lg" class="font-label text-label-lg">AI Assistant</span>
+              </span>
+            </a>
+            <a href="#notifications" data-nav-item="Notifications" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">notifications</span>
+                <span data-design-text-token="label-lg" class="font-label text-label-lg">Notifications</span>
+              </span>
+              <!-- COMPONENT: badge-numeric -->
+              <span data-component-id="badge-numeric" data-component-type="badge" data-component-variant="numeric" role="status" class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full bg-primary-container text-on-primary-container border border-indigo-accent/30 tabular-nums">
+                <span data-design-text-token="label-sm" class="font-label text-label-sm">4</span>
+              </span>
+            </a>
+
+            <!-- Search field pinned under Pilotage group -->
+            <div class="pt-2">
+              <label for="sidebar-search" class="sr-only">Search consoles and projects</label>
+              <div class="relative flex items-center">
+                <span class="material-symbols-outlined text-[16px] text-on-surface-variant absolute left-2.5 pointer-events-none" aria-hidden="true">search</span>
+                <input id="sidebar-search" type="search" placeholder="Search navigation or project…" class="w-full pl-8 pr-8 py-1.5 rounded-sm bg-surface-container/80 border border-outline-variant text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-indigo-accent focus:ring-1 focus:ring-indigo-accent">
+                <span class="absolute right-2 px-1 py-0.5 rounded-sm bg-surface-container-high border border-outline-variant font-mono text-mono-sm text-on-surface-variant pointer-events-none">/</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Group: People -->
+          <div class="flex flex-col gap-gutter-xs" data-nav-group="People">
+            <div class="px-2.5 pb-1">
+              <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase text-on-surface-variant">People</span>
+            </div>
+            <a href="#users" data-nav-item="Users" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">group</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Users</span>
+            </a>
+            <a href="#staff-permissions" data-nav-item="Staff &amp; Permissions" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">admin_panel_settings</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Staff &amp; Permissions</span>
+            </a>
+            <a href="#applications" data-nav-item="Applications" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">assignment_ind</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Applications</span>
+            </a>
+          </div>
+
+          <!-- Group: Operations -->
+          <div class="flex flex-col gap-gutter-xs" data-nav-group="Operations">
+            <div class="px-2.5 pb-1">
+              <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase text-on-surface-variant">Operations</span>
+            </div>
+            <a href="#projects-proposals" data-nav-item="Projects &amp; Proposals" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">folder_open</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Projects &amp; Proposals</span>
+            </a>
+            <a href="#estimates-quotes" data-nav-item="Estimates &amp; Quotes" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">request_quote</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Estimates &amp; Quotes</span>
+            </a>
+            <a href="#external-projects" data-nav-item="External Projects" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">public</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">External Projects</span>
+            </a>
+            <a href="#devcp-mandates" data-nav-item="Dev-CP Mandates" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">verified_user</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Dev-CP Mandates</span>
+            </a>
+            <a href="#missions" data-nav-item="Missions" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">rocket_launch</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Missions</span>
+            </a>
+            <a href="#internal-missions" data-nav-item="Internal Missions" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">work</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Internal Missions</span>
+            </a>
+            <a href="#incidents" data-nav-item="Incidents" class="flex items-center justify-between px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">warning</span>
+                <span data-design-text-token="body-md" class="font-body text-body-md">Incidents</span>
+              </span>
+              <span class="px-1.5 py-0.5 rounded-full bg-rose-accent/15 text-rose-accent border border-rose-accent/30 font-label text-label-sm tabular-nums">3</span>
+            </a>
+          </div>
+
+          <!-- Group: Finance -->
+          <div class="flex flex-col gap-gutter-xs" data-nav-group="Finance">
+            <div class="px-2.5 pb-1">
+              <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase text-on-surface-variant">Finance</span>
+            </div>
+            <a href="#financial-center" data-nav-item="Financial Center" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">account_balance</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Financial Center</span>
+            </a>
+            <a href="#payouts" data-nav-item="Payouts" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">payments</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Payouts</span>
+            </a>
+            <a href="#invoices" data-nav-item="Invoices" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">receipt_long</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Invoices</span>
+            </a>
+            <a href="#subscriptions" data-nav-item="Subscriptions" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">autorenew</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Subscriptions</span>
+            </a>
+            <a href="#quotes-pricing" data-nav-item="Quotes &amp; Pricing" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">sell</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Quotes &amp; Pricing</span>
+            </a>
+          </div>
+
+          <!-- Group: Support -->
+          <div class="flex flex-col gap-gutter-xs" data-nav-group="Support">
+            <div class="px-2.5 pb-1">
+              <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase text-on-surface-variant">Support</span>
+            </div>
+            <a href="#disputes" data-nav-item="Disputes" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">gavel</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Disputes</span>
+            </a>
+            <a href="#warranty" data-nav-item="Warranty" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">shield</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Warranty</span>
+            </a>
+            <a href="#consolidated-support" data-nav-item="Consolidated Support" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">support_agent</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Consolidated Support</span>
+            </a>
+          </div>
+
+          <!-- Group: Governance -->
+          <div class="flex flex-col gap-gutter-xs" data-nav-group="Governance">
+            <div class="px-2.5 pb-1">
+              <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase text-on-surface-variant">Governance</span>
+            </div>
+            <a href="#security-integrations" data-nav-item="Security &amp; Integrations" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">security</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Security &amp; Integrations</span>
+            </a>
+            <a href="#audit-journal" data-nav-item="Audit Journal" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">history</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Audit Journal</span>
+            </a>
+            <a href="#reports-exports" data-nav-item="Reports &amp; Exports" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">assessment</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Reports &amp; Exports</span>
+            </a>
+            <a href="#settings" data-nav-item="Settings" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">settings</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Settings</span>
+            </a>
+            <a href="#articles" data-nav-item="Articles" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container/70 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">article</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md">Articles</span>
+            </a>
+          </div>
+        </nav>
+      </div>
+
+      <!-- User Card pinned at bottom -->
+      <div class="p-3 border-t border-outline-variant/80 bg-surface-container-low/90">
+        <div class="flex items-center justify-between gap-2 px-2 py-2 rounded bg-surface-container/70 border border-outline-variant">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-full bg-primary-container border border-indigo-accent/40 flex items-center justify-center shrink-0">
+              <span class="font-label text-label-md text-on-primary-container">CV</span>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span data-design-text-token="label-md" class="font-label text-label-md text-on-surface truncate">Claire Vance</span>
+              <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant truncate">Superadmin</span>
+            </div>
+          </div>
+          <!-- COMPONENT: button-icon -->
+          <button data-component-id="button-icon" data-component-type="button" data-component-variant="icon" type="button" id="logout-btn" aria-label="Log out" title="Log out" class="inline-flex items-center justify-center w-8 h-8 rounded bg-surface-container-high/70 text-on-surface-variant border border-outline-variant hover:text-on-surface hover:border-outline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-accent transition-colors duration-state-change">
+            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">logout</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"></div>
+
+    <!-- Main Workspace -->
+    <div class="flex-1 min-w-0 flex flex-col">
+
+      <!-- Top Bar with Multi-Tab Strip -->
+      <header class="h-14 px-4 sm:px-page-margin border-b border-outline-variant/80 bg-surface-container-low/75 backdrop-blur-md sticky top-0 z-30 flex items-end justify-between">
+        <button id="sidebar-toggle" type="button" aria-label="Open navigation" class="lg:hidden mb-2 inline-flex items-center justify-center w-9 h-9 rounded bg-surface-container/70 text-on-surface-variant border border-outline-variant hover:text-on-surface shrink-0">
+            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">menu</span>
+          </button>
+          <div class="flex items-end gap-1.5 pt-2 min-w-0 flex-1 overflow-x-auto" id="console-tab-strip" role="tablist" aria-label="Open consoles">
+          <button type="button" role="tab" aria-selected="true" data-console-tab="Program Control" class="console-tab inline-flex items-center gap-2 px-4 py-2 rounded-t bg-surface-container/90 text-on-surface border border-b-0 border-outline-variant relative">
+            <span class="material-symbols-outlined text-[16px] text-indigo-accent" aria-hidden="true">radar</span>
+            <span data-design-text-token="label-lg" class="font-label text-label-lg">Program Control</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-teal-accent" aria-hidden="true"></span>
+          </button>
+
+          <button type="button" role="tab" aria-selected="false" data-console-tab="Incidents" class="console-tab inline-flex items-center gap-2 px-3.5 py-2 rounded-t bg-surface-container-low/50 text-on-surface-variant border border-b-0 border-outline-variant/50 hover:text-on-surface hover:bg-surface-container/50 transition-colors duration-state-change">
+            <span class="material-symbols-outlined text-[16px] text-rose-accent" aria-hidden="true">warning</span>
+            <span data-design-text-token="label-lg" class="font-label text-label-lg">Incidents</span>
+          </button>
+
+          <div class="relative pb-1.5 pl-1">
+            <button type="button" id="add-console-tab-btn" aria-label="Open console in new tab" aria-expanded="false" class="inline-flex items-center justify-center w-8 h-8 rounded bg-surface-container/70 text-on-surface-variant border border-outline-variant hover:text-on-surface hover:border-indigo-accent/50 transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
+            </button>
+            <div id="new-tab-menu" class="hidden absolute left-0 top-10 w-56 rounded-md glass-panel border border-outline-variant p-1.5 z-40">
+              <div class="px-2.5 py-1.5 border-b border-outline-variant/60 mb-1">
+                <span class="font-label text-label-sm uppercase text-on-surface-variant">Open console tab</span>
+              </div>
+              <button type="button" data-open-console="Overview" class="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-sm text-left text-body-sm text-on-surface hover:bg-surface-container-high/80">
+                <span class="material-symbols-outlined text-[16px] text-indigo-accent" aria-hidden="true">dashboard</span>
+                <span>Overview</span>
+              </button>
+              <button type="button" data-open-console="Financial Center" class="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-sm text-left text-body-sm text-on-surface hover:bg-surface-container-high/80">
+                <span class="material-symbols-outlined text-[16px] text-teal-accent" aria-hidden="true">account_balance</span>
+                <span>Financial Center</span>
+              </button>
+              <button type="button" data-open-console="Dev-CP Mandates" class="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-sm text-left text-body-sm text-on-surface hover:bg-surface-container-high/80">
+                <span class="material-symbols-outlined text-[16px] text-amber-accent" aria-hidden="true">verified_user</span>
+                <span>Dev-CP Mandates</span>
+              </button>
+              <button type="button" data-open-console="Disputes" class="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-sm text-left text-body-sm text-on-surface hover:bg-surface-container-high/80">
+                <span class="material-symbols-outlined text-[16px] text-rose-accent" aria-hidden="true">gavel</span>
+                <span>Disputes</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pb-2.5 flex items-center gap-3">
+          <button id="theme-toggle" type="button" aria-label="Switch to light theme" class="inline-flex items-center justify-center w-9 h-9 rounded bg-surface-container/70 text-on-surface-variant border border-outline-variant hover:text-on-surface hover:border-indigo-accent/50 transition-colors duration-state-change">
+            <span class="material-symbols-outlined text-[20px]" id="theme-icon" aria-hidden="true">light_mode</span>
+          </button>
+          <span class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container/80 border border-outline-variant font-mono text-mono-sm text-on-surface-variant tabular-nums">
+            <span class="w-1.5 h-1.5 rounded-full bg-teal-accent" aria-hidden="true"></span>
+            Synced Nov 18, 2026 · 13:51 GMT
+          </span>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main id="mainView" data-panel="Program Control" class="px-4 sm:px-page-margin pt-gutter-lg pb-24 flex flex-col gap-section max-w-[1184px] w-full">
+
+        <!-- Page Title Block -->
+        <section class="flex flex-col gap-1.5">
+          <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase text-indigo-accent">Superadmin Console · Program Control</span>
+          <h1 data-design-text-token="display-lg" class="font-display text-display-lg text-on-surface text-balance">Program control.</h1>
+          <p data-design-text-token="body-lg" class="font-body text-body-lg text-on-surface-variant text-pretty max-w-prose">
+            Portfolio pilotage across active studio deliveries, validated progress drift, and Dev-CP governance signals.
+          </p>
+        </section>
+
+        <!-- 1. Portfolio summary -->
+        <section aria-labelledby="heading-portfolio-summary" class="flex flex-col gap-gutter-md reveal" style="animation-delay:.02s">
+          <div class="flex items-center justify-between">
+            <h2 id="heading-portfolio-summary" data-design-text-token="headline-md" class="font-headline text-headline-md text-on-surface">Portfolio summary</h2>
+            <span data-design-text-token="mono-sm" class="font-mono text-mono-sm text-on-surface-variant tabular-nums">Active value: $2,480,000 USD</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-gutter-md items-stretch">
+            <!-- KPI 1: Projects in scope -->
+            <!-- COMPONENT: card-elevated -->
+            <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="rounded-md glass-panel border border-outline-variant p-gutter-md flex flex-col justify-between gap-gutter-sm h-full">
+              <header class="flex items-center justify-between gap-2">
+                <h3 data-design-text-token="label-md" class="font-label text-label-md text-on-surface-variant">Projects in scope</h3>
+                <span class="material-symbols-outlined text-[18px] text-indigo-accent" aria-hidden="true">workspaces</span>
+              </header>
+              <div class="flex flex-col gap-1">
+                <p data-design-text-token="display-lg" class="font-display text-display-lg text-on-surface tabular-nums" data-countup="18">18</p>
+                <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">12 in execution · 6 other</p>
+              </div>
+            </article>
+
+            <!-- KPI 2: Green -->
+            <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="rounded-md glass-panel border border-teal-accent/30 p-gutter-md flex flex-col justify-between gap-gutter-sm h-full">
+              <header class="flex items-center justify-between gap-2">
+                <h3 data-design-text-token="label-md" class="font-label text-label-md text-teal-accent">Green</h3>
+                <span class="w-2 h-2 rounded-full bg-teal-accent" aria-hidden="true"></span>
+              </header>
+              <div class="flex flex-col gap-1">
+                <p data-design-text-token="display-lg" class="font-display text-display-lg text-on-surface tabular-nums" data-countup="10">10</p>
+                <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">55.6% · gap &gt; −10 pts</p>
+              </div>
+            </article>
+
+            <!-- KPI 3: Amber -->
+            <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="rounded-md glass-panel border border-amber-accent/30 p-gutter-md flex flex-col justify-between gap-gutter-sm h-full">
+              <header class="flex items-center justify-between gap-2">
+                <h3 data-design-text-token="label-md" class="font-label text-label-md text-amber-accent">Amber</h3>
+                <span class="w-2 h-2 rounded-full bg-amber-accent" aria-hidden="true"></span>
+              </header>
+              <div class="flex flex-col gap-1">
+                <p data-design-text-token="display-lg" class="font-display text-display-lg text-on-surface tabular-nums" data-countup="4">4</p>
+                <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">22.2% · watch or dispute</p>
+              </div>
+            </article>
+
+            <!-- KPI 4: Red -->
+            <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="rounded-md glass-panel border border-rose-accent/30 p-gutter-md flex flex-col justify-between gap-gutter-sm h-full">
+              <header class="flex items-center justify-between gap-2">
+                <h3 data-design-text-token="label-md" class="font-label text-label-md text-rose-accent">Red</h3>
+                <span class="w-2 h-2 rounded-full bg-rose-accent" aria-hidden="true"></span>
+              </header>
+              <div class="flex flex-col gap-1">
+                <p data-design-text-token="display-lg" class="font-display text-display-lg text-on-surface tabular-nums" data-countup="2">2</p>
+                <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">11.1% · gap ≤ −25 pts</p>
+              </div>
+            </article>
+
+            <!-- KPI 5: Not assessed -->
+            <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="rounded-md glass-panel border border-outline-variant p-gutter-md flex flex-col justify-between gap-gutter-sm h-full">
+              <header class="flex items-center justify-between gap-2">
+                <h3 data-design-text-token="label-md" class="font-label text-label-md text-on-surface-variant">Not assessed</h3>
+                <span class="w-2 h-2 rounded-full bg-neutral" aria-hidden="true"></span>
+              </header>
+              <div class="flex flex-col gap-1">
+                <p data-design-text-token="display-lg" class="font-display text-display-lg text-on-surface tabular-nums" data-countup="2">2</p>
+                <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">11.1% · no baseline dates</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- 2. Operational signals -->
+        <section aria-labelledby="heading-operational-signals" class="flex flex-col gap-gutter-md reveal" style="animation-delay:.08s">
+          <h2 id="heading-operational-signals" data-design-text-token="headline-md" class="font-headline text-headline-md text-on-surface">Operational signals</h2>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter-md items-stretch">
+            <!-- Operational Signal 1 -->
+            <article data-component-id="card-signal" data-component-type="card" data-component-variant="elevated" class="rounded-md glass-panel border border-outline-variant p-gutter-md flex flex-col justify-between gap-gutter-md h-full">
+              <div class="flex items-start justify-between gap-gutter-md">
+                <div class="flex flex-col gap-1">
+                  <h3 data-design-text-token="title-md" class="font-title text-title-md text-on-surface">Deliverables awaiting Dev-CP review</h3>
+                  <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Submitted milestones pending technical sign-off (&gt; 48h SLA)</p>
+                </div>
+                <span class="font-display text-headline-lg text-indigo-accent tabular-nums" data-countup="7">7</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/60">
+                <span data-design-text-token="label-sm" class="font-label text-label-sm text-on-surface-variant mr-1">Top queues:</span>
+                <a href="#portfolio-table" data-focus-project="Aether Cloud Migration" class="project-quick-link inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-surface-container-high/80 border border-outline-variant text-label-md text-indigo-accent hover:border-indigo-accent/50 transition-colors">
+                  <span>Aether Cloud Migration</span>
+                  <span class="font-mono text-mono-sm text-on-surface-variant tabular-nums">(3)</span>
+                </a>
+                <a href="#portfolio-table" data-focus-project="Kestrel Core Banking API" class="project-quick-link inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-surface-container-high/80 border border-outline-variant text-label-md text-indigo-accent hover:border-indigo-accent/50 transition-colors">
+                  <span>Kestrel Core Banking API</span>
+                  <span class="font-mono text-mono-sm text-on-surface-variant tabular-nums">(2)</span>
+                </a>
+                <a href="#portfolio-table" data-focus-project="Helios Commerce Replatform" class="project-quick-link inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-surface-container-high/80 border border-outline-variant text-label-md text-indigo-accent hover:border-indigo-accent/50 transition-colors">
+                  <span>Helios Commerce Replatform</span>
+                  <span class="font-mono text-mono-sm text-on-surface-variant tabular-nums">(2)</span>
+                </a>
+              </div>
+            </article>
+
+            <!-- Operational Signal 2 -->
+            <article data-component-id="card-signal" data-component-type="card" data-component-variant="elevated" class="rounded-md glass-panel border border-outline-variant p-gutter-md flex flex-col justify-between gap-gutter-md h-full">
+              <div class="flex items-start justify-between gap-gutter-md">
+                <div class="flex flex-col gap-1">
+                  <h3 data-design-text-token="title-md" class="font-title text-title-md text-on-surface">Overdue tasks</h3>
+                  <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Critical-path tasks past committed sprint due date</p>
+                </div>
+                <span class="font-display text-headline-lg text-amber-accent tabular-nums" data-countup="14">14</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/60">
+                <span data-design-text-token="label-sm" class="font-label text-label-sm text-on-surface-variant mr-1">Highest load:</span>
+                <a href="#portfolio-table" data-focus-project="Vanguard Telematics Portal" class="project-quick-link inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-surface-container-high/80 border border-outline-variant text-label-md text-amber-accent hover:border-amber-accent/50 transition-colors">
+                  <span>Vanguard Telematics Portal</span>
+                  <span class="font-mono text-mono-sm text-on-surface-variant tabular-nums">(6)</span>
+                </a>
+                <a href="#portfolio-table" data-focus-project="Solstice Data Mesh" class="project-quick-link inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-surface-container-high/80 border border-outline-variant text-label-md text-amber-accent hover:border-amber-accent/50 transition-colors">
+                  <span>Solstice Data Mesh</span>
+                  <span class="font-mono text-mono-sm text-on-surface-variant tabular-nums">(5)</span>
+                </a>
+                <a href="#portfolio-table" data-focus-project="Kestrel Core Banking API" class="project-quick-link inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-surface-container-high/80 border border-outline-variant text-label-md text-amber-accent hover:border-amber-accent/50 transition-colors">
+                  <span>Kestrel Core Banking API</span>
+                  <span class="font-mono text-mono-sm text-on-surface-variant tabular-nums">(3)</span>
+                </a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- 3. RAG distribution -->
+        <section aria-labelledby="heading-rag-distribution" class="flex flex-col gap-gutter-md reveal" style="animation-delay:.14s">
+          <div class="flex items-center justify-between">
+            <h2 id="heading-rag-distribution" data-design-text-token="headline-md" class="font-headline text-headline-md text-on-surface">RAG distribution</h2>
+            <span id="rag-filter-hint" data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Click a segment or legend row to filter the portfolio table</span>
+          </div>
+
+          <div class="rounded-md glass-panel border border-outline-variant p-gutter-lg grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-center">
+            <!-- Donut Chart -->
+            <div class="lg:col-span-4 flex items-center justify-center">
+              <div class="relative w-48 h-48 flex items-center justify-center">
+                <svg viewBox="0 0 180 180" class="w-48 h-48 -rotate-90" role="img" aria-label="RAG distribution donut chart">
+                  <!-- Track -->
+                  <circle class="donut-track" cx="90" cy="90" r="68" fill="none" stroke="#1E293B" stroke-width="20"></circle>
+                  <!-- Circumference = 2 * pi * 68 = 427.256 -->
+                  <!-- Green: 10/18 = 55.56% -> 237.36 -->
+                  <circle cx="90" cy="90" r="68" fill="none" stroke="#2DD4BF" stroke-width="20" stroke-dasharray="234.36 427.26" stroke-dashoffset="0" stroke-linecap="butt" class="donut-segment" data-rag-segment="Green"></circle>
+                  <!-- Amber: 4/18 = 22.22% -> 94.95 -->
+                  <circle cx="90" cy="90" r="68" fill="none" stroke="#FBBF24" stroke-width="20" stroke-dasharray="91.95 427.26" stroke-dashoffset="-237.36" stroke-linecap="butt" class="donut-segment" data-rag-segment="Amber"></circle>
+                  <!-- Red: 2/18 = 11.11% -> 47.47 -->
+                  <circle cx="90" cy="90" r="68" fill="none" stroke="#FB7185" stroke-width="20" stroke-dasharray="44.47 427.26" stroke-dashoffset="-332.31" stroke-linecap="butt" class="donut-segment" data-rag-segment="Red"></circle>
+                  <!-- Not assessed: 2/18 = 11.11% -> 47.47 -->
+                  <circle cx="90" cy="90" r="68" fill="none" stroke="#94A3B8" stroke-width="20" stroke-dasharray="44.47 427.26" stroke-dashoffset="-379.78" stroke-linecap="butt" class="donut-segment" data-rag-segment="Not assessed"></circle>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span data-design-text-token="display-lg" class="font-display text-display-lg text-on-surface tabular-nums" data-countup="18">18</span>
+                  <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase text-on-surface-variant">Total</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-gutter-md">
+              <button type="button" data-rag-segment="Green" class="rag-legend-btn flex items-center justify-between p-gutter-md rounded bg-surface-container-low/75 border border-outline-variant hover:border-teal-accent/50 transition-colors text-left">
+                <span class="flex items-center gap-2.5">
+                  <span class="w-3 h-3 rounded-full bg-teal-accent shrink-0" aria-hidden="true"></span>
+                  <span class="flex flex-col">
+                    <span data-design-text-token="title-md" class="font-title text-title-md text-on-surface">Green</span>
+                    <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">On schedule</span>
+                  </span>
+                </span>
+                <span class="flex items-baseline gap-2 tabular-nums">
+                  <span class="font-headline text-headline-md text-on-surface">10</span>
+                  <span class="font-mono text-mono-md text-teal-accent">55.6%</span>
+                </span>
+              </button>
+
+              <button type="button" data-rag-segment="Amber" class="rag-legend-btn flex items-center justify-between p-gutter-md rounded bg-surface-container-low/75 border border-outline-variant hover:border-amber-accent/50 transition-colors text-left">
+                <span class="flex items-center gap-2.5">
+                  <span class="w-3 h-3 rounded-full bg-amber-accent shrink-0" aria-hidden="true"></span>
+                  <span class="flex flex-col">
+                    <span data-design-text-token="title-md" class="font-title text-title-md text-on-surface">Amber</span>
+                    <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Moderate drift or dispute</span>
+                  </span>
+                </span>
+                <span class="flex items-baseline gap-2 tabular-nums">
+                  <span class="font-headline text-headline-md text-on-surface">4</span>
+                  <span class="font-mono text-mono-md text-amber-accent">22.2%</span>
+                </span>
+              </button>
+
+              <button type="button" data-rag-segment="Red" class="rag-legend-btn flex items-center justify-between p-gutter-md rounded bg-surface-container-low/75 border border-outline-variant hover:border-rose-accent/50 transition-colors text-left">
+                <span class="flex items-center gap-2.5">
+                  <span class="w-3 h-3 rounded-full bg-rose-accent shrink-0" aria-hidden="true"></span>
+                  <span class="flex flex-col">
+                    <span data-design-text-token="title-md" class="font-title text-title-md text-on-surface">Red</span>
+                    <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Critical variance</span>
+                  </span>
+                </span>
+                <span class="flex items-baseline gap-2 tabular-nums">
+                  <span class="font-headline text-headline-md text-on-surface">2</span>
+                  <span class="font-mono text-mono-md text-rose-accent">11.1%</span>
+                </span>
+              </button>
+
+              <button type="button" data-rag-segment="Not assessed" class="rag-legend-btn flex items-center justify-between p-gutter-md rounded bg-surface-container-low/75 border border-outline-variant hover:border-neutral/50 transition-colors text-left">
+                <span class="flex items-center gap-2.5">
+                  <span class="w-3 h-3 rounded-full bg-neutral shrink-0" aria-hidden="true"></span>
+                  <span class="flex flex-col">
+                    <span data-design-text-token="title-md" class="font-title text-title-md text-on-surface">Not assessed</span>
+                    <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">No reference dates</span>
+                  </span>
+                </span>
+                <span class="flex items-baseline gap-2 tabular-nums">
+                  <span class="font-headline text-headline-md text-on-surface">2</span>
+                  <span class="font-mono text-mono-md text-on-surface-variant">11.1%</span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Rules note paragraph -->
+        <section aria-label="RAG assessment rules reveal" style="animation-delay:.20s">
+          <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant px-gutter-md py-3 rounded bg-surface-container-low/70 border border-outline-variant/80">
+            <span class="font-label text-label-md text-on-surface mr-1.5">RAG rules:</span>
+            gap = validated progress minus elapsed time; gap ≤ −25 pts → Red; ≤ −10 pts → Amber; an open dispute puts a project at minimum Amber; no reference dates → Not assessed.
+          </p>
+        </section>
+
+        <!-- 5. Status tabs + 6. Filter row + 7. Portfolio table -->
+        <section id="portfolio-table" aria-label="Portfolio projects" class="flex flex-col gap-gutter-md reveal" style="animation-delay:.26s">
+          <!-- 5. Status tabs -->
+          <!-- COMPONENT: tabs-horizontal -->
+          <div data-component-id="tabs-horizontal" data-component-type="tabs" data-component-variant="horizontal" class="flex items-center justify-between gap-gutter-md flex-wrap">
+            <div role="tablist" aria-label="Project execution status" class="inline-flex items-center gap-1 p-1 rounded bg-surface-container-low/85 backdrop-blur-md border border-outline-variant max-w-full overflow-x-auto">
+              <button type="button" role="tab" aria-selected="true" data-status-tab="In execution" class="status-tab px-3.5 py-1.5 rounded-sm bg-primary-container text-on-primary-container border border-indigo-accent/30 transition-colors duration-state-change">
+                <span data-design-text-token="label-lg" class="font-label text-label-lg">In execution</span>
+              </button>
+              <button type="button" role="tab" aria-selected="false" data-status-tab="In preparation" class="status-tab px-3.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface transition-colors duration-state-change">
+                <span data-design-text-token="label-lg" class="font-label text-label-lg">In preparation</span>
+              </button>
+              <button type="button" role="tab" aria-selected="false" data-status-tab="Completed" class="status-tab px-3.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface transition-colors duration-state-change">
+                <span data-design-text-token="label-lg" class="font-label text-label-lg">Completed</span>
+              </button>
+              <button type="button" role="tab" aria-selected="false" data-status-tab="Cancelled" class="status-tab px-3.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface transition-colors duration-state-change">
+                <span data-design-text-token="label-lg" class="font-label text-label-lg">Cancelled</span>
+              </button>
+              <button type="button" role="tab" aria-selected="false" data-status-tab="All" class="status-tab px-3.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface transition-colors duration-state-change">
+                <span data-design-text-token="label-lg" class="font-label text-label-lg">All</span>
+              </button>
+            </div>
+
+            <span id="table-count-label" data-design-text-token="mono-sm" class="font-mono text-mono-sm text-on-surface-variant tabular-nums">Showing 12 of 18 projects</span>
+          </div>
+
+          <!-- 6. Filter row -->
+          <div class="flex flex-wrap items-center gap-3 p-3 rounded-md glass-panel border border-outline-variant">
+            <div class="flex items-center gap-2">
+              <label for="filter-rag" class="font-label text-label-md text-on-surface-variant">RAG status</label>
+              <select id="filter-rag" class="rounded-sm bg-surface-container-high/90 border border-outline-variant text-body-md text-on-surface px-3 py-1.5 focus:outline-none focus:border-indigo-accent focus:ring-1 focus:ring-indigo-accent">
+                <option value="All">All statuses</option>
+                <option value="Green">Green</option>
+                <option value="Amber">Amber</option>
+                <option value="Red">Red</option>
+                <option value="Not assessed">Not assessed</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <label for="filter-lead" class="font-label text-label-md text-on-surface-variant">Project lead</label>
+              <select id="filter-lead" class="rounded-sm bg-surface-container-high/90 border border-outline-variant text-body-md text-on-surface px-3 py-1.5 focus:outline-none focus:border-indigo-accent focus:ring-1 focus:ring-indigo-accent">
+                <option value="All">All leads</option>
+                <option value="Elena Rostova">Elena Rostova</option>
+                <option value="Marcus Thorne">Marcus Thorne</option>
+                <option value="Sora Takahashi">Sora Takahashi</option>
+                <option value="Nadia Benali">Nadia Benali</option>
+                <option value="Julian Mercer">Julian Mercer</option>
+              </select>
+            </div>
+
+            <!-- COMPONENT: button-primary -->
+            <button id="apply-filters-btn" data-component-id="button-primary" data-component-type="button" data-component-variant="primary" type="button" class="inline-flex items-center justify-center gap-2 px-4 py-1.5 rounded bg-primary text-on-primary border border-indigo-accent/30 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-accent transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[16px]" aria-hidden="true">filter_list</span>
+              <span data-design-text-token="label-lg" class="font-label text-label-lg">Filter</span>
+            </button>
+
+            <button id="reset-filters-btn" type="button" class="font-label text-label-lg text-indigo-accent hover:text-on-primary-container underline underline-offset-4 px-2 py-1 transition-colors">
+              Reset
+            </button>
+          </div>
+
+          <!-- 7. Portfolio table -->
+          <!-- COMPONENT: table-interactive -->
+          <div data-component-id="table-interactive" data-component-type="table" data-component-variant="interactive" class="w-full overflow-x-auto rounded-md glass-panel border border-outline-variant">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-surface-container-low/80 border-b border-outline-variant">
+                <tr>
+                  <th scope="col" class="px-4 py-3 text-on-surface-variant">
+                    <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase">Project</span>
+                  </th>
+                  <th scope="col" class="px-4 py-3 text-on-surface-variant">
+                    <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase">Lead</span>
+                  </th>
+                  <th scope="col" class="px-4 py-3 text-on-surface-variant">
+                    <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase">Validated progress</span>
+                  </th>
+                  <th scope="col" class="px-4 py-3 text-on-surface-variant">
+                    <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase">Time &amp; gap</span>
+                  </th>
+                  <th scope="col" class="px-4 py-3 text-on-surface-variant">
+                    <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase">Alerts</span>
+                  </th>
+                  <th scope="col" class="px-4 py-3 text-on-surface-variant">
+                    <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase">Status</span>
+                  </th>
+                  <th scope="col" class="px-4 py-3 text-on-surface-variant text-right min-w-[152px]">
+                    <span data-design-text-token="label-sm" class="font-label text-label-sm uppercase">Last activity</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="portfolio-tbody" class="divide-y divide-outline-variant/60">
+                <!-- Populated by inline script -->
+              </tbody>
+            </table>
+            <div id="table-empty-state" class="hidden px-6 py-10 text-center">
+              <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant">No projects match the active status tab and filters.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. Detection signals -->
+        <section aria-labelledby="heading-detection-signals" class="rounded-md glass-panel border border-outline-variant p-gutter-lg flex flex-col gap-gutter-md reveal" style="animation-delay:.32s">
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px] text-violet-accent" aria-hidden="true">bolt</span>
+              <h2 id="heading-detection-signals" data-design-text-token="headline-md" class="font-headline text-headline-md text-on-surface">Detection signals</h2>
+            </div>
+            <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant text-pretty max-w-prose">
+              Automated telemetry flags emerging delivery anomalies before they breach milestone SLAs. Review the measured evidence and open a formal governance case when intervention is required.
+            </p>
+          </div>
+
+          <div id="detection-signals-list" class="flex flex-col gap-3">
+            <!-- Signal Card 1 -->
+            <!-- COMPONENT: card-action -->
+            <article data-component-id="card-action" data-component-type="card" data-component-variant="action" class="signal-card rounded bg-surface-container-low/80 border border-outline-variant p-gutter-md flex items-center justify-between gap-gutter-md">
+              <div class="flex flex-col gap-1.5">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2 py-0.5 rounded-sm bg-rose-accent/15 text-rose-accent border border-rose-accent/30 font-label text-label-sm">Velocity drift</span>
+                  <span data-design-text-token="title-md" class="font-title text-title-md text-on-surface">Vanguard Telematics Portal</span>
+                  <span class="text-on-surface-variant font-body text-body-sm">·</span>
+                  <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Lead: Marcus Thorne</span>
+                </div>
+                <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant">
+                  Measured evidence: Validated progress at <span class="font-mono text-mono-md text-on-surface tabular-nums">34%</span> vs <span class="font-mono text-mono-md text-on-surface tabular-nums">65%</span> elapsed (<span class="font-mono text-mono-md text-rose-accent tabular-nums">−31 pts</span>); 6 critical-path tasks overdue by 5+ days.
+                </p>
+              </div>
+              <footer class="shrink-0">
+                <!-- COMPONENT: button-secondary -->
+                <button data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" type="button" class="open-case-btn inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded bg-surface-container-high/90 text-on-surface border border-outline-variant hover:border-indigo-accent/60 hover:bg-surface-container-high transition-colors duration-state-change">
+                  <span data-design-text-token="label-lg" class="font-label text-label-lg">Open case</span>
+                </button>
+              </footer>
+            </article>
+
+            <!-- Signal Card 2 -->
+            <article data-component-id="card-action" data-component-type="card" data-component-variant="action" class="signal-card rounded bg-surface-container-low/80 border border-outline-variant p-gutter-md flex items-center justify-between gap-gutter-md">
+              <div class="flex flex-col gap-1.5">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2 py-0.5 rounded-sm bg-amber-accent/15 text-amber-accent border border-amber-accent/30 font-label text-label-sm">Dev-CP review lag</span>
+                  <span data-design-text-token="title-md" class="font-title text-title-md text-on-surface">Aether Cloud Migration</span>
+                  <span class="text-on-surface-variant font-body text-body-sm">·</span>
+                  <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Dev-CP: Nadia Benali</span>
+                </div>
+                <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant">
+                  Measured evidence: 3 submitted deliverables awaiting validation for <span class="font-mono text-mono-md text-amber-accent tabular-nums">74h</span>; submitted progress (<span class="font-mono text-mono-md text-on-surface tabular-nums">72%</span>) diverges from validated (<span class="font-mono text-mono-md text-on-surface tabular-nums">58%</span>).
+                </p>
+              </div>
+              <footer class="shrink-0">
+                <button data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" type="button" class="open-case-btn inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded bg-surface-container-high/90 text-on-surface border border-outline-variant hover:border-indigo-accent/60 hover:bg-surface-container-high transition-colors duration-state-change">
+                  <span data-design-text-token="label-lg" class="font-label text-label-lg">Open case</span>
+                </button>
+              </footer>
+            </article>
+
+            <!-- Signal Card 3 -->
+            <article data-component-id="card-action" data-component-type="card" data-component-variant="action" class="signal-card rounded bg-surface-container-low/80 border border-outline-variant p-gutter-md flex items-center justify-between gap-gutter-md">
+              <div class="flex flex-col gap-1.5">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2 py-0.5 rounded-sm bg-tertiary-container text-on-tertiary-container border border-violet-accent/30 font-label text-label-sm">Dispute floor</span>
+                  <span data-design-text-token="title-md" class="font-title text-title-md text-on-surface">Helios Commerce Replatform</span>
+                  <span class="text-on-surface-variant font-body text-body-sm">·</span>
+                  <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Lead: Sora Takahashi</span>
+                </div>
+                <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant">
+                  Measured evidence: Schedule gap is <span class="font-mono text-mono-md text-teal-accent tabular-nums">+2 pts</span>, but 1 open billing dispute (<span class="font-mono text-mono-md text-on-surface tabular-nums">$18,400 USD</span>) forces minimum Amber governance status.
+                </p>
+              </div>
+              <footer class="shrink-0">
+                <button data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" type="button" class="open-case-btn inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded bg-surface-container-high/90 text-on-surface border border-outline-variant hover:border-indigo-accent/60 hover:bg-surface-container-high transition-colors duration-state-change">
+                  <span data-design-text-token="label-lg" class="font-label text-label-lg">Open case</span>
+                </button>
+              </footer>
+            </article>
+          </div>
+
+          <!-- Empty-state line -->
+          <div id="signals-empty-line" class="pt-2 border-t border-outline-variant/60 flex items-center justify-between">
+            <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">
+              No additional unreviewed detection signals in queue — all remaining portfolio telemetry is within normal thresholds.
+            </p>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast notification for interactive feedback -->
+  <div id="orbit-toast" role="status" aria-live="polite" class="hidden fixed bottom-6 right-6 z-50 px-4 py-3 rounded-md glass-panel border border-indigo-accent/40 flex items-center gap-3 shadow-2xl">
+    <span class="material-symbols-outlined text-[18px] text-teal-accent" aria-hidden="true">check_circle</span>
+    <span id="orbit-toast-text" class="font-body text-body-md text-on-surface">Action recorded.</span>
+  </div>
+
+  <script>
+    (function () {
+      const projects = [
+        // In execution (12): 6 Green, 3 Amber, 2 Red, 1 Not assessed
+        { title: "Aether Cloud Migration", kind: "External Project", status: "In execution", lead: "Elena Rostova", devs: 6, validated: 58, submitted: 72, declared: 76, elapsed: 69, gap: -11, overdue: 1, blocked: 0, disputes: 0, rag: "Amber", lastActivity: "Nov 18, 2026" },
+        { title: "Vanguard Telematics Portal", kind: "Dev-CP Mandate", status: "In execution", lead: "Marcus Thorne", devs: 5, validated: 34, submitted: 41, declared: 48, elapsed: 65, gap: -31, overdue: 6, blocked: 2, disputes: 0, rag: "Red", lastActivity: "Nov 18, 2026" },
+        { title: "Kestrel Core Banking API", kind: "External Project", status: "In execution", lead: "Nadia Benali", devs: 8, validated: 74, submitted: 80, declared: 82, elapsed: 71, gap: 3, overdue: 3, blocked: 0, disputes: 0, rag: "Green", lastActivity: "Nov 17, 2026" },
+        { title: "Helios Commerce Replatform", kind: "Dev-CP Mandate", status: "In execution", lead: "Sora Takahashi", devs: 4, validated: 62, submitted: 68, declared: 70, elapsed: 60, gap: 2, overdue: 0, blocked: 1, disputes: 1, rag: "Amber", lastActivity: "Nov 17, 2026" },
+        { title: "Solstice Data Mesh", kind: "External Project", status: "In execution", lead: "Julian Mercer", devs: 7, validated: 28, submitted: 35, declared: 40, elapsed: 55, gap: -27, overdue: 5, blocked: 3, disputes: 1, rag: "Red", lastActivity: "Nov 16, 2026" },
+        { title: "Boreal Identity Gateway", kind: "Internal Mission", status: "In execution", lead: "Elena Rostova", devs: 3, validated: 88, submitted: 92, declared: 94, elapsed: 84, gap: 4, overdue: 0, blocked: 0, disputes: 0, rag: "Green", lastActivity: "Nov 18, 2026" },
+        { title: "Meridian Fleet Dispatch", kind: "External Project", status: "In execution", lead: "Marcus Thorne", devs: 5, validated: 51, submitted: 55, declared: 58, elapsed: 53, gap: -2, overdue: 0, blocked: 0, disputes: 0, rag: "Green", lastActivity: "Nov 15, 2026" },
+        { title: "Calypso Patient Intake", kind: "Dev-CP Mandate", status: "In execution", lead: "Sora Takahashi", devs: 4, validated: 43, submitted: 50, declared: 54, elapsed: 58, gap: -15, overdue: 1, blocked: 1, disputes: 0, rag: "Amber", lastActivity: "Nov 14, 2026" },
+        { title: "Orion Treasury Ledger", kind: "External Project", status: "In execution", lead: "Nadia Benali", devs: 6, validated: 81, submitted: 84, declared: 85, elapsed: 76, gap: 5, overdue: 0, blocked: 0, disputes: 0, rag: "Green", lastActivity: "Nov 17, 2026" },
+        { title: "Lyra Design System Ops", kind: "Internal Mission", status: "In execution", lead: "Julian Mercer", devs: 2, validated: 66, submitted: 70, declared: 72, elapsed: 64, gap: 2, overdue: 0, blocked: 0, disputes: 0, rag: "Green", lastActivity: "Nov 16, 2026" },
+        { title: "Polaris Freight Analytics", kind: "External Project", status: "In execution", lead: "Elena Rostova", devs: 4, validated: 47, submitted: 51, declared: 52, elapsed: 45, gap: 2, overdue: 0, blocked: 0, disputes: 0, rag: "Green", lastActivity: "Nov 15, 2026" },
+        { title: "Zephyr Edge Telemetry", kind: "Dev-CP Mandate", status: "In execution", lead: "Julian Mercer", devs: 3, validated: 20, submitted: 24, declared: 28, elapsed: null, gap: null, overdue: 0, blocked: 0, disputes: 0, rag: "Not assessed", lastActivity: "Nov 12, 2026" },
+
+        // In preparation (3): 2 Green, 1 Not assessed
+        { title: "Halcyon Risk Engine", kind: "External Project", status: "In preparation", lead: "Nadia Benali", devs: 4, validated: 15, submitted: 18, declared: 20, elapsed: 12, gap: 3, overdue: 0, blocked: 0, disputes: 0, rag: "Green", lastActivity: "Nov 14, 2026" },
+        { title: "Stratos Billing Hub", kind: "Dev-CP Mandate", status: "In preparation", lead: "Sora Takahashi", devs: 3, validated: 10, submitted: 12, declared: 15, elapsed: 10, gap: 0, overdue: 0, blocked: 0, disputes: 0, rag: "Green", lastActivity: "Nov 13, 2026" },
+        { title: "Nimbus Field Service", kind: "External Project", status: "In preparation", lead: "Marcus Thorne", devs: 5, validated: 0, submitted: 0, declared: 5, elapsed: null, gap: null, overdue: 0, blocked: 0, disputes: 0, rag: "Not assessed", lastActivity: "Nov 10, 2026" },
+
+        // Completed (2): 2 Green
+        { title: "Vega Custody Vault", kind: "External Project", status: "Completed", lead: "Elena Rostova", devs: 6, validated: 100, submitted: 100, declared: 100, elapsed: 100, gap: 0, overdue: 0, blocked: 0, disputes: 0, rag: "Green", lastActivity: "Nov 08, 2026" },
+        { title: "Atlas Supply Graph", kind: "Dev-CP Mandate", status: "Completed", lead: "Nadia Benali", devs: 4, validated: 100, submitted: 100, declared: 100, elapsed: 96, gap: 4, overdue: 0, blocked: 0, disputes: 0, rag: "Green", lastActivity: "Nov 02, 2026" },
+
+        // Cancelled (1): 1 Amber
+        { title: "Quasar Legacy Bridge", kind: "External Project", status: "Cancelled", lead: "Marcus Thorne", devs: 3, validated: 38, submitted: 42, declared: 45, elapsed: 50, gap: -12, overdue: 0, blocked: 0, disputes: 1, rag: "Amber", lastActivity: "Oct 29, 2026" }
+      ];
+      window.OrbitProjects = projects;
+
+      let activeStatus = "In execution";
+      let activeRag = "All";
+      let activeLead = "All";
+      let searchQuery = "";
+
+      const tbody = document.getElementById("portfolio-tbody");
+      const emptyState = document.getElementById("table-empty-state");
+      const countLabel = document.getElementById("table-count-label");
+      const ragSelect = document.getElementById("filter-rag");
+      const leadSelect = document.getElementById("filter-lead");
+      const toast = document.getElementById("orbit-toast");
+      const toastText = document.getElementById("orbit-toast-text");
+      let toastTimer = null;
+
+      function showToast(message) {
+        toastText.textContent = message;
+        toast.classList.remove("hidden");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          toast.classList.add("hidden");
+        }, 3200);
+      }
+
+      function ragBadgeHtml(rag) {
+        if (rag === "Green") {
+          return '<span data-component-id="badge-success" data-component-type="badge" data-component-variant="success" role="status" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-secondary-container/70 text-teal-accent border border-teal-accent/30"><span class="w-1.5 h-1.5 rounded-full bg-teal-accent" aria-hidden="true"></span><span class="font-label text-label-sm">Green</span></span>';
+        }
+        if (rag === "Amber") {
+          return '<span data-component-id="badge-warning" data-component-type="badge" data-component-variant="warning" role="status" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-amber-accent/15 text-amber-accent border border-amber-accent/30"><span class="w-1.5 h-1.5 rounded-full bg-amber-accent" aria-hidden="true"></span><span class="font-label text-label-sm">Amber</span></span>';
+        }
+        if (rag === "Red") {
+          return '<span data-component-id="badge-error" data-component-type="badge" data-component-variant="error" role="status" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-rose-accent/15 text-rose-accent border border-rose-accent/30"><span class="w-1.5 h-1.5 rounded-full bg-rose-accent" aria-hidden="true"></span><span class="font-label text-label-sm">Red</span></span>';
+        }
+        return '<span data-component-id="badge-status" data-component-type="badge" data-component-variant="status" role="status" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-surface-container-high text-on-surface-variant border border-outline-variant"><span class="w-1.5 h-1.5 rounded-full bg-neutral" aria-hidden="true"></span><span class="font-label text-label-sm">Not assessed</span></span>';
+      }
+
+      function progressBarColor(rag) {
+        if (rag === "Green") return "bg-teal-accent";
+        if (rag === "Amber") return "bg-amber-accent";
+        if (rag === "Red") return "bg-rose-accent";
+        return "bg-neutral";
+      }
+
+      function renderTable() {
+        const filtered = projects.filter(function (p) {
+          if (activeStatus !== "All" && p.status !== activeStatus) return false;
+          if (activeRag !== "All" && p.rag !== activeRag) return false;
+          if (activeLead !== "All" && p.lead !== activeLead) return false;
+          if (searchQuery && !p.title.toLowerCase().includes(searchQuery) && !p.lead.toLowerCase().includes(searchQuery)) return false;
+          return true;
+        });
+
+        countLabel.textContent = "Showing " + filtered.length + " of " + projects.length + " projects";
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = "";
+          emptyState.classList.remove("hidden");
+          return;
+        }
+        emptyState.classList.add("hidden");
+
+        tbody.innerHTML = filtered.map(function (p) {
+          const gapText = p.gap === null ? "—" : (p.gap > 0 ? "+" + p.gap + " pts" : p.gap + " pts");
+          const gapColor = p.gap === null ? "text-on-surface-variant" : (p.gap <= -25 ? "text-rose-accent" : (p.gap <= -10 ? "text-amber-accent" : "text-teal-accent"));
+          const elapsedText = p.elapsed === null ? "No dates" : p.elapsed + "%";
+
+          const alerts = [];
+          if (p.overdue > 0) alerts.push('<span class="px-1.5 py-0.5 rounded-sm bg-amber-accent/15 text-amber-accent border border-amber-accent/30 font-mono text-mono-sm tabular-nums">' + p.overdue + ' overdue</span>');
+          if (p.blocked > 0) alerts.push('<span class="px-1.5 py-0.5 rounded-sm bg-surface-container-high text-on-surface-variant border border-outline-variant font-mono text-mono-sm tabular-nums">' + p.blocked + ' blocked</span>');
+          if (p.disputes > 0) alerts.push('<span class="px-1.5 py-0.5 rounded-sm bg-rose-accent/15 text-rose-accent border border-rose-accent/30 font-mono text-mono-sm tabular-nums">' + p.disputes + ' dispute</span>');
+          const alertsHtml = alerts.length ? '<div class="flex flex-wrap gap-1">' + alerts.join("") + '</div>' : '<span class="font-body text-body-sm text-on-surface-variant">None</span>';
+
+          return (
+            '<tr data-project-row="' + p.title + '" class="hover:bg-surface-container-high/45 transition-colors duration-state-change">' +
+              '<td class="px-4 py-3.5">' +
+                '<div class="flex flex-col">' +
+                  '<span class="font-title text-title-md text-on-surface">' + p.title + '</span>' +
+                  '<span class="font-body text-body-sm text-on-surface-variant">' + p.kind + ' · ' + p.status + '</span>' +
+                '</div>' +
+              '</td>' +
+              '<td class="px-4 py-3.5">' +
+                '<div class="flex flex-col">' +
+                  '<span class="font-body text-body-md text-on-surface">' + p.lead + '</span>' +
+                  '<span class="font-body text-body-sm text-on-surface-variant tabular-nums">' + p.devs + ' developers</span>' +
+                '</div>' +
+              '</td>' +
+              '<td class="px-4 py-3.5 min-w-[180px]">' +
+                '<div class="flex flex-col gap-1.5" data-prog="Validated ' + p.validated + '% · Submitted ' + p.submitted + '% · Declared ' + p.declared + '%">' +
+                  '<div class="flex items-center gap-2">' +
+                    '<div class="flex-1 h-1.5 rounded-full bg-surface-container-high overflow-hidden">' +
+                      '<div class="h-full rounded-full ' + progressBarColor(p.rag) + '" style="width:' + p.validated + '%"></div>' +
+                    '</div>' +
+                    '<span class="font-mono text-mono-md text-on-surface tabular-nums">' + p.validated + '%</span>' +
+                  '</div>' +
+                  '<span class="font-mono text-mono-sm text-on-surface-variant tabular-nums">Sub ' + p.submitted + '% · Decl ' + p.declared + '%</span>' +
+                '</div>' +
+              '</td>' +
+              '<td class="px-4 py-3.5">' +
+                '<div class="flex flex-col tabular-nums">' +
+                  '<span class="font-mono text-mono-md text-on-surface">' + elapsedText + ' elapsed</span>' +
+                  '<span class="font-mono text-mono-sm ' + gapColor + '">' + gapText + '</span>' +
+                '</div>' +
+              '</td>' +
+              '<td class="px-4 py-3.5">' + alertsHtml + '</td>' +
+              '<td class="px-4 py-3.5">' + ragBadgeHtml(p.rag) + '</td>' +
+              '<td class="px-4 py-3.5 text-right">' +
+                '<div class="flex flex-col items-end gap-0.5">' +
+                  '<span class="font-mono text-mono-sm text-on-surface-variant tabular-nums">' + p.lastActivity + '</span>' +
+                  '<a href="#open-project-control" data-open-project="' + p.title + '" class="open-project-link font-label text-label-md text-indigo-accent hover:text-on-primary-container transition-colors">Open project control</a>' +
+                '</div>' +
+              '</td>' +
+            '</tr>'
+          );
+        }).join("");
+      }
+
+      // Status tabs
+      document.querySelectorAll(".status-tab").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          activeStatus = tab.getAttribute("data-status-tab");
+          document.querySelectorAll(".status-tab").forEach(function (t) {
+            const isSelected = t === tab;
+            t.setAttribute("aria-selected", isSelected ? "true" : "false");
+            t.className = isSelected
+              ? "status-tab px-3.5 py-1.5 rounded-sm bg-primary-container text-on-primary-container border border-indigo-accent/30 transition-colors duration-state-change"
+              : "status-tab px-3.5 py-1.5 rounded-sm text-on-surface-variant hover:text-on-surface transition-colors duration-state-change";
+          });
+          renderTable();
+        });
+      });
+
+      // RAG Donut & Legend interactive filtering
+      function toggleRagFilter(rag) {
+        if (activeRag === rag) {
+          activeRag = "All";
+        } else {
+          activeRag = rag;
+        }
+        ragSelect.value = activeRag;
+        if (window.OrbitSyncRag) window.OrbitSyncRag(activeRag);
+        renderTable();
+      }
+
+      document.querySelectorAll("[data-rag-segment]").forEach(function (el) {
+        el.addEventListener("click", function () {
+          toggleRagFilter(el.getAttribute("data-rag-segment"));
+        });
+      });
+
+      // Filter & Reset
+      document.getElementById("apply-filters-btn").addEventListener("click", function () {
+        activeRag = ragSelect.value;
+        activeLead = leadSelect.value;
+        if (window.OrbitSyncRag) window.OrbitSyncRag(activeRag);
+        renderTable();
+      });
+
+      document.getElementById("reset-filters-btn").addEventListener("click", function () {
+        activeRag = "All";
+        activeLead = "All";
+        searchQuery = "";
+        ragSelect.value = "All";
+        leadSelect.value = "All";
+        document.getElementById("sidebar-search").value = "";
+        if (window.OrbitSyncRag) window.OrbitSyncRag("All");
+        renderTable();
+      });
+
+      // Sidebar search (filters nav items and table)
+      document.getElementById("sidebar-search").addEventListener("input", function (e) {
+        searchQuery = e.target.value.trim().toLowerCase();
+        renderTable();
+      });
+
+      // Top bar '+' new tab menu
+      const addTabBtn = document.getElementById("add-console-tab-btn");
+      const newTabMenu = document.getElementById("new-tab-menu");
+      const tabStrip = document.getElementById("console-tab-strip");
+
+      addTabBtn.addEventListener("click", function () {
+        const isHidden = newTabMenu.classList.contains("hidden");
+        newTabMenu.classList.toggle("hidden", !isHidden);
+        addTabBtn.setAttribute("aria-expanded", isHidden ? "true" : "false");
+      });
+
+      document.querySelectorAll("[data-open-console]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const name = btn.getAttribute("data-open-console");
+          newTabMenu.classList.add("hidden");
+          addTabBtn.setAttribute("aria-expanded", "false");
+          if (window.Orbit) window.Orbit.openConsole(name, { newTab: true });
+        });
+      });
+
+      // Detection signal 'Open case' buttons
+      document.querySelectorAll(".open-case-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const card = btn.closest(".signal-card");
+          const title = card ? card.querySelector("[data-design-text-token='title-md']").textContent : "Project";
+          btn.textContent = "Case opened";
+          btn.disabled = true;
+          btn.classList.add("opacity-60", "cursor-not-allowed");
+          showToast("Governance case opened for " + title + ".");
+        });
+      });
+
+      // Table 'Open project control' delegated click
+      tbody.addEventListener("click", function (e) {
+        const link = e.target.closest(".open-project-link");
+        if (link) {
+          e.preventDefault();
+          if (window.Orbit) window.Orbit.openProject(link.getAttribute("data-open-project"));
+        }
+      });
+
+      // Initial render
+      renderTable();
+    })();
+  </script>
+
+
+
+  <script>
+    /* Orbit console engine — multi-tab shell, secondary consoles, project
+       detail panels, sidebar search, theme toggle, count-up. */
+    (function () {
+      var toast = document.getElementById("orbit-toast");
+      var toastText = document.getElementById("orbit-toast-text");
+      var toastTimer = null;
+      function showToast(msg) {
+        toastText.textContent = msg;
+        toast.classList.remove("hidden");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toast.classList.add("hidden"); }, 3200);
+      }
+
+      var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      /* ---------- count-up ---------- */
+      document.querySelectorAll("[data-countup]").forEach(function (el) {
+        var target = parseInt(el.getAttribute("data-countup"), 10);
+        if (reduced || !isFinite(target)) { el.textContent = target; return; }
+        var start = null;
+        function step(ts) {
+          if (!start) start = ts;
+          var p = Math.min(1, (ts - start) / 700);
+          el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      });
+
+      /* ---------- secondary console content (fictional) ---------- */
+      var CONTENT = {
+        "Overview": ["Superadmin Console · Overview", "Portfolio at a glance — every delivery, one reading.",
+          [["Projects in scope", "18"], ["Active value", "$2.48M"], ["Red flags", "2"]],
+          ["Aether Cloud Migration — Amber, gap −11 pts", "Vanguard Telematics Portal — Red, gap −31 pts", "Boreal Identity Gateway — Green, gap +4 pts"]],
+        "AI Assistant": ["Superadmin Console · AI Assistant", "Drafts, summaries and risk notes prepared for the control tower.",
+          [["Briefs drafted", "6"], ["Risk summaries", "3"], ["Suggestions accepted", "92%"]],
+          ["Weekly portfolio brief — ready to review", "Dispute exposure summary — Helios Commerce", "Capacity forecast — next 4 sprints"]],
+        "Notifications": ["Superadmin Console · Notifications", "What needs a human eye right now, ranked by urgency.",
+          [["Unread", "4"], ["Queued", "12"], ["Failed sends", "2"]],
+          ["Dev-CP review SLA breached — Aether (74h)", "Milestone accepted — Boreal Identity Gateway", "New dispute opened — Helios Commerce"]],
+        "Users": ["People · Users", "Everyone with access to the workspace, and what they can do.",
+          [["Workspace members", "248"], ["Administrators", "26"], ["Pending invites", "4"]],
+          ["Elena Rostova — Project lead, 6 projects", "Marcus Thorne — Project lead, 5 projects", "Nadia Benali — Dev-CP, 8 projects"]],
+        "Staff & Permissions": ["People · Staff & Permissions", "Roles, grants and the reviews that keep them honest.",
+          [["Roles defined", "7"], ["Permission grants", "42"], ["Reviews pending", "3"]],
+          ["Superadmin role — 4 members", "Dev-CP role — 11 members", "Finance reviewer — quarterly review due"]],
+        "Applications": ["People · Applications", "Candidates moving through the studio hiring pipeline.",
+          [["Open applications", "18"], ["In review", "6"], ["Offers out", "2"]],
+          ["Senior product designer — final round", "Frontend engineer — technical review", "Motion designer — portfolio review"]],
+        "Projects & Proposals": ["Operations · Projects & Proposals", "The full book of work — live, proposed and decided.",
+          [["Active projects", "18"], ["Proposals out", "9"], ["Awaiting decision", "4"]],
+          ["Atlas Brand Platform — proposal sent", "Northgate Mobile Banking — in negotiation", "Helios Commerce — executing"]],
+        "Estimates & Quotes": ["Operations · Estimates & Quotes", "Every estimate file, its value and its commercial state.",
+          [["Quote files", "142"], ["Quoted value", "$4.89M"], ["Accepted", "12"]],
+          ["Q-1042 Atlas Brand Platform — $486,000", "Q-1038 Northgate Mobile Banking — $912,000", "Q-1031 Helios Commerce — $1.24M"]],
+        "External Projects": ["Operations · External Projects", "Client engagements delivered outside the core studio.",
+          [["External projects", "11"], ["In execution", "7"], ["At risk", "2"]],
+          ["Kestrel Core Banking API — Green", "Solstice Data Mesh — Red", "Meridian Fleet Dispatch — Green"]],
+        "Dev-CP Mandates": ["Operations · Dev-CP Mandates", "Mandates where a Dev-CP owns technical sign-off.",
+          [["Active mandates", "9"], ["Reviews pending", "3"], ["Overdue reviews", "1"]],
+          ["Aether Cloud Migration — 3 deliverables waiting", "Helios Commerce — dispute floor active", "Calypso Patient Intake — 1 blocked task"]],
+        "Missions": ["Operations · Missions", "Staffed missions across the portfolio.",
+          [["Missions", "14"], ["Staffed", "8"], ["Unassigned", "2"]],
+          ["Design system rollout — Lyra, 2 devs", "API hardening — Kestrel, 8 devs", "Data mesh build — Solstice, 7 devs"]],
+        "Internal Missions": ["Operations · Internal Missions", "The studio's own work, tracked like client work.",
+          [["Internal missions", "6"], ["In progress", "4"], ["Blocked", "1"]],
+          ["Boreal Identity Gateway — Green", "Lyra Design System Ops — Green", "Zephyr Edge Telemetry — Not assessed"]],
+        "Incidents": ["Operations · Incidents", "Open incidents, their severity and who owns the fix.",
+          [["Open incidents", "3"], ["Critical", "1"], ["Resolved (30d)", "5"]],
+          ["INC-1042 Vanguard — velocity drift, Red", "INC-1039 Solstice — blocked tasks, Red", "INC-1036 Aether — review lag, Amber"]],
+        "Financial Center": ["Finance · Financial Center", "Money in, money held, money out — the whole picture.",
+          [["Active value", "$2.48M"], ["Escrowed", "$412K"], ["On-time payouts", "98.2%"]],
+          ["Escrow release due — Boreal, $48,000", "Milestone invoice — Kestrel, $96,500", "Quarterly margin review — scheduled"]],
+        "Payouts": ["Finance · Payouts", "Scheduled settlements to developers and partners.",
+          [["Scheduled", "$86,400"], ["Payouts this month", "12"], ["Failed", "0"]],
+          ["Payout #P-221 — Boreal team, $18,200", "Payout #P-219 — Kestrel team, $24,600", "Payout #P-215 — Lyra team, $9,800"]],
+        "Invoices": ["Finance · Invoices", "Issued invoices and what is still outstanding.",
+          [["Issued", "34"], ["Outstanding", "$128,900"], ["Overdue", "6"]],
+          ["INV-2041 Helios — $42,000, due in 6 days", "INV-2038 Solstice — $18,400, disputed", "INV-2033 Atlas — $61,200, paid"]],
+        "Subscriptions": ["Finance · Subscriptions", "Plans, seats and trials across the workspace.",
+          [["Active plans", "18"], ["Seats", "214"], ["Trials", "3"]],
+          ["Studio Pro — 12 seats", "Studio Team — 9 seats", "Enterprise trial — ends in 12 days"]],
+        "Quotes & Pricing": ["Finance · Quotes & Pricing", "Rate cards and pricing rules that quotes are built from.",
+          [["Rate cards", "5"], ["Price rules", "12"], ["Expiring soon", "2"]],
+          ["Senior rate card — updated Nov 2026", "Rush multiplier — 1.5x", "Retainer discount — 10%"]],
+        "Disputes": ["Support · Disputes", "Open disputes and where each one stands.",
+          [["Open disputes", "2"], ["In arbitration", "1"], ["Resolved", "7"]],
+          ["Helios Commerce — billing, $18,400", "Quasar Legacy Bridge — scope, $9,600", "Atlas Supply Graph — resolved, closed"]],
+        "Warranty": ["Support · Warranty", "Warranty claims on delivered work.",
+          [["Active claims", "4"], ["Under review", "1"], ["Closed", "12"]],
+          ["W-118 Boreal — identity flow, in review", "W-115 Lyra — component drift, approved", "W-109 Vega — vault audit, closed"]],
+        "Consolidated Support": ["Support · Consolidated Support", "Every support thread, one queue.",
+          [["Open tickets", "9"], ["Avg first reply", "2h"], ["Escalated", "0"]],
+          ["Ticket #4821 — access reset, open", "Ticket #4817 — invoice question, open", "Ticket #4809 — export bug, resolved"]],
+        "Security & Integrations": ["Governance · Security & Integrations", "Who can connect, what is enforced, what is alerting.",
+          [["Integrations", "7"], ["2FA on admins", "100%"], ["Critical alerts", "0"]],
+          ["SSO — connected, enforced", "Resend — 2 failed deliveries", "Audit trail — 1,284 events (30d)"]],
+        "Audit Journal": ["Governance · Audit Journal", "Every consequential action, in order, with its author.",
+          [["Events (30d)", "1,284"], ["Anomalies", "3"], ["Unresolved", "0"]],
+          ["Threshold change — orange −10, by C. Vance", "Case opened — Vanguard, by M. Thorne", "Payout approved — Boreal, by Finance"]],
+        "Reports & Exports": ["Governance · Reports & Exports", "Scheduled reports and one-off exports.",
+          [["Scheduled", "12"], ["Generated", "48"], ["Failed", "3"]],
+          ["Weekly RAG digest — Mondays 08:00", "Monthly finance pack — 1st of month", "Portfolio CSV — generated Nov 18"]],
+        "Settings": ["Governance · Settings", "Platform thresholds, roles and workspace preferences.",
+          [["Sections", "6"], ["2FA enforced", "Yes"], ["SSO", "Connected"]],
+          ["RAG thresholds — orange −10, red −25", "Review SLA — 48h", "Default currency — USD"]],
+        "Articles": ["Governance · Articles", "Published guidance and drafts for the workspace.",
+          [["Published", "24"], ["Drafts", "6"], ["Reads (30d)", "1,820"]],
+          ["How RAG scoring works — published", "Review SLA playbook — published", "Escrow explained — draft"]]
+      };
+
+      /* ---------- tab engine ---------- */
+      var host = document.querySelector("main").parentElement;
+      var strip = document.getElementById("console-tab-strip");
+      var mainView = document.getElementById("mainView");
+      var tabs = []; /* {name, el, panel, kind} */
+      var activeName = "Program Control";
+      var TAB_ACTIVE = "console-tab inline-flex items-center gap-2 px-4 py-2 rounded-t bg-surface-container/90 text-on-surface border border-b-0 border-outline-variant relative";
+      var TAB_IDLE = "console-tab inline-flex items-center gap-2 px-3.5 py-2 rounded-t bg-surface-container-low/50 text-on-surface-variant border border-b-0 border-outline-variant/50 hover:text-on-surface hover:bg-surface-container/50 transition-colors duration-state-change";
+      var ICONS = {};
+      document.querySelectorAll("[data-nav-item]").forEach(function (a) {
+        var ic = a.querySelector(".material-symbols-outlined");
+        ICONS[a.getAttribute("data-nav-item")] = ic ? ic.textContent : "dashboard";
+      });
+
+      function panelFor(name) {
+        if (name === "Program Control") return mainView;
+        var c = CONTENT[name];
+        var eyebrow = c ? c[0] : "Superadmin Console · " + name;
+        var blurb = c ? c[1] : "A simplified console view for " + name + " — summary figures and the latest items.";
+        var stats = c ? c[2] : [["Items", "—"], ["Open", "—"], ["Updated", "Today"]];
+        var items = c ? c[3] : ["No items to show in this demo view."];
+        var m = document.createElement("main");
+        m.setAttribute("data-panel", name);
+        m.className = "orbit-panel px-4 sm:px-8 pt-6 pb-24 flex flex-col gap-7 max-w-[1184px] w-full";
+        m.innerHTML =
+          '<section class="flex flex-col gap-1.5">' +
+            '<span class="font-label text-label-sm uppercase text-indigo-accent">' + eyebrow + '</span>' +
+            '<h1 class="font-display text-display-lg text-on-surface">' + name + '.</h1>' +
+            '<p class="font-body text-body-lg text-on-surface-variant max-w-prose">' + blurb + '</p>' +
+          '</section>' +
+          '<section class="grid grid-cols-1 sm:grid-cols-3 gap-4">' +
+            stats.map(function (s) {
+              return '<article class="rounded-md glass-panel border border-outline-variant p-4 flex flex-col gap-1">' +
+                '<h3 class="font-label text-label-md text-on-surface-variant">' + s[0] + '</h3>' +
+                '<p class="font-display text-display-lg text-on-surface tabular-nums">' + s[1] + '</p></article>';
+            }).join("") +
+          '</section>' +
+          '<section class="rounded-md glass-panel border border-outline-variant p-6 flex flex-col gap-3">' +
+            '<h2 class="font-headline text-headline-md text-on-surface">Latest</h2>' +
+            items.map(function (it) {
+              return '<div class="flex items-center gap-3 py-2 border-t border-outline-variant/60 first:border-t-0">' +
+                '<span class="w-2 h-2 rounded-full bg-indigo-accent shrink-0"></span>' +
+                '<span class="font-body text-body-md text-on-surface">' + it + '</span></div>';
+            }).join("") +
+          '</section>';
+        host.appendChild(m);
+        return m;
+      }
+
+      function projectPanel(title) {
+        var p = (window.OrbitProjects || []).find(function (x) { return x.title === title; });
+        var m = document.createElement("main");
+        m.setAttribute("data-panel", "project:" + title);
+        m.className = "orbit-panel px-4 sm:px-8 pt-6 pb-24 flex flex-col gap-7 max-w-[1184px] w-full";
+        if (!p) {
+          m.innerHTML = '<section><h1 class="font-display text-display-lg text-on-surface">Project not found.</h1></section>';
+          host.appendChild(m);
+          return m;
+        }
+        var ragColor = p.rag === "Green" ? "text-teal-accent border-teal-accent/30 bg-secondary-container/70"
+          : p.rag === "Amber" ? "text-amber-accent border-amber-accent/30 bg-amber-accent/15"
+          : p.rag === "Red" ? "text-rose-accent border-rose-accent/30 bg-rose-accent/15"
+          : "text-on-surface-variant border-outline-variant bg-surface-container-high";
+        var gapTxt = p.gap === null ? "—" : (p.gap > 0 ? "+" + p.gap + " pts" : p.gap + " pts");
+        var elapsedTxt = p.elapsed === null ? "No reference dates" : p.elapsed + "% elapsed";
+        var alerts = [];
+        if (p.overdue > 0) alerts.push(p.overdue + " milestone" + (p.overdue > 1 ? "s" : "") + " overdue");
+        if (p.blocked > 0) alerts.push(p.blocked + " task" + (p.blocked > 1 ? "s" : "") + " blocked");
+        if (p.disputes > 0) alerts.push(p.disputes + " open dispute" + (p.disputes > 1 ? "s" : ""));
+        var miles = [
+          ["Scope & kickoff", 100, "Accepted"], ["Core build", p.validated, "Validated"],
+          ["Client review", p.submitted, "Submitted"], ["Launch & handover", p.declared, "Declared"]
+        ];
+        m.innerHTML =
+          '<section class="flex flex-col gap-1.5">' +
+            '<span class="font-label text-label-sm uppercase text-indigo-accent">Project control · ' + p.kind + '</span>' +
+            '<h1 class="font-display text-display-lg text-on-surface">' + p.title + '.</h1>' +
+            '<p class="font-body text-body-lg text-on-surface-variant max-w-prose">Lead ' + p.lead + ' · ' + p.devs + ' developers · ' + p.status + ' · last activity ' + p.lastActivity + '.</p>' +
+          '</section>' +
+          '<section class="grid grid-cols-1 sm:grid-cols-3 gap-4">' +
+            '<article class="rounded-md glass-panel border border-outline-variant p-4 flex flex-col gap-1"><h3 class="font-label text-label-md text-on-surface-variant">RAG status</h3><p><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm border font-label text-label-sm ' + ragColor + '">' + p.rag + '</span></p><p class="font-body text-body-sm text-on-surface-variant">Gap ' + gapTxt + ' · ' + elapsedTxt + '</p></article>' +
+            '<article class="rounded-md glass-panel border border-outline-variant p-4 flex flex-col gap-1"><h3 class="font-label text-label-md text-on-surface-variant">Validated progress</h3><p class="font-display text-display-lg text-on-surface tabular-nums">' + p.validated + '%</p><p class="font-body text-body-sm text-on-surface-variant">Submitted ' + p.submitted + '% · Declared ' + p.declared + '%</p></article>' +
+            '<article class="rounded-md glass-panel border border-outline-variant p-4 flex flex-col gap-1"><h3 class="font-label text-label-md text-on-surface-variant">Alerts</h3><p class="font-display text-display-lg text-on-surface tabular-nums">' + (p.overdue + p.blocked + p.disputes) + '</p><p class="font-body text-body-sm text-on-surface-variant">' + (alerts.length ? alerts.join(" · ") : "None") + '</p></article>' +
+          '</section>' +
+          '<section class="rounded-md glass-panel border border-outline-variant p-6 flex flex-col gap-3">' +
+            '<h2 class="font-headline text-headline-md text-on-surface">Milestones</h2>' +
+            miles.map(function (mi) {
+              return '<div class="flex flex-col gap-1.5 py-2 border-t border-outline-variant/60 first:border-t-0">' +
+                '<div class="flex items-center justify-between"><span class="font-body text-body-md text-on-surface">' + mi[0] + '</span><span class="font-mono text-mono-md text-on-surface tabular-nums">' + mi[1] + '% · ' + mi[2] + '</span></div>' +
+                '<div class="h-1.5 rounded-full bg-surface-container-high overflow-hidden"><div class="h-full rounded-full bg-teal-accent" style="width:' + mi[1] + '%"></div></div></div>';
+            }).join("") +
+          '</section>';
+        host.appendChild(m);
+        return m;
+      }
+
+      function makeTabEl(name) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute("role", "tab");
+        b.setAttribute("data-console-tab", name);
+        b.className = TAB_IDLE;
+        var icon = ICONS[name] || "radar";
+        b.innerHTML = '<span class="material-symbols-outlined text-[16px] text-indigo-accent" aria-hidden="true">' + icon + '</span>' +
+          '<span class="tab-label font-label text-label-lg">' + name + '</span>' +
+          '<span class="tab-close" role="button" tabindex="0" aria-label="Close ' + name + ' tab"><span class="material-symbols-outlined text-[14px]" aria-hidden="true">close</span></span>';
+        return b;
+      }
+
+      function setActiveNav(name) {
+        document.querySelectorAll("[data-nav-item]").forEach(function (a) {
+          var on = a.getAttribute("data-nav-item") === name;
+          a.setAttribute("aria-current", on ? "page" : "false");
+          if (on) {
+            a.classList.add("bg-primary-container/80", "text-on-primary-container", "border", "border-indigo-accent/30");
+            a.classList.remove("text-on-surface-variant");
+          } else {
+            a.classList.remove("bg-primary-container/80", "text-on-primary-container", "border", "border-indigo-accent/30");
+            if (!a.classList.contains("text-on-surface-variant")) a.classList.add("text-on-surface-variant");
+          }
+        });
+      }
+
+      function activate(name) {
+        tabs.forEach(function (t) {
+          var on = t.name === name;
+          t.el.setAttribute("aria-selected", on ? "true" : "false");
+          t.el.className = on ? TAB_ACTIVE : TAB_IDLE;
+          t.panel.style.display = on ? "" : "none";
+        });
+        activeName = name;
+        setActiveNav(name.indexOf("project:") === 0 ? "" : name);
+        closeSidebar();
+      }
+
+      function openTab(name, panel, kind) {
+        var existing = tabs.find(function (t) { return t.name === name; });
+        if (existing) { activate(name); return existing; }
+        var el = makeTabEl(name);
+        var addBtn = document.getElementById("add-console-tab-btn");
+        strip.insertBefore(el, addBtn ? addBtn.parentElement : null);
+        var t = { name: name, el: el, panel: panel, kind: kind || "console" };
+        tabs.push(t);
+        activate(name);
+        return t;
+      }
+
+      function openConsole(name, opts) {
+        opts = opts || {};
+        var existing = tabs.find(function (t) { return t.name === name; });
+        if (existing) { activate(name); return; }
+        if (!opts.newTab) {
+          var cur = tabs.find(function (t) { return t.name === activeName; });
+          if (cur && cur.kind === "console") {
+            /* reuse the current tab (main view stays in the DOM, just hidden) */
+            var panel = panelFor(name);
+            if (cur.panel === mainView) mainView.style.display = "none";
+            if (cur.panel !== mainView) cur.panel.remove();
+            cur.name = name;
+            cur.panel = panel;
+            cur.el.setAttribute("data-console-tab", name);
+            var ic = cur.el.querySelector(".material-symbols-outlined");
+            if (ic) ic.textContent = ICONS[name] || "dashboard";
+            var lb = cur.el.querySelector(".tab-label") || cur.el.querySelector(".font-label");
+            if (lb) lb.textContent = name;
+            var cb = cur.el.querySelector(".tab-close");
+            if (cb) cb.setAttribute("aria-label", "Close " + name + " tab");
+            activate(name);
+            return;
+          }
+        }
+        if (tabs.length >= 6) {
+          var cur2 = tabs.find(function (t) { return t.name === activeName; });
+          if (cur2 && cur2.name !== "Program Control") {
+            var panel2 = panelFor(name);
+            if (cur2.panel === mainView) mainView.style.display = "none";
+            if (cur2.panel !== mainView) cur2.panel.remove();
+            cur2.name = name;
+            cur2.panel = panel2;
+            cur2.el.setAttribute("data-console-tab", name);
+            var ic2 = cur2.el.querySelector(".material-symbols-outlined");
+            if (ic2) ic2.textContent = ICONS[name] || "dashboard";
+            var lb2 = cur2.el.querySelector(".tab-label") || cur2.el.querySelector(".font-label");
+            if (lb2) lb2.textContent = name;
+            activate(name);
+            return;
+          }
+        }
+        openTab(name, panelFor(name), "console");
+      }
+
+      function openProject(title) {
+        var name = "project:" + title;
+        var existing = tabs.find(function (t) { return t.name === name; });
+        if (existing) { activate(name); return; }
+        var el = makeTabEl(title);
+        el.setAttribute("data-console-tab", name); /* tab id carries the project: prefix; label stays the title */
+        var addBtn = document.getElementById("add-console-tab-btn");
+        strip.insertBefore(el, addBtn ? addBtn.parentElement : null);
+        var t = { name: name, el: el, panel: projectPanel(title), kind: "project" };
+        tabs.push(t);
+        activate(name);
+      }
+
+      function closeTab(name) {
+        var idx = tabs.findIndex(function (t) { return t.name === name; });
+        if (idx < 0) return;
+        var t = tabs[idx];
+        var wasActive = t.name === activeName;
+        t.el.remove();
+        if (t.panel !== mainView) t.panel.remove();
+        tabs.splice(idx, 1);
+        if (!tabs.length) {
+          if (!mainView.isConnected) host.appendChild(mainView);
+          tabs.push({ name: "Program Control", el: document.querySelector('[data-console-tab="Program Control"]') || makeTabEl("Program Control"), panel: mainView, kind: "console" });
+          var pc = tabs[0];
+          if (!pc.el.isConnected) strip.insertBefore(pc.el, document.getElementById("add-console-tab-btn").parentElement);
+        }
+        if (wasActive) activate(tabs[Math.max(0, idx - 1)].name);
+      }
+
+      /* seed tabs from the static markup (Program Control + Incidents) */
+      document.querySelectorAll("#console-tab-strip [data-console-tab]").forEach(function (el) {
+        var name = el.getAttribute("data-console-tab");
+        var icon = el.querySelector(".material-symbols-outlined");
+        el.insertAdjacentHTML("beforeend", '<span class="tab-close" role="button" tabindex="0" aria-label="Close ' + name + ' tab"><span class="material-symbols-outlined text-[14px]" aria-hidden="true">close</span></span>');
+        tabs.push({ name: name, el: el, panel: name === "Program Control" ? mainView : panelFor(name), kind: "console" });
+        if (name !== "Program Control") el.querySelector(".tab-label, .font-label") && el.classList.add("console-tab");
+      });
+      tabs.forEach(function (t) { if (t.name !== "Program Control") t.panel.style.display = "none"; });
+      activate("Program Control");
+
+      /* tab clicks / close / middle-click */
+      strip.addEventListener("click", function (e) {
+        var closeBtn = e.target.closest(".tab-close");
+        if (closeBtn) { e.stopPropagation(); closeTab(closeBtn.closest("[data-console-tab]").getAttribute("data-console-tab")); return; }
+        var tab = e.target.closest("[data-console-tab]");
+        if (tab) activate(tab.getAttribute("data-console-tab"));
+      });
+      strip.addEventListener("auxclick", function (e) {
+        if (e.button === 1) {
+          var tab = e.target.closest("[data-console-tab]");
+          if (tab) { e.preventDefault(); closeTab(tab.getAttribute("data-console-tab")); }
+        }
+      });
+      strip.addEventListener("keydown", function (e) {
+        if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("tab-close")) {
+          e.preventDefault();
+          closeTab(e.target.closest("[data-console-tab]").getAttribute("data-console-tab"));
+        }
+      });
+
+      /* nav clicks: normal = current tab, Ctrl/Cmd/middle = new tab */
+      document.querySelectorAll("[data-nav-item]").forEach(function (a) {
+        a.addEventListener("click", function (e) {
+          e.preventDefault();
+          openConsole(a.getAttribute("data-nav-item"), { newTab: e.metaKey || e.ctrlKey });
+        });
+        a.addEventListener("auxclick", function (e) {
+          if (e.button === 1) { e.preventDefault(); openConsole(a.getAttribute("data-nav-item"), { newTab: true }); }
+        });
+      });
+
+      /* sidebar search also filters the navigation (Stitch filters the table) */
+      var searchInput = document.getElementById("sidebar-search");
+      if (searchInput) {
+        searchInput.addEventListener("input", function () {
+          var q = searchInput.value.trim().toLowerCase();
+          document.querySelectorAll('nav[aria-label="Primary navigation"] > div').forEach(function (group) {
+            var any = false;
+            group.querySelectorAll("[data-nav-item]").forEach(function (a) {
+              var hit = !q || a.getAttribute("data-nav-item").toLowerCase().indexOf(q) !== -1;
+              a.style.display = hit ? "" : "none";
+              if (hit) any = true;
+            });
+            var head = group.querySelector(":scope > div");
+            if (head) head.style.display = any || !q ? "" : "none";
+          });
+        });
+      }
+
+      /* signal quick-links: filter the table on the project */
+      document.querySelectorAll(".project-quick-link").forEach(function (a) {
+        a.addEventListener("click", function (e) {
+          e.preventDefault();
+          var title = a.getAttribute("data-focus-project");
+          if (searchInput) {
+            searchInput.value = title;
+            searchInput.dispatchEvent(new Event("input", { bubbles: true }));
+          }
+          document.getElementById("portfolio-table").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+          showToast("Portfolio filtered on " + title + ".");
+        });
+      });
+
+      /* theme toggle (dark by default) */
+      var themeBtn = document.getElementById("theme-toggle");
+      var themeIcon = document.getElementById("theme-icon");
+      if (themeBtn) {
+        themeBtn.addEventListener("click", function () {
+          var root = document.documentElement;
+          var light = !root.classList.contains("light");
+          root.classList.toggle("light", light);
+          root.classList.toggle("dark", !light);
+          themeIcon.textContent = light ? "dark_mode" : "light_mode";
+          themeBtn.setAttribute("aria-label", light ? "Switch to dark theme" : "Switch to light theme");
+          showToast(light ? "Light theme on — dark is the default." : "Dark theme on.");
+        });
+      }
+
+      /* mobile sidebar drawer */
+      var sidebarToggle = document.getElementById("sidebar-toggle");
+      var overlay = document.getElementById("sidebar-overlay");
+      function closeSidebar() {
+        document.body.classList.remove("sidebar-open");
+        if (overlay) overlay.classList.add("hidden");
+      }
+      if (sidebarToggle) {
+        sidebarToggle.addEventListener("click", function () {
+          var open = document.body.classList.toggle("sidebar-open");
+          if (overlay) overlay.classList.toggle("hidden", !open);
+        });
+      }
+      if (overlay) overlay.addEventListener("click", closeSidebar);
+
+      /* "+" menu: reparent to body so the scrolling tab strip never clips it */
+      var addBtn = document.getElementById("add-console-tab-btn");
+      var menu = document.getElementById("new-tab-menu");
+      if (addBtn && menu) {
+        document.body.appendChild(menu);
+        menu.style.position = "fixed";
+        menu.style.zIndex = "60";
+        addBtn.addEventListener("click", function () {
+          if (menu.classList.contains("hidden")) return;
+          var r = addBtn.getBoundingClientRect();
+          menu.style.left = Math.min(r.left, window.innerWidth - 240) + "px";
+          menu.style.top = (r.bottom + 6) + "px";
+        });
+        document.addEventListener("click", function (e) {
+          if (!menu.classList.contains("hidden") && !menu.contains(e.target) && e.target !== addBtn && !addBtn.contains(e.target)) {
+            menu.classList.add("hidden");
+            addBtn.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+
+      /* logout + keyboard shortcuts */
+      var logoutBtn = document.getElementById("logout-btn");
+      if (logoutBtn) logoutBtn.addEventListener("click", function () { showToast("Demo sign-out — no session to close."); });
+      document.addEventListener("keydown", function (e) {
+        var tag = (e.target && e.target.tagName) || "";
+        if (e.key === "/" && tag !== "INPUT" && tag !== "SELECT" && tag !== "TEXTAREA") {
+          e.preventDefault();
+          if (searchInput) { searchInput.focus(); document.body.classList.add("sidebar-open"); if (overlay) overlay.classList.remove("hidden"); }
+        }
+        if (e.key === "Escape") {
+          if (menu) menu.classList.add("hidden");
+          closeSidebar();
+        }
+      });
+
+      window.Orbit = { openConsole: openConsole, openProject: openProject, toast: showToast };
+      window.OrbitSyncRag = function (rag) {
+        document.querySelectorAll("[data-rag-segment]").forEach(function (el) {
+          var on = rag !== "All" && el.getAttribute("data-rag-segment") === rag;
+          el.classList.toggle("is-active", on);
+          if (el.tagName === "circle") el.style.opacity = rag === "All" || on ? "1" : "0.35";
+        });
+        var hint = document.getElementById("rag-filter-hint");
+        if (hint) hint.textContent = rag === "All" ? "Click a segment or legend row to filter the portfolio table" : "Filtering on " + rag + " — click again to clear.";
+      };
+    })();
+  </script>
+
+<script>
+/* Hover pass 2026-11-18 : survols sur le donut RAG et les barres de progression du tableau.
+   Infobulle unique suivant le curseur ; le clic de filtrage existant n'est pas touché. */
+(function(){
+  var tip = document.createElement("div");
+  tip.className = "orbit-tip";
+  tip.setAttribute("aria-hidden", "true");
+  document.body.appendChild(tip);
+  function move(e){
+    tip.style.left = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 10) + "px";
+    tip.style.top = Math.min(e.clientY + 16, window.innerHeight - tip.offsetHeight - 10) + "px";
+  }
+  function show(text, e){ tip.textContent = text; tip.style.display = "block"; move(e); }
+  function hide(){ tip.style.display = "none"; }
+
+  /* Valeurs exactes lues dans la légende (compte + pourcentage par statut) */
+  var RAG_TIP = {};
+  document.querySelectorAll(".rag-legend-btn[data-rag-segment]").forEach(function(btn){
+    var nums = btn.querySelectorAll(".tabular-nums span");
+    if (nums.length >= 2) RAG_TIP[btn.getAttribute("data-rag-segment")] = nums[0].textContent.trim() + " projects · " + nums[1].textContent.trim();
+  });
+
+  var segments = [...document.querySelectorAll("circle.donut-segment")];
+  function highlight(name){
+    segments.forEach(function(s){
+      if (!name) { s.style.opacity = ""; s.style.strokeWidth = ""; }
+      else if (s.getAttribute("data-rag-segment") === name) { s.style.opacity = "1"; s.style.strokeWidth = "25"; }
+      else { s.style.opacity = ".22"; s.style.strokeWidth = ""; }
+    });
+  }
+  segments.forEach(function(seg){
+    var name = seg.getAttribute("data-rag-segment");
+    seg.addEventListener("mouseenter", function(e){ highlight(name); show(name + " — " + (RAG_TIP[name] || ""), e); });
+    seg.addEventListener("mousemove", move);
+    seg.addEventListener("mouseleave", function(){ highlight(null); hide(); });
+  });
+  document.querySelectorAll(".rag-legend-btn[data-rag-segment]").forEach(function(btn){
+    var name = btn.getAttribute("data-rag-segment");
+    btn.addEventListener("mouseenter", function(){ highlight(name); });
+    btn.addEventListener("mouseleave", function(){ highlight(null); });
+  });
+
+  /* Barres de progression du tableau (délégation : le tbody est re-rendu aux filtres) */
+  document.addEventListener("mouseover", function(e){
+    var cell = e.target.closest ? e.target.closest("[data-prog]") : null;
+    if (cell) show(cell.getAttribute("data-prog"), e);
+  });
+  document.addEventListener("mousemove", function(e){
+    if (tip.style.display === "block" && document.querySelector("[data-prog]:hover")) move(e);
+  });
+  document.addEventListener("mouseout", function(e){
+    var inProg = rt => rt && rt.closest && rt.closest("[data-prog]");
+    if (e.target.closest && e.target.closest("[data-prog]") && !inProg(e.relatedTarget)) hide();
+  });
+})();
+</script>
+
+</body></html>
