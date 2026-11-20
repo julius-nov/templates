@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledgerline — Finance &amp; Invoicing Dashboard</title>
+<meta name="description" content="Ledgerline is a dark-first finance and invoicing workspace for SaaS founders and studios: cash-flow curve, invoice pipeline, reminders and recurring revenue in one calm ledger.">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'light-surface': '#F3F6FA', 'light-on-surface': '#0F172A',
+        'light-surface-container-low': '#E9EFF5', 'light-surface-container': '#FFFFFF',
+        'light-surface-container-high': '#F8FAFC', 'light-surface-container-highest': '#E2E8F0',
+        'light-on-surface-variant': '#475569', 'light-on-surface-muted': '#64748B',
+        'light-outline': '#CBD5E1', 'light-outline-variant': '#E2E8F0',
+        'light-paid': '#047857', 'light-outstanding': '#0E7490', 'light-overdue': '#B45309',
+        'light-subscription': '#6D28D9', 'light-refunded': '#BE123C', 'light-draft': '#475569',
+        'dark-surface': '#070A12', 'dark-on-surface': '#F8FAFC',
+        'dark-surface-container-low': '#0B101B', 'dark-surface-container': '#0E1420',
+        'dark-surface-container-high': '#141C2B', 'dark-surface-container-highest': '#1C2638',
+        'dark-on-surface-variant': '#94A3B8', 'dark-on-surface-muted': '#8B9BB4',
+        'dark-outline': '#334155', 'dark-outline-variant': '#1E293B',
+        'paid': '#34D399', 'paid-container': '#06281E', 'on-paid-container': '#6EE7B7',
+        'outstanding': '#22D3EE', 'outstanding-container': '#082734', 'on-outstanding-container': '#67E8F9',
+        'overdue': '#FBBF24', 'overdue-container': '#291A06', 'on-overdue-container': '#FDE68A',
+        'subscription': '#A78BFA', 'subscription-container': '#1D1536', 'on-subscription-container': '#DDD6FE',
+        'draft': '#94A3B8', 'draft-container': '#161E2E', 'on-draft-container': '#CBD5E1',
+        'refunded': '#FB7185', 'refunded-container': '#2B1018', 'on-refunded-container': '#FECDD3',
+        'primary': '#F1F5F9', 'on-primary': '#070A12'
+      },
+      borderRadius: { 'sm': '6px', 'DEFAULT': '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', 'full': '9999px' },
+      fontFamily: {
+        'display': ['"Fraunces"', 'serif'],
+        'headline': ['"Inter"', 'sans-serif'],
+        'title': ['"Inter"', 'sans-serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'label': ['"Inter"', 'sans-serif'],
+        'mono': ['"JetBrains Mono"', 'monospace']
+      },
+      fontSize: {
+        'display-lg': ['48px', { lineHeight: '54px', letterSpacing: '-1px', fontWeight: '500' }],
+        'display-md': ['36px', { lineHeight: '42px', letterSpacing: '-0.75px', fontWeight: '500' }],
+        'headline-lg': ['28px', { lineHeight: '34px', letterSpacing: '-0.4px', fontWeight: '500' }],
+        'headline-md': ['20px', { lineHeight: '28px', letterSpacing: '-0.25px', fontWeight: '600' }],
+        'headline-sm': ['16px', { lineHeight: '24px', letterSpacing: '-0.15px', fontWeight: '600' }],
+        'title-md': ['14px', { lineHeight: '20px', fontWeight: '600' }],
+        'body-md': ['14px', { lineHeight: '22px', fontWeight: '400' }],
+        'body-sm': ['12px', { lineHeight: '18px', fontWeight: '400' }],
+        'label-lg': ['13px', { lineHeight: '18px', letterSpacing: '0.1px', fontWeight: '500' }],
+        'label-md': ['12px', { lineHeight: '16px', letterSpacing: '0.15px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.4px', fontWeight: '600' }],
+        'mono-lg': ['20px', { lineHeight: '26px', letterSpacing: '-0.3px', fontWeight: '500' }],
+        'mono-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'mono-sm': ['11px', { lineHeight: '16px', letterSpacing: '0.1px', fontWeight: '500' }]
+      },
+      transitionDuration: { 'state-change': '120ms', 'surface-enter': '200ms' },
+      transitionTimingFunction: { 'surface-enter': 'cubic-bezier(0.2, 0, 0, 1)' }
+    }
+  }
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+<style>
+  .material-symbols-outlined { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }
+  .glass-panel { box-shadow: inset 0 1px 0 0 rgba(248, 250, 252, 0.04); }
+  html:not(.dark) .glass-panel { box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.6), 0 1px 2px rgba(15, 23, 42, 0.05); }
+  /* Entrance + motion */
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .rise { animation: rise .45s cubic-bezier(0.2, 0, 0, 1) both; }
+  .rise-1 { animation-delay: .04s; } .rise-2 { animation-delay: .09s; } .rise-3 { animation-delay: .14s; }
+  .rise-4 { animation-delay: .19s; } .rise-5 { animation-delay: .24s; } .rise-6 { animation-delay: .29s; }
+  @keyframes drawCurve { from { stroke-dashoffset: 1400; } to { stroke-dashoffset: 0; } }
+  .curve-draw { stroke-dasharray: 1400; animation: drawCurve 1.4s cubic-bezier(0.2, 0, 0, 1) .2s both; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .fade-in { animation: fadeIn .2s ease-out both; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .slide-up { animation: slideUp .22s cubic-bezier(0.2, 0, 0, 1) both; }
+  @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  .drawer-open { animation: slideInRight .28s cubic-bezier(0.2, 0, 0, 1) both; }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .toast-in { animation: toastIn .25s cubic-bezier(0.2, 0, 0, 1) both; }
+  .pipeline-col { transition: opacity .15s ease-out; }
+  #pipeline-bars.dim .pipeline-col { opacity: .35; }
+  #pipeline-bars.dim .pipeline-col.hot { opacity: 1; }
+  .pipeline-col .bar-seg { transition: filter .15s ease-out; }
+  .pipeline-col.hot .bar-seg { filter: brightness(1.25); }
+  .kpi-card { transition: transform .15s ease-out, border-color .15s ease-out; }
+  .kpi-card:hover { transform: translateY(-2px); }
+  .nav-item.active { background: var(--nav-active-bg); }
+  html.dark { --nav-active-bg: #141C2B; }
+  html:not(.dark) { --nav-active-bg: #E2E8F0; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 8px; border: 2px solid transparent; background-clip: content-box; }
+  html:not(.dark) ::-webkit-scrollbar-thumb { background: #CBD5E1; border: 2px solid transparent; background-clip: content-box; }
+  .field-err { border-color: #FB7185 !important; }
+  @media (max-width: 640px) { #curve-grid text { display: none; } #curve-labels text { font-size: 20px; } }
+  .field-err-msg { color: #FB7185; }
+  html:not(.dark) .field-err-msg { color: #BE123C; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; transition-duration: 0.01ms !important; }
+  }
+  @media print { body * { visibility: hidden; } #print-area, #print-area * { visibility: visible; } #print-area { position: absolute; inset: 0; } }
+</style>
+</head>
+<body class="bg-light-surface dark:bg-dark-surface text-light-on-surface dark:text-dark-on-surface font-body antialiased selection:bg-outstanding/30">
+
+<div class="min-h-screen flex bg-light-surface dark:bg-dark-surface">
+
+  <!-- ============ SIDEBAR (desktop) ============ -->
+  <aside id="sidebar" class="hidden lg:flex w-[248px] shrink-0 min-h-screen sticky top-0 h-screen bg-light-surface-container-low dark:bg-dark-surface-container-low border-r border-light-outline-variant dark:border-dark-outline-variant px-4 py-6 flex-col justify-between gap-6">
+    <div class="flex flex-col gap-6">
+      <div class="flex items-center justify-between px-2">
+        <button type="button" data-nav="overview" class="nav-item flex items-center gap-2.5 rounded px-1 py-1 -ml-1">
+          <svg class="w-7 h-7 text-light-on-surface dark:text-dark-on-surface" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="1.5"></rect>
+            <path d="M9 8V20H19" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <circle cx="19" cy="10" r="2.2" fill="#22D3EE"></circle>
+          </svg>
+          <span class="font-display text-headline-md">Ledgerline</span>
+        </button>
+        <span class="w-2 h-2 rounded-full bg-paid" title="Ledger synced"></span>
+      </div>
+
+      <button id="cmdk-trigger" type="button" class="w-full flex items-center justify-between gap-2 rounded bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant px-3 py-2 text-light-on-surface-variant dark:text-dark-on-surface-variant hover:bg-light-surface-container-high dark:hover:bg-dark-surface-container-high hover:border-light-outline dark:hover:border-dark-outline transition-colors duration-state-change">
+        <span class="flex items-center gap-2 text-body-sm">
+          <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">search</span>
+          <span>Search ledger…</span>
+        </span>
+        <kbd class="rounded bg-light-surface-container-highest dark:bg-dark-surface-container-highest border border-light-outline dark:border-dark-outline px-1.5 py-0.5 font-mono text-mono-sm">⌘K</kbd>
+      </button>
+
+      <nav aria-label="Primary navigation" class="flex flex-col gap-6">
+        <div class="flex flex-col gap-1">
+          <span class="px-2.5 pb-1 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Ledger</span>
+          <button type="button" data-nav="overview" class="nav-item active flex items-center gap-3 rounded px-2.5 py-2 font-label text-label-lg text-left text-light-on-surface dark:text-dark-on-surface hover:bg-light-surface-container-high dark:hover:bg-dark-surface-container-high transition-colors duration-state-change">
+            <span class="material-symbols-outlined text-headline-sm text-outstanding" style="font-variation-settings:'FILL' 1;" aria-hidden="true">space_dashboard</span><span>Overview</span>
+          </button>
+          <button type="button" data-nav="invoices" class="nav-item flex items-center justify-between rounded px-2.5 py-2 font-label text-label-lg text-left text-light-on-surface-variant dark:text-dark-on-surface-variant hover:bg-light-surface-container-high/60 dark:hover:bg-dark-surface-container-high/60 hover:text-light-on-surface dark:hover:text-dark-on-surface transition-colors duration-state-change">
+            <span class="flex items-center gap-3"><span class="material-symbols-outlined text-headline-sm" aria-hidden="true">receipt_long</span><span>Invoices</span></span>
+            <span id="nav-badge" class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-light-surface-container-highest dark:bg-dark-surface-container-highest font-mono text-mono-sm tabular-nums">7</span>
+          </button>
+          <button type="button" data-nav="clients" class="nav-item flex items-center gap-3 rounded px-2.5 py-2 font-label text-label-lg text-left text-light-on-surface-variant dark:text-dark-on-surface-variant hover:bg-light-surface-container-high/60 dark:hover:bg-dark-surface-container-high/60 hover:text-light-on-surface dark:hover:text-dark-on-surface transition-colors duration-state-change">
+            <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">group</span><span>Clients</span>
+          </button>
+          <button type="button" data-nav="subscriptions" class="nav-item flex items-center gap-3 rounded px-2.5 py-2 font-label text-label-lg text-left text-light-on-surface-variant dark:text-dark-on-surface-variant hover:bg-light-surface-container-high/60 dark:hover:bg-dark-surface-container-high/60 hover:text-light-on-surface dark:hover:text-dark-on-surface transition-colors duration-state-change">
+            <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">autorenew</span><span>Subscriptions</span>
+          </button>
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="px-2.5 pb-1 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Operations</span>
+          <button type="button" data-nav="expenses" class="nav-item flex items-center gap-3 rounded px-2.5 py-2 font-label text-label-lg text-left text-light-on-surface-variant dark:text-dark-on-surface-variant hover:bg-light-surface-container-high/60 dark:hover:bg-dark-surface-container-high/60 hover:text-light-on-surface dark:hover:text-dark-on-surface transition-colors duration-state-change">
+            <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">payments</span><span>Expenses</span>
+          </button>
+          <button type="button" data-nav="reports" class="nav-item flex items-center gap-3 rounded px-2.5 py-2 font-label text-label-lg text-left text-light-on-surface-variant dark:text-dark-on-surface-variant hover:bg-light-surface-container-high/60 dark:hover:bg-dark-surface-container-high/60 hover:text-light-on-surface dark:hover:text-dark-on-surface transition-colors duration-state-change">
+            <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">monitoring</span><span>Reports</span>
+          </button>
+          <button type="button" data-nav="settings" class="nav-item flex items-center gap-3 rounded px-2.5 py-2 font-label text-label-lg text-left text-light-on-surface-variant dark:text-dark-on-surface-variant hover:bg-light-surface-container-high/60 dark:hover:bg-dark-surface-container-high/60 hover:text-light-on-surface dark:hover:text-dark-on-surface transition-colors duration-state-change">
+            <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">tune</span><span>Settings</span>
+          </button>
+        </div>
+      </nav>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <button id="theme-toggle" type="button" aria-label="Toggle light or dark mode" class="w-full inline-flex items-center justify-between rounded bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant px-3 py-2 font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface transition-colors duration-state-change">
+        <span class="flex items-center gap-2"><span id="theme-icon" class="material-symbols-outlined text-headline-sm" aria-hidden="true">light_mode</span><span id="theme-label">Light mode</span></span>
+        <span class="font-mono text-mono-sm">Dark · on</span>
+      </button>
+      <div class="rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-3 flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-subscription-container border border-subscription/30 flex items-center justify-center font-label text-label-sm text-on-subscription-container shrink-0">EV</div>
+        <div class="flex flex-col min-w-0">
+          <span id="profile-name" class="font-title text-title-md truncate">Elena Vance</span>
+          <span id="profile-company" class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate">Meridian SaaS LLC</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="flex-1 min-w-0 flex flex-col pb-20 lg:pb-0">
+
+    <!-- Mobile top bar -->
+    <header class="lg:hidden sticky top-0 z-30 border-b border-light-outline-variant dark:border-dark-outline-variant bg-light-surface/90 dark:bg-dark-surface/90 backdrop-blur-md px-4 py-3 flex items-center justify-between gap-3">
+      <button type="button" data-nav="overview" class="nav-item flex items-center gap-2">
+        <svg class="w-6 h-6" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="1.5"></rect>
+          <path d="M9 8V20H19" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="19" cy="10" r="2.2" fill="#22D3EE"></circle>
+        </svg>
+        <span class="font-display text-headline-sm">Ledgerline</span>
+      </button>
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted hidden min-[400px]:inline">Fri, Nov 20, 2026</span>
+        <button id="cmdk-trigger-m" type="button" aria-label="Search ledger" class="inline-flex items-center justify-center w-9 h-9 rounded bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant text-light-on-surface-variant dark:text-dark-on-surface-variant">
+          <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">search</span>
+        </button>
+        <button id="theme-toggle-m" type="button" aria-label="Toggle light or dark mode" class="inline-flex items-center justify-center w-9 h-9 rounded bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant text-light-on-surface-variant dark:text-dark-on-surface-variant">
+          <span id="theme-icon-m" class="material-symbols-outlined text-headline-sm" aria-hidden="true">light_mode</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ================= VIEW: OVERVIEW ================= -->
+    <main id="view-overview" class="view flex-1 min-w-0 grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_336px] gap-6 p-4 sm:p-6">
+      <div class="flex flex-col gap-6 min-w-0">
+
+        <!-- Cash-flow hero -->
+        <section class="rise rise-1 rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-5 sm:p-6 glass-panel flex flex-col gap-5">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="flex flex-col gap-1.5 min-w-0">
+              <div class="flex items-center gap-2.5 flex-wrap">
+                <span class="font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Net cash flow · Trailing 12M</span>
+                <span class="inline-flex items-center gap-1 rounded-full bg-paid/10 text-light-paid dark:text-on-paid-container border border-paid/25 px-2.5 py-0.5 font-mono text-mono-sm tabular-nums">+14.8% YoY</span>
+              </div>
+              <div class="flex items-baseline gap-4 flex-wrap">
+                <h1 id="hero-cash" data-countup="142840" data-format="money2" class="font-display text-display-md sm:text-display-lg tabular-nums">$142,840.00</h1>
+                <span class="font-mono text-mono-md text-light-paid dark:text-paid tabular-nums">+$18,420.00 vs prior</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <button id="btn-export-csv" type="button" class="inline-flex items-center justify-center gap-2 rounded bg-light-surface-container-high dark:bg-dark-surface-container-high border border-light-outline dark:border-dark-outline px-3.5 py-2 font-label text-label-lg hover:bg-light-surface-container-highest dark:hover:bg-dark-surface-container-highest transition-colors duration-state-change">
+                <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">download</span><span>Export CSV</span>
+              </button>
+              <button id="btn-new-invoice" type="button" class="inline-flex items-center justify-center gap-2 rounded bg-light-on-surface dark:bg-primary text-light-surface dark:text-on-primary px-4 py-2 font-label text-label-lg hover:opacity-90 transition-opacity duration-state-change">
+                <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">add</span><span>New invoice</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 text-body-sm">
+            <div class="flex items-center gap-5 flex-wrap">
+              <span class="inline-flex items-center gap-2 font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">
+                <span class="w-4 h-0.5 bg-outstanding rounded-full" aria-hidden="true"></span>Actual collected
+              </span>
+              <span class="inline-flex items-center gap-2 font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">
+                <span class="w-4 border-t-2 border-dashed border-paid" aria-hidden="true"></span>90-day forecast
+              </span>
+            </div>
+            <span id="curve-readout" class="font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant tabular-nums">Hover curve to inspect monthly net inflow</span>
+          </div>
+
+          <div id="curve-wrap" class="relative rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant p-3 sm:p-4">
+            <svg id="cashflow-svg" class="w-full h-52 sm:h-56 overflow-visible" viewBox="0 0 760 200" fill="none" role="img" aria-label="12-month cash flow curve and 3-month dotted forecast">
+              <defs>
+                <linearGradient id="heroCurveGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#22D3EE" stop-opacity="0.22"></stop>
+                  <stop offset="100%" stop-color="#22D3EE" stop-opacity="0"></stop>
+                </linearGradient>
+              </defs>
+              <g id="curve-grid"></g>
+              <path id="curve-area" fill="url(#heroCurveGrad)"></path>
+              <path id="curve-line" class="curve-draw" stroke="#22D3EE" stroke-width="2.5" stroke-linecap="round" fill="none"></path>
+              <path id="curve-forecast" stroke="#34D399" stroke-width="2.5" stroke-dasharray="5 5" stroke-linecap="round" fill="none"></path>
+              <line id="curve-crosshair" x1="600" y1="12" x2="600" y2="172" stroke="#64748B" stroke-width="1" stroke-dasharray="3 3" opacity="0"></line>
+              <circle id="curve-halo" cx="600" cy="60" r="9" fill="#22D3EE" fill-opacity="0.2" opacity="0"></circle>
+              <circle id="curve-dot" cx="600" cy="60" r="4.5" fill="#070A12" stroke="#22D3EE" stroke-width="2.5" opacity="0"></circle>
+              <g id="curve-labels" font-family="JetBrains Mono" font-size="11"></g>
+              <g id="curve-hits"></g>
+            </svg>
+          </div>
+        </section>
+
+        <!-- KPI grid -->
+        <section class="grid grid-cols-2 gap-4" aria-label="Key financial metrics">
+          <article class="kpi-card rise rise-2 rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-4 sm:p-5 glass-panel flex flex-col justify-between gap-3 cursor-default" data-kpi="mrr">
+            <header class="flex items-center justify-between gap-2">
+              <h2 class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">MRR</h2>
+              <span class="inline-flex items-center rounded-full bg-subscription/10 text-light-subscription dark:text-on-subscription-container px-2 py-0.5 font-mono text-mono-sm tabular-nums">+12.4%</span>
+            </header>
+            <div class="flex items-end justify-between gap-2">
+              <p id="kpi-mrr" data-countup="48620" data-format="money0" class="font-mono text-mono-lg tabular-nums">$48,620</p>
+              <svg class="spark w-16 h-7 shrink-0" viewBox="0 0 64 28" fill="none" aria-hidden="true" data-spark="42100,43800,44600,46200,47400,48620" data-color="#A78BFA" data-label="MRR"></svg>
+            </div>
+            <p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">9 active plans · $25,100 from top 3</p>
+          </article>
+
+          <article class="kpi-card rise rise-2 rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-4 sm:p-5 glass-panel flex flex-col justify-between gap-3 cursor-default" data-kpi="outstanding">
+            <header class="flex items-center justify-between gap-2">
+              <h2 class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Outstanding</h2>
+              <span id="kpi-outstanding-chip" class="inline-flex items-center rounded-full bg-outstanding/10 text-light-outstanding dark:text-on-outstanding-container px-2 py-0.5 font-mono text-mono-sm tabular-nums">6 open</span>
+            </header>
+            <div class="flex items-end justify-between gap-2">
+              <p id="kpi-outstanding" data-countup="31450" data-format="money0" class="font-mono text-mono-lg tabular-nums">$31,450</p>
+              <svg class="spark w-16 h-7 shrink-0" viewBox="0 0 64 28" fill="none" aria-hidden="true" data-spark="38400,36900,34200,33100,32400,31450" data-color="#22D3EE" data-label="Outstanding"></svg>
+            </div>
+            <p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">Full ledger · recent 7 below</p>
+          </article>
+
+          <article class="kpi-card rise rise-3 rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-4 sm:p-5 glass-panel flex flex-col justify-between gap-3 cursor-default" data-kpi="overdue">
+            <header class="flex items-center justify-between gap-2">
+              <h2 class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Overdue</h2>
+              <span id="kpi-overdue-chip" class="inline-flex items-center rounded-full bg-overdue/10 text-light-overdue dark:text-on-overdue-container px-2 py-0.5 font-mono text-mono-sm tabular-nums">2 past due</span>
+            </header>
+            <div class="flex items-end justify-between gap-2">
+              <p id="kpi-overdue" data-countup="14200" data-format="money0" class="font-mono text-mono-lg tabular-nums">$14,200</p>
+              <svg class="spark w-16 h-7 shrink-0" viewBox="0 0 64 28" fill="none" aria-hidden="true" data-spark="9800,11400,10200,13600,12900,14200" data-color="#FBBF24" data-label="Overdue"></svg>
+            </div>
+            <p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">Oldest: Northwind, 11 days</p>
+          </article>
+
+          <article class="kpi-card rise rise-3 rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-4 sm:p-5 glass-panel flex flex-col justify-between gap-3 cursor-default" data-kpi="collection">
+            <header class="flex items-center justify-between gap-2">
+              <h2 class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Collection rate</h2>
+              <span class="inline-flex items-center rounded-full bg-paid/10 text-light-paid dark:text-on-paid-container px-2 py-0.5 font-mono text-mono-sm tabular-nums">+1.8 pts</span>
+            </header>
+            <div class="flex items-end justify-between gap-2">
+              <p id="kpi-collection" data-countup="96.4" data-format="pct1" class="font-mono text-mono-lg tabular-nums">96.4%</p>
+              <svg class="spark w-16 h-7 shrink-0" viewBox="0 0 64 28" fill="none" aria-hidden="true" data-spark="94.1,94.8,95.2,95.9,96.1,96.4" data-color="#34D399" data-label="Collection rate" data-suffix="%"></svg>
+            </div>
+            <p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">Trailing 12 months</p>
+          </article>
+        </section>
+
+        <!-- Invoice pipeline -->
+        <section class="rise rise-4 rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-5 sm:p-6 glass-panel flex flex-col gap-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 class="font-headline text-headline-md">Invoice pipeline by status</h2>
+              <p class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">Monthly volume split across Paid, Pending, Overdue, and Draft</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-4 font-label text-label-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-paid"></span>Paid</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-outstanding"></span>Pending</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-overdue"></span>Overdue</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-draft"></span>Draft</span>
+            </div>
+          </div>
+          <div id="pipeline-bars" class="grid grid-cols-8 gap-2 sm:gap-3 items-end pt-6 pb-2 px-2 sm:px-3 rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant min-h-[180px]"></div>
+          <div id="pipeline-status-line" class="font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant tabular-nums">Nov 2026 — Paid $42.1k · Pending $28.2k · Overdue $14.2k · Draft $1.6k</div>
+        </section>
+
+        <!-- Invoices table -->
+        <section id="invoices-section" class="rise rise-5 rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant glass-panel flex flex-col">
+          <div class="p-5 border-b border-light-outline-variant dark:border-dark-outline-variant flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 class="font-headline text-headline-md">Invoices</h2>
+              <p class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">Recent ledger activity across retainers and fixed-scope milestones</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5" role="tablist" aria-label="Filter invoices by status">
+              <button type="button" data-filter="all" class="filter-btn rounded-full bg-light-surface-container-highest dark:bg-dark-surface-container-highest border border-light-outline dark:border-dark-outline px-3 py-1 font-label text-label-sm">All</button>
+              <button type="button" data-filter="Pending" class="filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Pending</button>
+              <button type="button" data-filter="Overdue" class="filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Overdue</button>
+              <button type="button" data-filter="Paid" class="filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Paid</button>
+              <button type="button" data-filter="Draft" class="filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Draft</button>
+              <button type="button" data-filter="Refunded" class="filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Refunded</button>
+            </div>
+          </div>
+
+          <div class="hidden md:block w-full overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-light-outline-variant dark:border-dark-outline-variant bg-light-surface-container-low/60 dark:bg-dark-surface-container-low/60">
+                  <th scope="col" class="px-5 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Reference</th>
+                  <th scope="col" class="px-4 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Client</th>
+                  <th scope="col" class="px-4 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted text-right"><button type="button" data-sort="amount" class="sort-btn uppercase hover:text-light-on-surface dark:hover:text-dark-on-surface">Amount <span class="sort-ind" data-for="amount"></span></button></th>
+                  <th scope="col" class="px-4 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted"><button type="button" data-sort="due" class="sort-btn uppercase hover:text-light-on-surface dark:hover:text-dark-on-surface">Due date <span class="sort-ind" data-for="due"></span></button></th>
+                  <th scope="col" class="px-4 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Status</th>
+                  <th scope="col" class="px-5 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="invoice-tbody" class="divide-y divide-light-outline-variant dark:divide-dark-outline-variant"></tbody>
+            </table>
+            <p id="invoice-empty" class="hidden px-5 py-10 text-center font-body text-body-md text-light-on-surface-muted dark:text-dark-on-surface-muted">No invoices match this filter.</p>
+          </div>
+          <!-- Mobile invoice cards -->
+          <div id="invoice-cards" class="md:hidden flex flex-col divide-y divide-light-outline-variant dark:divide-dark-outline-variant"></div>
+          <p id="invoice-empty-m" class="hidden md:hidden px-5 py-10 text-center font-body text-body-md text-light-on-surface-muted dark:text-dark-on-surface-muted">No invoices match this filter.</p>
+        </section>
+      </div>
+
+      <!-- Right side column -->
+      <aside class="flex flex-col gap-6 min-w-0">
+        <section class="rise rise-3 rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-5 glass-panel flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-headline text-headline-sm">Reminders to send</h2>
+            <span id="reminder-count" class="font-mono text-mono-sm text-light-overdue dark:text-overdue">2 queued</span>
+          </div>
+          <div id="reminder-list" class="flex flex-col gap-3"></div>
+        </section>
+
+        <section id="subscriptions-section" class="rise rise-4 rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-5 glass-panel flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-headline text-headline-sm">Recurring subscriptions</h2>
+            <span class="w-2 h-2 rounded-full bg-subscription" aria-hidden="true"></span>
+          </div>
+          <div id="subscription-list" class="flex flex-col divide-y divide-light-outline-variant dark:divide-dark-outline-variant"></div>
+          <button type="button" data-nav="subscriptions" class="nav-item text-left font-label text-label-md text-light-outstanding dark:text-outstanding hover:underline">View all subscriptions →</button>
+        </section>
+
+        <section id="clients-section" class="rise rise-5 rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-5 glass-panel flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-headline text-headline-sm">Top clients</h2>
+            <span class="font-mono text-mono-sm whitespace-nowrap text-light-on-surface-muted dark:text-dark-on-surface-muted">YTD Volume</span>
+          </div>
+          <div id="top-clients" class="flex flex-col gap-3"></div>
+          <button type="button" data-nav="clients" class="nav-item text-left font-label text-label-md text-light-outstanding dark:text-outstanding hover:underline">View all clients →</button>
+        </section>
+
+        <section class="rise rise-6 rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-5 glass-panel flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-headline text-headline-sm">Activity</h2>
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">Latest</span>
+          </div>
+          <ul id="activity-list" class="flex flex-col gap-3"></ul>
+        </section>
+      </aside>
+    </main>
+
+    <!-- ================= VIEW: INVOICES ================= -->
+    <section id="view-invoices" class="view hidden flex-1 min-w-0 p-4 sm:p-6 flex-col gap-6">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 class="font-display text-display-md">Invoices</h1>
+          <p class="font-body text-body-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Every invoice in the ledger. Filter, sort, or open one for the full detail.</p>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <button type="button" class="btn-export-csv inline-flex items-center justify-center gap-2 rounded bg-light-surface-container dark:bg-dark-surface-container border border-light-outline dark:border-dark-outline px-3.5 py-2 font-label text-label-lg hover:bg-light-surface-container-high dark:hover:bg-dark-surface-container-high transition-colors duration-state-change">
+            <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">download</span><span>Export CSV</span>
+          </button>
+          <button type="button" class="btn-new-invoice inline-flex items-center justify-center gap-2 rounded bg-light-on-surface dark:bg-primary text-light-surface dark:text-on-primary px-4 py-2 font-label text-label-lg hover:opacity-90 transition-opacity duration-state-change">
+            <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">add</span><span>New invoice</span>
+          </button>
+        </div>
+      </div>
+      <div id="invoice-summary" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+      <div class="rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant glass-panel flex flex-col">
+        <div class="p-4 border-b border-light-outline-variant dark:border-dark-outline-variant flex flex-wrap items-center gap-2">
+          <div class="relative flex-1 min-w-[220px]">
+            <span class="material-symbols-outlined text-headline-sm text-light-on-surface-muted dark:text-dark-on-surface-muted absolute left-3 top-1/2 -translate-y-1/2" aria-hidden="true">search</span>
+            <input id="invoice-search" type="search" placeholder="Search reference or client…" aria-label="Search invoices" class="w-full bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded pl-9 pr-3 py-2 font-body text-body-md placeholder:text-light-on-surface-muted dark:placeholder:text-dark-on-surface-muted focus:outline-none focus:ring-2 focus:ring-outstanding">
+          </div>
+          <div class="flex flex-wrap items-center gap-1.5" role="tablist" aria-label="Filter invoices by status">
+            <button type="button" data-filter="all" class="filter-btn rounded-full bg-light-surface-container-highest dark:bg-dark-surface-container-highest border border-light-outline dark:border-dark-outline px-3 py-1 font-label text-label-sm">All</button>
+            <button type="button" data-filter="Pending" class="filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Pending</button>
+            <button type="button" data-filter="Overdue" class="filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Overdue</button>
+            <button type="button" data-filter="Paid" class="filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Paid</button>
+            <button type="button" data-filter="Draft" class="filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Draft</button>
+            <button type="button" data-filter="Refunded" class="filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Refunded</button>
+          </div>
+        </div>
+        <div class="hidden md:block w-full overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-light-outline-variant dark:border-dark-outline-variant bg-light-surface-container-low/60 dark:bg-dark-surface-container-low/60">
+                <th scope="col" class="px-5 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Reference</th>
+                <th scope="col" class="px-4 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Client</th>
+                <th scope="col" class="px-4 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Description</th>
+                <th scope="col" class="px-4 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted text-right"><button type="button" data-sort="amount" class="sort-btn uppercase hover:text-light-on-surface dark:hover:text-dark-on-surface">Amount <span class="sort-ind" data-for="amount"></span></button></th>
+                <th scope="col" class="px-4 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted"><button type="button" data-sort="due" class="sort-btn uppercase hover:text-light-on-surface dark:hover:text-dark-on-surface">Due date <span class="sort-ind" data-for="due"></span></button></th>
+                <th scope="col" class="px-4 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Status</th>
+                <th scope="col" class="px-5 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="invoice-tbody-full" class="divide-y divide-light-outline-variant dark:divide-dark-outline-variant"></tbody>
+          </table>
+          <p id="invoice-empty-full" class="hidden px-5 py-10 text-center font-body text-body-md text-light-on-surface-muted dark:text-dark-on-surface-muted">No invoices match this filter.</p>
+        </div>
+        <div id="invoice-cards-full" class="md:hidden flex flex-col divide-y divide-light-outline-variant dark:divide-dark-outline-variant"></div>
+        <p id="invoice-empty-full-m" class="hidden md:hidden px-5 py-10 text-center font-body text-body-md text-light-on-surface-muted dark:text-dark-on-surface-muted">No invoices match this filter.</p>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: CLIENTS ================= -->
+    <section id="view-clients" class="view hidden flex-1 min-w-0 p-4 sm:p-6 flex-col gap-6">
+      <div>
+        <h1 class="font-display text-display-md">Clients</h1>
+        <p class="font-body text-body-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Retainers and project clients, ranked by year-to-date volume.</p>
+      </div>
+      <div id="client-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- ================= VIEW: SUBSCRIPTIONS ================= -->
+    <section id="view-subscriptions" class="view hidden flex-1 min-w-0 p-4 sm:p-6 flex-col gap-6">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 class="font-display text-display-md">Subscriptions</h1>
+          <p class="font-body text-body-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Recurring plans that build MRR. Pause or resume a plan — totals update immediately.</p>
+        </div>
+        <div class="rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant px-5 py-3 glass-panel">
+          <p class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Total MRR</p>
+          <p id="subs-mrr" class="font-mono text-mono-lg tabular-nums">$48,620</p>
+        </div>
+      </div>
+      <div id="subscription-full" class="rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant glass-panel flex flex-col divide-y divide-light-outline-variant dark:divide-dark-outline-variant"></div>
+      <p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">Showing 3 of 9 active plans — the three largest retainers. Remaining plans total $23,520/mo across six smaller accounts.</p>
+    </section>
+
+    <!-- ================= VIEW: EXPENSES ================= -->
+    <section id="view-expenses" class="view hidden flex-1 min-w-0 p-4 sm:p-6 flex-col gap-6">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 class="font-display text-display-md">Expenses</h1>
+          <p class="font-body text-body-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Operating spend for November 2026. Add an expense and the totals recalculate.</p>
+        </div>
+        <div class="rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant px-5 py-3 glass-panel">
+          <p class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">November total</p>
+          <p id="expenses-total" class="font-mono text-mono-lg tabular-nums">$2,826</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-1.5" role="tablist" aria-label="Filter expenses by category">
+        <button type="button" data-exp-filter="all" class="exp-filter-btn rounded-full bg-light-surface-container-highest dark:bg-dark-surface-container-highest border border-light-outline dark:border-dark-outline px-3 py-1 font-label text-label-sm">All</button>
+        <button type="button" data-exp-filter="Software" class="exp-filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Software</button>
+        <button type="button" data-exp-filter="Infrastructure" class="exp-filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Infrastructure</button>
+        <button type="button" data-exp-filter="Fees" class="exp-filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Fees</button>
+        <button type="button" data-exp-filter="Services" class="exp-filter-btn rounded-full bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface px-3 py-1 font-label text-label-sm">Services</button>
+      </div>
+      <div class="rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant glass-panel overflow-hidden">
+        <div class="hidden md:block w-full overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-light-outline-variant dark:border-dark-outline-variant bg-light-surface-container-low/60 dark:bg-dark-surface-container-low/60">
+                <th scope="col" class="px-5 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Expense</th>
+                <th scope="col" class="px-4 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Category</th>
+                <th scope="col" class="px-4 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted">Date</th>
+                <th scope="col" class="px-5 py-3 font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="expenses-tbody" class="divide-y divide-light-outline-variant dark:divide-dark-outline-variant"></tbody>
+          </table>
+        </div>
+        <div id="expenses-cards" class="md:hidden flex flex-col divide-y divide-light-outline-variant dark:divide-dark-outline-variant"></div>
+      </div>
+      <form id="expense-form" class="rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-5 glass-panel flex flex-col gap-4">
+        <h2 class="font-headline text-headline-sm">Add an expense</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Description</span>
+            <input id="exp-desc" type="text" placeholder="e.g. Linear — annual plan" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md focus:outline-none focus:ring-2 focus:ring-outstanding">
+            <span class="field-err-msg hidden font-body text-body-sm" data-err="exp-desc">Description is required.</span></label>
+          <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Category</span>
+            <select id="exp-cat" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md focus:outline-none focus:ring-2 focus:ring-outstanding">
+              <option>Software</option><option>Infrastructure</option><option>Fees</option><option>Services</option>
+            </select></label>
+          <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Amount (USD)</span>
+            <input id="exp-amount" type="number" min="0.01" step="0.01" placeholder="0.00" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md font-mono focus:outline-none focus:ring-2 focus:ring-outstanding">
+            <span class="field-err-msg hidden font-body text-body-sm" data-err="exp-amount">Enter an amount greater than 0.</span></label>
+          <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Date</span>
+            <input id="exp-date" type="date" value="2026-11-20" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md focus:outline-none focus:ring-2 focus:ring-outstanding"></label>
+        </div>
+        <div><button type="submit" class="inline-flex items-center gap-2 rounded bg-light-on-surface dark:bg-primary text-light-surface dark:text-on-primary px-4 py-2 font-label text-label-lg hover:opacity-90 transition-opacity duration-state-change">
+          <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">add</span><span>Add expense</span></button></div>
+      </form>
+    </section>
+
+    <!-- ================= VIEW: REPORTS ================= -->
+    <section id="view-reports" class="view hidden flex-1 min-w-0 p-4 sm:p-6 flex-col gap-6">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 class="font-display text-display-md">Reports</h1>
+          <p class="font-body text-body-md text-light-on-surface-variant dark:text-dark-on-surface-variant">November 2026 in one page — where the money came from, and how much of it arrived.</p>
+        </div>
+        <button type="button" class="btn-export-csv inline-flex items-center justify-center gap-2 rounded bg-light-surface-container dark:bg-dark-surface-container border border-light-outline dark:border-dark-outline px-3.5 py-2 font-label text-label-lg hover:bg-light-surface-container-high dark:hover:bg-dark-surface-container-high transition-colors duration-state-change">
+          <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">download</span><span>Export CSV</span>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-5 sm:p-6 glass-panel flex flex-col gap-4">
+          <div>
+            <h2 class="font-headline text-headline-md">Revenue by client</h2>
+            <p class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">Year-to-date, hover a segment for the exact figure</p>
+          </div>
+          <div class="flex flex-col sm:flex-row items-center gap-6">
+            <svg id="donut-svg" class="w-44 h-44 shrink-0" viewBox="0 0 200 200" role="img" aria-label="Donut chart of revenue by client"></svg>
+            <ul id="donut-legend" class="flex flex-col gap-2.5 w-full"></ul>
+          </div>
+        </div>
+        <div class="rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-5 sm:p-6 glass-panel flex flex-col gap-4">
+          <div>
+            <h2 class="font-headline text-headline-md">Collection gauge</h2>
+            <p class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">Share of invoiced amounts collected, trailing 12 months</p>
+          </div>
+          <div class="flex items-center justify-center py-2">
+            <svg id="gauge-svg" class="w-64 h-36" viewBox="0 0 260 140" role="img" aria-label="Collection rate gauge at 96.4 percent"></svg>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant p-3">
+              <p class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Invoiced</p>
+              <p class="font-mono text-mono-md tabular-nums">$486,200</p>
+            </div>
+            <div class="rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant p-3">
+              <p class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Collected</p>
+              <p class="font-mono text-mono-md text-light-paid dark:text-paid tabular-nums">$468,700</p>
+            </div>
+            <div class="rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant p-3">
+              <p class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Open</p>
+              <p class="font-mono text-mono-md text-light-outstanding dark:text-outstanding tabular-nums">$17,500</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-5 sm:p-6 glass-panel flex flex-col gap-4">
+        <h2 class="font-headline text-headline-md">Monthly collected revenue</h2>
+        <div id="reports-bars" class="grid grid-cols-8 gap-2 sm:gap-3 items-end pt-4 pb-2 px-2 sm:px-3 rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant min-h-[160px]"></div>
+        <div id="reports-status-line" class="font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant tabular-nums">Nov 2026 — Collected $42.1k of $84.5k invoiced</div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: SETTINGS ================= -->
+    <section id="view-settings" class="view hidden flex-1 min-w-0 p-4 sm:p-6 flex-col gap-6">
+      <div>
+        <h1 class="font-display text-display-md">Settings</h1>
+        <p class="font-body text-body-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Workspace identity and ledger preferences. Saving updates the sidebar profile immediately.</p>
+      </div>
+      <form id="settings-form" class="max-w-2xl rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-5 sm:p-6 glass-panel flex flex-col gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Your name</span>
+            <input id="set-name" type="text" value="Elena Vance" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md focus:outline-none focus:ring-2 focus:ring-outstanding"></label>
+          <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Company</span>
+            <input id="set-company" type="text" value="Meridian SaaS LLC" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md focus:outline-none focus:ring-2 focus:ring-outstanding"></label>
+          <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Billing email</span>
+            <input id="set-email" type="email" value="billing@meridiansaas.example" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md focus:outline-none focus:ring-2 focus:ring-outstanding">
+            <span class="field-err-msg hidden font-body text-body-sm" data-err="set-email">Enter a valid email address.</span></label>
+          <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Currency</span>
+            <select id="set-currency" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md focus:outline-none focus:ring-2 focus:ring-outstanding">
+              <option value="USD" selected>USD — US Dollar ($)</option><option value="EUR">EUR — Euro (€)</option><option value="GBP">GBP — British Pound (£)</option>
+            </select></label>
+        </div>
+        <div class="flex flex-col gap-3">
+          <label class="flex items-center justify-between gap-4 rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant px-4 py-3 cursor-pointer">
+            <span><span class="block font-label text-label-lg">Automatic reminders</span><span class="block font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">Nudge clients 3 days before an invoice is due.</span></span>
+            <input id="set-auto-remind" type="checkbox" checked class="w-5 h-5 accent-[#22D3EE]">
+          </label>
+          <label class="flex items-center justify-between gap-4 rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant px-4 py-3 cursor-pointer">
+            <span><span class="block font-label text-label-lg">90-day forecast on the cash-flow curve</span><span class="block font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">Show the dotted forecast after the last actual month.</span></span>
+            <input id="set-forecast" type="checkbox" checked class="w-5 h-5 accent-[#34D399]">
+          </label>
+          <label class="flex items-center justify-between gap-4 rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant px-4 py-3 cursor-pointer">
+            <span><span class="block font-label text-label-lg">Weekly digest</span><span class="block font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">A Monday summary of open invoices and collections.</span></span>
+            <input id="set-digest" type="checkbox" class="w-5 h-5 accent-[#A78BFA]">
+          </label>
+        </div>
+        <div><button type="submit" class="inline-flex items-center gap-2 rounded bg-light-on-surface dark:bg-primary text-light-surface dark:text-on-primary px-4 py-2 font-label text-label-lg hover:opacity-90 transition-opacity duration-state-change">
+          <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">check</span><span>Save settings</span></button></div>
+      </form>
+    </section>
+  </div>
+</div>
+
+<!-- Mobile bottom nav -->
+<nav aria-label="Mobile navigation" class="lg:hidden fixed bottom-0 inset-x-0 z-30 border-t border-light-outline-variant dark:border-dark-outline-variant bg-light-surface-container/95 dark:bg-dark-surface-container/95 backdrop-blur-md flex items-stretch justify-around px-2 py-1.5">
+  <button type="button" data-nav="overview" class="nav-item active flex flex-col items-center gap-0.5 px-3 py-1.5 rounded font-label text-label-sm text-light-on-surface-variant dark:text-dark-on-surface-variant"><span class="material-symbols-outlined text-headline-sm" aria-hidden="true">space_dashboard</span>Overview</button>
+  <button type="button" data-nav="invoices" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1.5 rounded font-label text-label-sm text-light-on-surface-variant dark:text-dark-on-surface-variant"><span class="material-symbols-outlined text-headline-sm" aria-hidden="true">receipt_long</span>Invoices</button>
+  <button type="button" data-nav="clients" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1.5 rounded font-label text-label-sm text-light-on-surface-variant dark:text-dark-on-surface-variant"><span class="material-symbols-outlined text-headline-sm" aria-hidden="true">group</span>Clients</button>
+  <button type="button" data-nav="reports" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1.5 rounded font-label text-label-sm text-light-on-surface-variant dark:text-dark-on-surface-variant"><span class="material-symbols-outlined text-headline-sm" aria-hidden="true">monitoring</span>Reports</button>
+  <button type="button" data-nav="settings" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1.5 rounded font-label text-label-sm text-light-on-surface-variant dark:text-dark-on-surface-variant"><span class="material-symbols-outlined text-headline-sm" aria-hidden="true">tune</span>Settings</button>
+</nav>
+
+<!-- Shared chart tooltip -->
+<div id="chart-tip" class="fixed z-50 hidden pointer-events-none rounded bg-light-surface-container-highest dark:bg-dark-surface-container-highest border border-light-outline dark:border-dark-outline px-3 py-2 shadow-lg min-w-[140px]">
+  <p id="chart-tip-title" class="font-label text-label-sm"></p>
+  <p id="chart-tip-value" class="font-mono text-mono-md tabular-nums"></p>
+  <p id="chart-tip-sub" class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant"></p>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-[70] hidden max-w-sm rounded-md bg-light-on-surface dark:bg-dark-surface-container-highest text-light-surface dark:text-dark-on-surface border border-light-outline dark:border-dark-outline px-4 py-3 shadow-xl toast-in" role="status"></div>
+
+<!-- ============ COMMAND PALETTE ============ -->
+<div id="cmdk-modal" class="hidden fixed inset-0 z-50 bg-light-surface/80 dark:bg-dark-surface/80 flex items-start justify-center pt-24 sm:pt-28 px-4 fade-in" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div class="w-full max-w-lg rounded-md bg-light-surface-container dark:bg-dark-surface-container-highest border border-light-outline dark:border-dark-outline p-4 flex flex-col gap-3 slide-up shadow-2xl">
+    <div class="flex items-center gap-2 border-b border-light-outline-variant dark:border-dark-outline-variant pb-3">
+      <span class="material-symbols-outlined text-headline-sm text-light-on-surface-variant dark:text-dark-on-surface-variant" aria-hidden="true">search</span>
+      <input id="cmdk-input" type="text" placeholder="Jump to invoice, client, or action…" aria-label="Search ledger" class="w-full bg-transparent border-0 text-light-on-surface dark:text-dark-on-surface placeholder:text-light-on-surface-muted dark:placeholder:text-dark-on-surface-muted font-body text-body-md focus:ring-0 p-0">
+      <button id="cmdk-close" type="button" class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted hover:text-light-on-surface dark:hover:text-dark-on-surface shrink-0">ESC</button>
+    </div>
+    <div id="cmdk-results" class="flex flex-col gap-1 text-body-sm max-h-[320px] overflow-y-auto" role="listbox" aria-label="Results"></div>
+    <p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted px-1">↑↓ navigate · Enter open · Esc close</p>
+  </div>
+</div>
+
+<!-- ============ NEW INVOICE MODAL ============ -->
+<div id="invoice-modal" class="hidden fixed inset-0 z-50 bg-light-surface/80 dark:bg-dark-surface/80 flex items-center justify-center p-4 fade-in" role="dialog" aria-modal="true" aria-label="New invoice">
+  <div class="w-full max-w-lg rounded-md bg-light-surface-container dark:bg-dark-surface-container-highest border border-light-outline dark:border-dark-outline p-5 sm:p-6 flex flex-col gap-5 slide-up shadow-2xl">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h2 class="font-headline text-headline-md">New invoice</h2>
+        <p class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">It joins the ledger immediately and updates the KPIs.</p>
+      </div>
+      <button id="invoice-modal-close" type="button" aria-label="Close" class="inline-flex items-center justify-center w-8 h-8 rounded text-light-on-surface-variant dark:text-dark-on-surface-variant hover:bg-light-surface-container-high dark:hover:bg-dark-surface-container-high">
+        <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">close</span>
+      </button>
+    </div>
+    <form id="invoice-form" class="flex flex-col gap-4" novalidate>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Client</span>
+          <select id="ni-client" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md focus:outline-none focus:ring-2 focus:ring-outstanding">
+            <option value="">Select a client…</option>
+            <option>Helios Labs</option><option>Northwind Systems</option><option>Alto Studio</option>
+            <option>Vespera Cloud</option><option>Kestrel Robotics</option><option>Solstice Bio</option><option>Boreal Design Co.</option>
+          </select>
+          <span class="field-err-msg hidden font-body text-body-sm" data-err="ni-client">Choose a client.</span></label>
+        <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Amount (USD)</span>
+          <input id="ni-amount" type="number" min="0.01" step="0.01" placeholder="0.00" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md font-mono focus:outline-none focus:ring-2 focus:ring-outstanding">
+          <span class="field-err-msg hidden font-body text-body-sm" data-err="ni-amount">Enter an amount greater than 0.</span></label>
+        <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Due date</span>
+          <input id="ni-due" type="date" value="2026-12-20" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md focus:outline-none focus:ring-2 focus:ring-outstanding">
+          <span class="field-err-msg hidden font-body text-body-sm" data-err="ni-due">Pick a due date.</span></label>
+        <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Status</span>
+          <select id="ni-status" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md focus:outline-none focus:ring-2 focus:ring-outstanding">
+            <option>Pending</option><option>Draft</option>
+          </select></label>
+      </div>
+      <label class="flex flex-col gap-1.5"><span class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Description</span>
+        <input id="ni-desc" type="text" placeholder="e.g. Platform Tier — December retainer" class="bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded px-3 py-2 font-body text-body-md focus:outline-none focus:ring-2 focus:ring-outstanding">
+        <span class="field-err-msg hidden font-body text-body-sm" data-err="ni-desc">Add a short description.</span></label>
+      <div class="flex items-center justify-end gap-2.5">
+        <button type="button" id="invoice-modal-cancel" class="rounded bg-light-surface-container-high dark:bg-dark-surface-container-high border border-light-outline dark:border-dark-outline px-4 py-2 font-label text-label-lg hover:bg-light-surface-container-highest dark:hover:bg-dark-surface-container-highest transition-colors duration-state-change">Cancel</button>
+        <button type="submit" class="rounded bg-light-on-surface dark:bg-primary text-light-surface dark:text-on-primary px-4 py-2 font-label text-label-lg hover:opacity-90 transition-opacity duration-state-change">Create invoice</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ INVOICE DRAWER ============ -->
+<div id="drawer-backdrop" class="hidden fixed inset-0 z-40 bg-light-surface/60 dark:bg-dark-surface/60 fade-in"></div>
+<aside id="drawer" class="hidden fixed top-0 right-0 bottom-0 z-50 w-full max-w-md bg-light-surface-container dark:bg-dark-surface-container border-l border-light-outline-variant dark:border-dark-outline-variant shadow-2xl flex flex-col" role="dialog" aria-modal="true" aria-label="Invoice detail">
+  <div class="flex items-start justify-between gap-4 p-5 border-b border-light-outline-variant dark:border-dark-outline-variant">
+    <div>
+      <p id="drawer-ref" class="font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant tabular-nums">INV-2026-041</p>
+      <h2 id="drawer-client" class="font-display text-headline-lg">Helios Labs</h2>
+    </div>
+    <button id="drawer-close" type="button" aria-label="Close detail" class="inline-flex items-center justify-center w-8 h-8 rounded text-light-on-surface-variant dark:text-dark-on-surface-variant hover:bg-light-surface-container-high dark:hover:bg-dark-surface-container-high shrink-0">
+      <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">close</span>
+    </button>
+  </div>
+  <div class="flex-1 overflow-y-auto p-5 flex flex-col gap-6">
+    <div class="flex items-end justify-between gap-4">
+      <div>
+        <p class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Amount due</p>
+        <p id="drawer-amount" class="font-display text-display-md tabular-nums">$18,400.00</p>
+      </div>
+      <span id="drawer-status"></span>
+    </div>
+    <div class="rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant divide-y divide-light-outline-variant dark:divide-dark-outline-variant">
+      <div class="flex justify-between gap-3 px-4 py-3"><span class="font-body text-body-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Description</span><span id="drawer-desc" class="font-body text-body-md text-right">—</span></div>
+      <div class="flex justify-between gap-3 px-4 py-3"><span class="font-body text-body-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Issued</span><span id="drawer-issued" class="font-mono text-mono-md tabular-nums">—</span></div>
+      <div class="flex justify-between gap-3 px-4 py-3"><span class="font-body text-body-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Due date</span><span id="drawer-due" class="font-mono text-mono-md tabular-nums">—</span></div>
+      <div class="flex justify-between gap-3 px-4 py-3"><span class="font-body text-body-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Tax (0%)</span><span class="font-mono text-mono-md tabular-nums">$0.00</span></div>
+      <div class="flex justify-between gap-3 px-4 py-3"><span class="font-label text-label-lg">Total</span><span id="drawer-total" class="font-mono text-mono-md tabular-nums">$18,400.00</span></div>
+    </div>
+    <div>
+      <h3 class="font-label text-label-sm uppercase text-light-on-surface-muted dark:text-dark-on-surface-muted pb-2">Timeline</h3>
+      <ul id="drawer-timeline" class="flex flex-col gap-2.5"></ul>
+    </div>
+    <div id="drawer-reminder-note" class="hidden rounded bg-overdue/10 border border-overdue/30 px-4 py-3 font-body text-body-sm text-light-overdue dark:text-on-overdue-container"></div>
+  </div>
+  <div class="p-5 border-t border-light-outline-variant dark:border-dark-outline-variant flex flex-col gap-2.5">
+    <button id="drawer-pay" type="button" class="w-full inline-flex items-center justify-center gap-2 rounded bg-paid text-on-paid px-4 py-2.5 font-label text-label-lg hover:opacity-90 transition-opacity duration-state-change">
+      <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">check_circle</span><span>Record payment</span>
+    </button>
+    <div class="grid grid-cols-2 gap-2.5">
+      <button id="drawer-remind" type="button" class="inline-flex items-center justify-center gap-2 rounded bg-light-surface-container-high dark:bg-dark-surface-container-high border border-light-outline dark:border-dark-outline px-3 py-2 font-label text-label-lg hover:bg-light-surface-container-highest dark:hover:bg-dark-surface-container-highest transition-colors duration-state-change">
+        <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">mail</span><span>Send reminder</span>
+      </button>
+      <button id="drawer-pdf" type="button" class="inline-flex items-center justify-center gap-2 rounded bg-light-surface-container-high dark:bg-dark-surface-container-high border border-light-outline dark:border-dark-outline px-3 py-2 font-label text-label-lg hover:bg-light-surface-container-highest dark:hover:bg-dark-surface-container-highest transition-colors duration-state-change">
+        <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">picture_as_pdf</span><span>Download PDF</span>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<script>
+(function () {
+'use strict';
+/* ---------- Demo clock: fixed at Fri, Nov 20, 2026 so relative labels stay true ---------- */
+var TODAY = new Date('2026-11-20T12:00:00');
+var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function parseDate(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2], 12); }
+function fmtDate(s) { var d = parseDate(s); return MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(); }
+function fmtMoney(n, dec) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: dec == null ? 2 : dec, maximumFractionDigits: dec == null ? 2 : dec }); }
+function fmtK(n) { return '$' + (n / 1000).toFixed(1) + 'k'; }
+function daysUntil(s) { return Math.round((parseDate(s) - TODAY) / 86400000); }
+function dueLabel(inv) {
+  if (inv.status === 'Paid') return 'Paid ' + fmtDate(inv.paidOn || inv.due).replace(', 2026', '');
+  if (inv.status === 'Refunded') return 'Refunded ' + fmtDate(inv.due).replace(', 2026', '');
+  var d = daysUntil(inv.due);
+  if (d < 0) return (-d) + 'd overdue';
+  if (d === 0) return 'Due today';
+  return 'Due in ' + d + 'd';
+}
+function $(s, r) { return (r || document).querySelector(s); }
+function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Data ---------- */
+var invoices = [
+  { id: 'INV-2026-041', client: 'Helios Labs', amount: 18400, due: '2026-11-24', status: 'Pending', desc: 'Platform Tier — November retainer', issued: '2026-11-10', reminderSent: false },
+  { id: 'INV-2026-039', client: 'Northwind Systems', amount: 14200, due: '2026-11-09', status: 'Overdue', desc: 'Data migration — Phase 2', issued: '2026-10-26', reminderSent: false },
+  { id: 'INV-2026-038', client: 'Alto Studio', amount: 24600, due: '2026-11-04', status: 'Paid', desc: 'Brand system — final milestone', issued: '2026-10-21', paidOn: '2026-11-04', reminderSent: false },
+  { id: 'INV-2026-037', client: 'Vespera Cloud', amount: 9850, due: '2026-11-29', status: 'Pending', desc: 'Advisory — November', issued: '2026-11-15', reminderSent: false },
+  { id: 'INV-2026-036', client: 'Kestrel Robotics', amount: 12400, due: '2026-10-28', status: 'Paid', desc: 'Prototype dashboard — Sprint 4', issued: '2026-10-14', paidOn: '2026-10-28', reminderSent: false },
+  { id: 'INV-2026-035', client: 'Solstice Bio', amount: 6200, due: '2026-12-05', status: 'Draft', desc: 'Research portal — setup', issued: '2026-11-18', reminderSent: false },
+  { id: 'INV-2026-034', client: 'Boreal Design Co.', amount: 3200, due: '2026-10-19', status: 'Refunded', desc: 'Landing refresh — deposit', issued: '2026-10-05', reminderSent: false }
+];
+var nextInvoiceNum = 42;
+var clients = [
+  { name: 'Alto Studio', ytd: 64800, color: '#34D399', contact: 'Mara Ellison · mara@altostudio.example' },
+  { name: 'Helios Labs', ytd: 52400, color: '#22D3EE', contact: 'Devon Park · devon@helioslabs.example' },
+  { name: 'Northwind Systems', ytd: 38900, color: '#A78BFA', contact: 'Priya Nair · priya@northwind.example' },
+  { name: 'Vespera Cloud', ytd: 21300, color: '#FBBF24', contact: 'Jonas Reber · jonas@vespera.example' },
+  { name: 'Kestrel Robotics', ytd: 18700, color: '#34D399', contact: 'Sofia Marchetti · sofia@kestrel.example' },
+  { name: 'Solstice Bio', ytd: 9400, color: '#22D3EE', contact: 'Dr. Amara Diallo · amara@solsticebio.example' },
+  { name: 'Boreal Design Co.', ytd: 4800, color: '#FB7185', contact: 'Lars Berg · lars@boreal.example' }
+];
+var subscriptions = [
+  { client: 'Helios Labs', plan: 'Platform Tier', renews: 'Dec 1', amount: 12400, active: true },
+  { client: 'Alto Studio', plan: 'Design Retainer', renews: 'Dec 1', amount: 8500, active: true },
+  { client: 'Vespera Cloud', plan: 'Advisory', renews: 'Dec 5', amount: 4200, active: true }
+];
+var expenses = [
+  { desc: 'Contractor — illustration', cat: 'Services', date: '2026-11-08', amount: 1850 },
+  { desc: 'Stripe fees — payment processing', cat: 'Fees', date: '2026-11-10', amount: 412 },
+  { desc: 'Notion — workspace', cat: 'Software', date: '2026-11-12', amount: 96 },
+  { desc: 'Vercel — hosting', cat: 'Infrastructure', date: '2026-11-15', amount: 240 },
+  { desc: 'Figma — design tooling', cat: 'Software', date: '2026-11-18', amount: 180 },
+  { desc: 'ledgerline.app — domain renewal', cat: 'Infrastructure', date: '2026-11-02', amount: 48 }
+];
+var activity = [
+  { text: 'Payment received — INV-2026-038 · Alto Studio · $24,600.00', date: 'Nov 4, 2026', tone: 'paid' },
+  { text: 'Reminder sent — Northwind Systems · INV-2026-039', date: 'Nov 16, 2026', tone: 'overdue' },
+  { text: 'Invoice issued — INV-2026-041 · Helios Labs · $18,400.00', date: 'Nov 10, 2026', tone: 'outstanding' },
+  { text: 'Refund processed — INV-2026-034 · Boreal Design Co. · $3,200.00', date: 'Oct 19, 2026', tone: 'refunded' }
+];
+var pipeline = [
+  { m: 'Apr', paid: 24.2, pending: 4.1, overdue: 1.2, draft: 1.8 },
+  { m: 'May', paid: 28.0, pending: 5.4, overdue: 0.0, draft: 1.5 },
+  { m: 'Jun', paid: 31.5, pending: 6.2, overdue: 2.4, draft: 0.0 },
+  { m: 'Jul', paid: 29.8, pending: 7.1, overdue: 1.8, draft: 1.2 },
+  { m: 'Aug', paid: 35.2, pending: 6.8, overdue: 3.1, draft: 0.0 },
+  { m: 'Sep', paid: 39.4, pending: 8.5, overdue: 2.0, draft: 1.4 },
+  { m: 'Oct', paid: 38.4, pending: 11.2, overdue: 4.8, draft: 0.0 },
+  { m: 'Nov', paid: 42.1, pending: 28.2, overdue: 14.2, draft: 1.6 }
+];
+var cashMonths = ['Dec 2025','Jan 2026','Feb 2026','Mar 2026','Apr 2026','May 2026','Jun 2026','Jul 2026','Aug 2026','Sep 2026','Oct 2026','Nov 2026'];
+var cashValues = [8240, 9120, 10350, 9780, 11140, 12480, 11920, 13180, 14050, 13760, 14420, 14400];
+var forecastMonths = ['Dec 2026','Jan 2027','Feb 2027'];
+var forecastValues = [15200, 16100, 16850];
+
+/* KPIs cover the full ledger (the table shows the 7 most recent invoices, per the Stitch brief).
+   Actions recalculate them live from this baseline. */
+var kpi = { mrr: 48620, outstanding: 31450, openCount: 6, overdue: 14200, overdueCount: 2, collection: 96.4, cash: 142840, collected: 468700 };
+
+var state = { view: 'overview', filter: 'all', sortKey: 'ref', sortDir: -1, search: '', expFilter: 'all', currency: 'USD' };
+var drawerInvoice = null;
+
+/* ---------- Shared tooltip ---------- */
+var tip = $('#chart-tip');
+function showTip(x, y, title, value, sub) {
+  $('#chart-tip-title').textContent = title;
+  $('#chart-tip-value').textContent = value;
+  $('#chart-tip-sub').textContent = sub || '';
+  $('#chart-tip-sub').style.display = sub ? '' : 'none';
+  tip.classList.remove('hidden');
+  var r = tip.getBoundingClientRect();
+  var left = Math.min(Math.max(8, x + 14), window.innerWidth - r.width - 8);
+  var top = Math.max(8, y - r.height - 12);
+  tip.style.left = left + 'px'; tip.style.top = top + 'px';
+}
+function hideTip() { tip.classList.add('hidden'); }
+
+/* ---------- Toast ---------- */
+var toastEl = $('#toast'), toastTimer = null;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.remove('hidden');
+  toastEl.classList.remove('toast-in'); void toastEl.offsetWidth; toastEl.classList.add('toast-in');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { toastEl.classList.add('hidden'); }, 3600);
+}
+
+/* ---------- Count-up ---------- */
+function countUp(el) {
+  var target = parseFloat(el.getAttribute('data-countup'));
+  var format = el.getAttribute('data-format');
+  function render(v) {
+    if (format === 'money2') el.textContent = fmtMoney(v, 2);
+    else if (format === 'money0') el.textContent = fmtMoney(v, 0);
+    else if (format === 'pct1') el.textContent = v.toFixed(1) + '%';
+  }
+  if (reduced) { render(target); return; }
+  var start = null, dur = 900, done = false;
+  function finish() { if (!done) { done = true; render(target); } }
+  setTimeout(finish, dur + 150); // safety net: rAF can stall in headless/offscreen tabs
+  function step(ts) {
+    if (done) return;
+    if (!start) start = ts;
+    var p = Math.min(1, (ts - start) / dur);
+    var e = 1 - Math.pow(1 - p, 3);
+    render(target * e);
+    if (p < 1) requestAnimationFrame(step); else finish();
+  }
+  requestAnimationFrame(step);
+}
+function setKpiText() {
+  $('#kpi-mrr').textContent = fmtMoney(kpi.mrr, 0);
+  $('#kpi-outstanding').textContent = fmtMoney(kpi.outstanding, 0);
+  $('#kpi-overdue').textContent = fmtMoney(kpi.overdue, 0);
+  $('#kpi-collection').textContent = kpi.collection.toFixed(1) + '%';
+  $('#hero-cash').textContent = fmtMoney(kpi.cash, 2);
+  $('#kpi-outstanding-chip').textContent = kpi.openCount + (kpi.openCount === 1 ? ' open' : ' open');
+  $('#kpi-overdue-chip').textContent = kpi.overdueCount + (kpi.overdueCount === 1 ? ' past due' : ' past due');
+  var subs = $('#subs-mrr'); if (subs) subs.textContent = fmtMoney(kpi.mrr, 0);
+}
+
+/* ---------- Status badge ---------- */
+var STATUS_STYLE = {
+  Paid: 'bg-paid/10 text-light-paid dark:text-on-paid-container border-paid/25',
+  Pending: 'bg-outstanding/10 text-light-outstanding dark:text-on-outstanding-container border-outstanding/25',
+  Overdue: 'bg-overdue/10 text-light-overdue dark:text-on-overdue-container border-overdue/25',
+  Draft: 'bg-draft/10 text-light-draft dark:text-on-draft-container border-draft/25',
+  Refunded: 'bg-refunded/10 text-light-refunded dark:text-on-refunded-container border-refunded/25'
+};
+var STATUS_DOT = { Paid: 'bg-paid', Pending: 'bg-outstanding', Overdue: 'bg-overdue', Draft: 'bg-draft', Refunded: 'bg-refunded' };
+function badge(status) {
+  return '<span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-label text-label-sm ' + STATUS_STYLE[status] + '"><span class="w-1.5 h-1.5 rounded-full ' + STATUS_DOT[status] + '" aria-hidden="true"></span>' + status + '</span>';
+}
+
+/* ---------- Invoice rendering ---------- */
+function filteredInvoices() {
+  var list = invoices.slice();
+  if (state.filter !== 'all') list = list.filter(function (i) { return i.status === state.filter; });
+  if (state.search) {
+    var q = state.search.toLowerCase();
+    list = list.filter(function (i) { return (i.id + ' ' + i.client + ' ' + i.desc).toLowerCase().indexOf(q) !== -1; });
+  }
+  list.sort(function (a, b) {
+    if (state.sortKey === 'amount') return (a.amount - b.amount) * state.sortDir;
+    if (state.sortKey === 'due') return (parseDate(a.due) - parseDate(b.due)) * state.sortDir;
+    return (a.id < b.id ? -1 : 1) * state.sortDir;
+  });
+  return list;
+}
+function rowHtml(inv) {
+  var dueCls = inv.status === 'Overdue' ? 'text-light-overdue dark:text-overdue' : 'text-light-on-surface-variant dark:text-dark-on-surface-variant';
+  return '<tr data-inv="' + inv.id + '" class="hover:bg-light-surface-container-high/50 dark:hover:bg-dark-surface-container-high/50 transition-colors duration-state-change cursor-pointer">' +
+    '<td class="px-5 py-3.5 font-mono text-mono-md tabular-nums whitespace-nowrap">' + inv.id + '</td>' +
+    '<td class="px-4 py-3.5 font-body text-body-md whitespace-nowrap">' + inv.client + '</td>' +
+    '<td class="px-4 py-3.5 font-mono text-mono-md tabular-nums text-right whitespace-nowrap">' + fmtMoney(inv.amount) + '</td>' +
+    '<td class="px-4 py-3.5 font-mono text-mono-sm tabular-nums ' + dueCls + '"><span class="block whitespace-nowrap">' + fmtDate(inv.due) + '</span><span class="block text-[11px] whitespace-nowrap">' + dueLabel(inv) + '</span></td>' +
+    '<td class="px-4 py-3.5">' + badge(inv.status) + '</td>' +
+    '<td class="px-5 py-3.5 text-right"><button type="button" data-open="' + inv.id + '" aria-label="Open ' + inv.id + '" class="inline-flex items-center justify-center w-8 h-8 rounded text-light-on-surface-variant dark:text-dark-on-surface-variant hover:bg-light-surface-container-highest dark:hover:bg-dark-surface-container-highest hover:text-light-on-surface dark:hover:text-dark-on-surface"><span class="material-symbols-outlined text-headline-sm" aria-hidden="true">chevron_right</span></button></td></tr>';
+}
+function cardHtml(inv) {
+  var dueCls = inv.status === 'Overdue' ? 'text-light-overdue dark:text-overdue' : 'text-light-on-surface-variant dark:text-dark-on-surface-variant';
+  return '<article data-open="' + inv.id + '" class="px-5 py-4 flex flex-col gap-2 cursor-pointer active:bg-light-surface-container-high dark:active:bg-dark-surface-container-high">' +
+    '<div class="flex items-center justify-between gap-3"><span class="font-mono text-mono-md tabular-nums">' + inv.id + '</span>' + badge(inv.status) + '</div>' +
+    '<div class="flex items-end justify-between gap-3"><span class="font-body text-body-md">' + inv.client + '</span><span class="font-mono text-mono-md tabular-nums">' + fmtMoney(inv.amount) + '</span></div>' +
+    '<div class="flex items-center justify-between gap-3"><span class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">' + inv.desc + '</span><span class="font-mono text-mono-sm tabular-nums ' + dueCls + '">' + fmtDate(inv.due) + ' · ' + dueLabel(inv) + '</span></div></article>';
+}
+function renderInvoices() {
+  var list = filteredInvoices();
+  var rows = list.map(rowHtml).join('');
+  var cards = list.map(cardHtml).join('');
+  $('#invoice-tbody').innerHTML = rows;
+  $('#invoice-cards').innerHTML = cards;
+  $('#invoice-empty').classList.toggle('hidden', list.length > 0);
+  $('#invoice-empty-m').classList.toggle('hidden', list.length > 0);
+  var rowsFull = list.map(function (inv) {
+    return rowHtml(inv).replace('</td></tr>', '</td></tr>').replace('<td class="px-4 py-3.5 font-body text-body-md">' + inv.client + '</td>',
+      '<td class="px-4 py-3.5 font-body text-body-md">' + inv.client + '</td><td class="px-4 py-3.5 font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant max-w-[220px] truncate">' + inv.desc + '</td>');
+  }).join('');
+  $('#invoice-tbody-full').innerHTML = rowsFull;
+  $('#invoice-cards-full').innerHTML = cards;
+  $('#invoice-empty-full').classList.toggle('hidden', list.length > 0);
+  $('#invoice-empty-full-m').classList.toggle('hidden', list.length > 0);
+  // Summary chips (invoices view)
+  var counts = { Paid: 0, Pending: 0, Overdue: 0, Draft: 0, Refunded: 0 };
+  var sums = { Paid: 0, Pending: 0, Overdue: 0, Draft: 0, Refunded: 0 };
+  invoices.forEach(function (i) { counts[i.status]++; sums[i.status] += i.amount; });
+  $('#invoice-summary').innerHTML = ['Paid', 'Pending', 'Overdue', 'Draft'].map(function (s) {
+    return '<div class="rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-4 glass-panel">' +
+      '<p class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">' + s + '</p>' +
+      '<p class="font-mono text-mono-lg tabular-nums">' + fmtMoney(sums[s], 0) + '</p>' +
+      '<p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">' + counts[s] + (counts[s] === 1 ? ' invoice' : ' invoices') + '</p></div>';
+  }).join('');
+  // Nav badge = open invoices in the table
+  var open = invoices.filter(function (i) { return i.status === 'Pending' || i.status === 'Overdue'; }).length;
+  $('#nav-badge').textContent = invoices.length;
+  // Filter button active styles (both groups)
+  $$('.filter-btn').forEach(function (b) {
+    var on = b.getAttribute('data-filter') === state.filter;
+    b.className = 'filter-btn rounded-full px-3 py-1 font-label text-label-sm ' + (on
+      ? 'bg-light-surface-container-highest dark:bg-dark-surface-container-highest text-light-on-surface dark:text-dark-on-surface border border-light-outline dark:border-dark-outline'
+      : 'bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface');
+  });
+  // Sort indicators
+  $$('.sort-ind').forEach(function (el) {
+    el.textContent = el.getAttribute('data-for') === state.sortKey ? (state.sortDir === 1 ? ' ↑' : ' ↓') : '';
+  });
+}
+
+/* ---------- Reminders / subscriptions / clients / activity ---------- */
+function renderReminders() {
+  var list = invoices.filter(function (i) { return (i.status === 'Pending' || i.status === 'Overdue') && daysUntil(i.due) <= 14; })
+    .sort(function (a, b) { return parseDate(a.due) - parseDate(b.due); }).slice(0, 2); // two most urgent, per Stitch brief
+  var queued = list.filter(function (i) { return !i.reminderSent; }).length;
+  $('#reminder-count').textContent = queued + (queued === 1 ? ' queued' : ' queued');
+  $('#reminder-list').innerHTML = list.map(function (inv) {
+    var over = inv.status === 'Overdue';
+    var sub = over ? inv.id + ' · ' + (-daysUntil(inv.due)) + 'd overdue' : inv.id + ' · Due in ' + daysUntil(inv.due) + 'd';
+    var subCls = over ? 'text-light-overdue dark:text-overdue' : 'text-light-outstanding dark:text-outstanding';
+    var btn = inv.reminderSent
+      ? '<button type="button" disabled class="w-full rounded bg-light-surface-container-high dark:bg-dark-surface-container-high border border-light-outline-variant dark:border-dark-outline-variant py-1.5 font-label text-label-md opacity-70 cursor-default">✓ Reminder sent — Nov 20</button>'
+      : '<button type="button" data-remind="' + inv.id + '" class="reminder-btn w-full rounded ' + (over ? 'bg-overdue/15 text-light-overdue dark:text-on-overdue-container border border-overdue/30 hover:bg-overdue hover:text-on-overdue' : 'bg-light-surface-container-high dark:bg-dark-surface-container-high border border-light-outline dark:border-dark-outline hover:bg-light-surface-container-highest dark:hover:bg-dark-surface-container-highest') + ' py-1.5 font-label text-label-md transition-colors duration-state-change">' + (over ? 'Send reminder' : 'Send gentle nudge') + '</button>';
+    return '<div class="rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant p-3.5 flex flex-col gap-3">' +
+      '<div class="flex items-start justify-between gap-2"><div><p class="font-title text-title-md">' + inv.client + '</p>' +
+      '<p class="font-mono text-mono-sm tabular-nums ' + subCls + '">' + sub + '</p></div>' +
+      '<span class="font-mono text-mono-md tabular-nums">' + fmtMoney(inv.amount, 0) + '</span></div>' + btn + '</div>';
+  }).join('') || '<p class="font-body text-body-md text-light-on-surface-muted dark:text-dark-on-surface-muted">No reminders queued — the ledger is clear.</p>';
+}
+function renderSubscriptions() {
+  var mini = subscriptions.map(function (s) {
+    return '<div class="py-3 first:pt-0 last:pb-0 flex items-center justify-between gap-3">' +
+      '<div><p class="font-title text-title-md">' + s.client + '</p><p class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">' + s.plan + ' · ' + (s.active ? 'Renews ' + s.renews : 'Paused') + '</p></div>' +
+      '<span class="font-mono text-mono-md tabular-nums ' + (s.active ? 'text-light-subscription dark:text-subscription' : 'text-light-on-surface-muted dark:text-dark-on-surface-muted line-through') + '">' + fmtMoney(s.amount, 0) + '/mo</span></div>';
+  }).join('');
+  $('#subscription-list').innerHTML = mini;
+  $('#subscription-full').innerHTML = subscriptions.map(function (s, idx) {
+    return '<div class="p-5 flex flex-wrap items-center justify-between gap-4">' +
+      '<div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-subscription/10 border border-subscription/30 flex items-center justify-center font-label text-label-md text-light-subscription dark:text-subscription shrink-0">' + s.client.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2) + '</div>' +
+      '<div><p class="font-title text-title-md">' + s.client + '</p><p class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">' + s.plan + ' · Renews ' + s.renews + '</p></div></div>' +
+      '<div class="flex items-center gap-4"><span class="font-mono text-mono-lg tabular-nums ' + (s.active ? 'text-light-subscription dark:text-subscription' : 'text-light-on-surface-muted dark:text-dark-on-surface-muted line-through') + '">' + fmtMoney(s.amount, 0) + '/mo</span>' +
+      '<span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-label text-label-sm border ' + (s.active ? 'bg-paid/10 text-light-paid dark:text-on-paid-container border-paid/25' : 'bg-draft/10 text-light-draft dark:text-on-draft-container border-draft/25') + '">' + (s.active ? 'Active' : 'Paused') + '</span>' +
+      '<button type="button" data-sub-toggle="' + idx + '" class="rounded bg-light-surface-container-high dark:bg-dark-surface-container-high border border-light-outline dark:border-dark-outline px-3 py-1.5 font-label text-label-md hover:bg-light-surface-container-highest dark:hover:bg-dark-surface-container-highest transition-colors duration-state-change">' + (s.active ? 'Pause' : 'Resume') + '</button></div></div>';
+  }).join('');
+}
+function renderClients() {
+  var max = Math.max.apply(null, clients.map(function (c) { return c.ytd; }));
+  $('#top-clients').innerHTML = clients.slice(0, 3).map(function (c) {
+    return '<div class="flex flex-col gap-1.5"><div class="flex items-center justify-between"><span class="font-title text-title-md">' + c.name + '</span><span class="font-mono text-mono-md tabular-nums">' + fmtMoney(c.ytd, 0) + '</span></div>' +
+      '<div class="w-full h-1.5 rounded-full bg-light-surface-container-highest dark:bg-dark-surface-container-highest overflow-hidden"><div class="h-full rounded-full" style="width:' + Math.round(c.ytd / max * 100) + '%;background:' + c.color + '"></div></div></div>';
+  }).join('');
+  $('#client-grid').innerHTML = clients.map(function (c) {
+    var invs = invoices.filter(function (i) { return i.client === c.name; });
+    var openBal = invs.filter(function (i) { return i.status === 'Pending' || i.status === 'Overdue'; }).reduce(function (a, i) { return a + i.amount; }, 0);
+    var hasOverdue = invs.some(function (i) { return i.status === 'Overdue'; });
+    return '<article class="rounded-md bg-light-surface-container dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant p-5 glass-panel flex flex-col gap-4">' +
+      '<div class="flex items-start justify-between gap-3"><div class="flex items-center gap-3">' +
+      '<div class="w-10 h-10 rounded-full flex items-center justify-center font-label text-label-md shrink-0" style="background:' + c.color + '22;border:1px solid ' + c.color + '55;color:' + c.color + '">' + c.name.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2) + '</div>' +
+      '<div><p class="font-title text-title-md">' + c.name + '</p><p class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">' + c.contact + '</p></div></div>' +
+      (hasOverdue ? '<span class="inline-flex items-center gap-1.5 rounded-full bg-overdue/10 text-light-overdue dark:text-on-overdue-container border border-overdue/25 px-2.5 py-1 font-label text-label-sm shrink-0">Overdue</span>' : '') + '</div>' +
+      '<div class="grid grid-cols-3 gap-3 text-center">' +
+      '<div class="rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant p-3"><p class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">YTD</p><p class="font-mono text-mono-md tabular-nums">' + fmtMoney(c.ytd, 0) + '</p></div>' +
+      '<div class="rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant p-3"><p class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Open</p><p class="font-mono text-mono-md tabular-nums">' + fmtMoney(openBal, 0) + '</p></div>' +
+      '<div class="rounded bg-light-surface-container-low dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant p-3"><p class="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Invoices</p><p class="font-mono text-mono-md tabular-nums">' + invs.length + '</p></div></div>' +
+      '<button type="button" data-client-invoices="' + c.name + '" class="text-left font-label text-label-md text-light-outstanding dark:text-outstanding hover:underline">View invoices →</button></article>';
+  }).join('');
+}
+function renderActivity() {
+  var toneDot = { paid: 'bg-paid', overdue: 'bg-overdue', outstanding: 'bg-outstanding', refunded: 'bg-refunded', draft: 'bg-draft', subscription: 'bg-subscription' };
+  $('#activity-list').innerHTML = activity.slice(0, 6).map(function (a) {
+    return '<li class="flex items-start gap-3"><span class="mt-1.5 w-2 h-2 rounded-full shrink-0 ' + (toneDot[a.tone] || 'bg-draft') + '" aria-hidden="true"></span>' +
+      '<div class="min-w-0"><p class="font-body text-body-md leading-snug">' + a.text + '</p><p class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">' + a.date + '</p></div></li>';
+  }).join('');
+}
+function addActivity(text, tone) {
+  activity.unshift({ text: text, date: 'Nov 20, 2026', tone: tone || 'outstanding' });
+  renderActivity();
+}
+
+/* ---------- Charts ---------- */
+function smoothPath(pts) {
+  if (pts.length < 2) return '';
+  var d = 'M' + pts[0][0] + ' ' + pts[0][1];
+  for (var i = 0; i < pts.length - 1; i++) {
+    var p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+    var c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
+    var c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
+    d += ' C' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) + ', ' + c2x.toFixed(1) + ' ' + c2y.toFixed(1) + ', ' + p2[0] + ' ' + p2[1];
+  }
+  return d;
+}
+function buildCurve() {
+  var svg = $('#cashflow-svg');
+  var y = function (v) { return 172 - (v / 20000) * 150; };
+  var x = function (i) { return 58 + i * 49.27; };
+  var fx = function (i) { return 649 + i * 46.5; };
+  var grid = '';
+  [5000, 10000, 15000, 20000].forEach(function (v) {
+    grid += '<line x1="44" y1="' + y(v) + '" x2="745" y2="' + y(v) + '" stroke="#1E293B" stroke-dasharray="3 3"></line>' +
+      '<text x="0" y="' + (y(v) + 4) + '" fill="#64748B" font-family="JetBrains Mono" font-size="11">$' + (v / 1000) + 'k</text>';
+  });
+  grid += '<line x1="44" y1="172" x2="745" y2="172" stroke="#1E293B"></line>';
+  $('#curve-grid').innerHTML = grid;
+  var pts = cashValues.map(function (v, i) { return [x(i), y(v)]; });
+  var fpts = forecastValues.map(function (v, i) { return [fx(i), y(v)]; });
+  var line = smoothPath(pts);
+  $('#curve-line').setAttribute('d', line);
+  $('#curve-area').setAttribute('d', line + ' L' + pts[pts.length - 1][0] + ' 172 L' + pts[0][0] + ' 172 Z');
+  var fline = 'M' + pts[pts.length - 1][0] + ' ' + pts[pts.length - 1][1] + ' ' + smoothPath([pts[pts.length - 1]].concat(fpts)).slice(1);
+  $('#curve-forecast').setAttribute('d', fline);
+  var labels = '';
+  var show = window.innerWidth < 640 ? { 0: 'Dec', 5: 'May', 11: 'Nov' } : { 0: 'Dec', 2: 'Feb', 4: 'Apr', 6: 'Jun', 8: 'Aug', 10: 'Oct', 11: 'Nov' };
+  Object.keys(show).forEach(function (i) {
+    labels += '<text x="' + (x(+i) - 8) + '" y="192" fill="' + (+i === 11 ? '#F8FAFC' : '#64748B') + '">' + show[i] + '</text>';
+  });
+  labels += '<text x="' + (window.innerWidth < 640 ? 660 : 682) + '" y="192" fill="#34D399">Jan \'27*</text>';
+  $('#curve-labels').innerHTML = labels;
+  // Hit areas
+  var hits = $('#curve-hits');
+  var all = cashMonths.map(function (m, i) { return { label: m, value: cashValues[i], x: x(i), y: y(cashValues[i]), tag: 'Actual', color: '#22D3EE' }; })
+    .concat(forecastMonths.map(function (m, i) { return { label: m, value: forecastValues[i], x: fx(i), y: y(forecastValues[i]), tag: 'Forecast', color: '#34D399' }; }));
+  var NS = 'http://www.w3.org/2000/svg';
+  hits.innerHTML = '';
+  all.forEach(function (p) {
+    var r = document.createElementNS(NS, 'rect');
+    r.setAttribute('x', p.x - 22); r.setAttribute('y', 8); r.setAttribute('width', 44); r.setAttribute('height', 180);
+    r.setAttribute('fill', 'transparent'); r.style.cursor = 'pointer';
+    r.addEventListener('mousemove', function (e) {
+      var dot = $('#curve-dot'), halo = $('#curve-halo'), ch = $('#curve-crosshair');
+      dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y); dot.setAttribute('stroke', p.color); dot.setAttribute('opacity', '1');
+      halo.setAttribute('cx', p.x); halo.setAttribute('cy', p.y); halo.setAttribute('fill', p.color); halo.setAttribute('opacity', '1');
+      ch.setAttribute('x1', p.x); ch.setAttribute('x2', p.x); ch.setAttribute('opacity', '1');
+      $('#curve-readout').textContent = p.label + ' — ' + fmtMoney(p.value) + ' net inflow (' + p.tag.toLowerCase() + ')';
+      showTip(e.clientX, e.clientY, p.label, fmtMoney(p.value), p.tag + ' · net inflow');
+    });
+    r.addEventListener('mouseleave', function () {
+      ['#curve-dot', '#curve-halo', '#curve-crosshair'].forEach(function (s) { $(s).setAttribute('opacity', '0'); });
+      $('#curve-readout').textContent = 'Hover curve to inspect monthly net inflow';
+      hideTip();
+    });
+    hits.appendChild(r);
+  });
+  // Default: highlight Nov 2026
+  var last = all[11];
+  $('#curve-dot').setAttribute('cx', last.x); $('#curve-dot').setAttribute('cy', last.y);
+  $('#curve-halo').setAttribute('cx', last.x); $('#curve-halo').setAttribute('cy', last.y);
+  $('#curve-crosshair').setAttribute('x1', last.x); $('#curve-crosshair').setAttribute('x2', last.x);
+  // Forecast toggle from settings
+  $('#curve-forecast').style.display = $('#set-forecast').checked ? '' : 'none';
+}
+function buildSparklines() {
+  $$('.spark').forEach(function (svg) {
+    var vals = svg.getAttribute('data-spark').split(',').map(Number);
+    var color = svg.getAttribute('data-color');
+    var label = svg.getAttribute('data-label');
+    var suffix = svg.getAttribute('data-suffix') || '';
+    var min = Math.min.apply(null, vals), max = Math.max.apply(null, vals);
+    var range = max - min || 1;
+    var pts = vals.map(function (v, i) { return [2 + i * (60 / (vals.length - 1)), 24 - ((v - min) / range) * 20]; });
+    var NS = 'http://www.w3.org/2000/svg';
+    var path = document.createElementNS(NS, 'path');
+    path.setAttribute('d', smoothPath(pts));
+    path.setAttribute('stroke', color); path.setAttribute('stroke-width', '2');
+    path.setAttribute('stroke-linecap', 'round'); path.setAttribute('stroke-linejoin', 'round'); path.setAttribute('fill', 'none');
+    svg.appendChild(path);
+    var end = document.createElementNS(NS, 'circle');
+    end.setAttribute('cx', pts[pts.length - 1][0]); end.setAttribute('cy', pts[pts.length - 1][1]);
+    end.setAttribute('r', '2.5'); end.setAttribute('fill', color);
+    svg.appendChild(end);
+    var sparkMonths = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
+    vals.forEach(function (v, i) {
+      var r = document.createElementNS(NS, 'rect');
+      r.setAttribute('x', pts[i][0] - 6); r.setAttribute('y', 0); r.setAttribute('width', 12); r.setAttribute('height', 28);
+      r.setAttribute('fill', 'transparent'); r.style.cursor = 'pointer';
+      r.addEventListener('mousemove', function (e) {
+        var val = suffix === '%' ? v.toFixed(1) + '%' : fmtMoney(v, 0);
+        showTip(e.clientX, e.clientY, label + ' · ' + sparkMonths[i] + ' 2026', val, '6-month trend');
+      });
+      r.addEventListener('mouseleave', hideTip);
+      svg.appendChild(r);
+    });
+  });
+}
+function barStackHtml(d, scale, highlight) {
+  function seg(h, color, top) {
+    if (h <= 0) return '';
+    return '<div class="bar-seg w-full ' + (top ? 'rounded-t-sm' : '') + '" style="height:' + Math.max(2, h) + 'px;background:' + color + '"></div>';
+  }
+  var total = d.paid + d.pending + d.overdue + d.draft;
+  return '<div class="w-full max-w-8 flex flex-col-reverse gap-0.5 ' + (highlight ? 'ring-1 ring-outstanding/60 ring-offset-2 ring-offset-light-surface-container-low dark:ring-offset-dark-surface-container-low rounded-sm' : '') + '">' +
+    seg(d.paid * scale, '#34D399', false) + seg(d.pending * scale, '#22D3EE', false) + seg(d.overdue * scale, '#FBBF24', false) + seg(d.draft * scale, '#94A3B8', true) +
+    '</div><span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">' + d.m + '</span>';
+}
+function buildPipeline() {
+  var maxTotal = Math.max.apply(null, pipeline.map(function (d) { return d.paid + d.pending + d.overdue + d.draft; }));
+  var scale = 140 / maxTotal;
+  var wrap = $('#pipeline-bars');
+  wrap.innerHTML = pipeline.map(function (d, i) {
+    return '<div class="pipeline-col flex flex-col items-center gap-2 cursor-pointer" data-idx="' + i + '">' + barStackHtml(d, scale, i === pipeline.length - 1) + '</div>';
+  }).join('');
+  $$('.pipeline-col', wrap).forEach(function (col) {
+    var d = pipeline[+col.getAttribute('data-idx')];
+    var line = d.m + ' 2026 — Paid $' + d.paid.toFixed(1) + 'k · Pending $' + d.pending.toFixed(1) + 'k · Overdue $' + d.overdue.toFixed(1) + 'k' + (d.draft ? ' · Draft $' + d.draft.toFixed(1) + 'k' : '');
+    col.addEventListener('mouseenter', function () {
+      wrap.classList.add('dim'); col.classList.add('hot');
+      $('#pipeline-status-line').textContent = line;
+    });
+    col.addEventListener('mousemove', function (e) {
+      showTip(e.clientX, e.clientY, d.m + ' 2026 — pipeline', fmtK((d.paid + d.pending + d.overdue + d.draft) * 1000),
+        'Paid $' + d.paid.toFixed(1) + 'k · Pending $' + d.pending.toFixed(1) + 'k · Overdue $' + d.overdue.toFixed(1) + 'k' + (d.draft ? ' · Draft $' + d.draft.toFixed(1) + 'k' : ''));
+    });
+    col.addEventListener('mouseleave', function () {
+      wrap.classList.remove('dim'); col.classList.remove('hot');
+      $('#pipeline-status-line').textContent = 'Nov 2026 — Paid $42.1k · Pending $28.2k · Overdue $14.2k · Draft $1.6k';
+      hideTip();
+    });
+    col.addEventListener('click', function () { showView('reports'); });
+  });
+}
+function buildReportsBars() {
+  var maxTotal = Math.max.apply(null, pipeline.map(function (d) { return d.paid + d.pending + d.overdue + d.draft; }));
+  var scale = 120 / maxTotal;
+  var wrap = $('#reports-bars');
+  wrap.innerHTML = pipeline.map(function (d, i) {
+    var total = d.paid + d.pending + d.overdue + d.draft;
+    return '<div class="reports-col pipeline-col flex flex-col items-center gap-2 cursor-pointer" data-idx="' + i + '">' +
+      '<div class="w-full max-w-8 flex flex-col gap-0.5"><div class="bar-seg w-full rounded-t-sm" style="height:' + Math.max(3, d.paid * scale) + 'px;background:#34D399"></div></div>' +
+      '<span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">' + d.m + '</span></div>';
+  }).join('');
+  $$('.reports-col', wrap).forEach(function (col) {
+    var d = pipeline[+col.getAttribute('data-idx')];
+    var total = d.paid + d.pending + d.overdue + d.draft;
+    col.addEventListener('mouseenter', function () {
+      wrap.classList.add('dim'); col.classList.add('hot');
+      $('#reports-status-line').textContent = d.m + ' 2026 — Collected $' + d.paid.toFixed(1) + 'k of $' + total.toFixed(1) + 'k invoiced';
+    });
+    col.addEventListener('mousemove', function (e) {
+      showTip(e.clientX, e.clientY, d.m + ' 2026 — collected', fmtK(d.paid * 1000), 'of ' + fmtK(total * 1000) + ' invoiced · ' + Math.round(d.paid / total * 100) + '% collected');
+    });
+    col.addEventListener('mouseleave', function () {
+      wrap.classList.remove('dim'); col.classList.remove('hot');
+      $('#reports-status-line').textContent = 'Nov 2026 — Collected $42.1k of $84.5k invoiced';
+      hideTip();
+    });
+  });
+}
+function buildDonut() {
+  var data = [
+    { name: 'Alto Studio', value: 64800, color: '#34D399' },
+    { name: 'Helios Labs', value: 52400, color: '#22D3EE' },
+    { name: 'Northwind Systems', value: 38900, color: '#A78BFA' },
+    { name: 'Vespera Cloud', value: 21300, color: '#FBBF24' },
+    { name: 'Other clients', value: 32900, color: '#94A3B8' }
+  ];
+  var total = data.reduce(function (a, d) { return a + d.value; }, 0);
+  var C = 2 * Math.PI * 80, NS = 'http://www.w3.org/2000/svg';
+  var svg = $('#donut-svg');
+  svg.innerHTML = '';
+  var offset = 0;
+  data.forEach(function (d) {
+    var len = d.value / total * C;
+    var c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', 100); c.setAttribute('cy', 100); c.setAttribute('r', 80);
+    c.setAttribute('fill', 'none'); c.setAttribute('stroke', d.color); c.setAttribute('stroke-width', 26);
+    c.setAttribute('stroke-dasharray', Math.max(0, len - 2) + ' ' + (C - len + 2));
+    c.setAttribute('stroke-dashoffset', -offset);
+    c.setAttribute('transform', 'rotate(-90 100 100)');
+    c.style.cursor = 'pointer'; c.style.transition = 'stroke-width .15s ease-out, opacity .15s ease-out';
+    c.addEventListener('mousemove', function (e) {
+      c.setAttribute('stroke-width', 32);
+      showTip(e.clientX, e.clientY, d.name, fmtMoney(d.value, 0), Math.round(d.value / total * 100) + '% of YTD revenue');
+    });
+    c.addEventListener('mouseleave', function () { c.setAttribute('stroke-width', 26); hideTip(); });
+    svg.appendChild(c);
+    offset += len;
+  });
+  var center = document.createElementNS(NS, 'text');
+  center.setAttribute('x', 100); center.setAttribute('y', 96); center.setAttribute('text-anchor', 'middle');
+  center.setAttribute('fill', 'currentColor'); center.setAttribute('font-family', 'JetBrains Mono'); center.setAttribute('font-size', '17'); center.setAttribute('font-weight', '600');
+  center.textContent = fmtMoney(total, 0);
+  svg.appendChild(center);
+  var sub = document.createElementNS(NS, 'text');
+  sub.setAttribute('x', 100); sub.setAttribute('y', 116); sub.setAttribute('text-anchor', 'middle');
+  sub.setAttribute('fill', '#8B9BB4'); sub.setAttribute('font-family', 'Inter'); sub.setAttribute('font-size', '11');
+  sub.textContent = 'YTD revenue';
+  svg.appendChild(sub);
+  $('#donut-legend').innerHTML = data.map(function (d) {
+    return '<li class="flex items-center justify-between gap-3"><span class="flex items-center gap-2 font-body text-body-md"><span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:' + d.color + '"></span>' + d.name + '</span>' +
+      '<span class="font-mono text-mono-md tabular-nums">' + fmtMoney(d.value, 0) + ' · ' + Math.round(d.value / total * 100) + '%</span></li>';
+  }).join('');
+}
+function buildGauge() {
+  var NS = 'http://www.w3.org/2000/svg';
+  var svg = $('#gauge-svg');
+  function arc(cx, cy, r, a0, a1) {
+    var x0 = cx + r * Math.cos(a0 * Math.PI / 180), y0 = cy - r * Math.sin(a0 * Math.PI / 180);
+    var x1 = cx + r * Math.cos(a1 * Math.PI / 180), y1 = cy - r * Math.sin(a1 * Math.PI / 180);
+    return 'M' + x0.toFixed(1) + ' ' + y0.toFixed(1) + ' A' + r + ' ' + r + ' 0 0 0 ' + x1.toFixed(1) + ' ' + y1.toFixed(1);
+  }
+  svg.innerHTML = '';
+  var track = document.createElementNS(NS, 'path');
+  track.setAttribute('d', arc(130, 130, 100, 0, 180));
+  track.setAttribute('fill', 'none'); track.setAttribute('stroke-width', '16'); track.setAttribute('stroke-linecap', 'round');
+  track.setAttribute('class', 'stroke-light-outline-variant dark:stroke-dark-outline-variant');
+  svg.appendChild(track);
+  var val = document.createElementNS(NS, 'path');
+  val.setAttribute('d', arc(130, 130, 100, 0, 180 * (kpi.collection / 100)));
+  val.setAttribute('fill', 'none'); val.setAttribute('stroke', '#34D399'); val.setAttribute('stroke-width', '16'); val.setAttribute('stroke-linecap', 'round');
+  val.style.cursor = 'pointer';
+  val.addEventListener('mousemove', function (e) { showTip(e.clientX, e.clientY, 'Collection rate', kpi.collection.toFixed(1) + '%', fmtMoney(kpi.collected, 0) + ' collected of $486,200 invoiced'); });
+  val.addEventListener('mouseleave', hideTip);
+  svg.appendChild(val);
+  var t = document.createElementNS(NS, 'text');
+  t.setAttribute('x', 130); t.setAttribute('y', 112); t.setAttribute('text-anchor', 'middle');
+  t.setAttribute('fill', 'currentColor'); t.setAttribute('font-family', 'Fraunces'); t.setAttribute('font-size', '34'); t.setAttribute('font-weight', '500');
+  t.textContent = kpi.collection.toFixed(1) + '%';
+  svg.appendChild(t);
+  var s = document.createElementNS(NS, 'text');
+  s.setAttribute('x', 130); s.setAttribute('y', 132); s.setAttribute('text-anchor', 'middle');
+  s.setAttribute('fill', '#8B9BB4'); s.setAttribute('font-family', 'Inter'); s.setAttribute('font-size', '11');
+  s.textContent = 'collected · trailing 12M';
+  svg.appendChild(s);
+}
+
+/* ---------- Expenses ---------- */
+function renderExpenses() {
+  var list = expenses.slice().sort(function (a, b) { return parseDate(b.date) - parseDate(a.date); });
+  if (state.expFilter !== 'all') list = list.filter(function (e) { return e.cat === state.expFilter; });
+  $('#expenses-tbody').innerHTML = list.map(function (e) {
+    return '<tr class="hover:bg-light-surface-container-high/50 dark:hover:bg-dark-surface-container-high/50 transition-colors duration-state-change">' +
+      '<td class="px-5 py-3.5 font-body text-body-md">' + e.desc + '</td>' +
+      '<td class="px-4 py-3.5"><span class="inline-flex items-center rounded-full bg-light-surface-container-highest dark:bg-dark-surface-container-highest border border-light-outline-variant dark:border-dark-outline-variant px-2.5 py-1 font-label text-label-sm">' + e.cat + '</span></td>' +
+      '<td class="px-4 py-3.5 font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant tabular-nums">' + fmtDate(e.date) + '</td>' +
+      '<td class="px-5 py-3.5 font-mono text-mono-md tabular-nums text-right">' + fmtMoney(e.amount) + '</td></tr>';
+  }).join('');
+  $('#expenses-cards').innerHTML = list.map(function (e) {
+    return '<div class="px-5 py-4 flex flex-col gap-1.5"><div class="flex items-center justify-between gap-3"><span class="font-body text-body-md">' + e.desc + '</span><span class="font-mono text-mono-md tabular-nums">' + fmtMoney(e.amount) + '</span></div>' +
+      '<div class="flex items-center justify-between gap-3"><span class="font-label text-label-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">' + e.cat + '</span><span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">' + fmtDate(e.date) + '</span></div></div>';
+  }).join('');
+  var total = expenses.reduce(function (a, e) { return a + e.amount; }, 0);
+  $('#expenses-total').textContent = fmtMoney(total, 0);
+  $$('.exp-filter-btn').forEach(function (b) {
+    var on = b.getAttribute('data-exp-filter') === state.expFilter;
+    b.className = 'exp-filter-btn rounded-full px-3 py-1 font-label text-label-sm ' + (on
+      ? 'bg-light-surface-container-highest dark:bg-dark-surface-container-highest text-light-on-surface dark:text-dark-on-surface border border-light-outline dark:border-dark-outline'
+      : 'bg-transparent text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface');
+  });
+}
+
+/* ---------- Navigation ---------- */
+var VIEW_TITLES = { overview: 'Overview', invoices: 'Invoices', clients: 'Clients', subscriptions: 'Subscriptions', expenses: 'Expenses', reports: 'Reports', settings: 'Settings' };
+function showView(name) {
+  state.view = name;
+  $$('.view').forEach(function (v) {
+    var on = v.id === 'view-' + name;
+    v.classList.toggle('hidden', !on);
+    v.classList.toggle(v.id === 'view-overview' ? 'grid' : 'flex', on);
+    if (!on) v.classList.remove(v.id === 'view-overview' ? 'grid' : 'flex');
+  });
+  $$('[data-nav]').forEach(function (b) {
+    var on = b.getAttribute('data-nav') === name;
+    b.classList.toggle('active', on);
+    if (b.closest('aside')) {
+      b.classList.toggle('bg-light-surface-container-high', false);
+    }
+  });
+  document.title = 'Ledgerline — ' + VIEW_TITLES[name];
+  window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+}
+$$('[data-nav]').forEach(function (b) { b.addEventListener('click', function () { showView(b.getAttribute('data-nav')); }); });
+
+/* ---------- Theme ---------- */
+function applyTheme(dark) {
+  document.documentElement.classList.toggle('dark', dark);
+  var icon = dark ? 'light_mode' : 'dark_mode';
+  var label = dark ? 'Light mode' : 'Dark mode';
+  ['#theme-icon', '#theme-icon-m'].forEach(function (s) { var el = $(s); if (el) el.textContent = icon; });
+  var l = $('#theme-label'); if (l) l.textContent = label;
+  try { localStorage.setItem('ledgerline-theme', dark ? 'dark' : 'light'); } catch (e) {}
+}
+function toggleTheme() { applyTheme(!document.documentElement.classList.contains('dark')); toast(document.documentElement.classList.contains('dark') ? 'Dark theme on — Nocturne Ledger.' : 'Light theme on.'); }
+['#theme-toggle', '#theme-toggle-m'].forEach(function (s) { var el = $(s); if (el) el.addEventListener('click', toggleTheme); });
+try { if (localStorage.getItem('ledgerline-theme') === 'light') applyTheme(false); } catch (e) {}
+
+/* ---------- Filters / sort / search ---------- */
+$$('.filter-btn').forEach(function (b) {
+  b.addEventListener('click', function () { state.filter = b.getAttribute('data-filter'); renderInvoices(); });
+});
+$$('.sort-btn').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var k = b.getAttribute('data-sort');
+    if (state.sortKey === k) state.sortDir *= -1;
+    else { state.sortKey = k; state.sortDir = 1; }
+    renderInvoices();
+  });
+});
+$('#invoice-search').addEventListener('input', function (e) { state.search = e.target.value; renderInvoices(); });
+$$('.exp-filter-btn').forEach(function (b) {
+  b.addEventListener('click', function () { state.expFilter = b.getAttribute('data-exp-filter'); renderExpenses(); });
+});
+
+/* ---------- Drawer ---------- */
+function openDrawer(id) {
+  var inv = invoices.find(function (i) { return i.id === id; });
+  if (!inv) return;
+  drawerInvoice = inv;
+  $('#drawer-ref').textContent = inv.id;
+  $('#drawer-client').textContent = inv.client;
+  $('#drawer-amount').textContent = fmtMoney(inv.amount);
+  $('#drawer-total').textContent = fmtMoney(inv.amount);
+  $('#drawer-desc').textContent = inv.desc;
+  $('#drawer-issued').textContent = fmtDate(inv.issued);
+  $('#drawer-due').textContent = fmtDate(inv.due) + ' · ' + dueLabel(inv);
+  $('#drawer-status').innerHTML = badge(inv.status);
+  var tl = [
+    { label: 'Invoice issued', date: fmtDate(inv.issued) },
+    { label: 'Due date', date: fmtDate(inv.due) }
+  ];
+  if (inv.status === 'Paid') tl.push({ label: 'Payment recorded', date: fmtDate(inv.paidOn || inv.due) });
+  if (inv.status === 'Refunded') tl.push({ label: 'Refund processed', date: fmtDate(inv.due) });
+  if (inv.reminderSent) tl.push({ label: 'Reminder sent', date: 'Nov 20, 2026' });
+  $('#drawer-timeline').innerHTML = tl.map(function (t) {
+    return '<li class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-outstanding shrink-0" aria-hidden="true"></span><span class="font-body text-body-md">' + t.label + '</span><span class="ml-auto font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">' + t.date + '</span></li>';
+  }).join('');
+  var note = $('#drawer-reminder-note');
+  if (inv.reminderSent) { note.classList.remove('hidden'); note.textContent = 'A reminder for this invoice was sent on Nov 20, 2026.'; }
+  else note.classList.add('hidden');
+  var canPay = inv.status === 'Pending' || inv.status === 'Overdue';
+  $('#drawer-pay').style.display = canPay ? '' : 'none';
+  $('#drawer-remind').style.display = canPay ? '' : 'none';
+  $('#drawer-remind').disabled = inv.reminderSent;
+  $('#drawer-remind').querySelector('span:last-child').textContent = inv.reminderSent ? 'Reminder sent' : 'Send reminder';
+  $('#drawer').classList.remove('hidden');
+  $('#drawer').classList.add('drawer-open');
+  $('#drawer-backdrop').classList.remove('hidden');
+}
+function closeDrawer() {
+  $('#drawer').classList.add('hidden');
+  $('#drawer').classList.remove('drawer-open');
+  $('#drawer-backdrop').classList.add('hidden');
+  drawerInvoice = null;
+}
+$('#drawer-close').addEventListener('click', closeDrawer);
+$('#drawer-backdrop').addEventListener('click', closeDrawer);
+document.addEventListener('click', function (e) {
+  var openEl = e.target.closest('[data-open]');
+  if (openEl) { openDrawer(openEl.getAttribute('data-open')); return; }
+  var row = e.target.closest('tr[data-inv]');
+  if (row) openDrawer(row.getAttribute('data-inv'));
+});
+
+/* ---------- Payment / reminder actions ---------- */
+function recordPayment(inv) {
+  if (!inv || (inv.status !== 'Pending' && inv.status !== 'Overdue')) return;
+  var wasOverdue = inv.status === 'Overdue';
+  inv.status = 'Paid'; inv.paidOn = '2026-11-20';
+  kpi.outstanding = Math.max(0, kpi.outstanding - inv.amount);
+  kpi.openCount = Math.max(0, kpi.openCount - 1);
+  if (wasOverdue) { kpi.overdue = Math.max(0, kpi.overdue - inv.amount); kpi.overdueCount = Math.max(0, kpi.overdueCount - 1); }
+  kpi.cash += inv.amount;
+  kpi.collected += inv.amount;
+  kpi.collection = Math.min(99.9, kpi.collection + 0.1);
+  setKpiText(); renderInvoices(); renderReminders(); renderClients(); buildGauge();
+  addActivity('Payment recorded — ' + inv.id + ' · ' + inv.client + ' · ' + fmtMoney(inv.amount), 'paid');
+  toast('Payment recorded — ' + inv.id + ' is now Paid. ' + fmtMoney(inv.amount) + ' added to cash.');
+}
+function sendReminder(inv) {
+  if (!inv || inv.reminderSent) return;
+  inv.reminderSent = true;
+  renderReminders();
+  addActivity('Reminder sent — ' + inv.client + ' · ' + inv.id, 'overdue');
+  toast('Reminder sent to ' + inv.client + ' for ' + inv.id + '.');
+}
+$('#drawer-pay').addEventListener('click', function () { if (drawerInvoice) { recordPayment(drawerInvoice); openDrawer(drawerInvoice.id); } });
+$('#drawer-remind').addEventListener('click', function () { if (drawerInvoice) { sendReminder(drawerInvoice); openDrawer(drawerInvoice.id); } });
+document.addEventListener('click', function (e) {
+  var r = e.target.closest('[data-remind]');
+  if (r) {
+    var inv = invoices.find(function (i) { return i.id === r.getAttribute('data-remind'); });
+    sendReminder(inv);
+  }
+  var c = e.target.closest('[data-client-invoices]');
+  if (c) {
+    state.search = c.getAttribute('data-client-invoices');
+    $('#invoice-search').value = state.search;
+    state.filter = 'all';
+    renderInvoices(); showView('invoices');
+  }
+  var st = e.target.closest('[data-sub-toggle]');
+  if (st) {
+    var s = subscriptions[+st.getAttribute('data-sub-toggle')];
+    s.active = !s.active;
+    kpi.mrr += s.active ? s.amount : -s.amount;
+    setKpiText(); renderSubscriptions();
+    addActivity((s.active ? 'Subscription resumed — ' : 'Subscription paused — ') + s.client + ' · ' + fmtMoney(s.amount, 0) + '/mo', 'subscription');
+    toast(s.active ? s.client + ' subscription resumed — MRR is now ' + fmtMoney(kpi.mrr, 0) + '.' : s.client + ' subscription paused — MRR is now ' + fmtMoney(kpi.mrr, 0) + '.');
+  }
+});
+
+/* ---------- Download PDF (print view) ---------- */
+$('#drawer-pdf').addEventListener('click', function () {
+  if (!drawerInvoice) return;
+  var inv = drawerInvoice;
+  var w = window.open('', '_blank', 'width=720,height=900');
+  if (!w) { toast('Pop-up blocked — allow pop-ups to download the invoice PDF.'); return; }
+  w.document.write('<!DOCTYPE html><html><head><title>' + inv.id + '</title><style>body{font-family:Georgia,serif;color:#111;padding:48px}h1{font-size:28px}table{width:100%;border-collapse:collapse;margin-top:24px}td{padding:10px 0;border-bottom:1px solid #ddd}.r{text-align:right}.muted{color:#666}</style></head><body>' +
+    '<h1>Ledgerline — Invoice ' + inv.id + '</h1><p class="muted">Meridian SaaS LLC · billing@meridiansaas.example</p>' +
+    '<p><strong>Billed to:</strong> ' + inv.client + '<br><strong>Issued:</strong> ' + fmtDate(inv.issued) + ' · <strong>Due:</strong> ' + fmtDate(inv.due) + ' · <strong>Status:</strong> ' + inv.status + '</p>' +
+    '<table><tr><td>' + inv.desc + '</td><td class="r">' + fmtMoney(inv.amount) + '</td></tr><tr><td>Tax (0%)</td><td class="r">$0.00</td></tr><tr><td><strong>Total due</strong></td><td class="r"><strong>' + fmtMoney(inv.amount) + '</strong></td></tr></table>' +
+    '<p class="muted">Thank you for your business.</p><script>window.onload=function(){window.print()}<\/script></body></html>');
+  w.document.close();
+});
+
+/* ---------- New invoice ---------- */
+function openInvoiceModal() { $('#invoice-modal').classList.remove('hidden'); setTimeout(function () { $('#ni-client').focus(); }, 50); }
+function closeInvoiceModal() { $('#invoice-modal').classList.add('hidden'); }
+$$('.btn-new-invoice').forEach(function (b) { b.addEventListener('click', openInvoiceModal); });
+$('#btn-new-invoice').addEventListener('click', openInvoiceModal);
+$('#invoice-modal-close').addEventListener('click', closeInvoiceModal);
+$('#invoice-modal-cancel').addEventListener('click', closeInvoiceModal);
+$('#invoice-modal').addEventListener('click', function (e) { if (e.target === this) closeInvoiceModal(); });
+function fieldError(id, on) {
+  var el = $('#' + id);
+  el.classList.toggle('field-err', on);
+  var msg = $('[data-err="' + id + '"]');
+  if (msg) msg.classList.toggle('hidden', !on);
+}
+$('#invoice-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var client = $('#ni-client').value;
+  var amount = parseFloat($('#ni-amount').value);
+  var due = $('#ni-due').value;
+  var desc = $('#ni-desc').value.trim();
+  var status = $('#ni-status').value;
+  var ok = true;
+  fieldError('ni-client', !client); if (!client) ok = false;
+  fieldError('ni-amount', !(amount > 0)); if (!(amount > 0)) ok = false;
+  fieldError('ni-due', !due); if (!due) ok = false;
+  fieldError('ni-desc', !desc); if (!desc) ok = false;
+  if (!ok) return;
+  var inv = {
+    id: 'INV-2026-0' + nextInvoiceNum++, client: client, amount: Math.round(amount * 100) / 100,
+    due: due, status: status, desc: desc, issued: '2026-11-20', reminderSent: false
+  };
+  invoices.unshift(inv);
+  if (status === 'Pending') { kpi.outstanding += inv.amount; kpi.openCount += 1; }
+  setKpiText(); renderInvoices(); renderReminders(); renderClients();
+  addActivity('Invoice issued — ' + inv.id + ' · ' + inv.client + ' · ' + fmtMoney(inv.amount), 'outstanding');
+  closeInvoiceModal();
+  this.reset();
+  $('#ni-due').value = '2026-12-20';
+  toast('Invoice ' + inv.id + ' created for ' + inv.client + ' — ' + fmtMoney(inv.amount) + '.');
+  openDrawer(inv.id);
+});
+
+/* ---------- Export CSV ---------- */
+function exportCSV() {
+  var list = filteredInvoices();
+  var head = 'Reference,Client,Description,Amount (USD),Due date,Status';
+  var lines = list.map(function (i) {
+    return [i.id, '"' + i.client + '"', '"' + i.desc.replace(/"/g, '""') + '"', i.amount.toFixed(2), i.due, i.status].join(',');
+  });
+  var csv = head + '\n' + lines.join('\n');
+  window.__lastCSV = csv;
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ledgerline-invoices-2026-11-20.csv';
+  document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  toast('CSV exported — ' + list.length + (list.length === 1 ? ' invoice' : ' invoices') + ' in the file.');
+}
+$$('.btn-export-csv').forEach(function (b) { b.addEventListener('click', exportCSV); });
+$('#btn-export-csv').addEventListener('click', exportCSV);
+
+/* ---------- Expenses form ---------- */
+$('#expense-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var desc = $('#exp-desc').value.trim();
+  var amount = parseFloat($('#exp-amount').value);
+  var ok = true;
+  fieldError('exp-desc', !desc); if (!desc) ok = false;
+  fieldError('exp-amount', !(amount > 0)); if (!(amount > 0)) ok = false;
+  if (!ok) return;
+  expenses.unshift({ desc: desc, cat: $('#exp-cat').value, date: $('#exp-date').value || '2026-11-20', amount: Math.round(amount * 100) / 100 });
+  renderExpenses();
+  this.reset(); $('#exp-date').value = '2026-11-20';
+  toast('Expense added — ' + desc + ' · ' + fmtMoney(amount) + '.');
+});
+
+/* ---------- Settings ---------- */
+$('#settings-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var email = $('#set-email').value.trim();
+  var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  fieldError('set-email', !valid);
+  if (!valid) return;
+  $('#profile-name').textContent = $('#set-name').value.trim() || 'Elena Vance';
+  $('#profile-company').textContent = $('#set-company').value.trim() || 'Meridian SaaS LLC';
+  state.currency = $('#set-currency').value;
+  buildCurve();
+  toast('Settings saved — workspace updated.');
+});
+$('#set-forecast').addEventListener('change', buildCurve);
+
+/* ---------- Command palette ---------- */
+var cmdkItems = [], cmdkActive = 0;
+function cmdkBuild(q) {
+  var query = (q || '').toLowerCase();
+  var items = [];
+  invoices.forEach(function (i) {
+    items.push({ label: i.id + ' · ' + i.client, meta: fmtMoney(i.amount), kind: 'invoice', run: function () { closeCmdk(); showView('invoices'); openDrawer(i.id); } });
+  });
+  clients.forEach(function (c) {
+    items.push({ label: c.name, meta: fmtMoney(c.ytd, 0) + ' YTD', kind: 'client', run: function () { closeCmdk(); showView('clients'); } });
+  });
+  [
+    { label: 'Create new invoice', meta: 'Action', run: function () { closeCmdk(); openInvoiceModal(); } },
+    { label: 'Export invoices as CSV', meta: 'Action', run: function () { closeCmdk(); exportCSV(); } },
+    { label: 'Toggle light / dark theme', meta: 'Action', run: function () { closeCmdk(); toggleTheme(); } },
+    { label: 'Go to Reports', meta: 'View', run: function () { closeCmdk(); showView('reports'); } },
+    { label: 'Go to Subscriptions', meta: 'View', run: function () { closeCmdk(); showView('subscriptions'); } },
+    { label: 'Go to Expenses', meta: 'View', run: function () { closeCmdk(); showView('expenses'); } },
+    { label: 'Go to Settings', meta: 'View', run: function () { closeCmdk(); showView('settings'); } }
+  ].forEach(function (a) { items.push(a); });
+  if (query) items = items.filter(function (it) { return it.label.toLowerCase().indexOf(query) !== -1; });
+  return items.slice(0, 8);
+}
+function cmdkRender() {
+  cmdkItems = cmdkBuild($('#cmdk-input').value);
+  cmdkActive = 0;
+  var box = $('#cmdk-results');
+  box.innerHTML = cmdkItems.length ? cmdkItems.map(function (it, i) {
+    return '<div role="option" aria-selected="' + (i === cmdkActive) + '" data-cmdk="' + i + '" class="cmdk-row flex items-center justify-between rounded px-2.5 py-2 cursor-pointer ' + (i === cmdkActive ? 'bg-light-surface-container-high dark:bg-dark-surface-container-high' : 'hover:bg-light-surface-container-high dark:hover:bg-dark-surface-container-high') + '">' +
+      '<span class="text-light-on-surface dark:text-dark-on-surface">' + it.label + '</span><span class="font-mono text-mono-sm ' + (it.kind === 'invoice' ? 'text-light-outstanding dark:text-outstanding' : 'text-light-on-surface-muted dark:text-dark-on-surface-muted') + '">' + it.meta + '</span></div>';
+  }).join('') : '<p class="px-2.5 py-3 font-body text-body-md text-light-on-surface-muted dark:text-dark-on-surface-muted">No results for “' + $('#cmdk-input').value + '”.</p>';
+  $$('.cmdk-row', box).forEach(function (row) {
+    row.addEventListener('click', function () { var it = cmdkItems[+row.getAttribute('data-cmdk')]; if (it) it.run(); });
+    row.addEventListener('mousemove', function () { cmdkActive = +row.getAttribute('data-cmdk'); cmdkRenderActive(); });
+  });
+}
+function cmdkRenderActive() {
+  $$('.cmdk-row').forEach(function (row, i) {
+    row.classList.toggle('bg-light-surface-container-high', i === cmdkActive);
+    row.classList.toggle('dark:bg-dark-surface-container-high', i === cmdkActive);
+    row.setAttribute('aria-selected', i === cmdkActive ? 'true' : 'false');
+  });
+}
+function openCmdk() { $('#cmdk-modal').classList.remove('hidden'); $('#cmdk-input').value = ''; cmdkRender(); setTimeout(function () { $('#cmdk-input').focus(); }, 30); }
+function closeCmdk() { $('#cmdk-modal').classList.add('hidden'); }
+$('#cmdk-trigger').addEventListener('click', openCmdk);
+$('#cmdk-trigger-m').addEventListener('click', openCmdk);
+$('#cmdk-close').addEventListener('click', closeCmdk);
+$('#cmdk-modal').addEventListener('click', function (e) { if (e.target === this) closeCmdk(); });
+$('#cmdk-input').addEventListener('input', cmdkRender);
+document.addEventListener('keydown', function (e) {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openCmdk(); return; }
+  if (e.key === 'Escape') { closeCmdk(); closeInvoiceModal(); closeDrawer(); return; }
+  if (!$('#cmdk-modal').classList.contains('hidden')) {
+    if (e.key === 'ArrowDown') { e.preventDefault(); cmdkActive = Math.min(cmdkItems.length - 1, cmdkActive + 1); cmdkRenderActive(); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); cmdkActive = Math.max(0, cmdkActive - 1); cmdkRenderActive(); }
+    if (e.key === 'Enter' && cmdkItems[cmdkActive]) { e.preventDefault(); cmdkItems[cmdkActive].run(); }
+  }
+});
+
+/* ---------- Init ---------- */
+var lastNarrow = window.innerWidth < 640;
+window.addEventListener('resize', function () {
+  var narrow = window.innerWidth < 640;
+  if (narrow !== lastNarrow) { lastNarrow = narrow; buildCurve(); }
+});
+renderInvoices();
+renderReminders();
+renderSubscriptions();
+renderClients();
+renderActivity();
+renderExpenses();
+buildCurve();
+buildSparklines();
+buildPipeline();
+buildReportsBars();
+buildDonut();
+buildGauge();
+setKpiText();
+$$('[data-countup]').forEach(countUp);
+showView('overview');
+})();
+</script>
+</body>
+</html>
