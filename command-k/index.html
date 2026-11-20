@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Command K — Command Palette + Navigation System</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      ink:'#070A12', glass:'#0E1420', panel:'#0B101A', high:'#141C2E', highest:'#1C263D',
+      cyan:'#22D3EE', amber:'#F59E0B', violet:'#8B5CF6', success:'#10B981', danger:'#F43F5E',
+      outline:'#2A364F', outlinev:'#1D263B', surf:'#F1F5F9', mut:'#94A3B8'
+    },
+    fontFamily: { display:['"Space Grotesk"','sans-serif'], body:['Inter','sans-serif'], mono:['"JetBrains Mono"','monospace'] }
+  }}
+}
+</script>
+<style>
+  :root{ --bg:#070A12; --panel:#0B101A; --card:#0E1420; --card2:#141C2E; --line:#1D263B; --line2:#2A364F; --txt:#F1F5F9; --mut:#94A3B8; --acc:#22D3EE; }
+  html[data-theme="light"]{ --bg:#F1F5F9; --panel:#FFFFFF; --card:#FFFFFF; --card2:#E8EEF6; --line:#D8E0EC; --line2:#C3CEDF; --txt:#0B1220; --mut:#5B6B82; --acc:#0891B2; }
+  *{ box-sizing:border-box; }
+  html,body{ background:var(--bg); color:var(--txt); font-family:Inter,sans-serif; }
+  body{ min-height:100vh; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:16px; }
+  .muted{ color:var(--mut); }
+  kbd.key{ display:inline-flex; align-items:center; justify-content:center; min-width:22px; height:22px; padding:0 6px; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; color:var(--txt); background:var(--card2); border:1px solid var(--line2); border-bottom-width:2px; box-shadow:0 1px 0 rgba(0,0,0,.35); }
+  kbd.key.cyan{ color:#22D3EE; border-color:rgba(34,211,238,.45); background:#0E2A38; }
+  kbd.key.violet{ color:#C4B5FD; border-color:rgba(139,92,246,.45); background:#211640; }
+  kbd.key.amber{ color:#FDE68A; border-color:rgba(245,158,11,.45); background:#2A1E08; }
+  .navlink{ display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:10px; color:var(--mut); font-size:13.5px; font-weight:500; cursor:pointer; border:1px solid transparent; transition:all .15s ease; }
+  .navlink:hover{ background:var(--card2); color:var(--txt); }
+  .navlink.active{ background:linear-gradient(90deg, rgba(34,211,238,.14), rgba(34,211,238,.04)); color:#22D3EE; border-color:rgba(34,211,238,.25); }
+  html[data-theme="light"] .navlink.active{ color:#0891B2; }
+  .cmd-row{ display:flex; align-items:center; gap:12px; padding:9px 12px; border-radius:10px; border:1px solid transparent; cursor:pointer; transition:background .12s ease; }
+  .cmd-row:hover, .cmd-row.selected{ background:var(--card2); border-color:var(--line2); }
+  .cmd-row.selected{ box-shadow:inset 2px 0 0 #22D3EE; }
+  .palette{ animation:palIn .16s cubic-bezier(.2,.9,.3,1.2); }
+  @keyframes palIn{ from{ opacity:0; transform:translateY(-8px) scale(.985);} to{ opacity:1; transform:none;} }
+  .fade-up{ animation:fadeUp .45s ease both; }
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:none;} }
+  .live-dot{ width:8px; height:8px; border-radius:9999px; background:#10B981; box-shadow:0 0 0 0 rgba(16,185,129,.5); animation:pulse 2s infinite; }
+  @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(16,185,129,.45);} 70%{ box-shadow:0 0 0 7px rgba(16,185,129,0);} 100%{ box-shadow:0 0 0 0 rgba(16,185,129,0);} }
+  .bar{ transition:height .5s ease, background .2s ease; }
+  .tooltip{ position:absolute; pointer-events:none; background:#0E1420; border:1px solid #2A364F; color:#F1F5F9; font-family:'JetBrains Mono',monospace; font-size:11px; padding:6px 9px; border-radius:8px; white-space:nowrap; z-index:60; box-shadow:0 8px 24px rgba(0,0,0,.5); transform:translate(-50%,-115%); display:none; }
+  html[data-theme="light"] .tooltip{ background:#0B1220; color:#F1F5F9; }
+  .chip{ font-size:11px; font-weight:600; padding:3px 8px; border-radius:9999px; border:1px solid var(--line2); color:var(--mut); cursor:pointer; transition:all .15s; }
+  .chip:hover{ color:var(--txt); border-color:var(--acc); }
+  .chip.on{ background:rgba(34,211,238,.14); color:#22D3EE; border-color:rgba(34,211,238,.4); }
+  .btn{ display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; padding:8px 14px; border-radius:10px; border:1px solid var(--line2); background:var(--card2); color:var(--txt); cursor:pointer; transition:all .15s; }
+  .btn:hover{ border-color:var(--acc); transform:translateY(-1px); }
+  .btn.primary{ background:#22D3EE; color:#041820; border-color:#22D3EE; }
+  .btn.primary:hover{ background:#67E8F9; }
+  .btn.violet{ background:#8B5CF6; color:#fff; border-color:#8B5CF6; }
+  .toast{ animation:toastIn .25s ease both; }
+  @keyframes toastIn{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:none;} }
+  .scrollthin::-webkit-scrollbar{ width:8px; height:8px; } .scrollthin::-webkit-scrollbar-thumb{ background:var(--line2); border-radius:8px; }
+  input,select{ outline:none; }
+  input:focus{ border-color:#22D3EE !important; box-shadow:0 0 0 3px rgba(34,211,238,.15); }
+  .view{ display:none; } .view.on{ display:block; }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+  @media (max-width:767px){ .palette-shell{ align-items:flex-start !important; padding-top:0 !important; } .palette{ border-radius:0 !important; max-height:100dvh !important; height:100dvh; } }
+</style>
+</head>
+<body class="font-body">
+<div class="flex min-h-screen">
+  <!-- ============ SIDEBAR ============ -->
+  <aside id="sidebar" class="hidden md:flex w-60 shrink-0 flex-col justify-between border-r p-4" style="background:var(--panel); border-color:var(--line);">
+    <div>
+      <div class="flex items-center gap-3 px-2 py-2">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center font-display font-bold text-lg" style="background:linear-gradient(135deg,#22D3EE,#8B5CF6); color:#041820;">⌘</div>
+        <div>
+          <div class="font-display font-700 font-bold text-[15px] leading-none">Command K</div>
+          <div class="text-[11px] muted mt-1">Northwind Ops Console</div>
+        </div>
+      </div>
+      <div class="mt-5 px-2 text-[11px] font-semibold tracking-widest uppercase muted">Workspace</div>
+      <nav class="mt-2 space-y-1" id="mainNav"></nav>
+      <div class="mt-6 px-2 text-[11px] font-semibold tracking-widest uppercase muted">Shortcuts</div>
+      <div class="mt-2 space-y-1 px-2 text-[12.5px] muted">
+        <div class="flex justify-between py-1"><span>Open palette</span><span><kbd class="key cyan">⌘</kbd> <kbd class="key">K</kbd></span></div>
+        <div class="flex justify-between py-1"><span>Go to Telemetry</span><span><kbd class="key">G</kbd> <kbd class="key">T</kbd></span></div>
+        <div class="flex justify-between py-1"><span>New deploy</span><span><kbd class="key">G</kbd> <kbd class="key">D</kbd></span></div>
+        <div class="flex justify-between py-1"><span>Toggle theme</span><span><kbd class="key">G</kbd> <kbd class="key">L</kbd></span></div>
+      </div>
+    </div>
+    <div class="card !rounded-xl p-3 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold" style="background:linear-gradient(135deg,#22D3EE,#8B5CF6); color:#fff;">AM</div>
+      <div class="min-w-0 flex-1">
+        <div class="text-[13px] font-semibold truncate">Alex Morgan</div>
+        <div class="text-[11px] muted">Platform Engineer</div>
+      </div>
+      <span class="live-dot" title="Online"></span>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="flex-1 min-w-0">
+    <!-- Topbar -->
+    <header class="sticky top-0 z-30 backdrop-blur-md border-b px-4 md:px-8 py-3.5 flex items-center gap-3" style="background:color-mix(in srgb, var(--bg) 82%, transparent); border-color:var(--line);">
+      <button id="menuBtn" class="md:hidden btn !px-2.5" aria-label="Menu"><span class="material-symbols-outlined text-[20px]">menu</span></button>
+      <div class="min-w-0">
+        <h1 id="viewTitle" class="font-display font-bold text-[19px] md:text-[22px] leading-tight truncate">Overview</h1>
+        <p id="viewSub" class="text-[12px] muted truncate">Live operational status · updated just now</p>
+      </div>
+      <div class="flex-1"></div>
+      <button id="paletteTrigger" class="hidden sm:flex items-center gap-2.5 text-[13px] muted rounded-xl border px-3.5 py-2 w-64 hover:border-cyan-400/50 transition-colors" style="background:var(--card); border-color:var(--line);">
+        <span class="material-symbols-outlined text-[18px]">search</span>
+        <span class="flex-1 text-left">Search commands…</span>
+        <span><kbd class="key">⌘</kbd> <kbd class="key">K</kbd></span>
+      </button>
+      <button id="themeBtn" class="btn !px-2.5" title="Toggle theme"><span class="material-symbols-outlined text-[19px]">dark_mode</span></button>
+      <button id="bellBtn" class="btn !px-2.5 relative" title="Notifications"><span class="material-symbols-outlined text-[19px]">notifications</span><span id="bellBadge" class="absolute -top-1 -right-1 w-4.5 h-4.5 min-w-[18px] min-h-[18px] rounded-full bg-amber text-[10px] font-bold flex items-center justify-center px-1" style="background:#F59E0B; color:#070A12;">3</span></button>
+      <button id="deployBtn" class="btn primary"><span class="material-symbols-outlined text-[18px]">rocket_launch</span><span class="hidden sm:inline">Deploy</span></button>
+    </header>
+
+    <div class="p-4 md:p-8 max-w-[1240px] mx-auto space-y-6">
+      <!-- ===== VIEW: OVERVIEW ===== -->
+      <section id="view-overview" class="view on space-y-6">
+        <!-- KPI strip -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="kpiGrid"></div>
+        <!-- Chart + signals -->
+        <div class="grid lg:grid-cols-8 gap-4">
+          <div class="card lg:col-span-5 p-5 fade-up">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <h2 class="font-display font-semibold text-[16px]">Throughput</h2>
+                <p class="text-[12px] muted">Requests per second · last 24 h · hover any point for exact values</p>
+              </div>
+              <div class="flex gap-1.5" id="rangePills"></div>
+            </div>
+            <div class="relative mt-4">
+              <svg id="chart" viewBox="0 0 640 220" class="w-full h-[220px]" role="img" aria-label="Throughput chart"></svg>
+              <div id="chartTip" class="tooltip"></div>
+            </div>
+            <div class="flex items-center gap-5 mt-2 text-[12px] muted">
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#22D3EE"></span> Requests</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#8B5CF6"></span> AI calls</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#F59E0B"></span> Errors ×100</span>
+            </div>
+          </div>
+          <div class="card lg:col-span-3 p-5 fade-up">
+            <div class="flex items-center justify-between">
+              <h2 class="font-display font-semibold text-[16px]">Recent Signals</h2>
+              <span class="chip on" id="sigCount">5 live</span>
+            </div>
+            <div id="signals" class="mt-4 space-y-3"></div>
+            <button class="btn w-full justify-center mt-4" data-cmd="view-all-signals">View all signals <span class="material-symbols-outlined text-[16px]">arrow_forward</span></button>
+          </div>
+        </div>
+        <!-- Activity + quick actions -->
+        <div class="grid lg:grid-cols-8 gap-4">
+          <div class="card lg:col-span-5 p-5">
+            <h2 class="font-display font-semibold text-[16px]">Activity</h2>
+            <div id="activity" class="mt-4 space-y-3"></div>
+          </div>
+          <div class="card lg:col-span-3 p-5">
+            <h2 class="font-display font-semibold text-[16px]">Quick actions</h2>
+            <p class="text-[12px] muted mt-1">Everything here is also one ⌘K away.</p>
+            <div class="mt-4 grid grid-cols-2 gap-2.5" id="quickActions"></div>
+            <div class="mt-5 rounded-xl p-4 border" style="background:linear-gradient(135deg, rgba(139,92,246,.16), rgba(34,211,238,.10)); border-color:rgba(139,92,246,.35);">
+              <div class="flex items-center gap-2 text-[13px] font-semibold"><span class="material-symbols-outlined text-[18px]" style="color:#8B5CF6">auto_awesome</span> AI Assistant</div>
+              <p class="text-[12.5px] muted mt-1.5 leading-relaxed">Ask anything in plain language — "why is latency up in eu-west?" — and get a grounded answer from live telemetry.</p>
+              <button class="btn violet w-full justify-center mt-3" data-cmd="ai-ask">Ask the assistant</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== VIEW: TELEMETRY ===== -->
+      <section id="view-telemetry" class="view space-y-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="teleKpis"></div>
+        <div class="card p-5">
+          <h2 class="font-display font-semibold text-[16px]">Latency distribution — P50 / P95 / P99</h2>
+          <p class="text-[12px] muted">Hover a bar for the exact percentile value</p>
+          <div class="relative mt-5 flex items-end gap-2 h-[180px]" id="latBars"></div>
+          <div id="latTip" class="tooltip"></div>
+        </div>
+        <div class="card p-5">
+          <h2 class="font-display font-semibold text-[16px]">Regions</h2>
+          <div id="regions" class="mt-4 space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- ===== VIEW: DEPLOYMENTS ===== -->
+      <section id="view-deployments" class="view space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <h2 class="font-display font-semibold text-[18px]">Deployments</h2>
+          <button class="btn primary" data-cmd="new-deploy"><span class="material-symbols-outlined text-[18px]">rocket_launch</span> New deploy</button>
+        </div>
+        <div id="deployList" class="space-y-3"></div>
+      </section>
+
+      <!-- ===== VIEW: CLUSTERS ===== -->
+      <section id="view-clusters" class="view space-y-6">
+        <h2 class="font-display font-semibold text-[18px]">Edge Clusters</h2>
+        <div id="clusterGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </section>
+
+      <!-- ===== VIEW: API KEYS ===== -->
+      <section id="view-apikeys" class="view space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <h2 class="font-display font-semibold text-[18px]">API Keys</h2>
+          <button class="btn primary" data-cmd="new-key"><span class="material-symbols-outlined text-[18px]">add</span> Create key</button>
+        </div>
+        <div class="card overflow-x-auto"><table class="w-full text-[13px] min-w-[560px]">
+          <thead><tr class="text-left muted text-[11.5px] uppercase tracking-wide border-b" style="border-color:var(--line);"><th class="px-5 py-3.5 font-semibold">Name</th><th class="px-5 py-3.5 font-semibold">Key</th><th class="px-5 py-3.5 font-semibold">Last used</th><th class="px-5 py-3.5 font-semibold">Scope</th><th class="px-5 py-3.5 font-semibold text-right">Actions</th></tr></thead>
+          <tbody id="keyRows"></tbody>
+        </table></div>
+      </section>
+
+      <!-- ===== VIEW: SETTINGS ===== -->
+      <section id="view-settings" class="view space-y-6">
+        <h2 class="font-display font-semibold text-[18px]">Settings</h2>
+        <div class="grid lg:grid-cols-2 gap-4">
+          <div class="card p-5">
+            <h3 class="font-display font-semibold text-[15px]">Keyboard shortcuts</h3>
+            <p class="text-[12px] muted mt-1">Every shortcut below works right now. Click a row to run it.</p>
+            <div id="shortcutList" class="mt-4 space-y-1"></div>
+          </div>
+          <div class="card p-5">
+            <h3 class="font-display font-semibold text-[15px]">Preferences</h3>
+            <div class="mt-4 space-y-4" id="prefs"></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="pt-2 pb-6 flex items-center justify-between flex-wrap gap-2 text-[12px] muted">
+        <span>Command K · v1.0.0 · Template by <strong style="color:var(--txt)">JULIUS VIBE STUDIO</strong></span>
+        <span>Press <kbd class="key">⌘</kbd> <kbd class="key">K</kbd> anywhere — the whole product answers to the keyboard.</span>
+      </footer>
+    </div>
+  </main>
+</div>
+
+<!-- ============ COMMAND PALETTE ============ -->
+<div id="paletteOverlay" class="fixed inset-0 z-50 hidden items-start justify-center pt-[10vh] md:pt-[12vh] px-0 md:px-4" style="background:rgba(3,6,12,.72); backdrop-filter:blur(6px);">
+  <div class="palette palette-shell w-full max-w-[640px] rounded-none md:rounded-2xl border overflow-hidden flex flex-col shadow-2xl" style="background:var(--card); border-color:var(--line2); max-height:82vh;">
+    <div class="flex items-center gap-3 px-4 py-3.5 border-b" style="border-color:var(--line);">
+      <span class="material-symbols-outlined text-[22px]" style="color:#22D3EE">terminal</span>
+      <input id="paletteInput" type="text" placeholder="Type a command or search…" class="flex-1 bg-transparent text-[15px] placeholder:text-slate-500 border-0 !shadow-none" style="border:none !important;" autocomplete="off">
+      <span class="hidden sm:flex gap-1"><kbd class="key">esc</kbd></span>
+      <button id="paletteClose" class="md:hidden btn !px-2" aria-label="Close"><span class="material-symbols-outlined text-[18px]">close</span></button>
+    </div>
+    <div class="flex gap-1.5 px-4 pt-3 flex-wrap" id="paletteChips"></div>
+    <div id="paletteList" class="overflow-y-auto scrollthin px-2.5 py-2.5" style="max-height:52vh;"></div>
+    <div class="flex items-center gap-4 px-4 py-2.5 border-t text-[11.5px] muted" style="border-color:var(--line);">
+      <span class="flex items-center gap-1.5"><kbd class="key">↑</kbd><kbd class="key">↓</kbd> navigate</span>
+      <span class="flex items-center gap-1.5"><kbd class="key">↵</kbd> select</span>
+      <span class="flex items-center gap-1.5"><kbd class="key">esc</kbd> close</span>
+      <span class="ml-auto" id="paletteCount"></span>
+    </div>
+  </div>
+</div>
+
+<div id="toasts" class="fixed bottom-5 right-5 z-[70] space-y-2 w-[320px] max-w-[calc(100vw-40px)]"></div>
+
+<script>
+/* ================= DATA ================= */
+const NAV = [
+  {id:'overview', label:'Overview', icon:'dashboard', sub:'Live operational status'},
+  {id:'telemetry', label:'Telemetry', icon:'monitoring', sub:'Latency, throughput & regions'},
+  {id:'deployments', label:'Deployments', icon:'rocket_launch', sub:'Releases & rollbacks'},
+  {id:'clusters', label:'Edge Clusters', icon:'hub', sub:'6 regions · 42 nodes'},
+  {id:'apikeys', label:'API Keys', icon:'key', sub:'Tokens & scopes'},
+  {id:'settings', label:'Settings', icon:'settings', sub:'Shortcuts & preferences'},
+];
+const KPIS = [
+  {label:'Requests / sec', value:'48,920', delta:'+12.4%', up:true, spark:[42,48,45,55,52,60,58,66,63,72,70,78], color:'#22D3EE', tip:'Peak 52,410 req/s at 14:00 · avg 41,208'},
+  {label:'P95 Latency', value:'14.2 ms', delta:'−3.1 ms', up:true, spark:[22,20,19,21,18,17,16,18,15,14,15,14], color:'#F59E0B', tip:'P95 down 18% this week · P99 41.8 ms'},
+  {label:'Error Rate', value:'0.02%', delta:'−0.01 pp', up:true, spark:[5,4,6,4,3,4,2,3,2,2,1,2], color:'#10B981', tip:'9 errors in the last hour · 0 critical'},
+  {label:'Active Deploys', value:'v2.4.1', delta:'3 today', up:true, spark:[1,1,2,1,2,3,2,3,3,4,3,3], color:'#8B5CF6', tip:'v2.4.1 live on 6 regions · 0 failed'},
+];
+const SIGNALS = [
+  {icon:'warning', color:'#F59E0B', title:'Latency spike — eu-west-1', desc:'P95 rose to 38 ms for 4 min', time:'2 min ago', sev:'Warning'},
+  {icon:'check_circle', color:'#10B981', title:'Deploy v2.4.1 succeeded', desc:'Rolled out to 6 regions in 4m 12s', time:'18 min ago', sev:'Info'},
+  {icon:'auto_awesome', color:'#8B5CF6', title:'AI: anomaly detected', desc:'Unusual traffic pattern on /api/search', time:'34 min ago', sev:'AI'},
+  {icon:'shield', color:'#22D3EE', title:'Rate limit raised', desc:'/api/v2 limit 5k → 10k req/min', time:'1 h ago', sev:'Info'},
+  {icon:'error', color:'#F43F5E', title:'Node eu-west-1b degraded', desc:'Auto-healed · 1 pod restarted', time:'2 h ago', sev:'Critical'},
+];
+let ACTIVITY = [
+  {icon:'rocket_launch', color:'#22D3EE', text:'<b>Alex Morgan</b> deployed <b>v2.4.1</b> to production', time:'18 min ago'},
+  {icon:'key', color:'#F59E0B', text:'<b>Sara Chen</b> created API key <b>prod-search</b>', time:'42 min ago'},
+  {icon:'person_add', color:'#8B5CF6', text:'<b>Alex Morgan</b> invited <b>lena@northwind.dev</b>', time:'1 h ago'},
+  {icon:'tune', color:'#10B981', text:'<b>System</b> autoscaled edge cluster to 42 nodes', time:'2 h ago'},
+];
+const DEPLOYS = [
+  {v:'v2.4.1', env:'Production', status:'Live', time:'18 min ago', nodes:42, by:'Alex Morgan', color:'#10B981'},
+  {v:'v2.4.0', env:'Production', status:'Rolled back', time:'Yesterday', nodes:42, by:'Sara Chen', color:'#F43F5E'},
+  {v:'v2.3.9', env:'Staging', status:'Live', time:'2 days ago', nodes:12, by:'Alex Morgan', color:'#22D3EE'},
+  {v:'v2.3.8', env:'Production', status:'Superseded', time:'4 days ago', nodes:42, by:'Lena Ortiz', color:'#64748B'},
+];
+const CLUSTERS = [
+  {name:'eu-west-1', city:'Dublin', nodes:12, cpu:62, status:'Healthy', color:'#10B981'},
+  {name:'us-east-1', city:'Virginia', nodes:10, cpu:71, status:'Healthy', color:'#10B981'},
+  {name:'ap-south-1', city:'Mumbai', nodes:8, cpu:48, status:'Healthy', color:'#10B981'},
+  {name:'eu-central-1', city:'Frankfurt', nodes:6, cpu:84, status:'Watch', color:'#F59E0B'},
+  {name:'sa-east-1', city:'São Paulo', nodes:4, cpu:39, status:'Healthy', color:'#10B981'},
+  {name:'af-south-1', city:'Cape Town', nodes:2, cpu:57, status:'Healthy', color:'#10B981'},
+];
+let KEYS = [
+  {name:'prod-search', key:'nk_live_9f2…a41c', last:'2 min ago', scope:'read · search'},
+  {name:'prod-billing', key:'nk_live_71d…8e02', last:'1 h ago', scope:'read · write'},
+  {name:'ci-deploy', key:'nk_live_3ab…f977', last:'3 h ago', scope:'deploy'},
+  {name:'dev-sandbox', key:'nk_test_55c…1b90', last:'Yesterday', scope:'read'},
+];
+const LAT = [
+  {p:'P50', v:6.1, h:34}, {p:'P75', v:9.4, h:52}, {p:'P90', v:12.8, h:71}, {p:'P95', v:14.2, h:79}, {p:'P99', v:41.8, h:100},
+];
+const REGIONS = [
+  {name:'eu-west-1', req:'18,204 req/s', lat:'11.8 ms', bar:82, color:'#22D3EE'},
+  {name:'us-east-1', req:'14,870 req/s', lat:'13.1 ms', bar:66, color:'#8B5CF6'},
+  {name:'ap-south-1', req:'7,412 req/s', lat:'16.4 ms', bar:38, color:'#F59E0B'},
+  {name:'eu-central-1', req:'5,988 req/s', lat:'18.9 ms', bar:30, color:'#F43F5E'},
+  {name:'sa-east-1', req:'2,446 req/s', lat:'21.2 ms', bar:14, color:'#10B981'},
+];
+const CHART = {
+  '24H': { labels:['00:00','03:00','06:00','09:00','12:00','15:00','18:00','21:00','Now'], req:[31,28,26,34,42,48,44,52,49], ai:[6,5,7,9,12,14,11,15,13], err:[2,3,2,4,3,2,5,3,2] },
+  '7D': { labels:['Thu','Fri','Sat','Sun','Mon','Tue','Wed','Today'], req:[28,33,30,36,41,45,47,49], ai:[5,7,6,9,11,12,13,13], err:[3,2,4,2,3,4,2,2] },
+  '30D': { labels:['W1','W2','W3','W4','W5','W6','W7','W8','Now'], req:[22,26,24,31,35,38,42,46,49], ai:[4,5,6,8,9,10,12,12,13], err:[4,3,3,2,3,2,3,2,2] },
+};
+let chartRange = '24H';
+let prefs = { compact:false, live:true, aiHints:true, sounds:false };
+let favorites = new Set(JSON.parse(localStorage.getItem('ck-favs')||'[]'));
+let recent = JSON.parse(localStorage.getItem('ck-recent')||'[]');
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+function toast(msg, icon='check_circle', color='#22D3EE'){
+  const el = document.createElement('div');
+  el.className = 'toast card !rounded-xl px-4 py-3 flex items-center gap-3 text-[13px] shadow-2xl';
+  el.innerHTML = `<span class="material-symbols-outlined text-[19px]" style="color:${color}">${icon}</span><span>${msg}</span>`;
+  $('#toasts').appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(), 320); }, 3400);
+}
+function addActivity(icon, color, text){
+  ACTIVITY.unshift({icon, color, text, time:'just now'});
+  ACTIVITY = ACTIVITY.slice(0,6);
+  renderActivity();
+}
+
+/* ================= COMMANDS ================= */
+function go(view){ showView(view); }
+const COMMANDS = [
+  {id:'go-overview', g:'Navigation', t:'Go to Overview', d:'Open the live operations dashboard', icon:'dashboard', keys:['G','O'], run:()=>go('overview')},
+  {id:'go-telemetry', g:'Navigation', t:'Go to Telemetry', d:'Latency, throughput and regions', icon:'monitoring', keys:['G','T'], run:()=>go('telemetry')},
+  {id:'go-deployments', g:'Navigation', t:'Go to Deployments', d:'Releases, rollbacks and history', icon:'rocket_launch', keys:['G','D'], run:()=>go('deployments')},
+  {id:'go-clusters', g:'Navigation', t:'Go to Edge Clusters', d:'6 regions · 42 nodes', icon:'hub', keys:['G','C'], run:()=>go('clusters')},
+  {id:'go-apikeys', g:'Navigation', t:'Go to API Keys', d:'Tokens, scopes and revocation', icon:'key', keys:['G','K'], run:()=>go('apikeys')},
+  {id:'go-settings', g:'Navigation', t:'Go to Settings', d:'Shortcuts and preferences', icon:'settings', keys:['G','S'], run:()=>go('settings')},
+  {id:'new-deploy', g:'Actions', t:'New deploy', d:'Ship v2.4.2 to production', icon:'rocket_launch', keys:['⌘','⇧','D'], run:doDeploy},
+  {id:'rollback', g:'Actions', t:'Roll back to v2.4.0', d:'Restore the previous stable release', icon:'history', keys:['⌘','⇧','R'], run:()=>{ DEPLOYS.unshift({v:'v2.4.0', env:'Production', status:'Live', time:'just now', nodes:42, by:'Alex Morgan', color:'#10B981'}); DEPLOYS[1].status='Rolled back'; renderDeploys(); addActivity('history','#F59E0B','<b>Alex Morgan</b> rolled back to <b>v2.4.0</b>'); toast('Rolled back to v2.4.0 — production is stable','history','#F59E0B'); }},
+  {id:'new-key', g:'Actions', t:'Create API key', d:'Generate a scoped token', icon:'add', keys:['⌘','⇧','K'], run:createKey},
+  {id:'copy-key', g:'Actions', t:'Copy production key', d:'Copy nk_live_9f2…a41c to clipboard', icon:'content_copy', keys:['⌘','⇧','C'], run:()=>copyText('nk_live_9f2a41c', 'Production key copied to clipboard')},
+  {id:'invite', g:'Actions', t:'Invite teammate', d:'Send an invite to the workspace', icon:'person_add', keys:['⌘','I'], run:()=>{ addActivity('person_add','#8B5CF6','<b>Alex Morgan</b> invited <b>teammate@northwind.dev</b>'); toast('Invite sent to teammate@northwind.dev','person_add','#8B5CF6'); }},
+  {id:'toggle-theme', g:'Actions', t:'Toggle light / dark theme', d:'Switch the console theme', icon:'dark_mode', keys:['G','L'], run:toggleTheme},
+  {id:'mark-read', g:'Actions', t:'Mark all notifications read', d:'Clear the 3 unread alerts', icon:'mark_email_read', keys:['⌘','⇧','N'], run:()=>{ $('#bellBadge').style.display='none'; toast('All notifications marked as read','mark_email_read'); }},
+  {id:'export', g:'Actions', t:'Export telemetry as CSV', d:'Download the last 24 h of metrics', icon:'download', keys:['⌘','E'], run:()=>{ downloadCSV(); toast('telemetry-24h.csv downloaded','download'); }},
+  {id:'view-all-signals', g:'Actions', t:'View all signals', d:'Open the full signal feed', icon:'notifications', keys:['⌘','⇧','S'], run:()=>{ go('telemetry'); toast('Signal feed — Telemetry view','notifications','#F59E0B'); }},
+  {id:'restart-node', g:'Actions', t:'Restart degraded node', d:'eu-west-1b · auto-heal the pod', icon:'restart_alt', keys:['⌘','⇧','H'], run:()=>{ SIGNALS[4].title='Node eu-west-1b restarted'; SIGNALS[4].desc='Pod healthy again · 0 errors'; renderSignals(); addActivity('restart_alt','#10B981','<b>System</b> restarted node <b>eu-west-1b</b>'); toast('Node eu-west-1b restarted and healthy','restart_alt','#10B981'); }},
+  {id:'ai-ask', g:'AI', t:'Ask the AI assistant', d:'Plain-language answers from live telemetry', icon:'auto_awesome', keys:['⌘','⇧','A'], run:aiAsk, ai:true},
+  {id:'ai-summary', g:'AI', t:'Summarize today’s incidents', d:'AI digest of 5 signals and 2 deploys', icon:'summarize', keys:['⌘','⇧','U'], run:()=>aiAnswer('Today: 1 warning (eu-west latency, self-resolved), 1 degraded node (auto-healed), 2 deploys, 0 critical errors. System health is green.'), ai:true},
+  {id:'ai-draft', g:'AI', t:'Draft incident report', d:'AI writes the post-mortem draft', icon:'edit_note', keys:['⌘','⇧','W'], run:()=>aiAnswer('Draft ready: "Latency spike eu-west-1 — P95 38 ms for 4 min, cause: traffic burst on /api/search, action: rate limit raised to 10k req/min."'), ai:true},
+  {id:'ai-optimize', g:'AI', t:'Suggest cost optimizations', d:'AI finds idle capacity across clusters', icon:'savings', keys:['⌘','⇧','O'], run:()=>aiAnswer('3 idle nodes in sa-east-1 and ap-south-1 could save ~$412/mo. eu-central-1 is at 84% CPU — consider +2 nodes.'), ai:true},
+  {id:'ai-translate', g:'AI', t:'Explain this dashboard', d:'AI tour of every panel in plain words', icon:'school', keys:['⌘','⇧','X'], run:()=>aiAnswer('This console tracks a SaaS edge network: requests, latency, errors and deploys. Press ⌘K any time — every action here is a command.'), ai:true},
+];
+function doDeploy(){
+  DEPLOYS.unshift({v:'v2.4.2', env:'Production', status:'Deploying…', time:'just now', nodes:42, by:'Alex Morgan', color:'#22D3EE'});
+  renderDeploys();
+  addActivity('rocket_launch','#22D3EE','<b>Alex Morgan</b> started deploy <b>v2.4.2</b>');
+  toast('Deploy v2.4.2 started — rolling out to 6 regions','rocket_launch');
+  setTimeout(()=>{ DEPLOYS[0].status='Live'; DEPLOYS[0].color='#10B981'; renderDeploys(); addActivity('check_circle','#10B981','Deploy <b>v2.4.2</b> is live on all regions'); toast('v2.4.2 is live — 0 errors during rollout','check_circle','#10B981'); }, 4000);
+}
+function createKey(){
+  const n = 'prod-key-' + Math.floor(Math.random()*90+10);
+  KEYS.unshift({name:n, key:'nk_live_'+Math.random().toString(16).slice(2,6)+'…'+Math.random().toString(16).slice(2,6), last:'just now', scope:'read'});
+  renderKeys(); go('apikeys');
+  toast('API key "'+n+'" created','key','#F59E0B');
+}
+function copyText(t, msg){
+  if (navigator.clipboard) navigator.clipboard.writeText(t).catch(()=>{});
+  toast(msg,'content_copy');
+}
+function downloadCSV(){
+  const rows = [['time','requests_per_sec','p95_ms','errors'], ...CHART['24H'].labels.map((l,i)=>[l, CHART['24H'].req[i]*1000, (12+Math.random()*4).toFixed(1), CHART['24H'].err[i]])];
+  const blob = new Blob([rows.map(r=>r.join(',')).join('\n')], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='telemetry-24h.csv'; a.click();
+}
+function aiAsk(){
+  const q = prompt('Ask the AI assistant (plain language):', 'Why is latency up in eu-west?');
+  if (q) aiAnswer('Based on live telemetry: P95 is 14.2 ms — normal. The eu-west spike (38 ms, 2 min ago) was a traffic burst on /api/search; the rate limit was raised to 10k req/min and latency recovered.');
+}
+function aiAnswer(text){
+  toast(text, 'auto_awesome', '#8B5CF6');
+  addActivity('auto_awesome','#8B5CF6','<b>AI Assistant</b> answered a question');
+}
+function toggleTheme(){
+  const h = document.documentElement;
+  h.dataset.theme = h.dataset.theme === 'dark' ? 'light' : 'dark';
+  $('#themeBtn').querySelector('span').textContent = h.dataset.theme === 'dark' ? 'dark_mode' : 'light_mode';
+  drawChart(); renderKpis();
+  toast(h.dataset.theme === 'dark' ? 'Dark theme on' : 'Light theme on','dark_mode');
+}
+
+/* ================= VIEWS ================= */
+function showView(id){
+  $$('.view').forEach(v=>v.classList.remove('on'));
+  const el = $('#view-'+id); if (el) el.classList.add('on');
+  const nav = NAV.find(n=>n.id===id);
+  $('#viewTitle').textContent = nav ? nav.label : id;
+  $('#viewSub').textContent = nav ? nav.sub : '';
+  $$('#mainNav .navlink').forEach(a=>a.classList.toggle('active', a.dataset.view===id));
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (id==='telemetry') drawLatency();
+}
+function renderNav(){
+  $('#mainNav').innerHTML = NAV.map(n=>`<a class="navlink ${n.id==='overview'?'active':''}" data-view="${n.id}"><span class="material-symbols-outlined text-[19px]">${n.icon}</span>${n.label}${n.id==='telemetry'?'<span class="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded" style="background:rgba(245,158,11,.18); color:#F59E0B;">1</span>':''}</a>`).join('');
+  $$('#mainNav .navlink').forEach(a=>a.addEventListener('click', ()=>{ showView(a.dataset.view); $('#sidebar').classList.add('hidden'); $('#sidebar').classList.remove('flex'); }));
+}
+function sparkSVG(points, color, w=120, h=36){
+  const max = Math.max(...points), min = Math.min(...points);
+  const pts = points.map((p,i)=>`${(i/(points.length-1))*w},${h-4-((p-min)/(max-min||1))*(h-8)}`).join(' ');
+  return `<svg viewBox="0 0 ${w} ${h}" class="w-full h-9"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${w}" cy="${h-4-((points[points.length-1]-min)/(max-min||1))*(h-8)}" r="3" fill="${color}"/></svg>`;
+}
+function renderKpis(){
+  const grid = $('#kpiGrid');
+  grid.innerHTML = KPIS.map((k,i)=>`
+    <div class="card p-4 md:p-5 relative group cursor-pointer fade-up" style="animation-delay:${i*60}ms" data-kpi="${i}">
+      <div class="flex items-center justify-between"><span class="text-[12px] font-medium muted">${k.label}</span><span class="material-symbols-outlined text-[17px]" style="color:${k.color}">${['speed','timer','error','rocket_launch'][i]}</span></div>
+      <div class="font-display font-bold text-[26px] md:text-[30px] mt-1.5 tabular-nums">${k.value}</div>
+      <div class="text-[12px] font-semibold" style="color:${k.up?'#10B981':'#F43F5E'}">${k.delta} <span class="muted font-normal">vs last week</span></div>
+      <div class="mt-2">${sparkSVG(k.spark, k.color)}</div>
+      <div class="kpi-tip tooltip">${k.tip}</div>
+    </div>`).join('');
+  $$('#kpiGrid [data-kpi]').forEach(card=>{
+    card.addEventListener('mousemove', e=>{
+      const tip = card.querySelector('.kpi-tip');
+      const r = card.getBoundingClientRect();
+      tip.style.display='block'; tip.style.left=(e.clientX-r.left)+'px'; tip.style.top='8px';
+    });
+    card.addEventListener('mouseleave', ()=>{ card.querySelector('.kpi-tip').style.display='none'; });
+  });
+  $('#teleKpis').innerHTML = KPIS.map(k=>`
+    <div class="card p-4 md:p-5"><div class="text-[12px] font-medium muted">${k.label}</div>
+    <div class="font-display font-bold text-[26px] mt-1 tabular-nums">${k.value}</div>
+    <div class="text-[12px] font-semibold" style="color:#10B981">${k.delta}</div></div>`).join('');
+}
+function renderSignals(){
+  $('#signals').innerHTML = SIGNALS.map(s=>`
+    <div class="flex gap-3 items-start rounded-xl p-3 border hover:border-cyan-400/40 transition-colors cursor-pointer" style="border-color:var(--line); background:var(--panel);" data-sig="${s.title}">
+      <span class="material-symbols-outlined text-[20px] mt-0.5" style="color:${s.color}">${s.icon}</span>
+      <div class="min-w-0 flex-1"><div class="text-[13px] font-semibold leading-snug">${s.title}</div><div class="text-[12px] muted mt-0.5">${s.desc}</div></div>
+      <span class="text-[11px] muted whitespace-nowrap">${s.time}</span>
+    </div>`).join('');
+  $$('#signals [data-sig]').forEach(el=>el.addEventListener('click', ()=>toast(el.dataset.sig,'notifications','#F59E0B')));
+}
+function renderActivity(){
+  $('#activity').innerHTML = ACTIVITY.map(a=>`
+    <div class="flex gap-3 items-start"><span class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style="background:var(--card2)"><span class="material-symbols-outlined text-[17px]" style="color:${a.color}">${a.icon}</span></span>
+    <div class="min-w-0 flex-1 text-[13px] leading-snug">${a.text}</div><span class="text-[11px] muted whitespace-nowrap">${a.time}</span></div>`).join('');
+}
+function renderQuick(){
+  const items = [
+    {c:'new-deploy', icon:'rocket_launch', label:'New deploy', color:'#22D3EE'},
+    {c:'new-key', icon:'key', label:'Create API key', color:'#F59E0B'},
+    {c:'ai-ask', icon:'auto_awesome', label:'Ask AI', color:'#8B5CF6'},
+    {c:'export', icon:'download', label:'Export CSV', color:'#10B981'},
+    {c:'invite', icon:'person_add', label:'Invite teammate', color:'#22D3EE'},
+    {c:'toggle-theme', icon:'dark_mode', label:'Toggle theme', color:'#F59E0B'},
+  ];
+  $('#quickActions').innerHTML = items.map(i=>`
+    <button class="rounded-xl border p-3.5 text-left hover:-translate-y-0.5 transition-transform" style="border-color:var(--line); background:var(--panel);" data-cmd="${i.c}">
+      <span class="material-symbols-outlined text-[20px]" style="color:${i.color}">${i.icon}</span>
+      <div class="text-[13px] font-semibold mt-1.5">${i.label}</div>
+    </button>`).join('');
+}
+function renderDeploys(){
+  $('#deployList').innerHTML = DEPLOYS.map(d=>`
+    <div class="card p-4 md:p-5 flex items-center gap-4 flex-wrap">
+      <span class="w-10 h-10 rounded-xl flex items-center justify-center font-mono font-semibold text-[13px]" style="background:var(--card2); color:${d.color}">${d.v}</span>
+      <div class="flex-1 min-w-[160px]"><div class="font-semibold text-[14px]">${d.v} · ${d.env}</div><div class="text-[12px] muted">by ${d.by} · ${d.time} · ${d.nodes} nodes</div></div>
+      <span class="chip" style="color:${d.color}; border-color:${d.color}55">${d.status}</span>
+      <button class="btn !py-1.5 !px-3 text-[12px]" data-rollback="${d.v}">Roll back</button>
+    </div>`).join('');
+  $$('#deployList [data-rollback]').forEach(b=>b.addEventListener('click', ()=>{ const c = COMMANDS.find(x=>x.id==='rollback'); c.run(); }));
+}
+function renderClusters(){
+  $('#clusterGrid').innerHTML = CLUSTERS.map(c=>`
+    <div class="card p-5">
+      <div class="flex items-center justify-between"><span class="font-mono font-semibold text-[14px]">${c.name}</span><span class="chip" style="color:${c.color}; border-color:${c.color}55">${c.status}</span></div>
+      <div class="text-[12px] muted mt-1">${c.city} · ${c.nodes} nodes</div>
+      <div class="mt-4"><div class="flex justify-between text-[12px]"><span class="muted">CPU load</span><b class="font-mono">${c.cpu}%</b></div>
+      <div class="h-2 rounded-full mt-1.5 overflow-hidden" style="background:var(--card2)"><div class="bar h-full rounded-full" style="width:${c.cpu}%; background:${c.cpu>80?'#F59E0B':'#22D3EE'}"></div></div></div>
+      <button class="btn w-full justify-center mt-4 !py-2 text-[12.5px]" data-cluster="${c.name}">Open cluster</button>
+    </div>`).join('');
+  $$('#clusterGrid [data-cluster]').forEach(b=>b.addEventListener('click', ()=>toast('Cluster '+b.dataset.cluster+' — 0 incidents, all nodes healthy','hub')));
+}
+function renderKeys(){
+  $('#keyRows').innerHTML = KEYS.map((k,i)=>`
+    <tr class="border-b" style="border-color:var(--line);">
+      <td class="px-5 py-3.5 font-semibold">${k.name}</td>
+      <td class="px-5 py-3.5 font-mono text-[12.5px] muted">${k.key}</td>
+      <td class="px-5 py-3.5 muted">${k.last}</td>
+      <td class="px-5 py-3.5"><span class="chip">${k.scope}</span></td>
+      <td class="px-5 py-3.5 text-right whitespace-nowrap">
+        <button class="btn !py-1.5 !px-3 text-[12px]" data-copykey="${i}">Copy</button>
+        <button class="btn !py-1.5 !px-3 text-[12px]" data-revokekey="${i}">Revoke</button>
+      </td>
+    </tr>`).join('');
+  $$('#keyRows [data-copykey]').forEach(b=>b.addEventListener('click', ()=>copyText(KEYS[+b.dataset.copykey].key, 'Key "'+KEYS[+b.dataset.copykey].name+'" copied')));
+  $$('#keyRows [data-revokekey]').forEach(b=>b.addEventListener('click', ()=>{
+    const k = KEYS[+b.dataset.revokekey]; KEYS.splice(+b.dataset.revokekey,1); renderKeys();
+    addActivity('key_off','#F43F5E','<b>Alex Morgan</b> revoked API key <b>'+k.name+'</b>'); toast('Key "'+k.name+'" revoked','key_off','#F43F5E');
+  }));
+}
+function renderRegions(){
+  $('#regions').innerHTML = REGIONS.map(r=>`
+    <div class="flex items-center gap-4"><span class="font-mono text-[13px] w-28 shrink-0">${r.name}</span>
+    <div class="flex-1 h-2.5 rounded-full overflow-hidden" style="background:var(--card2)"><div class="bar h-full rounded-full" style="width:${r.bar}%; background:${r.color}"></div></div>
+    <span class="text-[12.5px] muted w-28 text-right tabular-nums">${r.req}</span><span class="text-[12.5px] font-mono w-16 text-right">${r.lat}</span></div>`).join('');
+}
+function drawLatency(){
+  const el = $('#latBars'); if(!el) return;
+  el.innerHTML = LAT.map(l=>`
+    <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer" data-lat="${l.p}: ${l.v} ms">
+      <span class="font-mono text-[12px] font-semibold">${l.v} ms</span>
+      <div class="w-full max-w-[72px] rounded-t-lg transition-all group-hover:opacity-80" style="height:${l.h}%; background:linear-gradient(180deg,#22D3EE,#8B5CF6); min-height:24px;"></div>
+      <span class="text-[12px] muted font-mono">${l.p}</span>
+    </div>`).join('');
+  $$('#latBars [data-lat]').forEach(b=>{
+    b.addEventListener('mousemove', e=>{ const t=$('#latTip'); t.textContent=b.dataset.lat; t.style.display='block'; const r=$('#latBars').getBoundingClientRect(); t.style.left=(e.clientX-r.left)+'px'; t.style.top='0px'; });
+    b.addEventListener('mouseleave', ()=>{ $('#latTip').style.display='none'; });
+  });
+}
+function drawChart(){
+  const svg = $('#chart'); const d = CHART[chartRange];
+  const W=640, H=220, padL=8, padR=8, padT=16, padB=28;
+  const max = 60;
+  const xs = i => padL + (i/(d.req.length-1))*(W-padL-padR);
+  const ys = v => H-padB - (v/max)*(H-padT-padB);
+  const line = arr => arr.map((v,i)=>`${i===0?'M':'L'}${xs(i).toFixed(1)},${ys(v).toFixed(1)}`).join(' ');
+  const area = arr => line(arr)+` L${xs(arr.length-1).toFixed(1)},${H-padB} L${padL},${H-padB} Z`;
+  const dots = (arr,color)=> arr.map((v,i)=>`<circle cx="${xs(i)}" cy="${ys(v)}" r="4.5" fill="${color}" stroke="#070A12" stroke-width="1.5" class="chart-dot" data-i="${i}" data-series="${color}" style="cursor:pointer"><title>${d.labels[i]} — ${v}${color==='#F59E0B'?'00':',000'} req/s</title></circle>`).join('');
+  svg.innerHTML = `
+    <defs><linearGradient id="gReq" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22D3EE" stop-opacity=".28"/><stop offset="100%" stop-color="#22D3EE" stop-opacity="0"/></linearGradient>
+    <linearGradient id="gAi" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8B5CF6" stop-opacity=".25"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/></linearGradient></defs>
+    ${[0,15,30,45,60].map(v=>`<line x1="${padL}" y1="${ys(v)}" x2="${W-padR}" y2="${ys(v)}" stroke="var(--line)" stroke-width="1"/><text x="${W-padR+2}" y="${ys(v)+3}" font-size="9" fill="var(--mut)" font-family="JetBrains Mono">${v}k</text>`).join('')}
+    <path d="${area(d.req)}" fill="url(#gReq)"/><path d="${area(d.ai)}" fill="url(#gAi)"/>
+    <path d="${line(d.req)}" fill="none" stroke="#22D3EE" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="${line(d.ai)}" fill="none" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="${line(d.err.map(v=>v*2))}" fill="none" stroke="#F59E0B" stroke-width="2" stroke-dasharray="5 4" stroke-linecap="round"/>
+    ${dots(d.req,'#22D3EE')}${dots(d.ai,'#8B5CF6')}
+    ${d.labels.map((l,i)=>`<text x="${xs(i)}" y="${H-8}" font-size="10" fill="var(--mut)" text-anchor="middle" font-family="JetBrains Mono">${l}</text>`).join('')}`;
+  $$('#chart .chart-dot').forEach(dot=>{
+    dot.addEventListener('mousemove', e=>{
+      const i = +dot.dataset.i; const tip = $('#chartTip');
+      const series = dot.dataset.series === '#22D3EE' ? 'Requests' : 'AI calls';
+      const val = dot.dataset.series === '#22D3EE' ? d.req[i] : d.ai[i];
+      tip.textContent = `${d.labels[i]} · ${series}: ${val},000 req/s · Errors: ${d.err[i]*100}`;
+      const r = svg.getBoundingClientRect();
+      tip.style.display='block'; tip.style.left=((e.clientX-r.left)/r.width*100)+'%'; tip.style.top='6px';
+    });
+    dot.addEventListener('mouseleave', ()=>{ $('#chartTip').style.display='none'; });
+  });
+}
+function renderRangePills(){
+  $('#rangePills').innerHTML = Object.keys(CHART).map(r=>`<button class="chip ${r===chartRange?'on':''}" data-range="${r}">${r}</button>`).join('');
+  $$('#rangePills [data-range]').forEach(b=>b.addEventListener('click', ()=>{ chartRange=b.dataset.range; renderRangePills(); drawChart(); }));
+}
+function renderShortcuts(){
+  $('#shortcutList').innerHTML = COMMANDS.filter(c=>c.keys).map(c=>`
+    <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[var(--card2)] cursor-pointer transition-colors" data-cmd="${c.id}">
+      <span class="material-symbols-outlined text-[18px]" style="color:${c.ai?'#8B5CF6':'#22D3EE'}">${c.icon}</span>
+      <span class="flex-1 text-[13px] font-medium">${c.t}</span>
+      <span>${c.keys.map(k=>`<kbd class="key ${c.ai?'violet':''}">${k}</kbd>`).join(' ')}</span>
+    </div>`).join('');
+}
+function renderPrefs(){
+  const items = [
+    {k:'live', label:'Live telemetry updates', desc:'Refresh KPIs and signals every 30 s'},
+    {k:'aiHints', label:'AI command suggestions', desc:'Show AI actions at the top of results'},
+    {k:'compact', label:'Compact density', desc:'Tighter rows in lists and tables'},
+    {k:'sounds', label:'Sound on command run', desc:'Play a soft click when a command executes'},
+  ];
+  $('#prefs').innerHTML = items.map(p=>`
+    <label class="flex items-center gap-3 cursor-pointer">
+      <input type="checkbox" data-pref="${p.k}" ${prefs[p.k]?'checked':''} class="w-5 h-5 accent-cyan-400">
+      <span><span class="block text-[13.5px] font-semibold">${p.label}</span><span class="block text-[12px] muted">${p.desc}</span></span>
+    </label>`).join('');
+  $$('#prefs [data-pref]').forEach(cb=>cb.addEventListener('change', ()=>{
+    prefs[cb.dataset.pref]=cb.checked;
+    toast(cb.checked ? 'Preference enabled' : 'Preference disabled','tune');
+  }));
+}
+
+/* ================= PALETTE ================= */
+let palOpen=false, palFilter='All', palSel=0, palResults=[];
+const GROUPS = ['Recent','Actions','Navigation','AI'];
+function fuzzy(q, text){
+  q=q.toLowerCase(); text=text.toLowerCase();
+  let qi=0; for(let i=0;i<text.length && qi<q.length;i++) if(text[i]===q[qi]) qi++;
+  return qi===q.length;
+}
+function score(q, c){
+  const t=(c.t+' '+c.d+' '+c.g).toLowerCase(); q=q.toLowerCase();
+  if (c.t.toLowerCase().startsWith(q)) return 4;
+  if (c.t.toLowerCase().includes(q)) return 3;
+  if (t.includes(q)) return 2; if (fuzzy(q,t)) return 1; return 0;
+}
+function openPalette(){
+  palOpen=true; const ov=$('#paletteOverlay'); ov.classList.remove('hidden'); ov.classList.add('flex');
+  $('#paletteInput').value=''; palFilter='All'; renderPaletteChips(); renderPalette(''); 
+  setTimeout(()=>$('#paletteInput').focus(), 30);
+}
+function closePalette(){
+  palOpen=false; const ov=$('#paletteOverlay'); ov.classList.add('hidden'); ov.classList.remove('flex');
+  $('#paletteInput').blur();
+}
+function renderPaletteChips(){
+  const chips=['All','Actions','Navigation','AI','Recent','Favorites'];
+  $('#paletteChips').innerHTML = chips.map(c=>`<button class="chip ${palFilter===c?'on':''}" data-chip="${c}">${c}</button>`).join('');
+  $$('#paletteChips [data-chip]').forEach(b=>b.addEventListener('click', ()=>{ palFilter=b.dataset.chip; renderPaletteChips(); renderPalette($('#paletteInput').value); }));
+}
+function runCommand(c){
+  closePalette();
+  if (c.id && !recent.includes(c.id)){ recent.unshift(c.id); recent=recent.slice(0,5); localStorage.setItem('ck-recent', JSON.stringify(recent)); }
+  c.run();
+}
+function renderPalette(q){
+  const list = $('#paletteList');
+  let pool = COMMANDS.filter(c=>{
+    if (palFilter==='Favorites') return favorites.has(c.id);
+    if (palFilter==='Recent') return recent.includes(c.id);
+    if (palFilter!=='All') return c.g===palFilter;
+    return true;
+  });
+  if (q.trim()){
+    pool = pool.map(c=>({c, s:score(q,c)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).map(x=>x.c);
+  }
+  // Recent group first when no query and filter All
+  palResults = [];
+  let html = '';
+  const groups = [];
+  if (!q.trim() && palFilter==='All' && recent.length){
+    groups.push(['Recent', COMMANDS.filter(c=>recent.includes(c.id))]);
+  }
+  ['Actions','Navigation','AI'].forEach(g=>{
+    const items = pool.filter(c=>c.g===g && !(recent.includes(c.id) && !q.trim() && palFilter==='All'));
+    if (items.length) groups.push([g, items]);
+  });
+  if (palFilter==='Favorites' || palFilter==='Recent'){ groups.length=0; if (pool.length) groups.push([palFilter, pool]); }
+  if (!groups.length){
+    html = `<div class="py-10 text-center"><span class="material-symbols-outlined text-[34px] muted">search_off</span><div class="font-semibold text-[14px] mt-2">No commands found</div><div class="text-[12.5px] muted mt-1">Try “deploy”, “theme”, “key” or “AI”…</div></div>`;
+    palResults = [];
+  } else {
+    groups.forEach(([g, items])=>{
+      html += `<div class="px-3 pt-3 pb-1 text-[11px] font-semibold tracking-widest uppercase muted">${g}</div>`;
+      items.forEach(c=>{
+        const idx = palResults.length; palResults.push(c);
+        const fav = favorites.has(c.id);
+        html += `<div class="cmd-row ${idx===palSel?'selected':''}" data-idx="${idx}" role="option">
+          <span class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style="background:var(--card2)"><span class="material-symbols-outlined text-[18px]" style="color:${c.ai?'#8B5CF6':(c.g==='Navigation'?'#22D3EE':'#F1F5F9')}">${c.icon}</span></span>
+          <div class="min-w-0 flex-1"><div class="text-[13.5px] font-semibold leading-tight">${c.t}</div><div class="text-[12px] muted truncate">${c.d}</div></div>
+          <button class="fav-btn text-[16px] leading-none px-1" data-fav="${c.id}" title="Favorite" style="color:${fav?'#F59E0B':'var(--mut)'}">${fav?'★':'☆'}</button>
+          ${c.keys?`<span class="hidden sm:flex gap-1">${c.keys.map(k=>`<kbd class="key ${c.ai?'violet':''}">${k}</kbd>`).join('')}</span>`:''}
+        </div>`;
+      });
+    });
+  }
+  list.innerHTML = html;
+  $('#paletteCount').textContent = palResults.length + ' command' + (palResults.length===1?'':'s');
+  if (palSel >= palResults.length) palSel = Math.max(0, palResults.length-1);
+  $$('#paletteList .cmd-row').forEach(row=>{
+    row.addEventListener('click', e=>{
+      if (e.target.closest('.fav-btn')) return;
+      runCommand(palResults[+row.dataset.idx]);
+    });
+    row.addEventListener('mousemove', ()=>{ palSel=+row.dataset.idx; $$('#paletteList .cmd-row').forEach(r=>r.classList.toggle('selected', +r.dataset.idx===palSel)); });
+  });
+  $$('#paletteList .fav-btn').forEach(b=>b.addEventListener('click', e=>{
+    e.stopPropagation();
+    const id=b.dataset.fav;
+    if (favorites.has(id)) favorites.delete(id); else favorites.add(id);
+    localStorage.setItem('ck-favs', JSON.stringify([...favorites]));
+    renderPalette($('#paletteInput').value);
+  }));
+}
+function moveSel(d){
+  if (!palResults.length) return;
+  palSel = (palSel + d + palResults.length) % palResults.length;
+  $$('#paletteList .cmd-row').forEach(r=>r.classList.toggle('selected', +r.dataset.idx===palSel));
+  const el = $('#paletteList .cmd-row[data-idx="'+palSel+'"]');
+  if (el) el.scrollIntoView({block:'nearest'});
+}
+
+/* ================= EVENTS ================= */
+document.addEventListener('keydown', e=>{
+  const mod = e.metaKey || e.ctrlKey;
+  if (mod && e.key.toLowerCase()==='k'){ e.preventDefault(); palOpen ? closePalette() : openPalette(); return; }
+  if (palOpen){
+    if (e.key==='Escape'){ e.preventDefault(); closePalette(); }
+    else if (e.key==='ArrowDown'){ e.preventDefault(); moveSel(1); }
+    else if (e.key==='ArrowUp'){ e.preventDefault(); moveSel(-1); }
+    else if (e.key==='Enter'){ e.preventDefault(); if (palResults[palSel]) runCommand(palResults[palSel]); }
+    return;
+  }
+  if (e.target.matches('input, textarea, select')) return;
+  if (e.key.toLowerCase()==='g'){
+    const next = (ev)=>{ if(ev.key.toLowerCase()==='o') go('overview'); else if(ev.key.toLowerCase()==='t') go('telemetry'); else if(ev.key.toLowerCase()==='d') doDeploy(); else if(ev.key.toLowerCase()==='c') go('clusters'); else if(ev.key.toLowerCase()==='k') go('apikeys'); else if(ev.key.toLowerCase()==='s') go('settings'); else if(ev.key.toLowerCase()==='l') toggleTheme(); document.removeEventListener('keydown', next); };
+    document.addEventListener('keydown', next);
+    setTimeout(()=>document.removeEventListener('keydown', next), 1200);
+  }
+});
+$('#paletteInput').addEventListener('input', e=>{ palSel=0; renderPalette(e.target.value); });
+$('#paletteOverlay').addEventListener('click', e=>{ if (e.target.id==='paletteOverlay') closePalette(); });
+$('#paletteClose').addEventListener('click', closePalette);
+$('#paletteTrigger').addEventListener('click', openPalette);
+$('#themeBtn').addEventListener('click', toggleTheme);
+$('#deployBtn').addEventListener('click', doDeploy);
+$('#bellBtn').addEventListener('click', ()=>{ go('telemetry'); toast('3 unread signals — 1 warning, 1 critical, 1 AI note','notifications','#F59E0B'); });
+$('#menuBtn').addEventListener('click', ()=>{
+  const sb = $('#sidebar');
+  const open = sb.classList.contains('hidden');
+  sb.classList.toggle('hidden', !open); sb.classList.toggle('flex', open);
+  sb.classList.toggle('fixed', open); sb.classList.toggle('inset-y-0', open); sb.classList.toggle('left-0', open); sb.classList.toggle('z-40', open); sb.classList.toggle('w-60', open);
+});
+document.addEventListener('click', e=>{
+  const t = e.target.closest('[data-cmd]');
+  if (t){ const c = COMMANDS.find(x=>x.id===t.dataset.cmd); if (c) runCommand(c); }
+});
+
+/* ================= INIT ================= */
+renderNav(); renderKpis(); renderSignals(); renderActivity(); renderQuick(); renderDeploys(); renderClusters(); renderKeys(); renderRegions(); renderRangePills(); renderShortcuts(); renderPrefs(); drawChart(); drawLatency();
+setInterval(()=>{ if (prefs.live){ const k = KPIS[0]; const v = 47000 + Math.floor(Math.random()*4000); k.value = v.toLocaleString('en-US'); k.spark.push(Math.round(v/1000)); k.spark.shift(); renderKpis(); } }, 30000);
+</script>
+</body>
+</html>
