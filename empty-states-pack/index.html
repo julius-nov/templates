@@ -1,0 +1,843 @@
+<!DOCTYPE html><html lang="en" class="dark"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Empty States Pack — Nocturne Void · 54 states for modern SaaS</title>
+<meta name="description" content="Empty States Pack — a premium library of empty states, error states and skeleton loaders for modern SaaS products. Dark mode by default, live playground included.">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: { extend: {
+    colors: {
+      lilac: '#A78BFA', 'on-lilac': '#070A12', 'lilac-container': '#21005E', 'on-lilac-container': '#E8DDFF',
+      cyan: '#22D3EE', 'on-cyan': '#070A12', 'cyan-container': '#00363E', 'on-cyan-container': '#A2EEFF',
+      amber: '#FBBF24', 'on-amber': '#070A12', 'amber-container': '#402D00', 'on-amber-container': '#FFDF9F',
+      rose: '#FB7185', 'on-rose': '#070A12', 'rose-container': '#400010', 'on-rose-container': '#FFDADC',
+      emerald: '#34D399', 'on-emerald': '#070A12', 'emerald-container': '#002114', 'on-emerald-container': '#BEFFDC',
+      'light-background': '#F8FAFC', 'light-on-background': '#0F172A', 'light-surface': '#FFFFFF',
+      'light-on-surface': '#0F172A', 'light-surface-elevated': '#F1F5F9', 'light-on-surface-elevated': '#0F172A',
+      'light-on-surface-muted': '#475569', 'light-outline': '#CBD5E1',
+      'dark-background': '#070A12', 'dark-on-background': '#F1F5F9', 'dark-surface': '#0E1420',
+      'dark-on-surface': '#F1F5F9', 'dark-surface-elevated': '#161C28', 'dark-on-surface-elevated': '#F1F5F9',
+      'dark-on-surface-muted': '#A5ABBB', 'dark-outline': '#2B303D'
+    },
+    borderRadius: { sm: '6px', DEFAULT: '8px', md: '12px', lg: '16px', xl: '24px', full: '9999px' },
+    spacing: { xs: '4px', sm: '8px', md: '16px', lg: '24px', xl: '32px', '2xl': '48px', '3xl': '64px' },
+    fontFamily: {
+      display: ['"Space Grotesk"', 'sans-serif'], headline: ['"Space Grotesk"', 'sans-serif'],
+      title: ['"Space Grotesk"', 'sans-serif'], body: ['"Inter"', 'sans-serif'],
+      label: ['"Inter"', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace']
+    },
+    fontSize: {
+      'display-lg': ['52px', { lineHeight: '58px', letterSpacing: '-1.5px', fontWeight: '600' }],
+      'display-lg-mobile': ['32px', { lineHeight: '38px', letterSpacing: '-0.75px', fontWeight: '600' }],
+      'headline-lg': ['28px', { lineHeight: '34px', letterSpacing: '-0.5px', fontWeight: '600' }],
+      'headline-md': ['20px', { lineHeight: '28px', letterSpacing: '-0.25px', fontWeight: '600' }],
+      'title-md': ['16px', { lineHeight: '24px', letterSpacing: '-0.15px', fontWeight: '600' }],
+      'body-lg': ['16px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '400' }],
+      'body-md': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '400' }],
+      'body-sm': ['12px', { lineHeight: '18px', letterSpacing: '0.1px', fontWeight: '400' }],
+      'label-lg': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '500' }],
+      'label-md': ['12px', { lineHeight: '16px', letterSpacing: '0.25px', fontWeight: '500' }],
+      'mono-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+      'mono-sm': ['11px', { lineHeight: '16px', letterSpacing: '0.25px', fontWeight: '500' }]
+    },
+    transitionDuration: { 'state-change': '150ms', 'card-lift': '200ms', 'shimmer': '1800ms' },
+    transitionTimingFunction: { 'state-change': 'cubic-bezier(0.2, 0, 0, 1)', 'card-lift': 'cubic-bezier(0.2, 0, 0, 1)', 'shimmer': 'ease-in-out' }
+  } }
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  .hairline-border { border-color: rgba(15,23,42,0.08); }
+  .dark .hairline-border { border-color: rgba(255,255,255,0.08); }
+  .active-glow { box-shadow: 0 0 24px rgba(167,139,250,0.18); }
+  @keyframes shimmer { 0% { background-position:-200% 0; } 100% { background-position:200% 0; } }
+  .skeleton-shimmer { background:linear-gradient(90deg, rgba(15,23,42,0.06) 25%, rgba(167,139,250,0.14) 50%, rgba(15,23,42,0.06) 75%); background-size:200% 100%; animation:shimmer 1.8s ease-in-out infinite; }
+  .dark .skeleton-shimmer { background:linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(167,139,250,0.14) 50%, rgba(255,255,255,0.04) 75%); background-size:200% 100%; }
+  .card-lift { transition:transform 200ms cubic-bezier(0.2,0,0,1), border-color 200ms cubic-bezier(0.2,0,0,1), box-shadow 200ms cubic-bezier(0.2,0,0,1); }
+  .card-lift:hover { transform:translateY(-2px); }
+  .fade-in { animation:fadeIn 240ms cubic-bezier(0.2,0,0,1) both; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+  .chart-bar { transition:opacity 150ms ease, filter 150ms ease; cursor:pointer; }
+  .chart-bar:hover { filter:brightness(1.35); }
+  #chart-tip { pointer-events:none; transition:opacity 120ms ease; }
+  .modal-open { overflow:hidden; }
+  kbd.kbd { font-family:"JetBrains Mono",monospace; font-size:11px; padding:2px 6px; border-radius:6px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.05); }
+  html:not(.dark) kbd.kbd { border-color:rgba(15,23,42,0.14); background:rgba(15,23,42,0.05); }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-shimmer { animation:none; }
+    .card-lift, .fade-in { transition:none; animation:none; }
+    .card-lift:hover { transform:none; }
+  }
+</style>
+</head>
+<body class="bg-light-background dark:bg-dark-background text-light-on-surface dark:text-dark-on-surface font-body antialiased">
+
+<div class="min-h-screen flex">
+  <!-- ============ Left Sidebar (desktop) ============ -->
+  <aside class="hidden lg:flex w-60 shrink-0 bg-light-surface dark:bg-dark-surface border-r hairline-border px-lg py-xl flex-col justify-between sticky top-0 h-screen">
+    <div class="flex flex-col gap-xl">
+      <div class="flex items-center gap-md">
+        <div class="w-9 h-9 rounded-md bg-lilac/15 border border-lilac/30 flex items-center justify-center text-lilac">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" stroke-dasharray="3 3"></rect><circle cx="12" cy="12" r="3"></circle></svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-headline text-title-md">Empty States</span>
+          <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">Nocturne Void v1.4</span>
+        </div>
+      </div>
+      <nav aria-label="State categories" class="flex flex-col gap-xs">
+        <span class="px-3 pb-xs font-mono text-mono-sm uppercase tracking-wider text-light-on-surface-muted dark:text-dark-on-surface-muted">Library</span>
+        <button type="button" data-category="all" class="nav-cat-btn active-glow flex items-center justify-between px-3 py-2.5 rounded-md bg-lilac/15 text-lilac border border-lilac/30 font-label text-label-lg text-left transition-colors duration-state-change">
+          <span class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>All states</span></span>
+          <span class="font-mono text-mono-sm tabular-nums">54</span>
+        </button>
+        <button type="button" data-category="empty" class="nav-cat-btn flex items-center justify-between px-3 py-2.5 rounded-md text-light-on-surface-muted dark:text-dark-on-surface-muted hover:text-light-on-surface dark:hover:text-dark-on-surface hover:bg-light-surface-elevated dark:hover:bg-dark-surface-elevated border border-transparent font-label text-label-lg text-left transition-colors duration-state-change">
+          <span class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="4" y="4" width="16" height="16" rx="2"/></svg><span>Empty</span></span>
+          <span class="font-mono text-mono-sm tabular-nums">24</span>
+        </button>
+        <button type="button" data-category="error" class="nav-cat-btn flex items-center justify-between px-3 py-2.5 rounded-md text-light-on-surface-muted dark:text-dark-on-surface-muted hover:text-light-on-surface dark:hover:text-dark-on-surface hover:bg-light-surface-elevated dark:hover:bg-dark-surface-elevated border border-transparent font-label text-label-lg text-left transition-colors duration-state-change">
+          <span class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V13"/><path d="M12 16.5h.01"/></svg><span>Errors</span></span>
+          <span class="font-mono text-mono-sm tabular-nums">12</span>
+        </button>
+        <button type="button" data-category="skeleton" class="nav-cat-btn flex items-center justify-between px-3 py-2.5 rounded-md text-light-on-surface-muted dark:text-dark-on-surface-muted hover:text-light-on-surface dark:hover:text-dark-on-surface hover:bg-light-surface-elevated dark:hover:bg-dark-surface-elevated border border-transparent font-label text-label-lg text-left transition-colors duration-state-change">
+          <span class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><path d="M4 5.5h16M4 12h16M4 18.5h16"/></svg><span>Skeletons</span></span>
+          <span class="font-mono text-mono-sm tabular-nums">18</span>
+        </button>
+        <div class="my-sm border-t hairline-border"></div>
+        <button type="button" data-view="playground" class="view-link flex items-center justify-between px-3 py-2.5 rounded-md text-light-on-surface-muted dark:text-dark-on-surface-muted hover:text-light-on-surface dark:hover:text-dark-on-surface hover:bg-light-surface-elevated dark:hover:bg-dark-surface-elevated font-label text-label-lg transition-colors duration-state-change">
+          <span class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l5 3.5-5 3.5z" fill="currentColor" stroke="none"/></svg><span>Playground</span></span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><path d="M7 17L17 7M8 7h9v9"/></svg>
+        </button>
+      </nav>
+    </div>
+    <div class="p-md rounded-lg bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex flex-col gap-sm">
+      <div class="flex items-center justify-between">
+        <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">TOKENS</span>
+        <span class="w-2 h-2 rounded-full bg-emerald" aria-hidden="true"></span>
+      </div>
+      <div class="flex items-center gap-xs" aria-hidden="true">
+        <span class="w-4 h-4 rounded-full bg-lilac" title="Lilac #A78BFA"></span>
+        <span class="w-4 h-4 rounded-full bg-cyan" title="Cyan #22D3EE"></span>
+        <span class="w-4 h-4 rounded-full bg-amber" title="Amber #FBBF24"></span>
+        <span class="w-4 h-4 rounded-full bg-rose" title="Rose #FB7185"></span>
+        <span class="w-4 h-4 rounded-full bg-emerald" title="Emerald #34D399"></span>
+      </div>
+      <p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">Space Grotesk · Inter · JetBrains Mono</p>
+    </div>
+  </aside>
+
+  <!-- ============ Main column ============ -->
+  <div class="flex-1 min-w-0 flex flex-col">
+    <!-- Mobile top bar -->
+    <div class="lg:hidden sticky top-0 z-20 px-md py-3 bg-light-background/90 dark:bg-dark-background/90 backdrop-blur-md border-b hairline-border flex items-center justify-between">
+      <div class="flex items-center gap-sm">
+        <div class="w-8 h-8 rounded-md bg-lilac/15 border border-lilac/30 flex items-center justify-center text-lilac">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" stroke-dasharray="3 3"></rect><circle cx="12" cy="12" r="3"></circle></svg>
+        </div>
+        <span class="font-headline text-title-md">Empty States</span>
+      </div>
+      <span class="px-2.5 py-0.5 rounded-full bg-light-surface dark:bg-dark-surface border hairline-border font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted tabular-nums">54 states</span>
+    </div>
+
+    <!-- Top header -->
+    <header class="sticky top-0 lg:top-0 z-20 px-md lg:px-xl py-md bg-light-background/90 dark:bg-dark-background/90 backdrop-blur-md border-b hairline-border flex items-center justify-between gap-lg">
+      <div class="relative w-full max-w-md">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 text-light-on-surface-muted dark:text-dark-on-surface-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+        <input id="search-input" type="search" placeholder="Search empty, error, or skeleton states..." aria-label="Search states" class="w-full pl-10 pr-16 py-2 rounded-md bg-light-surface dark:bg-dark-surface border hairline-border text-body-md placeholder:text-light-on-surface-muted dark:placeholder:text-dark-on-surface-muted focus:border-lilac focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lilac">
+        <kbd class="kbd absolute right-3 top-1/2 -translate-y-1/2 hidden sm:block" aria-hidden="true">⌘K</kbd>
+      </div>
+      <div class="flex items-center gap-md shrink-0">
+        <div class="inline-flex items-center p-1 rounded-md bg-light-surface dark:bg-dark-surface border hairline-border" role="group" aria-label="Theme mode">
+          <button id="theme-dark-btn" type="button" class="inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-dark-surface-elevated text-dark-on-surface font-label text-label-md transition-colors duration-state-change">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><path d="M20 13.5A8 8 0 1 1 10.5 4 6.5 6.5 0 0 0 20 13.5z"/></svg><span class="hidden sm:inline">Dark</span>
+          </button>
+          <button id="theme-light-btn" type="button" class="inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT text-light-on-surface-muted dark:text-dark-on-surface-muted font-label text-label-md transition-colors duration-state-change">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="hidden sm:inline">Light</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================= VIEW: GALLERY ================= -->
+    <main id="view-gallery" class="px-md lg:px-xl py-2xl flex flex-col gap-2xl pb-28 lg:pb-2xl">
+      <section class="flex flex-col lg:flex-row lg:items-end justify-between gap-xl pb-xl border-b hairline-border">
+        <div class="flex flex-col gap-md max-w-2xl">
+          <span class="font-mono text-mono-sm text-lilac uppercase tracking-widest">Empty States Pack · SaaS UI Kit</span>
+          <h1 class="font-display text-display-lg-mobile lg:text-display-lg text-balance">Nothing, beautifully designed</h1>
+          <p class="font-body text-body-lg text-light-on-surface-muted dark:text-dark-on-surface-muted text-pretty max-w-prose">A calm library of geometric empty states, recoverable error screens, and reduced-motion skeleton loaders for modern web applications.</p>
+          <p class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">54 states in the full library · 12 featured below — click any card to preview it full-size and copy its code.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-md shrink-0">
+          <div class="px-lg py-md rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border flex flex-col gap-xs min-w-[136px]">
+            <span class="font-display text-headline-lg text-lilac tabular-nums"><span class="count-up" data-target="24">0</span></span>
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">empty states</span>
+          </div>
+          <div class="px-lg py-md rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border flex flex-col gap-xs min-w-[136px]">
+            <span class="font-display text-headline-lg text-rose tabular-nums"><span class="count-up" data-target="12">0</span></span>
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">error states</span>
+          </div>
+          <div class="px-lg py-md rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border flex flex-col gap-xs min-w-[136px]">
+            <span class="font-display text-headline-lg text-cyan tabular-nums"><span class="count-up" data-target="18">0</span></span>
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">skeletons</span>
+          </div>
+        </div>
+      </section>
+
+      <section aria-label="State components gallery" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-lg" id="gallery-grid">
+        <!-- 1. No projects yet -->
+        <article data-id="empty-projects" data-cat="empty" data-title="no projects yet" data-desc="workspace onboarding prompt with primary cta" class="gallery-card card-lift rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border hover:border-lilac/40 p-lg flex flex-col justify-between gap-md cursor-pointer" tabindex="0" role="button" aria-label="Preview No projects yet">
+          <div class="relative h-40 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex items-center justify-center p-md">
+            <span class="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-lilac-container text-on-lilac-container font-mono text-mono-sm">Empty</span>
+            <svg width="112" height="84" viewBox="0 0 112 84" fill="none" aria-hidden="true"><rect x="14" y="14" width="84" height="56" rx="10" stroke="#A78BFA" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="4 4"></rect><rect x="26" y="26" width="32" height="22" rx="5" stroke="#A78BFA" stroke-width="1.5"></rect><circle cx="76" cy="48" r="10" stroke="#22D3EE" stroke-width="1.5" stroke-dasharray="3 3"></circle><path d="M76 44V52M72 48H80" stroke="#22D3EE" stroke-width="1.5" stroke-linecap="round"></path></svg>
+          </div>
+          <div class="flex flex-col gap-xs"><h2 class="font-title text-title-md">No projects yet</h2><p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted text-balance">Workspace onboarding prompt with primary CTA.</p></div>
+          <footer class="flex items-center justify-between gap-sm pt-sm border-t hairline-border">
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate min-w-0">empty-projects.html</span>
+            <button type="button" class="copy-btn shrink-0 whitespace-nowrap inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-label text-label-md hover:border-lilac/50 transition-colors duration-state-change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+          </footer>
+        </article>
+        <!-- 2. No messages -->
+        <article data-id="empty-inbox" data-cat="empty" data-title="no messages" data-desc="calm inbox-zero thread state" class="gallery-card card-lift rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border hover:border-lilac/40 p-lg flex flex-col justify-between gap-md cursor-pointer" tabindex="0" role="button" aria-label="Preview No messages">
+          <div class="relative h-40 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex items-center justify-center p-md">
+            <span class="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-lilac-container text-on-lilac-container font-mono text-mono-sm">Empty</span>
+            <svg width="112" height="84" viewBox="0 0 112 84" fill="none" aria-hidden="true"><rect x="20" y="18" width="72" height="44" rx="8" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="4 4"></rect><path d="M24 24L56 44L88 24" stroke="#A78BFA" stroke-opacity="0.7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="84" cy="22" r="5" fill="#0E1420" stroke="#34D399" stroke-width="1.5"></circle></svg>
+          </div>
+          <div class="flex flex-col gap-xs"><h2 class="font-title text-title-md">No messages</h2><p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted text-balance">Calm inbox-zero thread state.</p></div>
+          <footer class="flex items-center justify-between gap-sm pt-sm border-t hairline-border">
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate min-w-0">empty-inbox.html</span>
+            <button type="button" class="copy-btn shrink-0 whitespace-nowrap inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-label text-label-md hover:border-lilac/50 transition-colors duration-state-change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+          </footer>
+        </article>
+        <!-- 3. No search results -->
+        <article data-id="empty-search" data-cat="empty" data-title="no search results" data-desc="query reset suggestion with filter clear" class="gallery-card card-lift rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border hover:border-lilac/40 p-lg flex flex-col justify-between gap-md cursor-pointer" tabindex="0" role="button" aria-label="Preview No search results">
+          <div class="relative h-40 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex items-center justify-center p-md">
+            <span class="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-lilac-container text-on-lilac-container font-mono text-mono-sm">Empty</span>
+            <svg width="112" height="84" viewBox="0 0 112 84" fill="none" aria-hidden="true"><circle cx="50" cy="38" r="18" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="4 4"></circle><path d="M63 51L76 64" stroke="#22D3EE" stroke-width="2" stroke-linecap="round"></path><path d="M44 38H56" stroke="#A78BFA" stroke-opacity="0.7" stroke-width="1.5" stroke-linecap="round"></path></svg>
+          </div>
+          <div class="flex flex-col gap-xs"><h2 class="font-title text-title-md">No search results</h2><p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted text-balance">Query reset suggestion with filter clear.</p></div>
+          <footer class="flex items-center justify-between gap-sm pt-sm border-t hairline-border">
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate min-w-0">empty-search.html</span>
+            <button type="button" class="copy-btn shrink-0 whitespace-nowrap inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-label text-label-md hover:border-lilac/50 transition-colors duration-state-change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+          </footer>
+        </article>
+        <!-- 4. No notifications -->
+        <article data-id="empty-alerts" data-cat="empty" data-title="no notifications" data-desc="quiet bell state for caught-up feeds" class="gallery-card card-lift rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border hover:border-lilac/40 p-lg flex flex-col justify-between gap-md cursor-pointer" tabindex="0" role="button" aria-label="Preview No notifications">
+          <div class="relative h-40 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex items-center justify-center p-md">
+            <span class="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-lilac-container text-on-lilac-container font-mono text-mono-sm">Empty</span>
+            <svg width="112" height="84" viewBox="0 0 112 84" fill="none" aria-hidden="true"><path d="M40 48V34C40 25.16 47.16 18 56 18C64.84 18 72 25.16 72 34V48L78 56H34L40 48Z" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="4 4"></path><path d="M51 61C52.2 63.4 54 65 56 65C58 65 59.8 63.4 61 61" stroke="#22D3EE" stroke-width="1.5" stroke-linecap="round"></path></svg>
+          </div>
+          <div class="flex flex-col gap-xs"><h2 class="font-title text-title-md">No notifications</h2><p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted text-balance">Quiet bell state for caught-up feeds.</p></div>
+          <footer class="flex items-center justify-between gap-sm pt-sm border-t hairline-border">
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate min-w-0">empty-alerts.html</span>
+            <button type="button" class="copy-btn shrink-0 whitespace-nowrap inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-label text-label-md hover:border-lilac/50 transition-colors duration-state-change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+          </footer>
+        </article>
+        <!-- 5. 404 -->
+        <article data-id="error-404" data-cat="error" data-title="404 page drifted away" data-desc="unmatched route with return-home cta" class="gallery-card card-lift rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border hover:border-rose/40 p-lg flex flex-col justify-between gap-md cursor-pointer" tabindex="0" role="button" aria-label="Preview 404 — Page drifted away">
+          <div class="relative h-40 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex items-center justify-center p-md">
+            <span class="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-rose-container text-on-rose-container font-mono text-mono-sm">Error</span>
+            <svg width="112" height="84" viewBox="0 0 112 84" fill="none" aria-hidden="true"><rect x="22" y="18" width="46" height="48" rx="8" stroke="#FB7185" stroke-opacity="0.5" stroke-width="1.5" stroke-dasharray="4 4"></rect><rect x="46" y="24" width="44" height="42" rx="8" stroke="#FB7185" stroke-width="1.5" transform="rotate(6 46 24)"></rect><circle cx="68" cy="44" r="4" fill="#FB7185"></circle></svg>
+          </div>
+          <div class="flex flex-col gap-xs"><h2 class="font-title text-title-md">404 — Page drifted away</h2><p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted text-balance">Unmatched route with return-home CTA.</p></div>
+          <footer class="flex items-center justify-between gap-sm pt-sm border-t hairline-border">
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate min-w-0">error-404.html</span>
+            <button type="button" class="copy-btn shrink-0 whitespace-nowrap inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-label text-label-md hover:border-rose/50 transition-colors duration-state-change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+          </footer>
+        </article>
+        <!-- 6. 500 -->
+        <article data-id="error-500" data-cat="error" data-title="500 something broke" data-desc="server fault banner with request id and retry" class="gallery-card card-lift rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border hover:border-rose/40 p-lg flex flex-col justify-between gap-md cursor-pointer" tabindex="0" role="button" aria-label="Preview 500 — Something broke">
+          <div class="relative h-40 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex items-center justify-center p-md">
+            <span class="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-rose-container text-on-rose-container font-mono text-mono-sm">Error</span>
+            <svg width="112" height="84" viewBox="0 0 112 84" fill="none" aria-hidden="true"><polygon points="56,16 88,66 24,66" stroke="#FB7185" stroke-width="1.5" stroke-dasharray="4 4"></polygon><path d="M56 34V48" stroke="#FB7185" stroke-width="2" stroke-linecap="round"></path><circle cx="56" cy="56" r="2" fill="#FB7185"></circle></svg>
+          </div>
+          <div class="flex flex-col gap-xs"><h2 class="font-title text-title-md">500 — Something broke</h2><p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted text-balance">Server fault banner with request ID &amp; retry.</p></div>
+          <footer class="flex items-center justify-between gap-sm pt-sm border-t hairline-border">
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate min-w-0">error-500.html</span>
+            <button type="button" class="copy-btn shrink-0 whitespace-nowrap inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-label text-label-md hover:border-rose/50 transition-colors duration-state-change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+          </footer>
+        </article>
+        <!-- 7. Offline -->
+        <article data-id="error-offline" data-cat="error" data-title="you are offline" data-desc="connection loss state with auto-reconnect" class="gallery-card card-lift rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border hover:border-amber/40 p-lg flex flex-col justify-between gap-md cursor-pointer" tabindex="0" role="button" aria-label="Preview You are offline">
+          <div class="relative h-40 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex items-center justify-center p-md">
+            <span class="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-rose-container text-on-rose-container font-mono text-mono-sm">Error</span>
+            <svg width="112" height="84" viewBox="0 0 112 84" fill="none" aria-hidden="true"><path d="M28 38C43.5 24 68.5 24 84 38" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="4 4"></path><path d="M38 49C48 40 64 40 74 49" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round"></path><circle cx="56" cy="59" r="3" fill="#FBBF24"></circle><path d="M34 62L78 22" stroke="#FB7185" stroke-width="1.5" stroke-linecap="round"></path></svg>
+          </div>
+          <div class="flex flex-col gap-xs"><h2 class="font-title text-title-md">You&rsquo;re offline</h2><p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted text-balance">Connection loss state with auto-reconnect.</p></div>
+          <footer class="flex items-center justify-between gap-sm pt-sm border-t hairline-border">
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate min-w-0">error-offline.html</span>
+            <button type="button" class="copy-btn shrink-0 whitespace-nowrap inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-label text-label-md hover:border-rose/50 transition-colors duration-state-change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+          </footer>
+        </article>
+        <!-- 8. Payment failed -->
+        <article data-id="error-payment" data-cat="error" data-title="payment failed" data-desc="declined card recovery with billing link" class="gallery-card card-lift rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border hover:border-rose/40 p-lg flex flex-col justify-between gap-md cursor-pointer" tabindex="0" role="button" aria-label="Preview Payment failed">
+          <div class="relative h-40 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex items-center justify-center p-md">
+            <span class="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-rose-container text-on-rose-container font-mono text-mono-sm">Error</span>
+            <svg width="112" height="84" viewBox="0 0 112 84" fill="none" aria-hidden="true"><rect x="20" y="22" width="72" height="44" rx="7" stroke="#FB7185" stroke-width="1.5" stroke-dasharray="4 4"></rect><line x1="20" y1="35" x2="92" y2="35" stroke="#FB7185" stroke-opacity="0.6" stroke-width="1.5"></line><circle cx="80" cy="54" r="8" fill="#0E1420" stroke="#FB7185" stroke-width="1.5"></circle><path d="M77 51L83 57M83 51L77 57" stroke="#FB7185" stroke-width="1.5" stroke-linecap="round"></path></svg>
+          </div>
+          <div class="flex flex-col gap-xs"><h2 class="font-title text-title-md">Payment failed</h2><p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted text-balance">Declined card recovery with billing link.</p></div>
+          <footer class="flex items-center justify-between gap-sm pt-sm border-t hairline-border">
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate min-w-0">error-payment.html</span>
+            <button type="button" class="copy-btn shrink-0 whitespace-nowrap inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-label text-label-md hover:border-rose/50 transition-colors duration-state-change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+          </footer>
+        </article>
+        <!-- 9. Skeleton table -->
+        <article data-id="skeleton-table" data-cat="skeleton" data-title="skeleton table" data-desc="aligned column shimmer for data grids" class="gallery-card card-lift rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border hover:border-cyan/40 p-lg flex flex-col justify-between gap-md cursor-pointer" tabindex="0" role="button" aria-label="Preview Skeleton — table">
+          <div class="relative h-40 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex flex-col justify-center gap-sm p-lg" aria-busy="true">
+            <span class="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-cyan-container text-on-cyan-container font-mono text-mono-sm">Skeleton</span>
+            <div class="grid grid-cols-3 gap-sm mt-md"><div class="h-2.5 rounded-sm skeleton-shimmer"></div><div class="h-2.5 rounded-sm skeleton-shimmer"></div><div class="h-2.5 rounded-sm skeleton-shimmer"></div></div>
+            <div class="border-t hairline-border my-xs"></div>
+            <div class="grid grid-cols-3 gap-sm"><div class="h-3 rounded-sm skeleton-shimmer"></div><div class="h-3 rounded-sm skeleton-shimmer"></div><div class="h-3 rounded-sm skeleton-shimmer"></div></div>
+            <div class="grid grid-cols-3 gap-sm"><div class="h-3 rounded-sm skeleton-shimmer"></div><div class="h-3 rounded-sm skeleton-shimmer"></div><div class="h-3 rounded-sm skeleton-shimmer"></div></div>
+          </div>
+          <div class="flex flex-col gap-xs"><h2 class="font-title text-title-md">Skeleton — table</h2><p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted text-balance">Aligned column shimmer for data grids.</p></div>
+          <footer class="flex items-center justify-between gap-sm pt-sm border-t hairline-border">
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate min-w-0">skeleton-table.html</span>
+            <button type="button" class="copy-btn shrink-0 whitespace-nowrap inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-label text-label-md hover:border-cyan/50 transition-colors duration-state-change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+          </footer>
+        </article>
+        <!-- 10. Skeleton card grid -->
+        <article data-id="skeleton-grid" data-cat="skeleton" data-title="skeleton card grid" data-desc="modular two-up placeholder tiles" class="gallery-card card-lift rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border hover:border-cyan/40 p-lg flex flex-col justify-between gap-md cursor-pointer" tabindex="0" role="button" aria-label="Preview Skeleton — card grid">
+          <div class="relative h-40 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border grid grid-cols-2 gap-sm p-md pt-10" aria-busy="true">
+            <span class="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-cyan-container text-on-cyan-container font-mono text-mono-sm">Skeleton</span>
+            <div class="rounded-DEFAULT border hairline-border p-sm flex flex-col justify-between"><div class="h-10 rounded-sm skeleton-shimmer"></div><div class="h-2.5 w-3/4 rounded-sm skeleton-shimmer"></div></div>
+            <div class="rounded-DEFAULT border hairline-border p-sm flex flex-col justify-between"><div class="h-10 rounded-sm skeleton-shimmer"></div><div class="h-2.5 w-2/3 rounded-sm skeleton-shimmer"></div></div>
+          </div>
+          <div class="flex flex-col gap-xs"><h2 class="font-title text-title-md">Skeleton — card grid</h2><p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted text-balance">Modular two-up placeholder tiles.</p></div>
+          <footer class="flex items-center justify-between gap-sm pt-sm border-t hairline-border">
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate min-w-0">skeleton-grid.html</span>
+            <button type="button" class="copy-btn shrink-0 whitespace-nowrap inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-label text-label-md hover:border-cyan/50 transition-colors duration-state-change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+          </footer>
+        </article>
+        <!-- 11. Skeleton profile -->
+        <article data-id="skeleton-profile" data-cat="skeleton" data-title="skeleton profile" data-desc="avatar circle with paired bio lines" class="gallery-card card-lift rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border hover:border-cyan/40 p-lg flex flex-col justify-between gap-md cursor-pointer" tabindex="0" role="button" aria-label="Preview Skeleton — profile">
+          <div class="relative h-40 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex items-center gap-md px-lg" aria-busy="true">
+            <span class="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-cyan-container text-on-cyan-container font-mono text-mono-sm">Skeleton</span>
+            <div class="w-12 h-12 rounded-full shrink-0 skeleton-shimmer"></div>
+            <div class="flex-1 flex flex-col gap-sm"><div class="h-3.5 w-2/3 rounded-sm skeleton-shimmer"></div><div class="h-2.5 w-1/2 rounded-sm skeleton-shimmer"></div><div class="h-2.5 w-5/6 rounded-sm skeleton-shimmer"></div></div>
+          </div>
+          <div class="flex flex-col gap-xs"><h2 class="font-title text-title-md">Skeleton — profile</h2><p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted text-balance">Avatar circle with paired bio lines.</p></div>
+          <footer class="flex items-center justify-between gap-sm pt-sm border-t hairline-border">
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate min-w-0">skeleton-profile.html</span>
+            <button type="button" class="copy-btn shrink-0 whitespace-nowrap inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-label text-label-md hover:border-cyan/50 transition-colors duration-state-change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+          </footer>
+        </article>
+        <!-- 12. Skeleton chart -->
+        <article data-id="skeleton-chart" data-cat="skeleton" data-title="skeleton chart" data-desc="vertical bar rhythm for analytics cards" class="gallery-card card-lift rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border hover:border-cyan/40 p-lg flex flex-col justify-between gap-md cursor-pointer" tabindex="0" role="button" aria-label="Preview Skeleton — chart">
+          <div class="relative h-40 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex items-end justify-center gap-sm p-lg" aria-busy="true">
+            <span class="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-cyan-container text-on-cyan-container font-mono text-mono-sm">Skeleton</span>
+            <div class="w-4 h-10 rounded-sm skeleton-shimmer" title="Bar 1"></div>
+            <div class="w-4 h-16 rounded-sm skeleton-shimmer" title="Bar 2"></div>
+            <div class="w-4 h-12 rounded-sm skeleton-shimmer" title="Bar 3"></div>
+            <div class="w-4 h-24 rounded-sm skeleton-shimmer" title="Bar 4"></div>
+            <div class="w-4 h-14 rounded-sm skeleton-shimmer" title="Bar 5"></div>
+            <div class="w-4 h-20 rounded-sm skeleton-shimmer" title="Bar 6"></div>
+          </div>
+          <div class="flex flex-col gap-xs"><h2 class="font-title text-title-md">Skeleton — chart</h2><p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted text-balance">Vertical bar rhythm for analytics cards.</p></div>
+          <footer class="flex items-center justify-between gap-sm pt-sm border-t hairline-border">
+            <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted truncate min-w-0">skeleton-chart.html</span>
+            <button type="button" class="copy-btn shrink-0 whitespace-nowrap inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-label text-label-md hover:border-cyan/50 transition-colors duration-state-change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+          </footer>
+        </article>
+      </section>
+
+      <!-- Search empty state (shown when no card matches) -->
+      <div id="no-results" class="hidden flex-col items-center justify-center text-center gap-md py-2xl">
+        <svg width="112" height="84" viewBox="0 0 112 84" fill="none" aria-hidden="true"><circle cx="50" cy="38" r="18" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="4 4"></circle><path d="M63 51L76 64" stroke="#22D3EE" stroke-width="2" stroke-linecap="round"></path><path d="M44 38H56" stroke="#A78BFA" stroke-opacity="0.7" stroke-width="1.5" stroke-linecap="round"></path></svg>
+        <h2 class="font-headline text-headline-md">No states match “<span id="no-results-query"></span>”</h2>
+        <p class="font-body text-body-md text-light-on-surface-muted dark:text-dark-on-surface-muted">Try another keyword, or clear the filters to see all 12 featured states.</p>
+        <button id="clear-search-btn" type="button" class="inline-flex items-center gap-sm px-md py-sm rounded-md bg-lilac text-on-lilac font-label text-label-lg">Clear search</button>
+      </div>
+    </main>
+
+    <!-- ================= VIEW: PLAYGROUND ================= -->
+    <main id="view-playground" class="hidden px-md lg:px-xl py-2xl flex-col gap-2xl pb-28 lg:pb-2xl">
+      <section class="flex flex-wrap items-center justify-between gap-md pb-xl border-b hairline-border">
+        <div class="flex flex-col gap-xs">
+          <span class="font-mono text-mono-sm text-lilac uppercase tracking-widest">Live Playground</span>
+          <h1 class="font-headline text-headline-lg">Try every state on a real workspace</h1>
+          <p class="font-body text-body-md text-light-on-surface-muted dark:text-dark-on-surface-muted">A mini project-management app. Switch states above to preview live transitions — create a project, retry a failed load, watch the skeletons shimmer.</p>
+        </div>
+        <div class="inline-flex items-center gap-xs p-1 rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border" role="tablist" aria-label="Workspace state switcher">
+          <button type="button" role="tab" data-state="loaded" aria-selected="false" class="state-btn px-md py-sm rounded-md font-label text-label-md text-light-on-surface-muted dark:text-dark-on-surface-muted hover:text-light-on-surface dark:hover:text-dark-on-surface transition-all duration-state-change">Loaded</button>
+          <button type="button" role="tab" data-state="empty" aria-selected="true" class="state-btn active-glow px-md py-sm rounded-md bg-lilac text-on-lilac font-label text-label-md transition-all duration-state-change">Empty</button>
+          <button type="button" role="tab" data-state="loading" aria-selected="false" class="state-btn px-md py-sm rounded-md font-label text-label-md text-light-on-surface-muted dark:text-dark-on-surface-muted hover:text-light-on-surface dark:hover:text-dark-on-surface transition-all duration-state-change">Loading</button>
+          <button type="button" role="tab" data-state="error" aria-selected="false" class="state-btn px-md py-sm rounded-md font-label text-label-md text-light-on-surface-muted dark:text-dark-on-surface-muted hover:text-light-on-surface dark:hover:text-dark-on-surface transition-all duration-state-change">Error</button>
+        </div>
+      </section>
+
+      <div class="rounded-lg bg-light-surface dark:bg-dark-surface border hairline-border overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[680px]">
+        <!-- App inner sidebar -->
+        <div class="lg:col-span-3 border-b lg:border-b-0 lg:border-r hairline-border p-lg flex flex-col justify-between bg-light-surface-elevated/40 dark:bg-dark-surface-elevated/40">
+          <div class="flex flex-col gap-lg">
+            <div class="flex items-center justify-between">
+              <span class="font-title text-title-md">Acme Studio</span>
+              <span class="px-2 py-0.5 rounded-full bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">Pro</span>
+            </div>
+            <div class="flex flex-col gap-xs">
+              <div class="px-3 py-2 rounded-DEFAULT bg-lilac/10 text-lilac font-label text-label-md flex items-center gap-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Projects</span></div>
+              <div class="px-3 py-2 rounded-DEFAULT text-light-on-surface-muted dark:text-dark-on-surface-muted font-label text-label-md flex items-center gap-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg><span>Deployments</span></div>
+              <div class="px-3 py-2 rounded-DEFAULT text-light-on-surface-muted dark:text-dark-on-surface-muted font-label text-label-md flex items-center gap-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.2 3.4-5 6.5-5s5.7 1.8 6.5 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 15.2c2.6.3 4.7 1.9 5.5 4.8"/></svg><span>Members</span></div>
+            </div>
+          </div>
+          <div class="pt-md border-t hairline-border flex items-center gap-sm">
+            <div class="w-7 h-7 rounded-full bg-lilac/20 text-lilac flex items-center justify-center font-mono text-mono-sm">AL</div>
+            <span class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">alex@acme.dev</span>
+          </div>
+        </div>
+
+        <!-- Project list column -->
+        <div class="lg:col-span-5 border-b lg:border-b-0 lg:border-r hairline-border p-lg flex flex-col gap-md">
+          <div class="flex items-center justify-between pb-sm border-b hairline-border">
+            <span class="font-title text-title-md">Projects</span>
+            <span class="flex items-center gap-sm">
+              <button id="add-project-btn" type="button" title="Add project" class="w-7 h-7 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border inline-flex items-center justify-center hover:border-lilac/50 transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><path d="M12 5v14M5 12h14"/></svg></button>
+              <span id="project-count-pill" class="px-2 py-0.5 rounded-full bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted tabular-nums">0</span>
+            </span>
+          </div>
+
+          <!-- STATE: EMPTY (default) -->
+          <div id="panel-empty" class="state-panel flex-1 flex flex-col items-center justify-center text-center p-xl gap-md fade-in">
+            <svg width="128" height="96" viewBox="0 0 128 96" fill="none" aria-hidden="true"><rect x="18" y="16" width="92" height="64" rx="12" stroke="#A78BFA" stroke-opacity="0.4" stroke-width="1.5" stroke-dasharray="5 5"></rect><rect x="34" y="30" width="38" height="24" rx="6" stroke="#A78BFA" stroke-width="1.5"></rect><circle cx="88" cy="56" r="12" stroke="#22D3EE" stroke-width="1.5" stroke-dasharray="3 3"></circle><path d="M88 51V61M83 56H93" stroke="#22D3EE" stroke-width="1.5" stroke-linecap="round"></path></svg>
+            <div class="flex flex-col gap-xs max-w-xs">
+              <h2 class="font-headline text-headline-md">No projects yet</h2>
+              <p class="font-body text-body-md text-light-on-surface-muted dark:text-dark-on-surface-muted text-pretty">Create your first project to organize repositories, environments, and team permissions.</p>
+            </div>
+            <button id="empty-create-btn" type="button" class="shrink-0 whitespace-nowrap inline-flex items-center gap-sm px-md py-sm rounded-md bg-lilac text-on-lilac font-label text-label-lg transition-transform duration-state-change hover:-translate-y-0.5"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><path d="M12 5v14M5 12h14"/></svg><span>Create project</span></button>
+          </div>
+
+          <!-- STATE: LOADED -->
+          <div id="panel-loaded" class="state-panel hidden flex-col gap-sm"></div>
+
+          <!-- STATE: LOADING -->
+          <div id="panel-loading" class="state-panel hidden flex-col gap-sm" aria-busy="true" aria-label="Loading projects">
+            <div class="p-md rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex flex-col gap-sm"><div class="h-4 w-2/3 rounded-sm skeleton-shimmer"></div><div class="h-3 w-1/2 rounded-sm skeleton-shimmer"></div></div>
+            <div class="p-md rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex flex-col gap-sm"><div class="h-4 w-3/5 rounded-sm skeleton-shimmer"></div><div class="h-3 w-2/5 rounded-sm skeleton-shimmer"></div></div>
+            <div class="p-md rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex flex-col gap-sm"><div class="h-4 w-3/4 rounded-sm skeleton-shimmer"></div><div class="h-3 w-1/3 rounded-sm skeleton-shimmer"></div></div>
+          </div>
+
+          <!-- STATE: ERROR -->
+          <div id="panel-error" class="state-panel hidden flex-1 flex flex-col items-center justify-center p-lg">
+            <div class="w-full rounded-lg bg-rose-container/40 border border-rose/30 p-xl flex flex-col items-center text-center gap-md">
+              <div class="w-12 h-12 rounded-full bg-rose/15 border border-rose/40 flex items-center justify-center text-rose"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><path d="M17.5 18a4.5 4.5 0 0 0 .9-8.9 6 6 0 0 0-11.7-1.6A4 4 0 0 0 6 15.5"/><path d="M3 3l18 18"/></svg></div>
+              <div class="flex flex-col gap-xs">
+                <h2 class="font-headline text-headline-md">Failed to load projects</h2>
+                <p class="font-body text-body-md text-light-on-surface-muted dark:text-dark-on-surface-muted">The upstream API returned 503. Check your network and try again.</p>
+                <p class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">Request ID · req_8f42c1</p>
+              </div>
+              <button id="error-retry-btn" type="button" class="inline-flex items-center gap-xs px-md py-sm rounded-md bg-rose text-on-rose font-label text-label-lg transition-transform duration-state-change hover:-translate-y-0.5"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg><span>Retry</span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detail panel column -->
+        <div class="lg:col-span-4 p-lg flex flex-col justify-between bg-light-surface dark:bg-dark-surface">
+          <div id="detail-empty" class="detail-panel flex-1 flex flex-col items-center justify-center text-center gap-sm p-lg">
+            <div class="w-10 h-10 rounded-md border border-dashed hairline-border flex items-center justify-center text-light-on-surface-muted dark:text-dark-on-surface-muted"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="4" y="4" width="16" height="16" rx="2" stroke-dasharray="3 3"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <p class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">Select a project to inspect deployment details.</p>
+          </div>
+          <div id="detail-loaded" class="detail-panel hidden flex-col gap-lg">
+            <div class="flex flex-col gap-xs">
+              <span class="font-mono text-mono-sm text-lilac">PROJECT DETAIL</span>
+              <h3 id="detail-title" class="font-headline text-headline-md">Nocturne Design Tokens</h3>
+              <p id="detail-desc" class="font-body text-body-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">Automated token pipeline synced to Tailwind &amp; Figma.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-sm">
+              <div class="p-md rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex flex-col gap-xs"><span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">UPTIME</span><span id="detail-uptime" class="font-title text-title-md text-emerald tabular-nums">99.98%</span></div>
+              <div class="p-md rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex flex-col gap-xs"><span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">BUILDS</span><span id="detail-builds" class="font-title text-title-md tabular-nums">142</span></div>
+            </div>
+            <div class="p-md rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex flex-col gap-sm">
+              <div class="flex items-center justify-between"><span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">BUILDS · LAST 7 DAYS</span><span class="font-mono text-mono-sm text-cyan tabular-nums">129 total</span></div>
+              <div id="builds-chart" class="relative flex items-end gap-2 h-24 pt-2" role="img" aria-label="Bar chart of builds per day, last 7 days"></div>
+              <div class="flex justify-between font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+            </div>
+          </div>
+          <div id="detail-loading" class="detail-panel hidden flex-col gap-md" aria-busy="true">
+            <div class="h-3 w-24 rounded-sm skeleton-shimmer"></div>
+            <div class="h-6 w-3/4 rounded-sm skeleton-shimmer"></div>
+            <div class="h-24 w-full rounded-md skeleton-shimmer"></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">Playground note — every transition above is live: “Create project” loads the workspace, “Retry” reloads after a simulated failure, and each project row opens its detail with a hoverable builds chart.</p>
+    </main>
+  </div>
+</div>
+
+<!-- Mobile bottom tab bar -->
+<nav aria-label="Mobile navigation" class="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-light-surface/95 dark:bg-dark-surface/95 backdrop-blur-md border-t hairline-border px-md py-sm grid grid-cols-2">
+  <button type="button" data-view="gallery" class="view-link flex flex-col items-center justify-center gap-xs py-1 text-lilac"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="font-label text-label-md">Gallery</span></button>
+  <button type="button" data-view="playground" class="view-link flex flex-col items-center justify-center gap-xs py-1 text-light-on-surface-muted dark:text-dark-on-surface-muted"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l5 3.5-5 3.5z" fill="currentColor" stroke="none"/></svg><span class="font-label text-label-md">Playground</span></button>
+</nav>
+
+<!-- ============ State detail modal ============ -->
+<div id="state-modal" class="hidden fixed inset-0 z-50 items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div id="modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-light-surface dark:bg-dark-surface border hairline-border shadow-2xl fade-in">
+    <div class="flex items-start justify-between gap-md p-lg border-b hairline-border sticky top-0 bg-light-surface dark:bg-dark-surface z-10">
+      <div class="flex flex-col gap-xs">
+        <span id="modal-tag" class="self-start px-2.5 py-0.5 rounded-full bg-lilac-container text-on-lilac-container font-mono text-mono-sm">Empty</span>
+        <h2 id="modal-title" class="font-headline text-headline-lg">No projects yet</h2>
+        <p id="modal-desc" class="font-body text-body-md text-light-on-surface-muted dark:text-dark-on-surface-muted">Workspace onboarding prompt with primary CTA.</p>
+      </div>
+      <button id="modal-close" type="button" aria-label="Close preview" class="w-9 h-9 shrink-0 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border inline-flex items-center justify-center hover:border-lilac/50 transition-colors"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="p-lg flex flex-col gap-lg">
+      <div id="modal-illustration" class="rounded-lg bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border flex items-center justify-center py-2xl"></div>
+      <div>
+        <div class="flex items-center justify-between pb-sm">
+          <span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">HTML · COPY-PASTE READY</span>
+          <button id="modal-copy-btn" type="button" class="inline-flex items-center gap-xs px-3 py-1.5 rounded-DEFAULT bg-lilac text-on-lilac font-label text-label-md hover:opacity-90 transition-opacity"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy code</span></button>
+        </div>
+        <pre class="rounded-lg bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border p-md overflow-x-auto"><code id="modal-code" class="font-mono text-mono-md whitespace-pre"></code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="hidden fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-[60] px-md py-sm rounded-md bg-emerald text-on-emerald font-label text-label-md shadow-xl items-center gap-sm">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg><span id="toast-text">Copied to clipboard</span>
+</div>
+
+<!-- Chart tooltip -->
+<div id="chart-tip" class="hidden fixed z-[70] px-2.5 py-1.5 rounded-md bg-light-surface-elevated dark:bg-dark-surface-elevated border hairline-border shadow-lg font-mono text-mono-sm whitespace-nowrap"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Data: copy-paste snippets (one per featured state) ---------- */
+  var ICON_COPY = '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>';
+  var ICON_CHECK = '<path d="M4 12.5l5 5L20 6.5"/>';
+
+  var SNIPPETS = {
+    'empty-projects': '<div class="empty-state">\n  <svg class="empty-art" viewBox="0 0 112 84" fill="none" aria-hidden="true">\n    <rect x="14" y="14" width="84" height="56" rx="10" stroke="#A78BFA" stroke-dasharray="4 4" />\n    <rect x="26" y="26" width="32" height="22" rx="5" stroke="#A78BFA" />\n  </svg>\n  <h2>No projects yet</h2>\n  <p>Create your first project to organize repositories, environments, and team permissions.</p>\n  <button class="btn-primary">Create project</button>\n</div>',
+    'empty-inbox': '<div class="empty-state">\n  <h2>No messages</h2>\n  <p>You are all caught up. New threads will land here.</p>\n  <button class="btn-primary">Compose message</button>\n</div>',
+    'empty-search': '<div class="empty-state">\n  <h2>No search results</h2>\n  <p>Nothing matches your query. Try different keywords or clear the filters.</p>\n  <button class="btn-ghost">Clear filters</button>\n</div>',
+    'empty-alerts': '<div class="empty-state">\n  <h2>No notifications</h2>\n  <p>Quiet for now — we will ping you when something needs attention.</p>\n</div>',
+    'error-404': '<div class="error-state">\n  <span class="error-code">404</span>\n  <h2>Page drifted away</h2>\n  <p>This page moved or never existed. Check the URL or head back home.</p>\n  <button class="btn-primary">Go home</button>\n</div>',
+    'error-500': '<div class="error-state">\n  <span class="error-code">500</span>\n  <h2>Something broke</h2>\n  <p>Our servers hit a snag. Request ID: req_8f42c1 — we are already on it.</p>\n  <button class="btn-primary">Retry</button>\n</div>',
+    'error-offline': '<div class="error-state">\n  <h2>You are offline</h2>\n  <p>Your connection dropped. Changes are saved locally and will sync automatically.</p>\n  <button class="btn-primary">Retry connection</button>\n</div>',
+    'error-payment': '<div class="error-state">\n  <h2>Payment failed</h2>\n  <p>Your card was declined. Update your billing details to keep your workspace running.</p>\n  <button class="btn-primary">Update billing</button>\n</div>',
+    'skeleton-table': '<div class="skeleton" aria-busy="true">\n  <div class="sk-row"><span class="sk-line w-1/3"></span><span class="sk-line w-1/3"></span><span class="sk-line w-1/3"></span></div>\n  <div class="sk-row"><span class="sk-line w-1/3"></span><span class="sk-line w-1/3"></span><span class="sk-line w-1/3"></span></div>\n  <div class="sk-row"><span class="sk-line w-1/3"></span><span class="sk-line w-1/3"></span><span class="sk-line w-1/3"></span></div>\n</div>',
+    'skeleton-grid': '<div class="skeleton-grid" aria-busy="true">\n  <div class="sk-card"><span class="sk-block"></span><span class="sk-line w-3/4"></span></div>\n  <div class="sk-card"><span class="sk-block"></span><span class="sk-line w-2/3"></span></div>\n</div>',
+    'skeleton-profile': '<div class="skeleton-profile" aria-busy="true">\n  <span class="sk-avatar"></span>\n  <div class="sk-lines"><span class="sk-line w-2/3"></span><span class="sk-line w-1/2"></span></div>\n</div>',
+    'skeleton-chart': '<div class="skeleton-chart" aria-busy="true">\n  <span class="sk-bar" style="height:40px"></span>\n  <span class="sk-bar" style="height:64px"></span>\n  <span class="sk-bar" style="height:48px"></span>\n  <span class="sk-bar" style="height:96px"></span>\n  <span class="sk-bar" style="height:56px"></span>\n  <span class="sk-bar" style="height:80px"></span>\n</div>'
+  };
+
+  var PROJECTS = [
+    { name: 'Nocturne Design Tokens', meta: 'Updated 14m ago · main', status: 'Healthy', tone: 'emerald', desc: 'Automated token pipeline synced to Tailwind & Figma.', uptime: '99.98%', builds: '142' },
+    { name: 'Auth Gateway v3', meta: 'Updated 2h ago · prod', status: 'Healthy', tone: 'emerald', desc: 'Edge authentication gateway with rotating keys and audit logging.', uptime: '99.95%', builds: '87' },
+    { name: 'Billing Webhook Sync', meta: 'Updated 1d ago · staging', status: 'Syncing', tone: 'amber', desc: 'Reconciles provider webhooks with the internal ledger every 5 minutes.', uptime: '99.71%', builds: '64' }
+  ];
+
+  var BUILDS_WEEK = [
+    { day: 'Mon', value: 12 }, { day: 'Tue', value: 19 }, { day: 'Wed', value: 8 },
+    { day: 'Thu', value: 24 }, { day: 'Fri', value: 17 }, { day: 'Sat', value: 28 }, { day: 'Sun', value: 21 }
+  ];
+
+  /* ---------- Helpers ---------- */
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $all(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function showToast(msg) {
+    var t = $('#toast'); $('#toast-text').textContent = msg;
+    t.classList.remove('hidden'); t.classList.add('flex');
+    clearTimeout(t._timer); t._timer = setTimeout(function () { t.classList.add('hidden'); t.classList.remove('flex'); }, 2200);
+  }
+  function copyText(text, okMsg) {
+    function done() { showToast(okMsg || 'Copied to clipboard'); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+    } else { fallbackCopy(text); done(); }
+  }
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  /* ---------- Theme ---------- */
+  var htmlEl = document.documentElement;
+  var darkBtn = $('#theme-dark-btn'), lightBtn = $('#theme-light-btn');
+  function setTheme(mode) {
+    var dark = mode === 'dark';
+    htmlEl.classList.toggle('dark', dark);
+    darkBtn.classList.toggle('bg-dark-surface-elevated', dark);
+    darkBtn.classList.toggle('text-dark-on-surface', dark);
+    darkBtn.classList.toggle('text-light-on-surface-muted', !dark);
+    darkBtn.classList.toggle('dark:text-dark-on-surface-muted', !dark);
+    lightBtn.classList.toggle('bg-light-surface-elevated', !dark);
+    lightBtn.classList.toggle('text-light-on-surface', !dark);
+    lightBtn.classList.toggle('text-light-on-surface-muted', dark);
+    lightBtn.classList.toggle('dark:text-dark-on-surface-muted', dark);
+  }
+  darkBtn.addEventListener('click', function () { setTheme('dark'); });
+  lightBtn.addEventListener('click', function () { setTheme('light'); });
+
+  /* ---------- View switching (Gallery / Playground) ---------- */
+  var viewGallery = $('#view-gallery'), viewPlayground = $('#view-playground');
+  function showView(name) {
+    var gal = name === 'gallery';
+    viewGallery.classList.toggle('hidden', !gal);
+    viewGallery.classList.toggle('flex', gal);
+    viewPlayground.classList.toggle('hidden', gal);
+    viewPlayground.classList.toggle('flex', !gal);
+    $all('.view-link').forEach(function (b) {
+      var active = b.getAttribute('data-view') === name;
+      b.classList.toggle('text-lilac', active);
+      b.classList.toggle('text-light-on-surface-muted', !active);
+      b.classList.toggle('dark:text-dark-on-surface-muted', !active);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  $all('[data-view]').forEach(function (b) {
+    b.addEventListener('click', function () { showView(b.getAttribute('data-view')); });
+  });
+
+  /* ---------- Gallery: category filter + search ---------- */
+  var searchInput = $('#search-input');
+  var catButtons = $all('.nav-cat-btn');
+  var cards = $all('.gallery-card');
+  var noResults = $('#no-results');
+  var currentCat = 'all';
+  function filterCards() {
+    var q = (searchInput.value || '').trim().toLowerCase();
+    var visible = 0;
+    cards.forEach(function (card) {
+      var cat = card.getAttribute('data-cat');
+      var hay = ((card.getAttribute('data-title') || '') + ' ' + (card.getAttribute('data-desc') || '')).toLowerCase();
+      var ok = (currentCat === 'all' || cat === currentCat) && (!q || hay.indexOf(q) !== -1);
+      card.classList.toggle('hidden', !ok);
+      if (ok) visible++;
+    });
+    noResults.classList.toggle('hidden', visible !== 0);
+    noResults.classList.toggle('flex', visible === 0);
+    $('#no-results-query').textContent = searchInput.value || '';
+  }
+  catButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      currentCat = btn.getAttribute('data-category');
+      catButtons.forEach(function (b) {
+        b.classList.remove('active-glow', 'bg-lilac/15', 'text-lilac', 'border-lilac/30');
+        b.classList.add('text-light-on-surface-muted', 'dark:text-dark-on-surface-muted', 'border-transparent');
+      });
+      btn.classList.add('active-glow', 'bg-lilac/15', 'text-lilac', 'border-lilac/30');
+      btn.classList.remove('text-light-on-surface-muted', 'dark:text-dark-on-surface-muted', 'border-transparent');
+      filterCards();
+    });
+  });
+  searchInput.addEventListener('input', filterCards);
+  $('#clear-search-btn').addEventListener('click', function () {
+    searchInput.value = ''; filterCards(); searchInput.focus();
+  });
+  document.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault(); showView('gallery'); searchInput.focus(); searchInput.select();
+    }
+    if (e.key === 'Escape') closeModal();
+  });
+
+  /* ---------- Count-up counters ---------- */
+  function countUp(el) {
+    var target = parseInt(el.getAttribute('data-target'), 10);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = target; return; }
+    var start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / 700, 1);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  $all('.count-up').forEach(countUp);
+
+  /* ---------- Modal: preview + code ---------- */
+  var modal = $('#state-modal');
+  var currentSnippetId = null;
+  function openModal(card) {
+    var id = card.getAttribute('data-id');
+    var title = card.querySelector('h2').textContent;
+    var desc = card.querySelector('p').textContent;
+    var tag = card.querySelector('.rounded-full').textContent;
+    var ill = card.querySelector('.relative').cloneNode(true);
+    ill.querySelector('.absolute').remove();
+    ill.classList.remove('h-40');
+    ill.classList.add('h-48', 'w-full');
+    var tagEl = $('#modal-tag');
+    $('#modal-title').textContent = title;
+    $('#modal-desc').textContent = desc;
+    tagEl.textContent = tag;
+    tagEl.className = 'self-start px-2.5 py-0.5 rounded-full font-mono text-mono-sm ' + (tag === 'Error' ? 'bg-rose-container text-on-rose-container' : tag === 'Skeleton' ? 'bg-cyan-container text-on-cyan-container' : 'bg-lilac-container text-on-lilac-container');
+    var holder = $('#modal-illustration');
+    holder.innerHTML = '';
+    holder.appendChild(ill.querySelector('svg') ? ill : ill);
+    if (!holder.querySelector('svg')) { holder.appendChild(ill); }
+    $('#modal-code').textContent = SNIPPETS[id] || '';
+    currentSnippetId = id;
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+    document.body.classList.add('modal-open');
+  }
+  function closeModal() {
+    modal.classList.add('hidden'); modal.classList.remove('flex');
+    document.body.classList.remove('modal-open');
+  }
+  cards.forEach(function (card) {
+    card.addEventListener('click', function (e) {
+      if (e.target.closest('.copy-btn')) return;
+      openModal(card);
+    });
+    card.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(card); }
+    });
+  });
+  $('#modal-close').addEventListener('click', closeModal);
+  $('#modal-backdrop').addEventListener('click', closeModal);
+
+  /* ---------- Copy code (real clipboard) ---------- */
+  function wireCopy(btn, getId) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var id = getId();
+      copyText(SNIPPETS[id] || '', 'Code copied — ' + id + '.html');
+      var label = btn.querySelector('span:last-child');
+      var icon = btn.querySelector('svg');
+      var orig = label.textContent;
+      label.textContent = 'Copied';
+      if (icon) icon.innerHTML = ICON_CHECK;
+      btn.classList.add('text-emerald', 'border-emerald/40');
+      setTimeout(function () {
+        label.textContent = orig;
+        if (icon) icon.innerHTML = ICON_COPY;
+        btn.classList.remove('text-emerald', 'border-emerald/40');
+      }, 1500);
+    });
+  }
+  $all('.copy-btn').forEach(function (btn) {
+    wireCopy(btn, function () { return btn.closest('.gallery-card').getAttribute('data-id'); });
+  });
+  wireCopy($('#modal-copy-btn'), function () { return currentSnippetId; });
+
+  /* ---------- Playground: state machine ---------- */
+  var stateButtons = $all('.state-btn');
+  var countPill = $('#project-count-pill');
+  var panels = {
+    empty: $('#panel-empty'), loaded: $('#panel-loaded'),
+    loading: $('#panel-loading'), error: $('#panel-error')
+  };
+  var details = {
+    empty: $('#detail-empty'), loaded: $('#detail-loaded'),
+    loading: $('#detail-loading'), error: $('#detail-empty')
+  };
+  var currentState = 'empty';
+
+  function renderProjects() {
+    var list = panels.loaded;
+    list.innerHTML = '';
+    PROJECTS.forEach(function (p, i) {
+      var row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'project-row text-left p-md rounded-md bg-light-surface dark:bg-dark-surface border hairline-border hover:border-lilac/30 flex items-center justify-between gap-md transition-colors duration-state-change';
+      if (i === 0) row.classList.add('border-lilac/40', 'bg-light-surface-elevated', 'dark:bg-dark-surface-elevated');
+      row.innerHTML = '<span class="flex flex-col gap-xs min-w-0"><span class="font-title text-title-md truncate">' + p.name + '</span>' +
+        '<span class="font-mono text-mono-sm text-light-on-surface-muted dark:text-dark-on-surface-muted">' + p.meta + '</span></span>' +
+        '<span class="shrink-0 px-2 py-0.5 rounded-full font-mono text-mono-sm ' + (p.tone === 'emerald' ? 'bg-emerald-container text-on-emerald-container' : 'bg-amber-container text-on-amber-container') + '">' + p.status + '</span>';
+      row.addEventListener('click', function () { selectProject(i); });
+      list.appendChild(row);
+    });
+    countPill.textContent = String(PROJECTS.length);
+  }
+  function selectProject(i) {
+    var p = PROJECTS[i];
+    $('#detail-title').textContent = p.name;
+    $('#detail-desc').textContent = p.desc;
+    $('#detail-uptime').textContent = p.uptime;
+    $('#detail-builds').textContent = p.builds;
+    $all('.project-row').forEach(function (r, j) {
+      r.classList.toggle('border-lilac/40', j === i);
+      r.classList.toggle('bg-light-surface-elevated', j === i);
+      r.classList.toggle('dark:bg-dark-surface-elevated', j === i);
+    });
+  }
+  function switchState(next) {
+    currentState = next;
+    stateButtons.forEach(function (btn) {
+      var on = btn.getAttribute('data-state') === next;
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      btn.classList.toggle('active-glow', on);
+      btn.classList.toggle('bg-lilac', on);
+      btn.classList.toggle('text-on-lilac', on);
+      btn.classList.toggle('text-light-on-surface-muted', !on);
+      btn.classList.toggle('dark:text-dark-on-surface-muted', !on);
+      btn.classList.toggle('hover:text-light-on-surface', !on);
+      btn.classList.toggle('dark:hover:text-dark-on-surface', !on);
+    });
+    Object.keys(panels).forEach(function (k) {
+      var show = k === next;
+      panels[k].classList.toggle('hidden', !show);
+      panels[k].classList.toggle('flex', show);
+      if (show) { panels[k].classList.remove('fade-in'); void panels[k].offsetWidth; panels[k].classList.add('fade-in'); }
+    });
+    $all('.detail-panel').forEach(function (el) { el.classList.add('hidden'); el.classList.remove('flex'); });
+    details[next].classList.remove('hidden');
+    details[next].classList.add('flex');
+    countPill.textContent = next === 'loaded' ? String(PROJECTS.length) : '0';
+    if (next === 'loaded') selectProject(0);
+  }
+  stateButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () { switchState(btn.getAttribute('data-state')); });
+  });
+  $('#empty-create-btn').addEventListener('click', function () { switchState('loaded'); });
+  $('#error-retry-btn').addEventListener('click', function () {
+    switchState('loading');
+    setTimeout(function () { switchState('loaded'); }, 900);
+  });
+  $('#add-project-btn').addEventListener('click', function () {
+    var n = PROJECTS.length + 1;
+    PROJECTS.push({ name: 'New Project ' + n, meta: 'Created just now · main', status: 'Healthy', tone: 'emerald', desc: 'A fresh workspace created from the playground.', uptime: '100.00%', builds: '0' });
+    renderProjects();
+    switchState('loaded');
+    selectProject(PROJECTS.length - 1);
+    showToast('Project created — New Project ' + n);
+  });
+  renderProjects();
+
+  /* ---------- Builds chart (hover tooltips with exact values) ---------- */
+  var chart = $('#builds-chart');
+  var tip = $('#chart-tip');
+  var maxV = Math.max.apply(null, BUILDS_WEEK.map(function (d) { return d.value; }));
+  BUILDS_WEEK.forEach(function (d) {
+    var bar = document.createElement('div');
+    bar.className = 'chart-bar flex-1 rounded-t-sm bg-lilac/70';
+    bar.style.height = Math.round((d.value / maxV) * 100) + '%';
+    bar.setAttribute('tabindex', '0');
+    bar.setAttribute('aria-label', d.day + ': ' + d.value + ' builds');
+    function showTip(e) {
+      tip.textContent = d.day + ' · ' + d.value + ' builds';
+      tip.classList.remove('hidden');
+      var x = (e.clientX || 0) + 12, y = (e.clientY || 0) - 34;
+      tip.style.left = Math.min(x, window.innerWidth - 140) + 'px';
+      tip.style.top = Math.max(y, 8) + 'px';
+      bar.style.opacity = '1';
+      $all('.chart-bar', chart).forEach(function (b) { if (b !== bar) b.style.opacity = '0.45'; });
+    }
+    function hideTip() {
+      tip.classList.add('hidden');
+      $all('.chart-bar', chart).forEach(function (b) { b.style.opacity = '1'; });
+    }
+    bar.addEventListener('mouseenter', showTip);
+    bar.addEventListener('mousemove', showTip);
+    bar.addEventListener('mouseleave', hideTip);
+    bar.addEventListener('focus', function () { showTip({ clientX: bar.getBoundingClientRect().left, clientY: bar.getBoundingClientRect().top }); });
+    bar.addEventListener('blur', hideTip);
+    chart.appendChild(bar);
+  });
+})();
+</script>
+</body></html>
