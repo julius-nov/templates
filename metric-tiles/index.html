@@ -1,0 +1,1276 @@
+<!DOCTYPE html><html lang="en" class="dark"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metric Tiles — Nocturne Ledger</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'emerald': '#34D399',
+        'on-emerald': '#052E1E',
+        'emerald-container': '#0A2E23',
+        'on-emerald-container': '#6EE7B7',
+        'amber': '#FBBF24',
+        'on-amber': '#331B02',
+        'amber-container': '#2D1F08',
+        'on-amber-container': '#FDE68A',
+        'cyan': '#22D3EE',
+        'on-cyan': '#062933',
+        'cyan-container': '#082A36',
+        'on-cyan-container': '#67E8F9',
+        'violet': '#A78BFA',
+        'on-violet': '#1E1042',
+        'violet-container': '#1E183B',
+        'on-violet-container': '#DDD6FE',
+        'rose': '#FB7185',
+        'on-rose': '#3B0714',
+        'rose-container': '#33101D',
+        'on-rose-container': '#FECDD3',
+        'light-background': '#F4F6FA',
+        'light-on-background': '#0B1120',
+        'light-surface': '#FFFFFF',
+        'light-on-surface': '#0B1120',
+        'light-surface-variant': '#E9EEF6',
+        'light-on-surface-variant': '#475569',
+        'light-surface-elevated': '#F8FAFC',
+        'light-on-surface-elevated': '#0F172A',
+        'light-primary': '#0E7490',
+        'light-on-primary': '#FFFFFF',
+        'light-outline': '#CBD5E1',
+        'light-outline-bright': '#94A3B8',
+        'dark-background': '#070A12',
+        'dark-on-background': '#F1F5F9',
+        'dark-surface': '#0D1420',
+        'dark-on-surface': '#F1F5F9',
+        'dark-surface-variant': '#131C2B',
+        'dark-on-surface-variant': '#94A3B8',
+        'dark-surface-elevated': '#182336',
+        'dark-on-surface-elevated': '#F8FAFC',
+        'dark-primary': '#22D3EE',
+        'dark-on-primary': '#042029',
+        'dark-outline': '#223047',
+        'dark-outline-bright': '#334766',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'full': '9999px',
+      },
+      spacing: {
+        'xs': '4px',
+        'sm': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '20px',
+        '2xl': '24px',
+        '3xl': '32px',
+      },
+      fontFamily: {
+        'display': ['"Wix Madefor Display"', 'sans-serif'],
+        'headline': ['"Wix Madefor Display"', 'sans-serif'],
+        'title': ['"Wix Madefor Display"', 'sans-serif'],
+        'body': ['"Radio Canada Big"', 'sans-serif'],
+        'label': ['"Radio Canada Big"', 'sans-serif'],
+        'mono': ['"Source Code Pro"', 'monospace'],
+      },
+      fontSize: {
+        'display-xl': ['48px', { lineHeight: '52px', letterSpacing: '-1.2px', fontWeight: '800' }],
+        'display-xl-mobile': ['32px', { lineHeight: '36px', letterSpacing: '-0.8px', fontWeight: '800' }],
+        'display-lg': ['36px', { lineHeight: '40px', letterSpacing: '-0.9px', fontWeight: '700' }],
+        'display-lg-mobile': ['28px', { lineHeight: '32px', letterSpacing: '-0.6px', fontWeight: '700' }],
+        'headline-md': ['24px', { lineHeight: '30px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'title-md': ['18px', { lineHeight: '24px', letterSpacing: '-0.2px', fontWeight: '600' }],
+        'body-md': ['14px', { lineHeight: '20px', fontWeight: '400' }],
+        'body-sm': ['13px', { lineHeight: '18px', fontWeight: '400' }],
+        'label-md': ['12px', { lineHeight: '16px', letterSpacing: '0.4px', fontWeight: '600' }],
+        'label-micro': ['11px', { lineHeight: '14px', letterSpacing: '0.9px', fontWeight: '600' }],
+        'mono-sm': ['12px', { lineHeight: '16px', fontWeight: '600' }],
+      },
+      transitionDuration: {
+        'state-change': '140ms',
+        'tile-enter': '320ms',
+        'chart-draw': '600ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'tile-enter': '0ms',
+        'chart-draw': '60ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'cubic-bezier(0.2, 0, 0, 1)',
+        'tile-enter': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'chart-draw': 'cubic-bezier(0.22, 1, 0.36, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:wght@400;500;600;700&amp;family=Source+Code+Pro:wght@500;600&amp;family=Wix+Madefor+Display:wght@600;700;800&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined, .material-symbols-rounded, .material-symbols-sharp, .material-icons {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      line-height: 1 !important;
+      box-sizing: content-box;
+      overflow: hidden;
+      white-space: nowrap;
+      direction: ltr;
+      vertical-align: middle;
+    }
+    .spark-line {
+      stroke-dasharray: 240;
+      stroke-dashoffset: 240;
+      animation: draw-line 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .bar-grow-x {
+      transform-origin: left center;
+      transform: scaleX(0);
+      animation: grow-x 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .bar-grow-y {
+      transform-origin: center bottom;
+      transform: scaleY(0);
+      animation: grow-y 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes draw-line {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes grow-x {
+      to { transform: scaleX(1); }
+    }
+    @keyframes grow-y {
+      to { transform: scaleY(1); }
+    }
+
+    /* --- Metric Tiles : survol des graphes (infobulles) --- */
+    #chart-tip {
+      position: fixed; z-index: 60; pointer-events: none;
+      display: none; max-width: 260px;
+      background: #0D1420; color: #F1F5F9;
+      border: 1px solid #334766; border-radius: 10px;
+      padding: 8px 10px; font-family: "Source Code Pro", monospace;
+      font-size: 12px; line-height: 1.5;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+      white-space: nowrap;
+    }
+    #chart-tip .tip-label { color: #94A3B8; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+    #chart-tip .tip-val { color: #F1F5F9; font-weight: 600; }
+    .spark-wrap { position: relative; cursor: crosshair; }
+    .spark-wrap svg { display: block; }
+    .spark-dot { pointer-events: none; }
+    .spark-guide { pointer-events: none; }
+    .series-group { transition: opacity 180ms ease; cursor: crosshair; }
+    .series-group.dim { opacity: 0.35; }
+    .series-group .bar-this, .series-group .bar-last { transition: filter 180ms ease; }
+    .series-group:hover .bar-this, .series-group:hover .bar-last { filter: brightness(1.35); }
+    .top5-row { border-radius: 8px; padding: 4px 6px; margin: 0 -6px; transition: background 180ms ease; cursor: crosshair; }
+    .top5-row:hover { background: rgba(34, 211, 238, 0.08); }
+    html:not(.dark) .top5-row:hover { background: rgba(14, 116, 144, 0.07); }
+    .mini-row { transition: background 180ms ease; cursor: crosshair; }
+    .mini-row:hover { background: rgba(34, 211, 238, 0.08); }
+    html:not(.dark) .mini-row:hover { background: rgba(14, 116, 144, 0.07); }
+    .chart-hover { cursor: crosshair; }
+    @media (prefers-reduced-motion: reduce) {
+      .spark-line {
+        animation: none !important;
+        stroke-dashoffset: 0 !important;
+      }
+      .bar-grow-x {
+        animation: none !important;
+        transform: scaleX(1) !important;
+      }
+      .bar-grow-y {
+        animation: none !important;
+        transform: scaleY(1) !important;
+      }
+      .animate-pulse {
+        animation: none !important;
+      }
+      * {
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<div id="chart-tip" role="status" aria-live="polite"></div>
+<body class="bg-light-background dark:bg-dark-background text-light-on-background dark:text-dark-on-background font-body antialiased selection:bg-cyan-container selection:text-on-cyan-container">
+  <div class="min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+    <!-- Top Header -->
+    <header class="sticky top-0 z-30 border-b border-light-outline dark:border-dark-outline bg-light-background/90 dark:bg-dark-background/90 backdrop-blur-md">
+      <div class="max-w-7xl mx-auto px-lg sm:px-2xl lg:px-3xl py-md flex flex-wrap items-center justify-between gap-md">
+        <!-- Brand + Badge -->
+        <div class="flex items-center gap-md">
+          <div class="w-9 h-9 rounded bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline-bright flex items-center justify-center text-cyan">
+            <span class="material-symbols-outlined text-title-md" aria-hidden="true">grid_view</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-sm">
+            <h1 data-design-text-token="headline-md" class="font-headline text-headline-md text-light-on-background dark:text-dark-on-background">Metric Tiles</h1>
+            <span data-component-id="badge-system" data-component-type="badge" data-component-variant="status" class="inline-flex items-center px-sm py-xs rounded-full bg-cyan-container text-on-cyan-container border border-light-outline dark:border-dark-outline font-label text-label-micro uppercase">
+              <span data-design-text-token="label-micro">Animated stat system</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Dataset Switcher + Theme Toggle -->
+        <div class="flex flex-wrap items-center gap-md">
+          <div data-component-id="tabs-horizontal" data-component-type="tabs" data-component-variant="horizontal">
+            <div role="tablist" aria-label="Dataset timeframe" id="dataset-switcher" class="inline-flex items-center gap-xs p-xs rounded bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline">
+              <button type="button" role="tab" data-period="today" aria-selected="false" tabindex="-1" class="period-btn px-md py-xs rounded-sm font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant transition-colors duration-state-change ease-state-change hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span data-design-text-token="label-md">Today</span>
+              </button>
+              <button type="button" role="tab" data-period="week" aria-selected="false" tabindex="-1" class="period-btn px-md py-xs rounded-sm font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant transition-colors duration-state-change ease-state-change hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span data-design-text-token="label-md">Week</span>
+              </button>
+              <button type="button" role="tab" data-period="month" aria-selected="true" tabindex="0" class="period-btn px-md py-xs rounded-sm font-label text-label-md bg-light-surface dark:bg-dark-surface-elevated text-light-on-surface dark:text-dark-on-surface border border-light-outline dark:border-dark-outline-bright transition-colors duration-state-change ease-state-change">
+                <span data-design-text-token="label-md">Month</span>
+              </button>
+              <button type="button" role="tab" data-period="quarter" aria-selected="false" tabindex="-1" class="period-btn px-md py-xs rounded-sm font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant transition-colors duration-state-change ease-state-change hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span data-design-text-token="label-md">Quarter</span>
+              </button>
+            </div>
+          </div>
+
+          <button id="theme-toggle" data-component-id="button-icon" data-component-type="button" data-component-variant="icon" type="button" aria-label="Toggle light or dark theme" class="inline-flex items-center gap-xs px-md h-9 rounded bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface dark:text-dark-on-surface font-label text-label-md transition-colors duration-state-change ease-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <span id="theme-icon" class="material-symbols-outlined text-title-md" aria-hidden="true">light_mode</span>
+            <span id="theme-label" data-design-text-token="label-md">Light</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-lg sm:px-2xl lg:px-3xl py-2xl flex flex-col gap-2xl">
+
+      <!-- Section 1: Hero Row (4 Signature KPI Tiles) -->
+      <section aria-label="Signature KPIs" class="flex flex-col gap-md">
+        <div class="flex items-center justify-between gap-md">
+          <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Signature KPI Row</span>
+          <span id="period-caption" data-design-text-token="mono-sm" class="font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">WINDOW: MONTH</span>
+        </div>
+
+        <div id="hero-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg items-stretch">
+
+          <!-- Hero 1: Revenue (Emerald) -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" data-tile-id="revenue" class="tile-card flex flex-col justify-between gap-md p-xl rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline transition-colors duration-state-change ease-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <header class="flex items-center justify-between gap-sm">
+              <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Revenue</span>
+              <button type="button" class="copy-tile-btn inline-flex items-center gap-xs px-sm py-xs rounded-sm bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface-variant dark:text-dark-on-surface-variant font-label text-label-micro transition-colors duration-state-change hover:text-light-on-surface dark:hover:text-dark-on-surface hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+                <span class="material-symbols-outlined text-body-sm" aria-hidden="true">content_copy</span>
+                <span data-design-text-token="label-micro" class="copy-label">Copy tile</span>
+              </button>
+            </header>
+
+            <div class="flex flex-wrap items-baseline justify-between gap-sm">
+              <span id="val-revenue" data-design-text-token="display-lg" class="font-display text-display-lg tabular-nums text-light-on-surface dark:text-dark-on-surface">$128,400</span>
+              <span id="delta-revenue" data-design-text-token="mono-sm" class="inline-flex items-center px-sm py-xs rounded-full bg-emerald-container text-on-emerald-container font-mono text-mono-sm tabular-nums">+18.2%</span>
+            </div>
+
+            <div class="w-full h-10 spark-wrap" data-spark="revenue">
+              <svg viewBox="0 0 200 40" class="w-full h-full overflow-visible" aria-hidden="true">
+                <defs>
+                  <linearGradient id="grad-emerald" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#34D399" stop-opacity="0.28"></stop>
+                    <stop offset="100%" stop-color="#34D399" stop-opacity="0"></stop>
+                  </linearGradient>
+                </defs>
+                <path id="area-revenue" d="M0,34 L28,30 L56,31 L84,22 L112,24 L140,14 L170,11 L200,5 L200,40 L0,40 Z" fill="url(#grad-emerald)"></path>
+                <path id="spark-revenue" d="M0,34 L28,30 L56,31 L84,22 L112,24 L140,14 L170,11 L200,5" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spark-line"></path>
+              </svg>
+            </div>
+
+            <div class="flex flex-col gap-xs">
+              <div class="w-full h-1.5 rounded-full bg-light-surface-variant dark:bg-dark-surface-variant overflow-hidden">
+                <div id="bar-revenue" class="h-full w-[85%] rounded-full bg-emerald bar-grow-x"></div>
+              </div>
+              <span id="goal-revenue" data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">85% of $150k goal</span>
+            </div>
+          </article>
+
+          <!-- Hero 2: Active users (Cyan) -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" data-tile-id="users" class="tile-card flex flex-col justify-between gap-md p-xl rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline transition-colors duration-state-change ease-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <header class="flex items-center justify-between gap-sm">
+              <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Active users</span>
+              <button type="button" class="copy-tile-btn inline-flex items-center gap-xs px-sm py-xs rounded-sm bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface-variant dark:text-dark-on-surface-variant font-label text-label-micro transition-colors duration-state-change hover:text-light-on-surface dark:hover:text-dark-on-surface hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+                <span class="material-symbols-outlined text-body-sm" aria-hidden="true">content_copy</span>
+                <span data-design-text-token="label-micro" class="copy-label">Copy tile</span>
+              </button>
+            </header>
+
+            <div class="flex flex-wrap items-baseline justify-between gap-sm">
+              <span id="val-users" data-design-text-token="display-lg" class="font-display text-display-lg tabular-nums text-light-on-surface dark:text-dark-on-surface">48,210</span>
+              <span id="delta-users" data-design-text-token="mono-sm" class="inline-flex items-center px-sm py-xs rounded-full bg-cyan-container text-on-cyan-container font-mono text-mono-sm tabular-nums">+12.4%</span>
+            </div>
+
+            <div class="w-full h-10 spark-wrap" data-spark="users">
+              <svg viewBox="0 0 200 40" class="w-full h-full overflow-visible" aria-hidden="true">
+                <defs>
+                  <linearGradient id="grad-cyan" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#22D3EE" stop-opacity="0.28"></stop>
+                    <stop offset="100%" stop-color="#22D3EE" stop-opacity="0"></stop>
+                  </linearGradient>
+                </defs>
+                <path id="area-users" d="M0,30 L28,28 L56,22 L84,25 L112,17 L140,18 L170,10 L200,7 L200,40 L0,40 Z" fill="url(#grad-cyan)"></path>
+                <path id="spark-users" d="M0,30 L28,28 L56,22 L84,25 L112,17 L140,18 L170,10 L200,7" fill="none" stroke="#22D3EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spark-line"></path>
+              </svg>
+            </div>
+
+            <div class="flex flex-col gap-xs">
+              <div class="w-full h-1.5 rounded-full bg-light-surface-variant dark:bg-dark-surface-variant overflow-hidden">
+                <div id="bar-users" class="h-full w-[80%] rounded-full bg-cyan bar-grow-x"></div>
+              </div>
+              <span id="goal-users" data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">80% of 60k goal</span>
+            </div>
+          </article>
+
+          <!-- Hero 3: Conversion (Violet) -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" data-tile-id="conversion" class="tile-card flex flex-col justify-between gap-md p-xl rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline transition-colors duration-state-change ease-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <header class="flex items-center justify-between gap-sm">
+              <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Conversion</span>
+              <button type="button" class="copy-tile-btn inline-flex items-center gap-xs px-sm py-xs rounded-sm bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface-variant dark:text-dark-on-surface-variant font-label text-label-micro transition-colors duration-state-change hover:text-light-on-surface dark:hover:text-dark-on-surface hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+                <span class="material-symbols-outlined text-body-sm" aria-hidden="true">content_copy</span>
+                <span data-design-text-token="label-micro" class="copy-label">Copy tile</span>
+              </button>
+            </header>
+
+            <div class="flex flex-wrap items-baseline justify-between gap-sm">
+              <span id="val-conversion" data-design-text-token="display-lg" class="font-display text-display-lg tabular-nums text-light-on-surface dark:text-dark-on-surface">4.86%</span>
+              <span id="delta-conversion" data-design-text-token="mono-sm" class="inline-flex items-center px-sm py-xs rounded-full bg-violet-container text-on-violet-container font-mono text-mono-sm tabular-nums">+0.8 pt</span>
+            </div>
+
+            <div class="w-full h-10 spark-wrap" data-spark="conversion">
+              <svg viewBox="0 0 200 40" class="w-full h-full overflow-visible" aria-hidden="true">
+                <defs>
+                  <linearGradient id="grad-violet" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.28"></stop>
+                    <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"></stop>
+                  </linearGradient>
+                </defs>
+                <path id="area-conversion" d="M0,33 L28,27 L56,29 L84,21 L112,19 L140,15 L170,12 L200,8 L200,40 L0,40 Z" fill="url(#grad-violet)"></path>
+                <path id="spark-conversion" d="M0,33 L28,27 L56,29 L84,21 L112,19 L140,15 L170,12 L200,8" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spark-line"></path>
+              </svg>
+            </div>
+
+            <div class="flex flex-col gap-xs">
+              <div class="w-full h-1.5 rounded-full bg-light-surface-variant dark:bg-dark-surface-variant overflow-hidden">
+                <div id="bar-conversion" class="h-full w-[92%] rounded-full bg-violet bar-grow-x"></div>
+              </div>
+              <span id="goal-conversion" data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">92% of 5.3% target</span>
+            </div>
+          </article>
+
+          <!-- Hero 4: Churn (Rose) -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" data-tile-id="churn" class="tile-card flex flex-col justify-between gap-md p-xl rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline transition-colors duration-state-change ease-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <header class="flex items-center justify-between gap-sm">
+              <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Churn</span>
+              <button type="button" class="copy-tile-btn inline-flex items-center gap-xs px-sm py-xs rounded-sm bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface-variant dark:text-dark-on-surface-variant font-label text-label-micro transition-colors duration-state-change hover:text-light-on-surface dark:hover:text-dark-on-surface hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+                <span class="material-symbols-outlined text-body-sm" aria-hidden="true">content_copy</span>
+                <span data-design-text-token="label-micro" class="copy-label">Copy tile</span>
+              </button>
+            </header>
+
+            <div class="flex items-baseline justify-between gap-sm">
+              <span id="val-churn" data-design-text-token="display-lg" class="font-display text-display-lg tabular-nums text-light-on-surface dark:text-dark-on-surface">1.9%</span>
+              <span id="delta-churn" data-design-text-token="mono-sm" class="inline-flex items-center px-sm py-xs rounded-full bg-rose-container text-on-rose-container font-mono text-mono-sm tabular-nums">-0.4 pt</span>
+            </div>
+
+            <div class="w-full h-10 spark-wrap" data-spark="churn">
+              <svg viewBox="0 0 200 40" class="w-full h-full overflow-visible" aria-hidden="true">
+                <defs>
+                  <linearGradient id="grad-rose" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#FB7185" stop-opacity="0.28"></stop>
+                    <stop offset="100%" stop-color="#FB7185" stop-opacity="0"></stop>
+                  </linearGradient>
+                </defs>
+                <path id="area-churn" d="M0,10 L28,14 L56,12 L84,18 L112,21 L140,25 L170,29 L200,32 L200,40 L0,40 Z" fill="url(#grad-rose)"></path>
+                <path id="spark-churn" d="M0,10 L28,14 L56,12 L84,18 L112,21 L140,25 L170,29 L200,32" fill="none" stroke="#FB7185" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spark-line"></path>
+              </svg>
+            </div>
+
+            <div class="flex flex-col gap-xs">
+              <div class="w-full h-1.5 rounded-full bg-light-surface-variant dark:bg-dark-surface-variant overflow-hidden">
+                <div id="bar-churn" class="h-full w-[76%] rounded-full bg-rose bar-grow-x"></div>
+              </div>
+              <span id="goal-churn" data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">76% within 2.5% cap</span>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- Section 2: System Toolbar (Density & Tile Size) -->
+      <section aria-label="System layout controls" class="flex flex-wrap items-center justify-between gap-md p-md rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline">
+        <div class="flex items-center gap-sm">
+          <span class="material-symbols-outlined text-title-md text-cyan" aria-hidden="true">tune</span>
+          <span data-design-text-token="label-md" class="font-label text-label-md text-light-on-surface dark:text-dark-on-surface">Tile Variant Library</span>
+          <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">8 specialized patterns</span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-lg">
+          <!-- Density Switcher -->
+          <div class="flex items-center gap-sm">
+            <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Density</span>
+            <div role="group" aria-label="Grid density" class="inline-flex items-center gap-xs p-xs rounded bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline">
+              <button type="button" data-density="comfortable" aria-pressed="true" class="density-btn px-md py-xs rounded-sm font-label text-label-md bg-light-surface dark:bg-dark-surface-elevated text-light-on-surface dark:text-dark-on-surface border border-light-outline dark:border-dark-outline-bright">
+                <span data-design-text-token="label-md">Comfortable</span>
+              </button>
+              <button type="button" data-density="compact" aria-pressed="false" class="density-btn px-md py-xs rounded-sm font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span data-design-text-token="label-md">Compact</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tile Size Switcher -->
+          <div class="flex items-center gap-sm">
+            <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Tile size</span>
+            <div role="group" aria-label="Tile size" class="inline-flex items-center gap-xs p-xs rounded bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline">
+              <button type="button" data-size="s" aria-pressed="true" class="size-btn px-md py-xs rounded-sm font-mono text-mono-sm bg-light-surface dark:bg-dark-surface-elevated text-light-on-surface dark:text-dark-on-surface border border-light-outline dark:border-dark-outline-bright">
+                <span data-design-text-token="mono-sm">S</span>
+              </button>
+              <button type="button" data-size="m" aria-pressed="false" class="size-btn px-md py-xs rounded-sm font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span data-design-text-token="mono-sm">M</span>
+              </button>
+              <button type="button" data-size="l" aria-pressed="false" class="size-btn px-md py-xs rounded-sm font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span data-design-text-token="mono-sm">L</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Grid of 8 Tile Variants (4 columns desktop default) -->
+      <section aria-label="Tile variants grid">
+        <div id="variants-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg items-stretch">
+
+          <!-- Variant 1: Radial Gauge Tile (Quota 72%) -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" data-tile-id="radial-gauge" class="tile-card flex flex-col justify-between gap-md p-xl rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline transition-colors duration-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <header class="flex items-center justify-between gap-sm">
+              <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Quota attainment</span>
+              <button type="button" class="copy-tile-btn inline-flex items-center gap-xs px-sm py-xs rounded-sm bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface-variant dark:text-dark-on-surface-variant font-label text-label-micro hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span class="material-symbols-outlined text-body-sm" aria-hidden="true">content_copy</span>
+                <span data-design-text-token="label-micro" class="copy-label">Copy tile</span>
+              </button>
+            </header>
+
+            <div id="gauge-wrap" class="flex flex-col items-center justify-center py-xs chart-hover">
+              <svg viewBox="0 0 140 84" class="w-40 h-24 overflow-visible" aria-hidden="true">
+                <path d="M 16 74 A 54 54 0 0 1 124 74" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" class="text-light-surface-variant dark:text-dark-surface-variant"></path>
+                <path id="gauge-arc" d="M 16 74 A 54 54 0 0 1 124 74" fill="none" stroke="#FBBF24" stroke-width="10" stroke-linecap="round" stroke-dasharray="169.65" stroke-dashoffset="47.5" style="transition: stroke-dashoffset 600ms cubic-bezier(0.22, 1, 0.36, 1);"></path>
+                <text id="gauge-pct" x="70" y="68" text-anchor="middle" class="fill-light-on-surface dark:fill-dark-on-surface font-display text-display-lg tabular-nums">72%</text>
+              </svg>
+            </div>
+
+            <div class="flex items-center justify-between gap-sm pt-xs border-t border-light-outline dark:border-dark-outline">
+              <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">Target $200k</span>
+              <span id="gauge-sub" data-design-text-token="mono-sm" class="px-sm py-xs rounded-full bg-amber-container text-on-amber-container font-mono text-mono-sm tabular-nums">$144k booked</span>
+            </div>
+          </article>
+
+          <!-- Variant 2: Two-Series Comparison Tile (This vs Last) -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" data-tile-id="two-series" class="tile-card flex flex-col justify-between gap-md p-xl rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline transition-colors duration-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <header class="flex items-center justify-between gap-sm">
+              <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Signups · This vs Last</span>
+              <button type="button" class="copy-tile-btn inline-flex items-center gap-xs px-sm py-xs rounded-sm bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface-variant dark:text-dark-on-surface-variant font-label text-label-micro hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span class="material-symbols-outlined text-body-sm" aria-hidden="true">content_copy</span>
+                <span data-design-text-token="label-micro" class="copy-label">Copy tile</span>
+              </button>
+            </header>
+
+            <div id="two-series-bars" class="grid grid-cols-5 gap-sm items-end h-28 pt-sm">
+              <div class="flex flex-col items-center gap-xs h-full justify-end series-group">
+                <div class="flex items-end gap-xs w-full justify-center h-20">
+                  <div class="w-2.5 rounded-sm bg-light-outline dark:bg-dark-outline-bright bar-grow-y bar-last"></div>
+                  <div class="w-2.5 rounded-sm bg-cyan bar-grow-y bar-this"></div>
+                </div>
+                <span data-design-text-token="label-micro" class="font-label text-label-micro text-light-on-surface-variant dark:text-dark-on-surface-variant">W1</span>
+              </div>
+              <div class="flex flex-col items-center gap-xs h-full justify-end series-group">
+                <div class="flex items-end gap-xs w-full justify-center h-20">
+                  <div class="w-2.5 rounded-sm bg-light-outline dark:bg-dark-outline-bright bar-grow-y bar-last"></div>
+                  <div class="w-2.5 rounded-sm bg-cyan bar-grow-y bar-this"></div>
+                </div>
+                <span data-design-text-token="label-micro" class="font-label text-label-micro text-light-on-surface-variant dark:text-dark-on-surface-variant">W2</span>
+              </div>
+              <div class="flex flex-col items-center gap-xs h-full justify-end series-group">
+                <div class="flex items-end gap-xs w-full justify-center h-20">
+                  <div class="w-2.5 rounded-sm bg-light-outline dark:bg-dark-outline-bright bar-grow-y bar-last"></div>
+                  <div class="w-2.5 rounded-sm bg-cyan bar-grow-y bar-this"></div>
+                </div>
+                <span data-design-text-token="label-micro" class="font-label text-label-micro text-light-on-surface-variant dark:text-dark-on-surface-variant">W3</span>
+              </div>
+              <div class="flex flex-col items-center gap-xs h-full justify-end series-group">
+                <div class="flex items-end gap-xs w-full justify-center h-20">
+                  <div class="w-2.5 rounded-sm bg-light-outline dark:bg-dark-outline-bright bar-grow-y bar-last"></div>
+                  <div class="w-2.5 rounded-sm bg-cyan bar-grow-y bar-this"></div>
+                </div>
+                <span data-design-text-token="label-micro" class="font-label text-label-micro text-light-on-surface-variant dark:text-dark-on-surface-variant">W4</span>
+              </div>
+              <div class="flex flex-col items-center gap-xs h-full justify-end series-group">
+                <div class="flex items-end gap-xs w-full justify-center h-20">
+                  <div class="w-2.5 rounded-sm bg-light-outline dark:bg-dark-outline-bright bar-grow-y bar-last"></div>
+                  <div class="w-2.5 rounded-sm bg-cyan bar-grow-y bar-this"></div>
+                </div>
+                <span data-design-text-token="label-micro" class="font-label text-label-micro text-light-on-surface-variant dark:text-dark-on-surface-variant">W5</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-sm pt-xs border-t border-light-outline dark:border-dark-outline">
+              <div class="flex items-center gap-md">
+                <span class="inline-flex items-center gap-xs font-label text-label-micro text-light-on-surface dark:text-dark-on-surface">
+                  <span class="w-2 h-2 rounded-full bg-cyan"></span>
+                  <span data-design-text-token="label-micro">This</span>
+                </span>
+                <span class="inline-flex items-center gap-xs font-label text-label-micro text-light-on-surface-variant dark:text-dark-on-surface-variant">
+                  <span class="w-2 h-2 rounded-full bg-light-outline dark:bg-dark-outline-bright"></span>
+                  <span data-design-text-token="label-micro">Last</span>
+                </span>
+              </div>
+              <span id="series-delta" data-design-text-token="mono-sm" class="font-mono text-mono-sm text-cyan tabular-nums">+24.6%</span>
+            </div>
+          </article>
+
+          <!-- Variant 3: Ranked Top 5 List Tile with Horizontal Bars -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" data-tile-id="top-5" class="tile-card flex flex-col justify-between gap-md p-xl rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline transition-colors duration-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <header class="flex items-center justify-between gap-sm">
+              <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Top 5 markets</span>
+              <button type="button" class="copy-tile-btn inline-flex items-center gap-xs px-sm py-xs rounded-sm bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface-variant dark:text-dark-on-surface-variant font-label text-label-micro hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span class="material-symbols-outlined text-body-sm" aria-hidden="true">content_copy</span>
+                <span data-design-text-token="label-micro" class="copy-label">Copy tile</span>
+              </button>
+            </header>
+
+            <div id="top5-list" class="flex flex-col gap-sm">
+              <div class="flex flex-col gap-xs top5-row">
+                <div class="flex items-center justify-between text-body-sm">
+                  <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface dark:text-dark-on-surface">1. United States</span>
+                  <span data-design-text-token="mono-sm" class="font-mono text-mono-sm tabular-nums text-light-on-surface dark:text-dark-on-surface">$54.2k</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-light-surface-variant dark:bg-dark-surface-variant overflow-hidden">
+                  <div class="h-full w-[92%] rounded-full bg-emerald bar-grow-x"></div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-xs top5-row">
+                <div class="flex items-center justify-between text-body-sm">
+                  <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface dark:text-dark-on-surface">2. Germany</span>
+                  <span data-design-text-token="mono-sm" class="font-mono text-mono-sm tabular-nums text-light-on-surface dark:text-dark-on-surface">$28.6k</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-light-surface-variant dark:bg-dark-surface-variant overflow-hidden">
+                  <div class="h-full w-[64%] rounded-full bg-emerald bar-grow-x"></div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-xs top5-row">
+                <div class="flex items-center justify-between text-body-sm">
+                  <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface dark:text-dark-on-surface">3. United Kingdom</span>
+                  <span data-design-text-token="mono-sm" class="font-mono text-mono-sm tabular-nums text-light-on-surface dark:text-dark-on-surface">$21.9k</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-light-surface-variant dark:bg-dark-surface-variant overflow-hidden">
+                  <div class="h-full w-[48%] rounded-full bg-cyan bar-grow-x"></div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-xs top5-row">
+                <div class="flex items-center justify-between text-body-sm">
+                  <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface dark:text-dark-on-surface">4. Canada</span>
+                  <span data-design-text-token="mono-sm" class="font-mono text-mono-sm tabular-nums text-light-on-surface dark:text-dark-on-surface">$14.1k</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-light-surface-variant dark:bg-dark-surface-variant overflow-hidden">
+                  <div class="h-full w-[32%] rounded-full bg-violet bar-grow-x"></div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-xs top5-row">
+                <div class="flex items-center justify-between text-body-sm">
+                  <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface dark:text-dark-on-surface">5. Japan</span>
+                  <span data-design-text-token="mono-sm" class="font-mono text-mono-sm tabular-nums text-light-on-surface dark:text-dark-on-surface">$9.6k</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-light-surface-variant dark:bg-dark-surface-variant overflow-hidden">
+                  <div class="h-full w-[22%] rounded-full bg-amber bar-grow-x"></div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Variant 4: Live Tile with Pulsing Dot & Incrementing Value -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" data-tile-id="live-stream" class="tile-card flex flex-col justify-between gap-md p-xl rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline transition-colors duration-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <header class="flex items-center justify-between gap-sm">
+              <div class="inline-flex items-center gap-xs">
+                <span data-component-id="badge-dot" data-component-type="badge" data-component-variant="dot" role="status" aria-label="Live telemetry active" class="inline-block w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
+                <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-emerald">Live · Events/sec</span>
+              </div>
+              <button type="button" class="copy-tile-btn inline-flex items-center gap-xs px-sm py-xs rounded-sm bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface-variant dark:text-dark-on-surface-variant font-label text-label-micro hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span class="material-symbols-outlined text-body-sm" aria-hidden="true">content_copy</span>
+                <span data-design-text-token="label-micro" class="copy-label">Copy tile</span>
+              </button>
+            </header>
+
+            <div class="flex flex-col gap-xs my-auto">
+              <span id="live-counter" data-design-text-token="display-xl" class="font-display text-display-xl tabular-nums text-light-on-surface dark:text-dark-on-surface">1,428</span>
+              <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">Ingesting across 14 edge regions</span>
+            </div>
+
+            <div class="flex items-center justify-between gap-sm pt-xs border-t border-light-outline dark:border-dark-outline">
+              <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Peak today</span>
+              <span id="live-peak" data-design-text-token="mono-sm" class="font-mono text-mono-sm tabular-nums text-emerald">1,892 /s</span>
+            </div>
+          </article>
+
+          <!-- Variant 5: Sparkline + Gradient Area Tile -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" data-tile-id="area-spark" class="tile-card flex flex-col justify-between gap-md p-xl rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline transition-colors duration-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <header class="flex items-center justify-between gap-sm">
+              <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Net retention</span>
+              <button type="button" class="copy-tile-btn inline-flex items-center gap-xs px-sm py-xs rounded-sm bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface-variant dark:text-dark-on-surface-variant font-label text-label-micro hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span class="material-symbols-outlined text-body-sm" aria-hidden="true">content_copy</span>
+                <span data-design-text-token="label-micro" class="copy-label">Copy tile</span>
+              </button>
+            </header>
+
+            <div class="flex items-baseline justify-between gap-sm">
+              <span id="val-nrr" data-design-text-token="display-lg" class="font-display text-display-lg tabular-nums text-light-on-surface dark:text-dark-on-surface">114.2%</span>
+              <span id="delta-nrr" data-design-text-token="mono-sm" class="px-sm py-xs rounded-full bg-emerald-container text-on-emerald-container font-mono text-mono-sm tabular-nums">+3.1 pt</span>
+            </div>
+
+            <div class="w-full h-16 spark-wrap" data-spark="nrr">
+              <svg viewBox="0 0 220 64" class="w-full h-full overflow-visible" aria-hidden="true">
+                <defs>
+                  <linearGradient id="grad-nrr" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#22D3EE" stop-opacity="0.35"></stop>
+                    <stop offset="100%" stop-color="#22D3EE" stop-opacity="0"></stop>
+                  </linearGradient>
+                </defs>
+                <path id="area-nrr" d="M0,54 C30,50 45,42 75,44 C105,46 120,26 150,24 C180,22 195,10 220,8 L220,64 L0,64 Z" fill="url(#grad-nrr)"></path>
+                <path id="spark-nrr" d="M0,54 C30,50 45,42 75,44 C105,46 120,26 150,24 C180,22 195,10 220,8" fill="none" stroke="#22D3EE" stroke-width="2.5" stroke-linecap="round" class="spark-line"></path>
+              </svg>
+            </div>
+
+            <div class="flex items-center justify-between gap-sm pt-xs border-t border-light-outline dark:border-dark-outline">
+              <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">Expansion cohort</span>
+              <span data-design-text-token="mono-sm" class="font-mono text-mono-sm text-cyan tabular-nums">+$22.4k</span>
+            </div>
+          </article>
+
+          <!-- Variant 6: Giant Counter Tile with Sub-Metrics -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" data-tile-id="giant-counter" class="tile-card flex flex-col justify-between gap-md p-xl rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline transition-colors duration-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <header class="flex items-center justify-between gap-sm">
+              <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">API requests</span>
+              <button type="button" class="copy-tile-btn inline-flex items-center gap-xs px-sm py-xs rounded-sm bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface-variant dark:text-dark-on-surface-variant font-label text-label-micro hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span class="material-symbols-outlined text-body-sm" aria-hidden="true">content_copy</span>
+                <span data-design-text-token="label-micro" class="copy-label">Copy tile</span>
+              </button>
+            </header>
+
+            <div class="flex flex-col gap-xs my-auto">
+              <span id="val-requests" data-design-text-token="display-xl" class="font-display text-display-xl tabular-nums text-light-on-surface dark:text-dark-on-surface">2.84M</span>
+              <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">Authenticated gateway calls</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-sm pt-sm border-t border-light-outline dark:border-dark-outline">
+              <div class="flex flex-col">
+                <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">P95</span>
+                <span id="sub-p95" data-design-text-token="mono-sm" class="font-mono text-mono-sm tabular-nums text-cyan">38ms</span>
+              </div>
+              <div class="flex flex-col">
+                <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Uptime</span>
+                <span data-design-text-token="mono-sm" class="font-mono text-mono-sm tabular-nums text-emerald">99.98%</span>
+              </div>
+              <div class="flex flex-col">
+                <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Errors</span>
+                <span data-design-text-token="mono-sm" class="font-mono text-mono-sm tabular-nums text-rose">0.02%</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Variant 7: Circular Goal Ring Tile -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" data-tile-id="goal-ring" class="tile-card flex flex-col justify-between gap-md p-xl rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline transition-colors duration-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <header class="flex items-center justify-between gap-sm">
+              <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Annual ARR goal</span>
+              <button type="button" class="copy-tile-btn inline-flex items-center gap-xs px-sm py-xs rounded-sm bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface-variant dark:text-dark-on-surface-variant font-label text-label-micro hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span class="material-symbols-outlined text-body-sm" aria-hidden="true">content_copy</span>
+                <span data-design-text-token="label-micro" class="copy-label">Copy tile</span>
+              </button>
+            </header>
+
+            <div id="ring-wrap" class="flex items-center justify-center py-xs chart-hover">
+              <div class="relative w-24 h-24 flex items-center justify-center">
+                <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90" aria-hidden="true">
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="8" class="text-light-surface-variant dark:text-dark-surface-variant"></circle>
+                  <circle id="ring-circle" cx="50" cy="50" r="40" fill="none" stroke="#A78BFA" stroke-width="8" stroke-linecap="round" stroke-dasharray="251.33" stroke-dashoffset="40.2" style="transition: stroke-dashoffset 600ms cubic-bezier(0.22, 1, 0.36, 1);"></circle>
+                </svg>
+                <span id="ring-pct" data-design-text-token="headline-md" class="absolute font-display text-headline-md tabular-nums text-light-on-surface dark:text-dark-on-surface">84%</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-sm pt-xs border-t border-light-outline dark:border-dark-outline">
+              <span id="ring-curr" data-design-text-token="mono-sm" class="font-mono text-mono-sm tabular-nums text-violet">$1.68M</span>
+              <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">of $2.00M ARR</span>
+            </div>
+          </article>
+
+          <!-- Variant 8: Mini-Table Tile (3 Rows) -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" data-tile-id="mini-table" class="tile-card flex flex-col justify-between gap-md p-xl rounded-lg bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline transition-colors duration-state-change hover:border-light-outline-bright dark:hover:border-dark-outline-bright">
+            <header class="flex items-center justify-between gap-sm">
+              <span data-design-text-token="label-micro" class="font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">Plan breakdown</span>
+              <button type="button" class="copy-tile-btn inline-flex items-center gap-xs px-sm py-xs rounded-sm bg-light-surface-variant dark:bg-dark-surface-variant border border-light-outline dark:border-dark-outline text-light-on-surface-variant dark:text-dark-on-surface-variant font-label text-label-micro hover:text-light-on-surface dark:hover:text-dark-on-surface">
+                <span class="material-symbols-outlined text-body-sm" aria-hidden="true">content_copy</span>
+                <span data-design-text-token="label-micro" class="copy-label">Copy tile</span>
+              </button>
+            </header>
+
+            <div data-component-id="table-standard" data-component-type="table" data-component-variant="compact">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-light-outline dark:border-dark-outline">
+                    <th scope="col" class="pb-sm font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">
+                      <span data-design-text-token="label-micro">Plan</span>
+                    </th>
+                    <th scope="col" class="pb-sm text-right font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">
+                      <span data-design-text-token="label-micro">MRR</span>
+                    </th>
+                    <th scope="col" class="pb-sm text-right font-label text-label-micro uppercase text-light-on-surface-variant dark:text-dark-on-surface-variant">
+                      <span data-design-text-token="label-micro">Delta</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="mini-table-body" class="divide-y divide-light-outline dark:divide-dark-outline">
+                  <tr class="mini-row">
+                    <td class="py-sm font-body text-body-sm text-light-on-surface dark:text-dark-on-surface"><span data-design-text-token="body-sm">Enterprise</span></td>
+                    <td class="py-sm text-right font-mono text-mono-sm tabular-nums text-light-on-surface dark:text-dark-on-surface"><span data-design-text-token="mono-sm">$64.2k</span></td>
+                    <td class="py-sm text-right font-mono text-mono-sm tabular-nums text-emerald"><span data-design-text-token="mono-sm">+21%</span></td>
+                  </tr>
+                  <tr class="mini-row">
+                    <td class="py-sm font-body text-body-sm text-light-on-surface dark:text-dark-on-surface"><span data-design-text-token="body-sm">Scale</span></td>
+                    <td class="py-sm text-right font-mono text-mono-sm tabular-nums text-light-on-surface dark:text-dark-on-surface"><span data-design-text-token="mono-sm">$42.8k</span></td>
+                    <td class="py-sm text-right font-mono text-mono-sm tabular-nums text-cyan"><span data-design-text-token="mono-sm">+14%</span></td>
+                  </tr>
+                  <tr class="mini-row">
+                    <td class="py-sm font-body text-body-sm text-light-on-surface dark:text-dark-on-surface"><span data-design-text-token="body-sm">Starter</span></td>
+                    <td class="py-sm text-right font-mono text-mono-sm tabular-nums text-light-on-surface dark:text-dark-on-surface"><span data-design-text-token="mono-sm">$21.4k</span></td>
+                    <td class="py-sm text-right font-mono text-mono-sm tabular-nums text-amber"><span data-design-text-token="mono-sm">+4%</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-light-outline dark:border-dark-outline py-lg">
+      <div class="max-w-7xl mx-auto px-lg sm:px-2xl lg:px-3xl flex flex-wrap items-center justify-between gap-md">
+        <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">12 tile variants · Dark-first · No dependencies</span>
+        <span data-design-text-token="mono-sm" class="font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">NOCTURNE LEDGER v1.0</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const datasets = {
+        today: {
+          caption: 'WINDOW: TODAY',
+          revenue: { num: 4820, prefix: '$', suffix: '', decimals: 0, delta: '+9.4%', bar: '68%', goal: '68% of $7.1k daily goal' },
+          users: { num: 12490, prefix: '', suffix: '', decimals: 0, delta: '+6.1%', bar: '74%', goal: '74% of 16.8k goal' },
+          conversion: { num: 5.12, prefix: '', suffix: '%', decimals: 2, delta: '+0.3 pt', bar: '96%', goal: '96% of 5.3% target' },
+          churn: { num: 1.6, prefix: '', suffix: '%', decimals: 1, delta: '-0.2 pt', bar: '64%', goal: '64% within 2.5% cap' },
+          gauge: { pct: 64, sub: '$4.5k booked' },
+          seriesDelta: '+14.2%',
+          nrr: { num: 112.8, delta: '+1.4 pt' },
+          requests: { num: 142, suffix: 'K', p95: '34ms' },
+          ring: { pct: 79, curr: '$1.58M' }
+        },
+        week: {
+          caption: 'WINDOW: WEEK',
+          revenue: { num: 32640, prefix: '$', suffix: '', decimals: 0, delta: '+14.8%', bar: '78%', goal: '78% of $42k weekly goal' },
+          users: { num: 29840, prefix: '', suffix: '', decimals: 0, delta: '+9.7%', bar: '76%', goal: '76% of 39k goal' },
+          conversion: { num: 4.94, prefix: '', suffix: '%', decimals: 2, delta: '+0.5 pt', bar: '93%', goal: '93% of 5.3% target' },
+          churn: { num: 1.8, prefix: '', suffix: '%', decimals: 1, delta: '-0.3 pt', bar: '72%', goal: '72% within 2.5% cap' },
+          gauge: { pct: 69, sub: '$34.5k booked' },
+          seriesDelta: '+19.1%',
+          nrr: { num: 113.5, delta: '+2.2 pt' },
+          requests: { num: 710, suffix: 'K', p95: '36ms' },
+          ring: { pct: 81, curr: '$1.62M' }
+        },
+        month: {
+          caption: 'WINDOW: MONTH',
+          revenue: { num: 128400, prefix: '$', suffix: '', decimals: 0, delta: '+18.2%', bar: '85%', goal: '85% of $150k goal' },
+          users: { num: 48210, prefix: '', suffix: '', decimals: 0, delta: '+12.4%', bar: '80%', goal: '80% of 60k goal' },
+          conversion: { num: 4.86, prefix: '', suffix: '%', decimals: 2, delta: '+0.8 pt', bar: '92%', goal: '92% of 5.3% target' },
+          churn: { num: 1.9, prefix: '', suffix: '%', decimals: 1, delta: '-0.4 pt', bar: '76%', goal: '76% within 2.5% cap' },
+          gauge: { pct: 72, sub: '$144k booked' },
+          seriesDelta: '+24.6%',
+          nrr: { num: 114.2, delta: '+3.1 pt' },
+          requests: { num: 2.84, suffix: 'M', p95: '38ms' },
+          ring: { pct: 84, curr: '$1.68M' }
+        },
+        quarter: {
+          caption: 'WINDOW: QUARTER',
+          revenue: { num: 394800, prefix: '$', suffix: '', decimals: 0, delta: '+22.5%', bar: '88%', goal: '88% of $450k goal' },
+          users: { num: 84620, prefix: '', suffix: '', decimals: 0, delta: '+16.8%', bar: '89%', goal: '89% of 95k goal' },
+          conversion: { num: 5.04, prefix: '', suffix: '%', decimals: 2, delta: '+1.1 pt', bar: '95%', goal: '95% of 5.3% target' },
+          churn: { num: 1.7, prefix: '', suffix: '%', decimals: 1, delta: '-0.6 pt', bar: '68%', goal: '68% within 2.5% cap' },
+          gauge: { pct: 86, sub: '$516k booked' },
+          seriesDelta: '+28.4%',
+          nrr: { num: 116.4, delta: '+4.5 pt' },
+          requests: { num: 8.62, suffix: 'M', p95: '41ms' },
+          ring: { pct: 91, curr: '$1.82M' }
+        }
+      };
+
+      function formatValue(val, decimals, prefix, suffix) {
+        const fixed = val.toFixed(decimals);
+        const parts = fixed.split('.');
+        parts[0] = Number(parts[0]).toLocaleString('en-US');
+        return (prefix || '') + parts.join('.') + (suffix || '');
+      }
+
+      function animateValue(el, target, decimals, prefix, suffix) {
+        if (!el) return;
+        if (prefersReduced) {
+          el.textContent = formatValue(target, decimals, prefix, suffix);
+          return;
+        }
+        const duration = 420;
+        const start = performance.now();
+        const initial = target * 0.65;
+        function frame(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = initial + (target - initial) * eased;
+          el.textContent = formatValue(current, decimals, prefix, suffix);
+          if (progress < 1) requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+
+      function applyDataset(key) {
+        const d = datasets[key];
+        if (!d) return;
+        document.getElementById('period-caption').textContent = d.caption;
+
+        animateValue(document.getElementById('val-revenue'), d.revenue.num, d.revenue.decimals, d.revenue.prefix, d.revenue.suffix);
+        document.getElementById('delta-revenue').textContent = d.revenue.delta;
+        document.getElementById('bar-revenue').style.width = d.revenue.bar;
+        document.getElementById('goal-revenue').textContent = d.revenue.goal;
+
+        animateValue(document.getElementById('val-users'), d.users.num, d.users.decimals, d.users.prefix, d.users.suffix);
+        document.getElementById('delta-users').textContent = d.users.delta;
+        document.getElementById('bar-users').style.width = d.users.bar;
+        document.getElementById('goal-users').textContent = d.users.goal;
+
+        animateValue(document.getElementById('val-conversion'), d.conversion.num, d.conversion.decimals, d.conversion.prefix, d.conversion.suffix);
+        document.getElementById('delta-conversion').textContent = d.conversion.delta;
+        document.getElementById('bar-conversion').style.width = d.conversion.bar;
+        document.getElementById('goal-conversion').textContent = d.conversion.goal;
+
+        animateValue(document.getElementById('val-churn'), d.churn.num, d.churn.decimals, d.churn.prefix, d.churn.suffix);
+        document.getElementById('delta-churn').textContent = d.churn.delta;
+        document.getElementById('bar-churn').style.width = d.churn.bar;
+        document.getElementById('goal-churn').textContent = d.churn.goal;
+
+        // Gauge
+        const arcTotal = 169.65;
+        document.getElementById('gauge-arc').style.strokeDashoffset = (arcTotal * (1 - d.gauge.pct / 100)).toFixed(2);
+        document.getElementById('gauge-pct').textContent = d.gauge.pct + '%';
+        document.getElementById('gauge-sub').textContent = d.gauge.sub;
+
+        // Series delta
+        document.getElementById('series-delta').textContent = d.seriesDelta;
+
+        // NRR
+        animateValue(document.getElementById('val-nrr'), d.nrr.num, 1, '', '%');
+        document.getElementById('delta-nrr').textContent = d.nrr.delta;
+
+        // Requests
+        animateValue(document.getElementById('val-requests'), d.requests.num, d.requests.suffix === 'M' ? 2 : 0, '', d.requests.suffix);
+        document.getElementById('sub-p95').textContent = d.requests.p95;
+
+        // Ring
+        const ringTotal = 251.33;
+        document.getElementById('ring-circle').style.strokeDashoffset = (ringTotal * (1 - d.ring.pct / 100)).toFixed(2);
+        document.getElementById('ring-pct').textContent = d.ring.pct + '%';
+        document.getElementById('ring-curr').textContent = d.ring.curr;
+      }
+
+      // Dataset Switcher
+      const periodBtns = document.querySelectorAll('.period-btn');
+      periodBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          periodBtns.forEach((b) => {
+            b.setAttribute('aria-selected', 'false');
+            b.setAttribute('tabindex', '-1');
+            b.className = 'period-btn px-md py-xs rounded-sm font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant transition-colors duration-state-change ease-state-change hover:text-light-on-surface dark:hover:text-dark-on-surface';
+          });
+          btn.setAttribute('aria-selected', 'true');
+          btn.setAttribute('tabindex', '0');
+          btn.className = 'period-btn px-md py-xs rounded-sm font-label text-label-md bg-light-surface dark:bg-dark-surface-elevated text-light-on-surface dark:text-dark-on-surface border border-light-outline dark:border-dark-outline-bright transition-colors duration-state-change ease-state-change';
+          applyDataset(btn.dataset.period);
+        });
+      });
+
+      // Theme Toggle (Dark by default)
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeIcon = document.getElementById('theme-icon');
+      const themeLabel = document.getElementById('theme-label');
+      themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        themeIcon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        themeLabel.textContent = isDark ? 'Light' : 'Dark';
+      });
+
+      // Density Switcher
+      const densityBtns = document.querySelectorAll('.density-btn');
+      const heroGrid = document.getElementById('hero-grid');
+      const variantsGrid = document.getElementById('variants-grid');
+      const tileCards = document.querySelectorAll('.tile-card');
+
+      densityBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          densityBtns.forEach((b) => {
+            b.setAttribute('aria-pressed', 'false');
+            b.className = 'density-btn px-md py-xs rounded-sm font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface';
+          });
+          btn.setAttribute('aria-pressed', 'true');
+          btn.className = 'density-btn px-md py-xs rounded-sm font-label text-label-md bg-light-surface dark:bg-dark-surface-elevated text-light-on-surface dark:text-dark-on-surface border border-light-outline dark:border-dark-outline-bright';
+
+          const compact = btn.dataset.density === 'compact';
+          [heroGrid, variantsGrid].forEach((g) => {
+            g.classList.toggle('gap-lg', !compact);
+            g.classList.toggle('gap-sm', compact);
+          });
+          tileCards.forEach((c) => {
+            c.classList.toggle('p-xl', !compact);
+            c.classList.toggle('p-md', compact);
+            c.classList.toggle('gap-md', !compact);
+            c.classList.toggle('gap-sm', compact);
+          });
+        });
+      });
+
+      // Tile Size Switcher (S = 4 cols, M = 3 cols, L = 2 cols on desktop)
+      const sizeBtns = document.querySelectorAll('.size-btn');
+      sizeBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          sizeBtns.forEach((b) => {
+            b.setAttribute('aria-pressed', 'false');
+            b.className = 'size-btn px-md py-xs rounded-sm font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant hover:text-light-on-surface dark:hover:text-dark-on-surface';
+          });
+          btn.setAttribute('aria-pressed', 'true');
+          btn.className = 'size-btn px-md py-xs rounded-sm font-mono text-mono-sm bg-light-surface dark:bg-dark-surface-elevated text-light-on-surface dark:text-dark-on-surface border border-light-outline dark:border-dark-outline-bright';
+
+          variantsGrid.classList.remove('lg:grid-cols-4', 'lg:grid-cols-3', 'lg:grid-cols-2');
+          if (btn.dataset.size === 's') variantsGrid.classList.add('lg:grid-cols-4');
+          if (btn.dataset.size === 'm') variantsGrid.classList.add('lg:grid-cols-3');
+          if (btn.dataset.size === 'l') variantsGrid.classList.add('lg:grid-cols-2');
+        });
+      });
+
+      // Copy Tile Buttons
+      document.querySelectorAll('.copy-tile-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const card = btn.closest('.tile-card');
+          const label = btn.querySelector('.copy-label');
+          const snippet = card ? card.outerHTML : '';
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(snippet).catch(() => {});
+          }
+          const orig = label.textContent;
+          label.textContent = 'Copied';
+          setTimeout(() => { label.textContent = orig; }, 1400);
+        });
+      });
+
+      // Live Tile Increment
+      let liveVal = 1428;
+      let livePeak = 1892;
+      const liveEl = document.getElementById('live-counter');
+      const peakEl = document.getElementById('live-peak');
+      if (!prefersReduced) {
+        setInterval(() => {
+          liveVal += Math.floor(Math.random() * 11) + 2;
+          if (liveVal > livePeak) {
+            livePeak = liveVal;
+            peakEl.textContent = livePeak.toLocaleString('en-US') + ' /s';
+          }
+          liveEl.textContent = liveVal.toLocaleString('en-US');
+        }, 2400);
+      }
+
+      // Initial count-up
+      applyDataset('month');
+    })();
+  </script>
+
+  <script>
+  /* Metric Tiles — survol des graphes + redessin par jeu de données */
+  (function () {
+    const tip = document.getElementById('chart-tip');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const LABELS = {
+      today:   ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
+      week:    ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon'],
+      month:   ['Nov 1', 'Nov 5', 'Nov 9', 'Nov 13', 'Nov 17', 'Nov 21', 'Nov 25', 'Nov 30'],
+      quarter: ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
+    };
+    /* Séries (8 points) par métrique et par période — données fictives. */
+    const SERIES = {
+      revenue: {
+        today:   [320, 480, 410, 620, 780, 540, 690, 980],
+        week:    [3200, 4100, 3800, 4900, 5300, 4700, 5700, 5640],
+        month:   [12400, 14800, 13200, 16900, 17400, 15800, 18300, 19600],
+        quarter: [38200, 41500, 44800, 47200, 49600, 51300, 58900, 63300],
+      },
+      users: {
+        today:   [980, 1420, 1180, 1690, 1840, 1520, 1710, 2150],
+        week:    [2900, 3400, 3150, 3900, 4200, 3850, 4300, 4140],
+        month:   [4200, 5100, 4800, 6300, 6700, 6100, 7200, 7810],
+        quarter: [8200, 9100, 9400, 10200, 10800, 11300, 12100, 12520],
+      },
+      conversion: {
+        today:   [4.62, 4.81, 4.74, 4.95, 5.08, 4.99, 5.11, 5.12],
+        week:    [4.71, 4.82, 4.76, 4.88, 4.91, 4.86, 4.93, 4.94],
+        month:   [4.52, 4.61, 4.58, 4.72, 4.79, 4.74, 4.83, 4.86],
+        quarter: [4.78, 4.85, 4.82, 4.93, 4.98, 4.95, 5.02, 5.04],
+      },
+      churn: {
+        today:   [1.9, 1.8, 1.85, 1.7, 1.65, 1.72, 1.62, 1.6],
+        week:    [2.0, 1.95, 1.9, 1.85, 1.8, 1.82, 1.78, 1.8],
+        month:   [2.2, 2.1, 2.05, 2.0, 1.95, 1.98, 1.92, 1.9],
+        quarter: [2.1, 2.0, 1.95, 1.9, 1.85, 1.8, 1.75, 1.7],
+      },
+      nrr: {
+        today:   [111.2, 111.6, 111.4, 112.0, 112.3, 112.1, 112.6, 112.8],
+        week:    [112.1, 112.4, 112.3, 112.8, 113.1, 112.9, 113.3, 113.5],
+        month:   [112.4, 112.9, 112.7, 113.4, 113.8, 113.6, 114.0, 114.2],
+        quarter: [113.2, 113.8, 114.1, 114.6, 115.2, 115.5, 116.0, 116.4],
+      },
+    };
+    const FMT = {
+      revenue: v => '$' + Math.round(v).toLocaleString('en-US'),
+      users: v => Math.round(v).toLocaleString('en-US'),
+      conversion: v => v.toFixed(2) + '%',
+      churn: v => v.toFixed(1) + '%',
+      nrr: v => v.toFixed(1) + '%',
+    };
+    const NAMES = { revenue: 'Revenue', users: 'Active users', conversion: 'Conversion', churn: 'Churn', nrr: 'Net retention' };
+    const COLORS = { revenue: '#34D399', users: '#22D3EE', conversion: '#A78BFA', churn: '#FB7185', nrr: '#22D3EE' };
+
+    const WEEKS = {
+      today:   { last: [28, 34, 26, 38, 40],  this: [36, 44, 34, 50, 48] },
+      week:    { last: [180, 210, 175, 230, 240], this: [230, 270, 220, 300, 290] },
+      month:   { last: [820, 940, 780, 1020, 1080], this: [1120, 1280, 1040, 1420, 1360] },
+      quarter: { last: [2400, 2750, 2300, 2980, 3150], this: [3300, 3800, 3100, 4200, 3980] },
+    };
+    const TOP5 = {
+      today:   [1.9, 1.1, 0.8, 0.5, 0.3],
+      week:    [12.4, 6.8, 5.2, 3.4, 2.3],
+      month:   [54.2, 28.6, 21.9, 14.1, 9.6],
+      quarter: [162.5, 85.8, 65.7, 42.3, 28.8],
+    };
+    const TOP5_NAMES = ['United States', 'Germany', 'United Kingdom', 'Canada', 'Japan'];
+    const PLANS = {
+      today:   [[2.3, '+9%'], [1.5, '+6%'], [0.8, '+2%']],
+      week:    [[16.1, '+18%'], [10.7, '+11%'], [5.4, '+3%']],
+      month:   [[64.2, '+21%'], [42.8, '+14%'], [21.4, '+4%']],
+      quarter: [[192.6, '+24%'], [128.4, '+17%'], [64.2, '+6%']],
+    };
+    const GAUGE = {
+      today:   { pct: 64, sub: '$4.5k booked', target: '$7.1k target' },
+      week:    { pct: 69, sub: '$34.5k booked', target: '$50k target' },
+      month:   { pct: 72, sub: '$144k booked', target: '$200k target' },
+      quarter: { pct: 86, sub: '$516k booked', target: '$600k target' },
+    };
+    const RING = {
+      today:   { pct: 79, curr: '$1.58M' },
+      week:    { pct: 81, curr: '$1.62M' },
+      month:   { pct: 84, curr: '$1.68M' },
+      quarter: { pct: 91, curr: '$1.82M' },
+    };
+
+    let currentPeriod = 'month';
+
+    function showTip(html, x, y) {
+      tip.innerHTML = html;
+      tip.style.display = 'block';
+      const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+      let left = x + pad, top = y + pad;
+      if (left + w > window.innerWidth - 8) left = x - w - pad;
+      if (top + h > window.innerHeight - 8) top = y - h - pad;
+      tip.style.left = left + 'px';
+      tip.style.top = top + 'px';
+    }
+    function hideTip() { tip.style.display = 'none'; }
+
+    function linePath(values, W, H, padTop, padBottom) {
+      const min = Math.min.apply(null, values), max = Math.max.apply(null, values);
+      const span = (max - min) || 1;
+      const pts = values.map((v, i) => {
+        const x = (i / (values.length - 1)) * W;
+        const y = padTop + (1 - (v - min) / span) * (H - padTop - padBottom);
+        return [x, y];
+      });
+      return { d: pts.map((p, i) => (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' '), pts: pts };
+    }
+    function areaPath(values, W, H, padTop, padBottom) {
+      const lp = linePath(values, W, H, padTop, padBottom);
+      return lp.d + ' L' + W + ',' + H + ' L0,' + H + ' Z';
+    }
+
+    function drawSpark(metric, period) {
+      const values = SERIES[metric][period];
+      const isNrr = metric === 'nrr';
+      const W = isNrr ? 220 : 200, H = isNrr ? 64 : 40;
+      const line = document.getElementById('spark-' + metric);
+      const area = document.getElementById('area-' + metric);
+      if (!line) return;
+      const lp = linePath(values, W, H, 4, 4);
+      line.setAttribute('d', lp.d);
+      if (area) area.setAttribute('d', areaPath(values, W, H, 4, 4));
+      const wrap = line.closest('.spark-wrap');
+      if (wrap) wrap._pts = lp.pts;
+    }
+
+    /* --- Survol des sparklines : point + guide + infobulle --- */
+    document.querySelectorAll('.spark-wrap').forEach(function (wrap) {
+      const metric = wrap.getAttribute('data-spark');
+      const svg = wrap.querySelector('svg');
+      const NS = 'http://www.w3.org/2000/svg';
+      const guide = document.createElementNS(NS, 'line');
+      guide.setAttribute('class', 'spark-guide');
+      guide.setAttribute('stroke', COLORS[metric]);
+      guide.setAttribute('stroke-width', '1');
+      guide.setAttribute('stroke-dasharray', '3 3');
+      guide.setAttribute('opacity', '0');
+      svg.appendChild(guide);
+      const dot = document.createElementNS(NS, 'circle');
+      dot.setAttribute('class', 'spark-dot');
+      dot.setAttribute('r', '4');
+      dot.setAttribute('fill', COLORS[metric]);
+      dot.setAttribute('stroke', '#070A12');
+      dot.setAttribute('stroke-width', '1.5');
+      dot.setAttribute('opacity', '0');
+      svg.appendChild(dot);
+      wrap.addEventListener('mousemove', function (e) {
+        const pts = wrap._pts;
+        if (!pts) return;
+        const rect = wrap.getBoundingClientRect();
+        const vbW = metric === 'nrr' ? 220 : 200, vbH = metric === 'nrr' ? 64 : 40;
+        const x = ((e.clientX - rect.left) / rect.width) * vbW;
+        let idx = Math.round((x / vbW) * (pts.length - 1));
+        idx = Math.max(0, Math.min(pts.length - 1, idx));
+        const p = pts[idx];
+        dot.setAttribute('cx', p[0]);
+        dot.setAttribute('cy', p[1]);
+        dot.setAttribute('opacity', '1');
+        guide.setAttribute('x1', p[0]); guide.setAttribute('x2', p[0]);
+        guide.setAttribute('y1', 0); guide.setAttribute('y2', vbH);
+        guide.setAttribute('opacity', '0.6');
+        const values = SERIES[metric][currentPeriod];
+        showTip('<span class="tip-label">' + NAMES[metric] + ' · ' + LABELS[currentPeriod][idx] + '</span><br>' +
+          '<span class="tip-val">' + FMT[metric](values[idx]) + '</span>', e.clientX, e.clientY);
+      });
+      wrap.addEventListener('mouseleave', function () {
+        dot.setAttribute('opacity', '0');
+        guide.setAttribute('opacity', '0');
+        hideTip();
+      });
+    });
+
+    /* --- Survol des barres This vs Last --- */
+    const groups = Array.prototype.slice.call(document.querySelectorAll('.series-group'));
+    groups.forEach(function (g, i) {
+      g.addEventListener('mousemove', function (e) {
+        groups.forEach(function (o) { o.classList.toggle('dim', o !== g); });
+        const w = WEEKS[currentPeriod];
+        showTip('<span class="tip-label">Signups · W' + (i + 1) + '</span><br>' +
+          '<span class="tip-val" style="color:#22D3EE">This ' + w.this[i].toLocaleString('en-US') + '</span> &nbsp;·&nbsp; ' +
+          '<span class="tip-val" style="color:#94A3B8">Last ' + w.last[i].toLocaleString('en-US') + '</span>',
+          e.clientX, e.clientY);
+      });
+      g.addEventListener('mouseleave', function () {
+        groups.forEach(function (o) { o.classList.remove('dim'); });
+        hideTip();
+      });
+    });
+
+    /* --- Survol jauge + anneau --- */
+    function bindStaticTip(el, fn) {
+      if (!el) return;
+      el.addEventListener('mousemove', function (e) { showTip(fn(), e.clientX, e.clientY); });
+      el.addEventListener('mouseleave', hideTip);
+    }
+    bindStaticTip(document.getElementById('gauge-wrap'), function () {
+      const g = GAUGE[currentPeriod];
+      return '<span class="tip-label">Quota attainment</span><br><span class="tip-val">' + g.pct + '%</span> · ' + g.sub + ' of ' + g.target;
+    });
+    bindStaticTip(document.getElementById('ring-wrap'), function () {
+      const r = RING[currentPeriod];
+      return '<span class="tip-label">Annual ARR goal</span><br><span class="tip-val">' + r.pct + '%</span> · ' + r.curr + ' of $2.00M ARR';
+    });
+
+    /* --- Survol Top 5 + mini-table --- */
+    document.querySelectorAll('.top5-row').forEach(function (row, i) {
+      row.addEventListener('mousemove', function (e) {
+        const vals = TOP5[currentPeriod];
+        const share = ((vals[i] / vals.reduce(function (a, b) { return a + b; }, 0)) * 100).toFixed(1);
+        showTip('<span class="tip-label">Top 5 markets · #' + (i + 1) + '</span><br>' +
+          '<span class="tip-val">' + TOP5_NAMES[i] + ' — $' + vals[i].toFixed(1) + 'k</span><br>' +
+          '<span class="tip-label">' + share + '% of top 5</span>', e.clientX, e.clientY);
+      });
+      row.addEventListener('mouseleave', hideTip);
+    });
+    document.querySelectorAll('.mini-row').forEach(function (row, i) {
+      row.addEventListener('mousemove', function (e) {
+        const p = PLANS[currentPeriod][i];
+        const name = row.querySelector('td').textContent.trim();
+        showTip('<span class="tip-label">Plan breakdown</span><br>' +
+          '<span class="tip-val">' + name + ' — $' + p[0].toFixed(1) + 'k MRR</span><br>' +
+          '<span class="tip-label">' + p[1] + ' vs last period</span>', e.clientX, e.clientY);
+      });
+      row.addEventListener('mouseleave', hideTip);
+    });
+
+    /* --- Redessin à chaque changement de période --- */
+    function updateCharts(period) {
+      currentPeriod = period;
+      ['revenue', 'users', 'conversion', 'churn', 'nrr'].forEach(function (m) { drawSpark(m, period); });
+      const w = WEEKS[period];
+      const maxW = Math.max.apply(null, w.last.concat(w.this));
+      groups.forEach(function (g, i) {
+        const last = g.querySelector('.bar-last'), th = g.querySelector('.bar-this');
+        if (last) last.style.height = Math.max(6, Math.round((w.last[i] / maxW) * 94)) + '%';
+        if (th) th.style.height = Math.max(6, Math.round((w.this[i] / maxW) * 94)) + '%';
+      });
+      const vals = TOP5[period], maxV = vals[0];
+      document.querySelectorAll('#top5-list .top5-row').forEach(function (row, i) {
+        const valEl = row.querySelector('.font-mono');
+        const bar = row.querySelector('.bar-grow-x');
+        if (valEl) valEl.textContent = '$' + vals[i].toFixed(1) + 'k';
+        if (bar) bar.style.width = Math.round((vals[i] / maxV) * 92) + '%';
+      });
+      document.querySelectorAll('#mini-table-body .mini-row').forEach(function (row, i) {
+        const cells = row.querySelectorAll('td');
+        if (cells[1]) cells[1].textContent = '$' + PLANS[period][i][0].toFixed(1) + 'k';
+        if (cells[2]) cells[2].textContent = PLANS[period][i][1];
+      });
+    }
+
+    document.querySelectorAll('.period-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { updateCharts(btn.dataset.period); });
+    });
+    updateCharts('month');
+  })();
+  </script>
+
+</body></html>
