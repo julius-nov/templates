@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Northstar — Governance Console · Superadmin Overview</title>
+<meta name="description" content="A premium superadmin overview dashboard template: governance command center with priority action queue, ecosystem and portfolio breakdowns, operations pilotage, evolution chart, project supervision and audit timeline. Static demo with fictional data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Northstar — Governance Console (refonte fidèle, 2026-11-16 ; v4 : mode sombre par défaut).
+   Structure et mécanismes repris de l'écran source : coque sombre,
+   héros encre, ancres collantes, frise de gouvernance, file d'actions,
+   grille bento 01–04, pilotage, graphique d'évolution à 3 séries,
+   supervision et journal d'audit. Marque neutre, données fictives.
+   v4 (2026-11-16) : habillage sombre par défaut (data-theme="dark" sur <html>,
+   demande de JULIUS) — structure, textes et mécanismes inchangés depuis v3 ;
+   le bouton thème permet toujours de basculer en clair.
+   v5 (2026-11-16) : habillage repris de la maquette Stitch « Northstar
+   Governance Console » (projet Stitch 17390317875627571004) — palette
+   encre/teal/indigo, verre sombre, halos colorés sur les cartes d'alerte,
+   dégradés du graphique — appliqué PAR-DESSUS la structure v4, sans
+   déplacer ni supprimer aucune section (fidélité LIVRENSA prioritaire). */
+:root{
+  --paper:#f7f9ff; --ink:#0f1d29; --muted:#52616b; --primary:#006577;
+  --accent:#00a0b0; --accent-soft:#e3f1f4; --success:#0e9f6e; --success-soft:#e5f4ef;
+  --warning:#c2570c; --warning-soft:#fbeadc; --critical:#dc2626; --danger-soft:#fdecec;
+  --gold:#e5a93d; --gold-soft:#fbf1dc;
+  --line:#d5e1e7; --surface:#fff; --soft:#eaf3f8;
+  --chart-1:#0e6b7a; --chart-2:#3b6ea5; --chart-3:#8b7bb8; --chart-4:#3e9b6b;
+  --chart-5:#b07e28; --chart-6:#c2570c; --chart-7:#b84a6e; --chart-8:#25708c;
+  --chart-track:#c3d3de; --focus:#0e6b7a;
+  --violet:#7c5cbf; --violet-soft:#efe9fb; --rose:#c65d7b; --rose-soft:#fbe9ee;
+  --glass-bg:rgba(255,255,255,.74); --glass-border:rgba(255,255,255,.8);
+  --glass-shadow:0 10px 34px rgba(15,29,41,.10);
+  --aurora-1:rgba(0,160,176,.17); --aurora-2:rgba(124,92,191,.15); --aurora-3:rgba(229,169,61,.13);
+  --sidebar:#0b1118; --sidebar-line:#060b10; --sidebar-text:#e7f2ff; --sidebar-muted:#94a3b8;
+  --serif:Georgia,"Times New Roman",serif;
+  --sans:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+html[data-theme="dark"]{
+  --paper:#06090e; --ink:#e9f3f6; --muted:#94a3b8; --primary:#00b4d8;
+  --accent:#00e5c9; --accent-soft:rgba(0,229,201,.12); --success:#34d399; --success-soft:rgba(52,211,153,.12);
+  --warning:#fbbf24; --warning-soft:rgba(245,158,11,.13); --critical:#fb7185; --danger-soft:rgba(244,63,94,.13);
+  --gold:#fbbf24; --gold-soft:rgba(245,158,11,.13);
+  --line:#22344a; --surface:#0c1320; --soft:#0d1624;
+  --chart-1:#00e5c9; --chart-2:#818cf8; --chart-3:#a78bfa; --chart-4:#34d399;
+  --chart-5:#f59e0b; --chart-6:#fb923c; --chart-7:#fb7185; --chart-8:#22d3ee;
+  --chart-track:#16283a; --focus:#00e5c9;
+  --violet:#a78bfa; --violet-soft:rgba(167,139,250,.13); --rose:#fb7185; --rose-soft:rgba(251,113,133,.12);
+  --glass-bg:rgba(12,19,32,.78); --glass-border:rgba(125,165,205,.20);
+  --glass-shadow:0 12px 34px rgba(0,0,0,.42);
+  --aurora-1:rgba(0,229,201,.13); --aurora-2:rgba(129,140,248,.13); --aurora-3:rgba(245,158,11,.09);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--sans);color:var(--ink);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  background:
+    radial-gradient(900px 480px at 12% -8%, var(--aurora-1), transparent 62%),
+    radial-gradient(820px 460px at 88% -4%, var(--aurora-2), transparent 62%),
+    radial-gradient(760px 440px at 50% 112%, var(--aurora-3), transparent 62%),
+    var(--paper);
+  background-attachment:fixed}
+a{color:inherit}
+::selection{background:var(--accent);color:#fff}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ---------- Coque : sidebar sombre + contenu ---------- */
+.app-shell{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100dvh}
+.app-sidebar{background:linear-gradient(180deg,#0b1118,#0d1520 55%,#101a2a);border-right:1px solid var(--sidebar-line);padding:20px 14px;display:flex;flex-direction:column;gap:8px;position:sticky;top:0;height:100dvh;color:var(--sidebar-text);overflow:hidden;z-index:60}
+.app-sidebar nav{flex:1 1 auto;min-height:0;overflow-y:auto;scrollbar-width:thin}
+.brand{display:flex;align-items:center;gap:11px;padding:2px 8px 16px;border-bottom:1px solid #162330;margin-bottom:6px}
+.brand-mark{flex:0 0 auto;width:36px;height:36px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px}
+.brand-name{font-weight:800;font-size:15px;letter-spacing:.01em;line-height:1.2}
+.brand-sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#7d93a5}
+.app-nav-group{margin-top:10px}
+.app-nav-group h3{margin:0 8px 5px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#6b8296;font-weight:600}
+.app-nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13.5px;font-weight:500;color:#aebfce;text-decoration:none;min-height:38px}
+.app-nav-item:hover{background:#162330;color:#fff}
+.app-nav-item.is-active{background:#162e3d;color:#fff;font-weight:600;box-shadow:inset 2px 0 0 var(--accent)}
+.app-nav-item.is-sub{padding-left:38px;font-size:13px;color:#8fa6b8}
+.sidebar-search-wrap{position:sticky;bottom:0;z-index:2;margin:12px 0 0;padding:12px 8px 4px;background:#101a2a;border-top:1px solid #162330}
+.sidebar-search{position:relative;margin:0 0 2px}
+.sidebar-search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#7d93a5;pointer-events:none}
+.sidebar-search input{width:100%;min-height:38px;padding:8px 12px 8px 36px;border:1px solid #22384a;border-radius:999px;background:rgba(255,255,255,.06);color:#e8f0f5;font:inherit;font-size:13px}
+.sidebar-search input::placeholder{color:#7d93a5}
+.sidebar-search input:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.sidebar-search-empty{margin:8px 10px 0;font-size:12px;color:#7d93a5}
+.app-nav-ico{flex:0 0 auto;width:16px;height:16px;display:inline-grid;place-items:center;color:#7d93a5}
+.app-nav-item.is-active .app-nav-ico{color:var(--accent)}
+.app-user{margin-top:auto;border-top:1px solid #162330;padding-top:14px;display:flex;align-items:center;gap:10px}
+.app-avatar{flex:0 0 auto;width:36px;height:36px;border-radius:50%;background:var(--gold);color:#231a05;display:grid;place-items:center;font-weight:800;font-size:12px}
+.app-user-name{font-size:13.5px;font-weight:700;line-height:1.25}
+.app-user-role{font-size:11.5px;color:#7d93a5}
+.app-signout{margin-left:auto;flex:0 0 auto;width:32px;height:32px;border:1px solid #22384a;border-radius:50%;background:transparent;color:#8fa6b8;cursor:pointer;font-size:15px;line-height:1}
+.app-signout:hover{color:#fff;border-color:var(--accent)}
+
+.app-main{min-width:0;display:flex;flex-direction:column}
+.app-topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;padding:12px 28px;background:var(--glass-bg);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);border-bottom:1px solid var(--glass-border);box-shadow:0 6px 24px rgba(15,29,41,.06)}
+.menu-btn{display:none;width:40px;height:40px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink);cursor:pointer;font-size:18px;align-items:center;justify-content:center;flex:0 0 auto}
+.breadcrumb{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.breadcrumb strong{color:var(--ink);font-weight:700}
+.topbar-search{margin-left:auto;position:relative;flex:0 1 320px}
+.topbar-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.topbar-search input{width:100%;min-height:40px;padding:9px 12px 9px 38px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px}
+.topbar-search input::placeholder{color:var(--muted)}
+.topbar-search input:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.icon-btn{position:relative;width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+.bell-dot{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--critical);border:2px solid var(--surface)}
+.theme-glyph{font-size:15px;line-height:1}
+.nv-feed-panel{position:absolute;top:calc(100% + 10px);right:0;width:min(430px,calc(100vw - 24px));z-index:90;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:8px;box-shadow:0 24px 60px rgba(9,30,43,.20)}
+.nv-feed-panel[hidden]{display:none}
+.nv-feed-head{display:flex;align-items:center;justify-content:space-between;padding:8px 10px 4px}
+.nv-feed-head strong{font-size:13.5px}
+.nv-feed-head button{background:none;border:none;color:var(--accent);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.notif-item{display:flex;gap:10px;padding:10px;border-radius:12px}
+.notif-item:hover{background:var(--soft)}
+.notif-ico{flex:0 0 auto;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:14px;background:var(--accent-soft);color:var(--accent)}
+.notif-item p{margin:0;font-size:13px;line-height:1.45}
+.notif-item time{font-size:11.5px;color:var(--muted)}
+.topbar-avatar{width:36px;height:36px;border-radius:50%;background:var(--gold);color:#231a05;display:grid;place-items:center;font-weight:800;font-size:12px;flex:0 0 auto;border:none;cursor:pointer}
+
+/* ---------- Barre d'onglets multi-vues (comme la coque LIVRENSA) ---------- */
+.tab-bar{position:sticky;top:65px;z-index:45;display:flex;align-items:stretch;gap:4px;padding:6px 12px 0;background:var(--glass-bg);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);border-bottom:1px solid var(--glass-border);overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.nv-tab{display:inline-flex;align-items:center;gap:8px;min-height:38px;max-width:230px;padding:6px 6px 6px 12px;border:1px solid transparent;border-bottom:none;border-radius:10px 10px 0 0;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;position:relative;flex:0 0 auto}
+.nv-tab:hover{background:rgba(127,163,184,.16);color:var(--ink)}
+.nv-tab.is-active{background:var(--glass-bg);color:var(--ink);border-color:var(--glass-border);box-shadow:0 -4px 16px rgba(15,29,41,.06)}
+.nv-tab.is-active::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--violet),var(--gold))}
+.nv-tab-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;background:var(--accent)}
+.nv-tab-title{overflow:hidden;text-overflow:ellipsis}
+.nv-tab-close{display:inline-grid;place-items:center;width:20px;height:20px;border:none;border-radius:50%;background:transparent;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;flex:0 0 auto}
+.nv-tab-close:hover{background:var(--danger-soft);color:var(--critical)}
+.nv-tab-hint{margin-left:auto;align-self:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--muted);white-space:nowrap;padding:0 8px;flex:0 0 auto}
+.nv-tab-hint kbd{font:inherit;border:1px solid var(--line);border-radius:4px;padding:0 4px;background:var(--surface)}
+.nv-tab-add{flex:0 0 auto;align-self:center;width:30px;height:30px;margin-left:2px;border:1px dashed var(--glass-border);border-radius:8px;background:transparent;color:var(--muted);font:inherit;font-size:17px;font-weight:700;line-height:1;cursor:pointer}
+.nv-tab-add:hover{color:var(--ink);border-color:var(--accent);background:rgba(127,163,184,.12)}
+.nv-tab-picker{position:fixed;z-index:120;min-width:240px;max-width:300px;max-height:320px;overflow-y:auto;padding:6px;background:var(--surface);border:1px solid var(--glass-border);border-radius:12px;box-shadow:0 18px 44px rgba(9,30,43,.25)}
+.nv-tab-picker .nv-picker-note{display:block;padding:8px 10px 4px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.nv-tab-picker button{display:flex;align-items:center;gap:9px;width:100%;padding:9px 10px;border:none;border-radius:8px;background:transparent;color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:left}
+.nv-tab-picker button:hover{background:var(--soft)}
+.nv-tab-picker .nv-tab-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+
+/* ---------- Panneaux des consoles secondaires ---------- */
+.console-panels{display:none;max-width:1440px;width:100%;margin:0 auto;padding:22px 28px 40px}
+.console-panels.is-visible{display:block}
+.nv-console{display:none}
+.nv-console.is-active{display:block;animation:fadeUp .45s cubic-bezier(.22,1,.36,1) both}
+.nv-console-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.nv-console-search{position:relative;flex:1 1 260px;max-width:360px}
+.nv-console-search input{width:100%;min-height:40px;padding:9px 12px 9px 36px;border:1px solid var(--glass-border);border-radius:999px;background:var(--glass-bg);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:var(--ink);font:inherit;font-size:13.5px}
+.nv-console-search input::placeholder{color:var(--muted)}
+.nv-console-search input:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.nv-console-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.nv-console-note{margin:14px 0 0;font-size:12.5px;color:var(--muted)}
+.nv-console-note strong{color:var(--ink)}
+
+/* ---------- Page : système .ov- fidèle à la source ---------- */
+.ov{max-width:1440px;width:100%;margin:0 auto;padding:22px 28px 40px;display:grid;gap:26px}
+.ov>*{min-width:0}
+.ov section[id],.ov article[id]{scroll-margin-top:158px}
+.ov-anchors{position:sticky;top:110px;z-index:30;display:flex;gap:8px;overflow-x:auto;padding:10px 2px;background:var(--glass-bg);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);scrollbar-width:none}
+.ov-anchors::-webkit-scrollbar{display:none}
+.ov-anchors a{flex:0 0 auto;display:inline-flex;align-items:center;min-height:40px;padding:8px 16px;border:1px solid var(--glass-border);border-radius:999px;background:var(--glass-bg);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--ink);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none}
+.ov-anchors a:hover{border-color:var(--accent);color:var(--accent)}
+
+.ov-hero{display:grid;grid-template-columns:1fr 300px;gap:22px;background:linear-gradient(135deg,#0e2233 0%,#12303d 52%,#1d2a52 100%);color:#eef4f7;border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:22px 26px;box-shadow:0 18px 44px rgba(9,30,43,.28),inset 0 1px 0 rgba(255,255,255,.14)}
+html[data-theme="dark"] .ov-hero{background:#060b10;border-color:#2b4557}
+.ov-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
+html[data-theme="dark"] .ov-eyebrow{color:#3fc1d4}
+.ov-hero h1{font-family:var(--serif);font-size:28px;line-height:1.15;margin:0 0 8px;color:#fff;font-weight:500}
+.ov-hero-lead{margin:0;font-size:14px;line-height:1.6;color:#c3d2da;max-width:62ch}
+.ov-hero-meta{border:1px solid #2b4250;background:#132833;border-radius:8px;padding:14px 16px;align-self:start}
+.ov-hero-meta span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+html[data-theme="dark"] .ov-hero-meta span{color:#3fc1d4}
+.ov-hero-meta strong{display:block;font-size:15px;color:#fff;margin-bottom:6px}
+.ov-hero-meta p{margin:0 0 10px;font-size:12px;line-height:1.55;color:#9fb4bf}
+.ov-hero-meta a{font-size:12px;font-weight:600;color:#3fc1d4;text-decoration:underline;text-underline-offset:3px}
+.ov-more summary{cursor:pointer;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);padding:8px 0 0;list-style:none}
+.ov-more summary::-webkit-details-marker{display:none}
+.ov-more summary::after{content:" +"}
+.ov-more[open ] summary::after{content:" −"}
+.ov-hero .ov-more summary{color:#3fc1d4}
+.ov-hero-more p{margin:8px 0 0;font-size:14px;line-height:1.65;color:#c3d2da;max-width:62ch}
+.ov-more summary:focus-visible,.ov-anchors a:focus-visible,.ov-seg button:focus-visible,.ov-chip:focus-visible,.ov-flow-head:focus-visible,.ov-sort:focus-visible,.ov-btn:focus-visible,.ov-card-link:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+.ov-flow{border:1px solid var(--glass-border);background:var(--glass-bg);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);border-radius:12px;padding:6px 18px 14px;box-shadow:var(--glass-shadow),inset 0 1px 0 rgba(255,255,255,.55)}
+.ov-flow-head{display:flex;align-items:center;gap:14px;width:100%;min-height:44px;background:none;border:none;padding:10px 0 4px;cursor:pointer;text-align:left;color:var(--ink);font:inherit}
+.ov-flow-head-title{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ov-flow-head-summary{font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ov-flow-chevron{margin-left:auto;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.ov-flow-track{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.ov-flow-node{position:relative;border:1px solid var(--glass-border);border-radius:10px;padding:14px 16px;background:var(--glass-bg);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.ov-flow-node:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;z-index:1}
+.ov-flow-icon{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--accent);color:var(--accent);margin-bottom:8px}
+.ov-flow-node strong{display:block;font-size:14px;color:var(--ink);margin-bottom:4px}
+.ov-flow-step-num{color:var(--accent);font-family:var(--mono);font-size:12px}
+.ov-flow-node p{margin:0;font-size:13px;line-height:1.5;color:var(--muted)}
+.ov-flow-more{margin-top:10px}
+.ov-flow-more dl{margin:8px 0 0;display:grid;gap:8px}
+.ov-flow-more dl div{display:flex;gap:10px;font-size:13px}
+.ov-flow-more dt{font-weight:700;color:var(--ink);flex:0 0 150px}
+.ov-flow-more dd{margin:0;color:var(--muted);line-height:1.5}
+
+.ov-alerts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ov-alert{border:1px solid var(--glass-border);border-left:3px solid var(--primary);background:var(--glass-bg);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;box-shadow:var(--glass-shadow),inset 0 1px 0 rgba(255,255,255,.55)}
+.ov-alert.is-critical{border-left-color:var(--critical);background:var(--danger-soft)}
+.ov-alert.is-warning{border-left-color:var(--warning);background:var(--warning-soft)}
+.ov-alert.is-idle{border-left-color:var(--success)}
+.ov-alert-label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.ov-alert-main{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.ov-alert-num{font-family:var(--serif);font-size:32px;line-height:1;color:var(--ink)}
+.ov-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.ov-pill.is-urgent{background:var(--danger-soft);color:var(--critical);border:1px solid var(--critical)}
+.ov-pill.is-todo{background:var(--warning-soft);color:var(--warning);border:1px solid var(--warning)}
+.ov-pill.is-ok{background:var(--success-soft);color:var(--success);border:1px solid var(--success)}
+.ov-alert p{margin:0 0 12px;font-size:13px;line-height:1.55;color:var(--muted)}
+.ov-btn{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border:1px solid var(--accent);border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);text-decoration:none;text-align:center}
+.ov-btn:hover{background:var(--accent-soft)}
+
+.ov-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.ov-card{border:1px solid var(--glass-border);background:var(--glass-bg);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);border-radius:12px;padding:18px;display:flex;flex-direction:column;box-shadow:var(--glass-shadow),inset 0 1px 0 rgba(255,255,255,.55)}
+.ov-eyebrow-sm{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ov-headline{display:block;font-family:var(--serif);font-size:22px;line-height:1.25;color:var(--ink);margin:8px 0 14px}
+.ov-stack{display:flex;height:14px;border-radius:999px;overflow:hidden;background:var(--chart-track);margin-bottom:12px}
+.ov-stack span{display:block;height:100%}
+.ov-legend-list{list-style:none;margin:0 0 12px;padding:0;border-top:1px solid var(--line)}
+.ov-legend-list li{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.ov-legend-list li.is-zero{opacity:.55}
+.ov-legend-list strong{margin-left:auto;font-family:var(--mono);font-size:13px;color:var(--ink)}
+.ov-dot{flex:0 0 auto;width:10px;height:10px;border-radius:3px}
+.ov-legend-link{color:var(--muted);text-decoration:none}
+.ov-legend-link:hover{color:var(--primary);text-decoration:underline}
+.ov-note{margin:0 0 12px;font-size:12px;line-height:1.55;color:var(--muted)}
+.ov-card-link{margin-top:auto;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);text-decoration:none}
+.ov-card-link:hover{text-decoration:underline}
+.ov-indicators{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.ov-indicators.cols-3{grid-template-columns:repeat(3,1fr)}
+.ov-indicator{border:1px solid var(--glass-border);border-radius:10px;padding:12px 14px;text-decoration:none;background:var(--glass-bg);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:block;transition:border-color .15s ease,transform .15s ease}
+.ov-indicator:hover{border-color:var(--accent);transform:translateY(-1px)}
+.ov-indicator strong{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-size:22px;color:var(--ink)}
+.ov-indicator span{font-size:12px;color:var(--muted);line-height:1.4;display:block;margin-top:2px}
+.ov-alert-dot{width:9px;height:9px;border-radius:50%;background:var(--critical);flex:0 0 auto}
+.ov-indicator .ov-alert-tag{font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--critical);margin-top:0}
+.ov-flux{display:grid;gap:10px;margin-bottom:12px}
+.ov-flux-row{display:grid;grid-template-columns:1fr 90px 28px;align-items:center;gap:10px;font-size:13px}
+.ov-flux-label{color:var(--muted);text-decoration:none}
+.ov-flux-label:hover{color:var(--primary);text-decoration:underline}
+.ov-flux-track{display:block;height:10px;border-radius:999px;background:var(--chart-track);overflow:hidden}
+.ov-flux-track span{display:block;height:100%;border-radius:999px}
+.ov-flux-value{font-family:var(--mono);font-size:13px;color:var(--ink);text-align:right}
+
+.ov-panel{border:1px solid var(--glass-border);background:var(--glass-bg);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);border-radius:12px;padding:18px;position:relative;overflow:clip;box-shadow:var(--glass-shadow),inset 0 1px 0 rgba(255,255,255,.55)}
+.ov-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.ov-panel-head h2{font-size:17px;margin:0 0 4px;color:var(--ink)}
+.ov-panel-head p{margin:0;font-size:13px;color:var(--muted)}
+.ov-bottom{display:grid;grid-template-columns:2fr 1fr;gap:14px;align-items:start}
+.text-link{color:var(--accent);text-decoration:none;font-size:13px;font-weight:600}
+.text-link:hover{text-decoration:underline}
+
+.ov-seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--paper);flex:0 0 auto;flex-wrap:wrap}
+.ov-seg button{display:inline-flex;align-items:center;min-height:40px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--muted);background:none;border:none;border-left:1px solid var(--line);cursor:pointer;font-family:inherit}
+.ov-seg button:first-child{border-left:none}
+.ov-seg button.is-active{background:var(--ink);color:var(--paper)}
+html[data-theme="dark"] .ov-seg button.is-active{background:#e9f3f6;color:#0b1118}
+
+.ov-chart-scroll{overflow-x:auto}
+.ov-chart{display:block;width:100%;min-width:660px;height:auto}
+.ov-chart-grid{stroke:var(--line);stroke-width:1}
+.ov-chart-bar{transform-box:fill-box;transform-origin:bottom;animation:ov-bar-grow 800ms cubic-bezier(.22,1,.36,1) both}
+@keyframes ov-bar-grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.ov-chart-axis{fill:var(--muted);font-size:11px;font-family:var(--mono)}
+.ov-chart-legend{list-style:none;display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 0;padding:0;font-size:12px;color:var(--muted)}
+.ov-chart-legend li{display:inline-flex;align-items:center;gap:7px}
+.ov-chart-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.ov-chart-bar-g{outline:none}
+.ov-chart-tip{font-family:var(--mono);font-size:11px;font-weight:700;fill:var(--ink);opacity:0;pointer-events:none;transition:opacity .15s ease}
+.ov-chart-bar-g:hover .ov-chart-tip,.ov-chart-bar-g:focus .ov-chart-tip{opacity:1}
+.ov-chart-bar-g:focus .ov-chart-bar{stroke:var(--focus);stroke-width:1.5}
+/* Hover pass 2026-11-18 : survols complets sur tous les graphes (règle studio) */
+.ov-chart-bar{transition:opacity .15s ease,filter .15s ease}
+.ov-chart-bar-g:hover .ov-chart-bar{filter:brightness(1.35)}
+.ov-chart:has(.ov-chart-bar-g:hover) .ov-chart-bar-g:not(:hover) .ov-chart-bar{opacity:.35}
+.ov-stack span{transition:opacity .15s ease,filter .15s ease;cursor:pointer}
+.ov-stack.has-hot span:not(.is-hot){opacity:.3}
+.ov-stack span.is-hot{filter:brightness(1.3)}
+.ov-flux-track span{transition:filter .15s ease}
+.ov-flux-row:hover .ov-flux-track span{filter:brightness(1.4)}
+.ov-tip{position:fixed;z-index:300;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-family:var(--mono);font-size:11.5px;font-weight:600;box-shadow:0 10px 28px rgba(3,8,14,.35);opacity:0;transform:translate(-50%,calc(-100% - 10px));transition:opacity .12s ease;white-space:nowrap}
+.ov-tip.is-on{opacity:1}
+.ov-empty{border:1px dashed var(--line);border-radius:8px;padding:26px 18px;text-align:center}
+.ov-empty p{margin:0 0 6px;color:var(--ink)}
+.ov-formulas{margin:8px 0 0;padding-left:18px;font-size:13px;color:var(--muted);line-height:1.6}
+.ov-formulas li{margin-bottom:6px}
+.ov-formulas strong{color:var(--ink)}
+
+.ov-sup-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.ov-chip{display:inline-flex;align-items:center;min-height:40px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--ink);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.ov-chip.is-active{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+html[data-theme="dark"] .ov-chip.is-active{background:#e9f3f6;border-color:#e9f3f6;color:#0b1118}
+.ov-table{width:100%;border-collapse:collapse;font-size:13px}
+.ov-table th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line)}
+.ov-table td{padding:10px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:middle}
+.ov-table tr:last-child td{border-bottom:none}
+.ov-sort{background:none;border:none;padding:0;font:inherit;color:inherit;cursor:pointer;letter-spacing:inherit;text-transform:inherit}
+.ov-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;white-space:nowrap;background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.ov-badge.is-accent{background:var(--accent-soft)}
+.ov-badge.is-accent svg{color:var(--accent)}
+.ov-badge.is-success{background:var(--success-soft)}
+.ov-badge.is-success svg{color:var(--success)}
+.ov-badge.is-danger{background:var(--danger-soft)}
+.ov-badge.is-danger svg{color:var(--critical)}
+.ov-badge.is-gold{background:var(--gold-soft)}
+.ov-badge.is-gold svg{color:var(--gold)}
+.ov-proj-cards{display:none;list-style:none;margin:0;padding:0}
+.ov-proj-card{display:flex;border:1px solid var(--line);border-radius:8px;margin-bottom:10px;overflow:hidden;background:var(--paper)}
+.ov-proj-card-main{flex:1;padding:12px 14px;display:grid;gap:7px;min-width:0}
+.ov-proj-card-main strong{font-size:14px;color:var(--ink)}
+.ov-proj-badges{display:flex;gap:6px;flex-wrap:wrap}
+.ov-proj-date{font-size:12px;color:var(--muted)}
+.ov-proj-fiche{display:flex;align-items:center;padding:0 16px;border-left:1px solid var(--line);color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-decoration:none}
+.ov-proj-fiche:hover{background:var(--accent-soft)}
+
+.ov-timeline{list-style:none;margin:0;padding:0}
+.ov-tl-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.ov-tl-item:last-child{border-bottom:none}
+.ov-tl-icon{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:inline-flex;align-items:center;justify-content:center}
+.ov-tl-icon.is-danger{background:var(--danger-soft);color:var(--critical)}
+.ov-tl-main{flex:1;min-width:0}
+.ov-tl-line{margin:0;font-size:13px;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ov-sev{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--danger-soft);color:var(--critical);border:1px solid var(--critical);border-radius:999px;padding:2px 8px}
+.ov-count{font-family:var(--mono);font-size:12px;font-weight:700;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:2px 8px;color:var(--ink)}
+.ov-tl-meta{margin:3px 0 0;font-size:12px;color:var(--muted);line-height:1.5;overflow-wrap:anywhere}
+.ov-tl-time{flex:0 0 auto;font-size:12px;color:var(--muted);white-space:nowrap;padding-top:2px}
+.ov-tl-occurrences{margin:6px 0 0;padding-left:16px;font-size:12px;color:var(--muted);display:grid;gap:3px}
+.ov-tl-occurrences li{list-style:disc}
+
+.ov-foot{border-top:1px solid var(--line);padding:18px 4px 4px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.bottom-tabs{display:none}
+.scrim{display:none}
+
+/* ---------- v5 : habillage Stitch (thème sombre) — structure v4 inchangée ---------- */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#22344a;border-radius:99px}
+html[data-theme="dark"] .app-sidebar{background:linear-gradient(180deg,#090e17,#070b13 55%,#0a101d)}
+html[data-theme="dark"] .brand-mark{background:linear-gradient(135deg,#22d3ee,#2dd4bf);color:#03252b;box-shadow:0 4px 16px rgba(45,212,191,.35)}
+html[data-theme="dark"] .app-nav-item{border:1px solid transparent}
+html[data-theme="dark"] .app-nav-item.is-active{background:linear-gradient(90deg,rgba(0,229,201,.14),rgba(13,20,32,.55));border-color:rgba(0,229,201,.30);box-shadow:inset 2px 0 0 var(--accent),0 0 16px -6px rgba(0,229,201,.45)}
+html[data-theme="dark"] .sidebar-search input{background:#0d1420;border-color:#22344a}
+html[data-theme="dark"] .app-signout:hover{color:#fb7185;border-color:rgba(251,113,133,.55)}
+html[data-theme="dark"] .bell-dot{background:#00e5c9}
+html[data-theme="dark"] .ov-anchors a:first-child{border-color:rgba(0,229,201,.45);background:rgba(0,229,201,.10);color:#5eead4}
+html[data-theme="dark"] .ov-hero{background:radial-gradient(560px 300px at 8% -10%,rgba(0,180,216,.14),transparent 60%),linear-gradient(135deg,#0c1320 0%,#090f1a 55%,#0a0e1e 100%);border-color:rgba(125,165,205,.22);box-shadow:0 18px 44px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.08)}
+html[data-theme="dark"] .ov-eyebrow{color:#22d3ee}
+html[data-theme="dark"] .ov-hero-meta{background:rgba(10,18,30,.85);border-color:rgba(125,165,205,.22)}
+html[data-theme="dark"] .ov-hero-meta span{color:#2dd4bf}
+html[data-theme="dark"] .ov-flow{background:rgba(10,16,27,.85)}
+html[data-theme="dark"] .ov-flow-node{background:rgba(12,19,32,.82)}
+html[data-theme="dark"] .ov-alert{background:linear-gradient(180deg,rgba(15,23,38,.88),rgba(9,13,20,.94));box-shadow:0 12px 30px rgba(0,0,0,.40),inset 0 1px 0 rgba(255,255,255,.06)}
+html[data-theme="dark"] .ov-alert.is-critical{border-color:rgba(244,63,94,.38);background:linear-gradient(180deg,rgba(244,63,94,.11),rgba(12,10,14,.94));box-shadow:inset 0 0 18px -4px rgba(239,68,68,.10),0 0 14px -2px rgba(239,68,68,.15)}
+html[data-theme="dark"] .ov-alert.is-warning{border-color:rgba(245,158,11,.38);background:linear-gradient(180deg,rgba(245,158,11,.11),rgba(13,11,8,.94));box-shadow:inset 0 0 18px -4px rgba(245,158,11,.10),0 0 14px -2px rgba(245,158,11,.15)}
+html[data-theme="dark"] .ov-alert.is-critical .ov-btn{border-color:rgba(244,63,94,.45);color:#fda4af;background:rgba(244,63,94,.07)}
+html[data-theme="dark"] .ov-alert.is-warning .ov-btn{border-color:rgba(245,158,11,.45);color:#fcd34d;background:rgba(245,158,11,.07)}
+html[data-theme="dark"] .ov-card,html[data-theme="dark"] .ov-panel{background:linear-gradient(180deg,rgba(16,25,41,.82),rgba(10,15,25,.88));border-color:rgba(125,165,205,.18);box-shadow:0 14px 36px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.06)}
+html[data-theme="dark"] .ov-indicator{background:rgba(12,19,32,.66)}
+html[data-theme="dark"] .ov-indicator:hover{border-color:rgba(0,229,201,.5);box-shadow:0 0 14px -4px rgba(0,229,201,.35)}
+html[data-theme="dark"] .ov-stack{box-shadow:inset 0 1px 3px rgba(0,0,0,.55)}
+html[data-theme="dark"] .ov-chart-grid{stroke-dasharray:3 4;opacity:.65}
+html[data-theme="dark"] .ov-table tbody tr{transition:background .15s ease}
+html[data-theme="dark"] .ov-table tbody tr:hover{background:rgba(125,165,205,.05)}
+html[data-theme="dark"] .ov-tl-item{background:rgba(12,19,32,.72);border:1px solid rgba(125,165,205,.14);border-radius:10px;padding:11px 12px;margin-bottom:8px}
+html[data-theme="dark"] .ov-tl-item:last-child{border-bottom:1px solid rgba(125,165,205,.14);margin-bottom:0}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .6s cubic-bezier(.22,1,.36,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.19s}.d4{animation-delay:.26s}.d5{animation-delay:.33s}.d6{animation-delay:.4s}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .ov-chart-bar,.fade-up{animation:none}
+  .ov-chart-tip{transition:none}
+}
+@media (max-width:1100px){
+  .ov-bottom{grid-template-columns:1fr}
+  .ov-flow-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}
+  .ov-flow-node{flex:0 0 230px;scroll-snap-align:start}
+  .ov-flow-node::after{display:none}
+}
+@media (max-width:860px){
+  .app-shell{grid-template-columns:1fr}
+  .app-sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;transform:translateX(-102%);transition:transform .25s ease;box-shadow:0 0 60px rgba(0,0,0,.35)}
+  .app-sidebar.open{transform:none}
+  .scrim{display:block;position:fixed;inset:0;background:rgba(6,11,16,.55);z-index:55;border:none}
+  .scrim[hidden]{display:none}
+  .menu-btn{display:inline-flex}
+  .topbar-search{display:none}
+  .breadcrumb{display:none}
+  .ov{padding:16px 16px 96px;gap:22px}
+  .app-topbar{padding:10px 16px}
+  .ov-hero{grid-template-columns:1fr;padding:18px}
+  .ov-alerts{grid-template-columns:1fr}
+  .ov-alert{padding:12px 14px}
+  .ov-grid{grid-template-columns:1fr}
+  .ov-indicators.cols-3{grid-template-columns:1fr 1fr}
+  .ov-table{display:none}
+  .nv-console .ov-table{display:block;width:100%}
+  .nv-console .ov-table thead{display:none}
+  .nv-console .ov-table tbody,.nv-console .ov-table tr{display:block}
+  .nv-console .ov-table tr{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:6px 12px;background:var(--surface)}
+  .nv-console .ov-table td{display:block;border-bottom:none;padding:4px 0}
+  .ov-proj-cards{display:block}
+  .ov-anchors{top:106px}
+  .tab-bar{top:61px;padding:4px 8px 0}
+  .nv-tab-hint{display:none}
+  .console-panels{padding:16px 16px 96px}
+  .ov-flow-more dl div{flex-direction:column;gap:2px}
+  .ov-flow-more dt{flex:none}
+  .ov-panel-head{flex-direction:column;align-items:flex-start}
+  .ov-seg{max-width:100%;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+  .ov-seg::-webkit-scrollbar{display:none}
+  .ov-seg button{flex:0 0 auto}
+  .bottom-tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--glass-bg);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);border-top:1px solid var(--glass-border);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .bottom-tabs a{flex:1;display:grid;justify-items:center;gap:2px;padding:6px 2px;font-size:11px;font-weight:600;color:var(--muted);text-decoration:none;border-radius:8px}
+  .bottom-tabs a.is-active{color:var(--accent)}
+  .bottom-tabs svg{width:20px;height:20px}
+}
+</style>
+</head>
+<body>
+<div class="app-shell" id="shell">
+  <!-- ============ Sidebar sombre (coque admin, 6 groupes, 26 entrées) ============ -->
+  <aside class="app-sidebar" id="sidebar" aria-label="Navigation de l'espace">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">N</span>
+      <span><span class="brand-name">Northstar</span><br><span class="brand-sub">Governance Console</span></span>
+    </div>
+    <nav aria-label="Console">
+      <div class="app-nav-group">
+        <h3>Steering</h3>
+        <a class="app-nav-item is-active" href="#top" data-console="overview" aria-current="page"><span class="app-nav-ico">▦</span>Overview</a>
+        <a class="app-nav-item is-sub" href="#pilotage" data-console="pilotage">GPI Control Tower</a>
+        <a class="app-nav-item is-sub" href="#audit" data-console="notifications">Notifications</a>
+      </div>
+      <div class="app-nav-group">
+        <h3>People</h3>
+        <a class="app-nav-item" href="#ecosysteme" data-console="users"><span class="app-nav-ico">◉</span>Users</a>
+        <a class="app-nav-item" href="#ecosysteme" data-console="staff"><span class="app-nav-ico">⚿</span>Staff &amp; permissions</a>
+        <a class="app-nav-item" href="#pilotage" data-console="applications"><span class="app-nav-ico">▤</span>Applications</a>
+      </div>
+      <div class="app-nav-group">
+        <h3>Operations</h3>
+        <a class="app-nav-item" href="#projets" data-console="projects"><span class="app-nav-ico">▣</span>Projects &amp; proposals</a>
+        <a class="app-nav-item is-sub" href="#projets" data-console="estimates">Estimates &amp; quotes</a>
+        <a class="app-nav-item is-sub" href="#projets" data-console="external">External projects</a>
+        <a class="app-nav-item is-sub" href="#projets" data-console="devcp">Dev-CP mandates</a>
+        <a class="app-nav-item" href="#supervision" data-console="missions"><span class="app-nav-ico">◎</span>Missions</a>
+        <a class="app-nav-item is-sub" href="#supervision" data-console="internal-missions">Internal missions</a>
+        <a class="app-nav-item is-sub" href="#audit" data-console="incidents">Incidents</a>
+      </div>
+      <div class="app-nav-group">
+        <h3>Finance</h3>
+        <a class="app-nav-item" href="#flux" data-console="finance"><span class="app-nav-ico">◈</span>Finance center</a>
+        <a class="app-nav-item is-sub" href="#flux" data-console="settlements">Settlements</a>
+        <a class="app-nav-item is-sub" href="#flux" data-console="invoices">Invoices</a>
+        <a class="app-nav-item is-sub" href="#flux" data-console="subscriptions">Subscriptions</a>
+        <a class="app-nav-item is-sub" href="#flux" data-console="pricing">Quotes &amp; pricing</a>
+      </div>
+      <div class="app-nav-group">
+        <h3>Support</h3>
+        <a class="app-nav-item" href="#actions" data-console="disputes"><span class="app-nav-ico">⬡</span>Disputes</a>
+        <a class="app-nav-item is-sub" href="#actions" data-console="warranty">Warranty</a>
+        <a class="app-nav-item is-sub" href="#pilotage" data-console="support">Consolidated support</a>
+      </div>
+      <div class="app-nav-group">
+        <h3>Governance</h3>
+        <a class="app-nav-item" href="#audit" data-console="security"><span class="app-nav-ico">⛨</span>Security &amp; integrations</a>
+        <a class="app-nav-item" href="#audit" data-console="audit"><span class="app-nav-ico">≣</span>Audit journal</a>
+        <a class="app-nav-item is-sub" href="#audit" data-console="reports">Reports &amp; exports</a>
+        <a class="app-nav-item" href="#top" data-console="settings"><span class="app-nav-ico">⚙</span>Settings</a>
+        <a class="app-nav-item is-sub" href="#top" data-console="articles">Articles</a>
+      </div>
+      <div class="sidebar-search-wrap">
+        <form class="sidebar-search" id="sidebarSearch" role="search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" id="sidebarSearchInput" placeholder="Search a user, a project…" aria-label="Search the navigation">
+        </form>
+        <p class="sidebar-search-empty" id="sidebarSearchEmpty" hidden>No console matches this search.</p>
+      </div>
+    </nav>
+    <div class="app-user">
+      <span class="app-avatar" aria-hidden="true">AR</span>
+      <span><span class="app-user-name">Ava Reynolds</span><br><span class="app-user-role">Superadmin</span></span>
+      <button class="app-signout" type="button" aria-label="Sign out" title="Sign out">⏻</button>
+    </div>
+  </aside>
+  <button class="scrim" id="scrim" hidden aria-label="Close menu"></button>
+
+  <div class="app-main" id="top">
+    <!-- ============ Barre du haut ============ -->
+    <header class="app-topbar">
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
+      <nav class="breadcrumb" aria-label="Breadcrumb">Governance Console &nbsp;›&nbsp; <strong>Overview</strong></nav>
+      <label class="topbar-search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" id="topSearch" placeholder="Search projects, users…" aria-label="Search projects">
+      </label>
+      <button class="icon-btn" id="themeBtn" aria-label="Switch theme" title="Light / dark"><span class="theme-glyph" id="themeGlyph">☾</span></button>
+      <span style="position:relative">
+        <button class="icon-btn" id="bellBtn" aria-label="Notifications" aria-expanded="false">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="bell-dot" aria-hidden="true"></span>
+        </button>
+        <div class="nv-feed-panel" id="feedPanel" hidden role="dialog" aria-label="Notifications">
+          <div class="nv-feed-head"><strong>Notifications</strong><button type="button" id="markRead">Mark all read</button></div>
+          <div class="notif-item"><span class="notif-ico">⚖</span><div><p><strong>Dispute opened</strong> — “Aurora booking app”, escrow frozen.</p><time>12 min ago</time></div></div>
+          <div class="notif-item"><span class="notif-ico">💳</span><div><p><strong>Payout instruction prepared</strong> — Milestone 3, “Coral CRM migration”.</p><time>38 min ago</time></div></div>
+          <div class="notif-item"><span class="notif-ico">🛡</span><div><p><strong>Care ticket updated</strong> — “Ready for re-test”.</p><time>1 h ago</time></div></div>
+          <div class="notif-item"><span class="notif-ico">✓</span><div><p><strong>Project accepted</strong> — “Beacon analytics suite”, contract signed.</p><time>3 h ago</time></div></div>
+        </div>
+      </span>
+      <button class="topbar-avatar" aria-label="Account: Ava Reynolds">AR</button>
+    </header>
+
+    <!-- Barre d'onglets multi-vues : chaque console s'ouvre dans un onglet -->
+    <div class="tab-bar" id="tabBar" role="tablist" aria-label="Open consoles"></div>
+
+    <!-- Consoles secondaires : vues simplifiées, générées en JS -->
+    <div class="console-panels" id="consolePanels" hidden></div>
+
+    <main class="ov" id="overviewView">
+      <!-- Ancres collantes -->
+      <nav class="ov-anchors" aria-label="Sections of the console">
+        <a href="#actions">Actions</a>
+        <a href="#ecosysteme">Ecosystem</a>
+        <a href="#projets">Projects</a>
+        <a href="#livraisons">Deliveries</a>
+        <a href="#flux">Flows</a>
+        <a href="#pilotage">Pilotage</a>
+        <a href="#evolution">Evolution</a>
+        <a href="#audit">Audit</a>
+      </nav>
+
+      <!-- 1. En-tête compact — panneau encre, comme la source -->
+      <section class="ov-hero fade-up">
+        <div class="ov-hero-main">
+          <p class="ov-eyebrow">Superadmin Console · Overview</p>
+          <h1>Central governance console</h1>
+          <p class="ov-hero-lead">Every figure on this page is computed from the database at display time.</p>
+          <details class="ov-more ov-hero-more">
+            <summary>Read more</summary>
+            <p>Governance acts run in their dedicated consoles — projects, users, disputes, warranty, settlements — with their reasons and dual control when the rule requires it. Funds never move from this console: it prepares and approves instructions, execution stays confirmed by the payment provider.</p>
+          </details>
+        </div>
+        <aside class="ov-hero-meta">
+          <span>Audit register</span>
+          <strong>10 latest entries below</strong>
+          <p>Governance acts recorded in the database, viewable in the audit console — with no external sealing.</p>
+          <a href="#audit" data-console="audit">Open the full journal</a>
+        </aside>
+      </section>
+
+      <!-- 2. Frise du processus -->
+      <section class="ov-flow fade-up d1" aria-label="Governance flow">
+        <button type="button" class="ov-flow-head" id="flowHead" aria-expanded="false">
+          <span class="ov-flow-head-title">The administrative validation flow, in four steps</span>
+          <span class="ov-flow-head-summary" id="flowSummary">Request received → Instruction → Reasoned decision → Logged effect</span>
+          <span class="ov-flow-chevron" id="flowChevron">Show</span>
+        </button>
+        <div id="flowBody" hidden>
+          <ol class="ov-flow-track">
+            <li class="ov-flow-node">
+              <span class="ov-flow-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span>
+              <strong><span class="ov-flow-step-num">1.</span> Request received</strong>
+              <p>The request enters through its dedicated console.</p>
+            </li>
+            <li class="ov-flow-node">
+              <span class="ov-flow-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+              <strong><span class="ov-flow-step-num">2.</span> Instruction</strong>
+              <p>The competent role reviews the file and its evidence.</p>
+            </li>
+            <li class="ov-flow-node">
+              <span class="ov-flow-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16.5l2.5-6.5L21 16.5c-.8.6-1.7.9-2.5.9s-1.7-.3-2.5-.9Z"/><path d="M3 16.5 5.5 10 8 16.5c-.8.6-1.7.9-2.5.9s-1.7-.3-2.5-.9Z"/><path d="M12 3v18"/><path d="M7 21h10"/><path d="M5.5 10h13"/></svg></span>
+              <strong><span class="ov-flow-step-num">3.</span> Reasoned decision</strong>
+              <p>Acceptance or reasoned rejection; dual control when the rule requires it.</p>
+            </li>
+            <li class="ov-flow-node">
+              <span class="ov-flow-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></span>
+              <strong><span class="ov-flow-step-num">4.</span> Logged effect</strong>
+              <p>The act is applied and recorded in the audit register.</p>
+            </li>
+          </ol>
+          <details class="ov-more ov-flow-more">
+            <summary>Learn more</summary>
+            <dl>
+              <div><dt>Request received</dt><dd>Project, dispute, settlement: the request enters through its dedicated console.</dd></div>
+              <div><dt>Instruction</dt><dd>The competent role reviews the file and its evidence.</dd></div>
+              <div><dt>Reasoned decision</dt><dd>Acceptance or reasoned rejection; dual control when the rule requires it.</dd></div>
+              <div><dt>Logged effect</dt><dd>The act is applied and recorded in the audit register.</dd></div>
+            </dl>
+          </details>
+        </div>
+      </section>
+
+      <!-- 3. File d'actions prioritaires -->
+      <section id="actions" class="ov-alerts" aria-label="Priority action queue">
+        <article class="ov-alert is-critical fade-up d2">
+          <span class="ov-alert-label">Disputes &amp; arbitration</span>
+          <div class="ov-alert-main"><strong class="ov-alert-num num">7</strong><span class="ov-pill is-urgent">Urgent</span></div>
+          <p>7 open disputes · 2 in arbitration. The protective freeze runs from the moment a case is opened.</p>
+          <a href="#audit" class="ov-btn" data-console="disputes">Open the disputes console</a>
+        </article>
+        <article class="ov-alert is-warning fade-up d2">
+          <span class="ov-alert-label">Settlements &amp; refunds</span>
+          <div class="ov-alert-main"><strong class="ov-alert-num num">5</strong><span class="ov-pill is-todo">To process</span></div>
+          <p>5 instructions to approve — 3 payout(s) prepared, 2 refund(s) prepared — dual control: preparer ≠ approver.</p>
+          <a href="#flux" class="ov-btn" data-console="settlements">Open the settlements console</a>
+        </article>
+        <article class="ov-alert is-warning fade-up d2">
+          <span class="ov-alert-label">Warranty Care</span>
+          <div class="ov-alert-main"><strong class="ov-alert-num num">4</strong><span class="ov-pill is-todo">To process</span></div>
+          <p>4 open warranty tickets · 1 classification appeal awaiting review.</p>
+          <a href="#livraisons" class="ov-btn" data-console="warranty">Open the warranty console</a>
+        </article>
+      </section>
+
+      <!-- 4. Sections 01 à 04 — grille bento -->
+      <div class="ov-grid">
+        <article class="ov-card fade-up d3" id="ecosysteme">
+          <header>
+            <span class="ov-eyebrow-sm">01. Actor ecosystem</span>
+            <strong class="ov-headline num">1,284 accounts</strong>
+          </header>
+          <div class="ov-stack" role="img" aria-label="Account breakdown: Clients 512, Certified developers 468, Candidates 231, External project leads 64, Internal staff 9">
+            <span style="width:39.9%;background:var(--chart-1)" title="Clients : 512"></span>
+            <span style="width:36.4%;background:var(--chart-2)" title="Certified developers : 468"></span>
+            <span style="width:18%;background:var(--chart-3)" title="Candidates : 231"></span>
+            <span style="width:5%;background:var(--chart-4)" title="External project leads : 64"></span>
+            <span style="width:0.7%;background:var(--chart-8)" title="Internal staff : 9"></span>
+          </div>
+          <ul class="ov-legend-list">
+            <li><span class="ov-dot" style="background:var(--chart-1)"></span><a class="ov-legend-link" href="#pilotage">Clients</a><strong class="num">512</strong></li>
+            <li><span class="ov-dot" style="background:var(--chart-2)"></span><a class="ov-legend-link" href="#pilotage">Certified developers</a><strong class="num">468</strong></li>
+            <li><span class="ov-dot" style="background:var(--chart-3)"></span><a class="ov-legend-link" href="#pilotage">Candidates</a><strong class="num">231</strong></li>
+            <li><span class="ov-dot" style="background:var(--chart-4)"></span><a class="ov-legend-link" href="#pilotage">External project leads</a><strong class="num">64</strong></li>
+            <li><span class="ov-dot" style="background:var(--chart-8)"></span><a class="ov-legend-link" href="#pilotage">Internal staff</a><strong class="num">9</strong></li>
+          </ul>
+          <a href="#pilotage" class="ov-card-link" data-console="users">Users console</a>
+        </article>
+
+        <article class="ov-card fade-up d3" id="projets">
+          <header>
+            <span class="ov-eyebrow-sm">02. Project portfolio</span>
+            <strong class="ov-headline num">342 projects</strong>
+          </header>
+          <div class="ov-stack" role="img" aria-label="Project breakdown: Under review 41, Proposals and funding 96, In execution 128, In dispute 12, Completed 27, Cancelled 38">
+            <span style="width:12%;background:var(--chart-2)" title="Under review : 41"></span>
+            <span style="width:28.1%;background:var(--chart-3)" title="Proposals &amp; funding : 96"></span>
+            <span style="width:37.4%;background:var(--chart-1)" title="In execution : 128"></span>
+            <span style="width:3.5%;background:var(--critical)" title="In dispute : 12"></span>
+            <span style="width:7.9%;background:var(--chart-4)" title="Completed : 27"></span>
+            <span style="width:11.1%;background:var(--chart-6)" title="Cancelled : 38"></span>
+          </div>
+          <ul class="ov-legend-list">
+            <li><span class="ov-dot" style="background:var(--chart-2)"></span><a class="ov-legend-link" href="#supervision">Under review</a><strong class="num">41</strong></li>
+            <li><span class="ov-dot" style="background:var(--chart-3)"></span><a class="ov-legend-link" href="#supervision">Proposals &amp; funding</a><strong class="num">96</strong></li>
+            <li><span class="ov-dot" style="background:var(--chart-1)"></span><a class="ov-legend-link" href="#supervision">In execution</a><strong class="num">128</strong></li>
+            <li><span class="ov-dot" style="background:var(--critical)"></span><a class="ov-legend-link" href="#supervision">In dispute</a><strong class="num">12</strong></li>
+            <li><span class="ov-dot" style="background:var(--chart-4)"></span><a class="ov-legend-link" href="#supervision">Completed</a><strong class="num">27</strong></li>
+            <li><span class="ov-dot" style="background:var(--chart-6)"></span><a class="ov-legend-link" href="#supervision">Cancelled</a><strong class="num">38</strong></li>
+          </ul>
+          <p class="ov-note">18 mission(s) published on the board (first come, first served).</p>
+          <a href="#supervision" class="ov-card-link" data-console="projects">Projects console</a>
+        </article>
+
+        <article class="ov-card fade-up d4" id="livraisons">
+          <header>
+            <span class="ov-eyebrow-sm">03. Deliveries &amp; Care registry</span>
+            <strong class="ov-headline num">214 formal acceptances</strong>
+          </header>
+          <div class="ov-indicators">
+            <a href="#actions" class="ov-indicator"><strong class="num">7 <span class="ov-alert-dot" role="img" aria-label="to process"></span><span class="ov-alert-tag">To process</span></strong><span>Open disputes</span></a>
+            <a href="#actions" class="ov-indicator"><strong class="num">2 <span class="ov-alert-dot" role="img" aria-label="to process"></span><span class="ov-alert-tag">To process</span></strong><span>Disputes in arbitration</span></a>
+            <a href="#actions" class="ov-indicator" title="How this figure is computed: open Care warranty tickets — Open, In progress or Ready for re-test — counted in the database at display time."><strong class="num">4 <span class="ov-alert-dot" role="img" aria-label="to process"></span><span class="ov-alert-tag">To process</span></strong><span>Open warranty tickets</span></a>
+            <a href="#actions" class="ov-indicator"><strong class="num">1 <span class="ov-alert-dot" role="img" aria-label="to process"></span><span class="ov-alert-tag">To process</span></strong><span>Classification appeals pending</span></a>
+          </div>
+          <a href="#audit" class="ov-card-link" data-console="disputes">Disputes registry</a>
+        </article>
+
+        <article class="ov-card fade-up d4" id="flux">
+          <header>
+            <span class="ov-eyebrow-sm">04. Flows &amp; settlements</span>
+            <strong class="ov-headline num">52 confirmed attempts</strong>
+          </header>
+          <div class="ov-flux">
+            <div class="ov-flux-row"><a href="#flux" class="ov-flux-label">Payment attempts (total)</a><span class="ov-flux-track" aria-hidden="true"><span style="width:100%;background:var(--chart-1)"></span></span><strong class="ov-flux-value num">86</strong></div>
+            <div class="ov-flux-row"><a href="#flux" class="ov-flux-label">Payouts prepared</a><span class="ov-flux-track" aria-hidden="true"><span style="width:4%;background:var(--chart-2)"></span></span><strong class="ov-flux-value num">3</strong></div>
+            <div class="ov-flux-row"><a href="#flux" class="ov-flux-label">Payouts approved</a><span class="ov-flux-track" aria-hidden="true"><span style="width:5.8%;background:var(--success)"></span></span><strong class="ov-flux-value num">5</strong></div>
+            <div class="ov-flux-row"><a href="#flux" class="ov-flux-label">Refunds prepared</a><span class="ov-flux-track" aria-hidden="true"><span style="width:4%;background:var(--gold)"></span></span><strong class="ov-flux-value num">2</strong></div>
+          </div>
+          <p class="ov-note">No payment provider connected: no funds are held or ring-fenced by the platform, and “paid” only exists on provider confirmation.</p>
+          <a href="#flux" class="ov-card-link" data-console="settlements">Settlements console</a>
+        </article>
+      </div>
+
+      <!-- 5. Pilotage — files et états -->
+      <section class="ov-panel fade-up d5" id="pilotage">
+        <header class="ov-panel-head">
+          <div>
+            <h2>Pilotage — queues and states</h2>
+            <p>Exact counts re-read from the database at display time; each tile opens the console that clears the queue.</p>
+          </div>
+        </header>
+        <div class="ov-indicators cols-3">
+          <a href="#ecosysteme" class="ov-indicator" data-console="users"><strong class="num">9</strong><span>Suspended accounts</span></a>
+          <a href="#pilotage" class="ov-indicator" data-console="applications"><strong class="num">23 <span class="ov-alert-dot" role="img" aria-label="to process"></span><span class="ov-alert-tag">To process</span></strong><span>Applications pending</span></a>
+          <a href="#pilotage" class="ov-indicator" data-console="support" title="How this figure is computed: support tickets with status Open, In progress or Waiting (Resolved and Closed excluded), re-read from the database at display time."><strong class="num">11 <span class="ov-alert-dot" role="img" aria-label="to process"></span><span class="ov-alert-tag">To process</span></strong><span>Unresolved support tickets</span></a>
+          <a href="#supervision" class="ov-indicator" data-console="pilotage"><strong class="num">6 <span class="ov-alert-dot" role="img" aria-label="to process"></span><span class="ov-alert-tag">To process</span></strong><span>Late milestones</span></a>
+          <a href="#flux" class="ov-indicator" data-console="subscriptions"><strong class="num">214</strong><span>Active subscriptions</span></a>
+          <a href="#flux" class="ov-indicator" data-console="subscriptions"><strong class="num">17</strong><span>Expired subscriptions</span></a>
+        </div>
+        <details class="ov-more">
+          <summary>How these figures are computed</summary>
+          <ul class="ov-formulas">
+            <li><strong>Suspended accounts</strong>: profiles whose protective suspension is active at display time.</li>
+            <li><strong>Applications pending</strong>: files at the To review, Under review, Technical test or Interview steps.</li>
+            <li><strong>Unresolved support tickets</strong>: tickets Open, In progress or Waiting (Resolved and Closed excluded).</li>
+            <li><strong>Late milestones</strong>: reference date passed and milestone still being processed (funded, in execution, under CP or client review, in revision or in dispute). Accepted milestones and those not started are excluded.</li>
+            <li><strong>Active subscriptions</strong>: status Active or Renewal pending, with no end date or a future one. <strong>Expired</strong>: status Expired, or end date passed without renewal.</li>
+            <li><strong>Evolution</strong>: creations counted per UTC day over the displayed window; each total is compared with the immediately preceding period of the same length.</li>
+          </ul>
+        </details>
+      </section>
+
+      <!-- 6. Évolution — graphique à 3 séries, repères entiers -->
+      <section class="ov-panel fade-up d5" id="evolution">
+        <header class="ov-panel-head">
+          <div>
+            <h2>Platform evolution</h2>
+            <p id="evoSummary">Per day (UTC): 214 sign-ups, 96 projects created, 86 payment attempts over the period. Comparable previous period: 198 sign-ups, 88 projects, 79 attempts.</p>
+          </div>
+          <nav class="ov-seg" aria-label="Choose the period" id="periodSeg">
+            <button type="button" data-period="1">Today</button>
+            <button type="button" data-period="7">7 days</button>
+            <button type="button" data-period="30" class="is-active" aria-current="page">30 days</button>
+            <button type="button" data-period="90">90 days</button>
+            <button type="button" data-period="month">This month</button>
+            <button type="button" data-period="prev-month">Last month</button>
+            <button type="button" data-period="year">This year</button>
+          </nav>
+        </header>
+        <div class="ov-chart-scroll">
+          <svg class="ov-chart" id="evoChart" viewBox="0 0 760 264" role="img" aria-label="Evolution — 30 days: 214 sign-ups, 96 projects, 86 payment attempts"></svg>
+        </div>
+        <ul class="ov-chart-legend" id="evoLegend"></ul>
+        <table class="sr-only">
+          <caption>Evolution — 30 days, per day</caption>
+          <thead><tr><th>Date</th><th>Sign-ups</th><th>Projects created</th><th>Payment attempts</th></tr></thead>
+          <tbody id="evoTableBody"></tbody>
+        </table>
+      </section>
+
+      <div class="ov-bottom">
+        <!-- 6. Supervision — tableau Projet / Type / Statut / Créé le / Fiche -->
+        <section class="ov-panel fade-up d6" id="supervision">
+          <header class="ov-panel-head">
+            <div>
+              <h2>Project supervision</h2>
+              <p>The platform's most recent projects, all statuses combined.</p>
+            </div>
+            <a href="#supervision" class="text-link" data-console="projects">All projects</a>
+          </header>
+          <div class="ov-sup">
+            <div class="ov-sup-filters" role="group" aria-label="Filter by status" id="supFilters"></div>
+            <table class="ov-table">
+              <thead>
+                <tr>
+                  <th><button type="button" class="ov-sort" data-sort="title">Project <span id="sortTitleArrow"></span></button></th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th><button type="button" class="ov-sort" data-sort="date">Created <span id="sortDateArrow">↓</span></button></th>
+                  <th><span class="sr-only">File</span></th>
+                </tr>
+              </thead>
+              <tbody id="supBody"></tbody>
+            </table>
+            <ul class="ov-proj-cards" id="supCards"></ul>
+            <p class="muted" id="supEmpty" hidden>No project with this status among the most recent.</p>
+          </div>
+        </section>
+
+        <!-- 7. Derniers actes — timeline regroupée -->
+        <section class="ov-panel fade-up d6" id="audit">
+          <header class="ov-panel-head">
+            <div>
+              <h2>Latest logged acts</h2>
+              <p>Application audit register — not a real-time feed.</p>
+            </div>
+            <a href="#audit" class="text-link" data-console="audit">Full journal</a>
+          </header>
+          <ol class="ov-timeline">
+            <li class="ov-tl-item">
+              <span class="ov-tl-icon is-danger" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span>
+              <div class="ov-tl-main">
+                <p class="ov-tl-line"><strong>Dispute opened</strong><span class="ov-sev">Security</span></p>
+                <p class="ov-tl-meta"><span>DIS-2481 · “Aurora booking app”</span><span> · A. Reynolds · Superadmin</span></p>
+              </div>
+              <time class="ov-tl-time" title="16 Nov 2026, 11:42">12 min ago</time>
+            </li>
+            <li class="ov-tl-item">
+              <span class="ov-tl-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+              <div class="ov-tl-main">
+                <p class="ov-tl-line"><strong>Payout instruction prepared</strong><span class="ov-count">×2</span></p>
+                <p class="ov-tl-meta"><span>PAY-1130 · Milestone 3 · “Coral CRM migration”</span><span> · M. Okafor · Finance</span><span> · between 11:02 and 11:16</span></p>
+                <details class="ov-more"><summary>View the 2 occurrences</summary>
+                  <ul class="ov-tl-occurrences"><li>16 Nov 2026, 11:16 · M. Okafor · Finance</li><li>16 Nov 2026, 11:02 · M. Okafor · Finance</li></ul>
+                </details>
+              </div>
+              <time class="ov-tl-time" title="16 Nov 2026, 11:16">38 min ago</time>
+            </li>
+            <li class="ov-tl-item">
+              <span class="ov-tl-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+              <div class="ov-tl-main">
+                <p class="ov-tl-line"><strong>Care ticket updated</strong></p>
+                <p class="ov-tl-meta"><span>CAR-0917 · “Ready for re-test”</span><span> · S. Diallo · Support</span></p>
+              </div>
+              <time class="ov-tl-time" title="16 Nov 2026, 10:41">1 h ago</time>
+            </li>
+            <li class="ov-tl-item">
+              <span class="ov-tl-icon is-danger" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span>
+              <div class="ov-tl-main">
+                <p class="ov-tl-line"><strong>Account suspended</strong><span class="ov-sev">Security</span></p>
+                <p class="ov-tl-meta"><span>Developer account · reason recorded</span><span> · A. Reynolds · Superadmin</span></p>
+              </div>
+              <time class="ov-tl-time" title="16 Nov 2026, 09:58">2 h ago</time>
+            </li>
+            <li class="ov-tl-item">
+              <span class="ov-tl-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+              <div class="ov-tl-main">
+                <p class="ov-tl-line"><strong>Project accepted</strong></p>
+                <p class="ov-tl-meta"><span>“Beacon analytics suite” · contract signed</span><span> · System</span></p>
+              </div>
+              <time class="ov-tl-time" title="16 Nov 2026, 09:12">3 h ago</time>
+            </li>
+            <li class="ov-tl-item">
+              <span class="ov-tl-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+              <div class="ov-tl-main">
+                <p class="ov-tl-line"><strong>Mission published</strong></p>
+                <p class="ov-tl-meta"><span>“Quartz inventory API” · first come, first served</span><span> · M. Okafor · Finance</span></p>
+              </div>
+              <time class="ov-tl-time" title="16 Nov 2026, 07:03">5 h ago</time>
+            </li>
+            <li class="ov-tl-item">
+              <span class="ov-tl-icon is-danger" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span>
+              <div class="ov-tl-main">
+                <p class="ov-tl-line"><strong>Security policy updated</strong><span class="ov-sev">Security</span></p>
+                <p class="ov-tl-meta"><span>Session lifetime · 30 days</span><span> · A. Reynolds · Superadmin</span></p>
+              </div>
+              <time class="ov-tl-time" title="15 Nov 2026, 17:26">Yesterday</time>
+            </li>
+            <li class="ov-tl-item">
+              <span class="ov-tl-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+              <div class="ov-tl-main">
+                <p class="ov-tl-line"><strong>Delivery accepted</strong></p>
+                <p class="ov-tl-meta"><span>“Harbor logistics portal” · milestone 4</span><span> · H. Marsh · Client</span></p>
+              </div>
+              <time class="ov-tl-time" title="15 Nov 2026, 16:04">Yesterday</time>
+            </li>
+          </ol>
+        </section>
+      </div>
+
+      <footer class="ov-foot">
+        <span>Northstar — Governance Console · static demo template. All names, figures and projects are fictional. No backend, no real funds, no real data.</span>
+        <span>JULIUS VIBE STUDIO · Template B1 · $39</span>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<nav class="bottom-tabs" aria-label="Mobile navigation">
+  <a href="#top" class="is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</a>
+  <a href="#projets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Projects</a>
+  <a href="#ecosysteme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Users</a>
+  <a href="#pilotage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Applications</a>
+  <a href="#top" id="moreTab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>More</a>
+</nav>
+
+<script>
+/* ---------- Données fictives (sommes vérifiées) ---------- */
+const STATUS_FR = {
+  CANCELLED:"Cancelled", PUBLISHED:"Published", TEAM_ASSIGNED:"Team assigned",
+  SUBMITTED:"Submitted", FUNDING_PENDING:"Funding pending", IN_PROGRESS:"In progress",
+  UNDER_REVIEW:"Under review", PROPOSAL_SENT:"Proposal sent", PROPOSAL_ACCEPTED:"Proposal accepted",
+  READY_TO_PUBLISH:"Ready to publish", CLIENT_REVIEW:"Client review",
+  REVISION_REQUESTED:"Revision requested", DISPUTED:"In dispute", COMPLETED:"Completed"
+};
+const STATUS_TONE = { CANCELLED:"is-danger", DISPUTED:"is-danger", PUBLISHED:"is-success",
+  COMPLETED:"is-success", TEAM_ASSIGNED:"is-accent", IN_PROGRESS:"is-accent",
+  CLIENT_REVIEW:"is-accent", FUNDING_PENDING:"is-gold", PROPOSAL_SENT:"is-gold",
+  PROPOSAL_ACCEPTED:"is-gold", READY_TO_PUBLISH:"is-gold", REVISION_REQUESTED:"is-gold" };
+const KIND_FR = { CLIENT:"Client", INTERNAL:"Internal", EXTERNAL:"External" };
+const PROJECTS = [
+  { title:"Aurora booking app", kind:"CLIENT", status:"IN_PROGRESS", created:"2026-11-15", label:"15 Nov 2026, 09:41" },
+  { title:"Harbor logistics portal", kind:"CLIENT", status:"CLIENT_REVIEW", created:"2026-11-14", label:"14 Nov 2026, 16:02" },
+  { title:"Lumen e-commerce rebuild", kind:"CLIENT", status:"DISPUTED", created:"2026-11-13", label:"13 Nov 2026, 11:27" },
+  { title:"Coral CRM migration", kind:"INTERNAL", status:"TEAM_ASSIGNED", created:"2026-11-12", label:"12 Nov 2026, 15:48" },
+  { title:"Atlas field app", kind:"EXTERNAL", status:"FUNDING_PENDING", created:"2026-11-11", label:"11 Nov 2026, 10:05" },
+  { title:"Beacon analytics suite", kind:"CLIENT", status:"COMPLETED", created:"2026-11-10", label:"10 Nov 2026, 09:12" },
+  { title:"Drift travel planner", kind:"CLIENT", status:"UNDER_REVIEW", created:"2026-11-09", label:"9 Nov 2026, 14:33" },
+  { title:"Quartz inventory API", kind:"EXTERNAL", status:"PUBLISHED", created:"2026-11-08", label:"8 Nov 2026, 08:20" }
+];
+
+/* ---------- Supervision : filtres générés depuis les statuts présents, tri, recherche ---------- */
+let supFilter = "ALL", supSort = { key:"date", dir:-1 }, supQuery = "";
+const supFiltersEl = document.getElementById("supFilters");
+const supBody = document.getElementById("supBody");
+const supCards = document.getElementById("supCards");
+const supEmpty = document.getElementById("supEmpty");
+const STATUS_ORDER = Object.keys(STATUS_FR);
+(function buildFilters(){
+  const present = new Set(PROJECTS.map(p => p.status));
+  const ordered = STATUS_ORDER.filter(s => present.has(s));
+  const mk = (value, label) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "ov-chip" + (value === "ALL" ? " is-active" : "");
+    b.textContent = label; b.setAttribute("aria-pressed", value === "ALL" ? "true" : "false");
+    b.addEventListener("click", () => {
+      supFilter = value;
+      supFiltersEl.querySelectorAll(".ov-chip").forEach(c => { c.classList.remove("is-active"); c.setAttribute("aria-pressed","false"); });
+      b.classList.add("is-active"); b.setAttribute("aria-pressed","true");
+      renderSup();
+    });
+    supFiltersEl.appendChild(b);
+  };
+  mk("ALL", "All");
+  ordered.forEach(s => mk(s, STATUS_FR[s]));
+})();
+function badge(status){
+  const tone = STATUS_TONE[status] || "";
+  return `<span class="ov-badge ${tone}">${STATUS_FR[status] || status}</span>`;
+}
+function kindBadge(kind){ return `<span class="ov-badge">${KIND_FR[kind] || kind}</span>`; }
+function renderSup(){
+  let list = PROJECTS.filter(p => (supFilter === "ALL" || p.status === supFilter));
+  if (supQuery) list = list.filter(p => p.title.toLowerCase().includes(supQuery));
+  list = [...list].sort((a,b) => supSort.key === "title"
+    ? a.title.localeCompare(b.title, "en") * supSort.dir
+    : (new Date(a.created) - new Date(b.created)) * supSort.dir);
+  document.getElementById("sortTitleArrow").textContent = supSort.key === "title" ? (supSort.dir === 1 ? "↑" : "↓") : "";
+  document.getElementById("sortDateArrow").textContent = supSort.key === "date" ? (supSort.dir === 1 ? "↑" : "↓") : "";
+  supEmpty.hidden = list.length > 0;
+  supBody.innerHTML = list.map(p => `<tr>
+    <td><strong>${p.title}</strong></td>
+    <td>${kindBadge(p.kind)}</td>
+    <td>${badge(p.status)}</td>
+    <td>${p.label}</td>
+    <td><a href="#supervision" class="text-link">File</a></td>
+  </tr>`).join("");
+  supCards.innerHTML = list.map(p => `<li class="ov-proj-card">
+    <div class="ov-proj-card-main">
+      <strong>${p.title}</strong>
+      <span class="ov-proj-badges">${kindBadge(p.kind)}${badge(p.status)}</span>
+      <span class="ov-proj-date">${p.label}</span>
+    </div>
+    <a href="#supervision" class="ov-proj-fiche">File</a>
+  </li>`).join("");
+}
+document.querySelectorAll(".ov-sort").forEach(btn => btn.addEventListener("click", () => {
+  const key = btn.dataset.sort;
+  supSort = supSort.key === key ? { key, dir: supSort.dir === 1 ? -1 : 1 } : { key, dir: key === "date" ? -1 : 1 };
+  renderSup();
+}));
+document.getElementById("topSearch").addEventListener("input", e => {
+  supQuery = e.target.value.trim().toLowerCase();
+  renderSup();
+  if (supQuery) document.getElementById("supervision").scrollIntoView({ behavior:"smooth", block:"start" });
+});
+renderSup();
+
+/* ---------- Évolution : 3 séries groupées, repères entiers, périodes ---------- */
+const CH = { w:760, h:264, ml:36, mr:8, mt:18, mb:26 };
+const SERIES = [
+  { key:"inscriptions", label:"Sign-ups", color:"#00e5c9" },
+  { key:"projets", label:"Projects created", color:"#a78bfa" },
+  { key:"tentatives", label:"Payment attempts", color:"#f59e0b" }
+];
+function seeded(seed){ let s = seed; return () => { s = (s * 16807) % 2147483647; return s / 2147483647; }; }
+function niceTicks(max){
+  const step = max <= 5 ? 1 : max <= 12 ? 2 : max <= 25 ? 5 : max <= 60 ? 10 : max <= 120 ? 20 : 50;
+  const axisMax = Math.ceil(max / step) * step;
+  const ticks = []; for (let t = 0; t <= axisMax; t += step) ticks.push(t);
+  return { axisMax, ticks };
+}
+function dayLabel(iso){
+  const d = new Date(iso + "T00:00:00Z");
+  return new Intl.DateTimeFormat("en-GB", { day:"numeric", month:"short", timeZone:"UTC" }).format(d);
+}
+const PERIODS = {
+  "1":   { days:1,  label:"Today",      per:"day",  seed:11 },
+  "7":   { days:7,  label:"7 days",     per:"day",  seed:21 },
+  "30":  { days:30, label:"30 days",    per:"day",  seed:31 },
+  "90":  { days:13, label:"90 days",    per:"week", seed:41 },
+  "month":     { days:16, label:"This month",  per:"day",  seed:51 },
+  "prev-month":{ days:31, label:"Last month",  per:"day",  seed:61 },
+  "year":{ days:12, label:"This year",  per:"month",seed:71 }
+};
+function buildData(periodKey){
+  const p = PERIODS[periodKey], rnd = seeded(p.seed);
+  const buckets = [];
+  const today = new Date(Date.UTC(2026, 10, 16));
+  for (let i = p.days - 1; i >= 0; i--){
+    const d = new Date(today);
+    if (p.per === "week") d.setUTCDate(d.getUTCDate() - i * 7);
+    else if (p.per === "month") d.setUTCMonth(d.getUTCMonth() - i);
+    else d.setUTCDate(d.getUTCDate() - i);
+    const iso = d.toISOString().slice(0, 10);
+    const wave = 1 + 0.45 * Math.sin(i / 3.1);
+    buckets.push({
+      day: iso,
+      inscriptions: Math.max(0, Math.round((4 + rnd() * 9) * wave)),
+      projets: Math.max(0, Math.round((1 + rnd() * 5) * wave)),
+      tentatives: Math.max(0, Math.round((1 + rnd() * 4) * wave))
+    });
+  }
+  const totals = { inscriptions:0, projets:0, tentatives:0 };
+  buckets.forEach(b => { totals.inscriptions += b.inscriptions; totals.projets += b.projets; totals.tentatives += b.tentatives; });
+  const prev = { inscriptions: Math.round(totals.inscriptions * 0.92), projets: Math.round(totals.projets * 0.9), tentatives: Math.round(totals.tentatives * 0.93) };
+  return { buckets, totals, prev, per: p.per, label: p.label };
+}
+function deltaText(cur, prev){
+  const diff = cur - prev;
+  if (diff === 0) return "stable vs previous period";
+  return `${diff > 0 ? "+" : ""}${diff} vs previous period`;
+}
+function renderChart(periodKey){
+  const { buckets, totals, prev, per, label } = buildData(periodKey);
+  const plotH = CH.h - CH.mt - CH.mb;
+  const chartMax = Math.max(1, ...buckets.flatMap(b => [b.inscriptions, b.projets, b.tentatives]));
+  const { axisMax, ticks } = niceTicks(chartMax);
+  const groupW = Math.max((CH.w - CH.ml - CH.mr) / Math.max(buckets.length, 1), 30);
+  const chartW = CH.ml + CH.mr + groupW * Math.max(buckets.length, 1);
+  const barW = Math.min(14, Math.max(6, (groupW - 10) / 3));
+  const labelEvery = Math.max(1, Math.ceil(buckets.length / 8));
+  const svg = document.getElementById("evoChart");
+  svg.setAttribute("viewBox", `0 0 ${chartW} ${CH.h}`);
+  svg.style.minWidth = chartW + "px";
+  svg.setAttribute("aria-label", `Evolution — ${label}: ${totals.inscriptions} sign-ups, ${totals.projets} projects, ${totals.tentatives} payment attempts`);
+  let out = `<defs>${SERIES.map((s, i) => `<linearGradient id="evoGrad${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${s.color}"/><stop offset="100%" stop-color="${s.color}" stop-opacity=".38"/></linearGradient>`).join("")}</defs>`;
+  ticks.forEach(t => {
+    const y = CH.mt + plotH * (1 - t / axisMax);
+    out += `<g><line x1="${CH.ml}" y1="${y}" x2="${chartW - CH.mr}" y2="${y}" class="ov-chart-grid"/><text x="${CH.ml - 8}" y="${y + 4}" text-anchor="end" class="ov-chart-axis">${t}</text></g>`;
+  });
+  buckets.forEach((b, i) => {
+    const gx = CH.ml + i * groupW + (groupW - barW * 3 - 4) / 2;
+    SERIES.forEach((s, si) => {
+      const h = (b[s.key] / axisMax) * plotH;
+      const x = gx + si * (barW + 2), y = CH.mt + plotH - h;
+      out += `<g class="ov-chart-bar-g" tabindex="0" role="img" aria-label="${dayLabel(b.day)} — ${s.label}: ${b[s.key]}">
+        <rect x="${x}" y="${y}" width="${barW}" height="${Math.max(h, 0.5)}" fill="url(#evoGrad${si})" class="ov-chart-bar" style="animation-delay:${i * 45 + si * 30}ms"><title>${b.day} — ${s.label}: ${b[s.key]}</title></rect>
+        <text class="ov-chart-tip" x="${x + barW / 2}" y="${Math.max(12, y - 6)}" text-anchor="middle">${s.label} · ${b[s.key]}</text>
+      </g>`;
+    });
+    if (i % labelEvery === 0) out += `<text x="${gx + (barW * 3 + 4) / 2}" y="${CH.h - 6}" text-anchor="middle" class="ov-chart-axis">${dayLabel(b.day)}</text>`;
+  });
+  svg.innerHTML = out;
+  document.getElementById("evoLegend").innerHTML = SERIES.map(s =>
+    `<li><i style="background:${s.color}"></i>${s.label} · ${totals[s.key]} (${deltaText(totals[s.key], prev[s.key])})</li>`).join("");
+  document.getElementById("evoSummary").textContent =
+    `Per ${per} (UTC): ${totals.inscriptions} sign-up(s), ${totals.projets} project(s) created, ${totals.tentatives} payment attempt(s) over the period. Comparable previous period: ${prev.inscriptions} sign-up(s), ${prev.projets} project(s), ${prev.tentatives} attempt(s).`;
+  document.getElementById("evoTableBody").innerHTML = buckets.map(b =>
+    `<tr><td>${b.day}</td><td>${b.inscriptions}</td><td>${b.projets}</td><td>${b.tentatives}</td></tr>`).join("");
+}
+document.getElementById("periodSeg").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-period]");
+  if (!btn) return;
+  document.querySelectorAll("#periodSeg button").forEach(b => { b.classList.remove("is-active"); b.removeAttribute("aria-current"); });
+  btn.classList.add("is-active"); btn.setAttribute("aria-current", "page");
+  renderChart(btn.dataset.period);
+});
+renderChart("30");
+
+/* ---------- Frise : repliée par défaut (capture réelle de /admin) ---------- */
+const flowHead = document.getElementById("flowHead");
+const flowBody = document.getElementById("flowBody");
+const flowSummary = document.getElementById("flowSummary");
+const flowChevron = document.getElementById("flowChevron");
+function setFlow(open){
+  flowBody.hidden = !open;
+  flowSummary.hidden = open;
+  flowChevron.textContent = open ? "Hide" : "Show";
+  flowHead.setAttribute("aria-expanded", String(open));
+}
+flowHead.addEventListener("click", () => setFlow(flowBody.hidden));
+
+/* ---------- Recherche dans la sidebar : filtre les entrées de navigation ---------- */
+const sidebarSearchInput = document.getElementById("sidebarSearchInput");
+const sidebarSearchEmpty = document.getElementById("sidebarSearchEmpty");
+if (sidebarSearchInput) {
+  sidebarSearchInput.addEventListener("input", () => {
+    const q = sidebarSearchInput.value.trim().toLowerCase();
+    let visible = 0;
+    document.querySelectorAll(".app-nav-group").forEach(g => {
+      let groupVisible = false;
+      g.querySelectorAll(".app-nav-item").forEach(a => {
+        const hit = !q || a.textContent.toLowerCase().includes(q);
+        a.style.display = hit ? "" : "none";
+        if (hit) { groupVisible = true; visible++; }
+      });
+      g.style.display = groupVisible ? "" : "none";
+    });
+    sidebarSearchEmpty.hidden = visible > 0;
+  });
+  document.getElementById("sidebarSearch").addEventListener("submit", e => e.preventDefault());
+}
+
+/* ---------- Cloche, thème, tiroir mobile ---------- */
+const bellBtn = document.getElementById("bellBtn");
+const feedPanel = document.getElementById("feedPanel");
+bellBtn.addEventListener("click", e => {
+  e.stopPropagation();
+  const open = feedPanel.hidden;
+  feedPanel.hidden = !open;
+  bellBtn.setAttribute("aria-expanded", String(open));
+});
+document.addEventListener("click", e => {
+  if (!feedPanel.hidden && !e.target.closest("#feedPanel") && !e.target.closest("#bellBtn")) {
+    feedPanel.hidden = true; bellBtn.setAttribute("aria-expanded", "false");
+  }
+});
+document.getElementById("markRead").addEventListener("click", () => {
+  document.querySelector(".bell-dot").style.display = "none";
+  feedPanel.hidden = true; bellBtn.setAttribute("aria-expanded", "false");
+});
+document.getElementById("themeBtn").addEventListener("click", () => {
+  const html = document.documentElement;
+  const dark = html.getAttribute("data-theme") === "dark";
+  html.setAttribute("data-theme", dark ? "light" : "dark");
+  document.getElementById("themeGlyph").textContent = dark ? "◐" : "☾";
+});
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
+const scrim = document.getElementById("scrim");
+function setDrawer(open){
+  sidebar.classList.toggle("open", open);
+  scrim.hidden = !open;
+  menuBtn.setAttribute("aria-expanded", String(open));
+}
+menuBtn.addEventListener("click", () => setDrawer(!sidebar.classList.contains("open")));
+scrim.addEventListener("click", () => setDrawer(false));
+sidebar.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setDrawer(false)));
+document.getElementById("moreTab").addEventListener("click", e => { e.preventDefault(); setDrawer(true); });
+
+/* ---------- Multi-onglets : chaque console s'ouvre dans un onglet de la coque ----------
+   Clic normal = onglet courant · Ctrl/Cmd+clic ou clic molette = nouvel onglet ·
+   clic molette sur un onglet = fermer · état conservé par onglet (recherche, défilement) ·
+   onglets persistés en sessionStorage, limite 12 comme dans la coque source. */
+const CONSOLES = {
+  overview:{ title:"Overview", color:"#00a0b0" },
+  pilotage:{ title:"GPI Control Tower", color:"#7c5cbf", sub:"Project control tower — RAG thresholds, late milestones and blockers.", kpis:[["6","Late milestones"],["23","Applications pending"],["11","Unresolved tickets"]], rows:[
+    ["Harbor logistics portal","Milestone 4 · 3 days late · H. Marsh (client)","Late","is-danger"],
+    ["Aurora booking app","Milestone 2 · blocked by client review","Blocked","is-gold"],
+    ["Lumen e-commerce rebuild","In dispute · arbitration opened","Dispute","is-danger"],
+    ["Coral CRM migration","Milestone 3 · payout instruction prepared","On track","is-success"],
+    ["Atlas field app","Funding pending · day 4 of 10","Watch","is-gold"]] },
+  notifications:{ title:"Notifications", color:"#c65d7b", sub:"Latest platform events — opening one marks it read.", kpis:[["6","Unread"],["15","Today"],["3","Security"]], rows:[
+    ["Dispute opened","DIS-2481 · “Aurora booking app” · escrow frozen","Security","is-danger"],
+    ["Payout instruction prepared","PAY-1130 · Milestone 3 · “Coral CRM migration”","Finance","is-accent"],
+    ["Care ticket updated","CAR-0917 · “Ready for re-test”","Support",""],
+    ["Project accepted","“Beacon analytics suite” · contract signed","System","is-success"],
+    ["Mission published","“Quartz inventory API” · first come, first served","Board","is-accent"]] },
+  users:{ title:"Users", color:"#00a0b0", sub:"Actor ecosystem — clients, certified developers, candidates and staff.", kpis:[["1,284","Accounts"],["9","Suspended"],["512","Clients"]], rows:[
+    ["Ava Reynolds","Superadmin · internal staff · active","Active","is-success"],
+    ["Mara Okafor","Finance · internal staff · active","Active","is-success"],
+    ["Sofia Diallo","Support · internal staff · active","Active","is-success"],
+    ["Hana Marsh","Client · “Harbor logistics portal”","Active","is-success"],
+    ["Dev K. Mensah","Certified developer · suspended — reason recorded","Suspended","is-danger"],
+    ["Lena Fischer","Candidate · file under review","Pending","is-gold"]] },
+  staff:{ title:"Staff & permissions", color:"#7c5cbf", sub:"Internal roles — who can prepare, who can approve, dual control.", kpis:[["9","Internal staff"],["4","Roles"],["2","Pending invites"]], rows:[
+    ["Superadmin","Full governance · 1 holder","Configured","is-success"],
+    ["Finance","Prepare settlements · cannot approve own work","Configured","is-success"],
+    ["Support","Care & disputes triage","Configured","is-success"],
+    ["Reviewer","Applications & candidatures","Configured","is-success"],
+    ["Auditor (invite)","Read-only · invite sent 2 days ago","Pending","is-gold"]] },
+  applications:{ title:"Applications", color:"#c9a227", sub:"Candidate files — four review steps, committee decision.", kpis:[["23","Pending"],["231","Candidates"],["4","Review steps"]], rows:[
+    ["Lena Fischer","Full-stack · step 2 of 4 · 3 days in step","Under review","is-accent"],
+    ["Yanis Berrada","Mobile · step 1 of 4 · 1 day in step","To review","is-gold"],
+    ["Chloé Fontaine","Design systems · step 3 of 4 · 5 days in step","Technical test","is-accent"],
+    ["Omar Haddad","Backend · step 4 of 4 · interview scheduled","Interview","is-accent"],
+    ["Ines Duarte","Data · step 2 of 4 · 2 days in step","Under review","is-accent"]] },
+  projects:{ title:"Projects & proposals", color:"#00a0b0", sub:"Full portfolio — every status combined, most recent first.", kpis:[["342","Projects"],["128","In execution"],["41","Under review"]], rows:null },
+  estimates:{ title:"Estimates & quotes", color:"#c9a227", sub:"Quoting pipeline — drafts, sent proposals and accepted estimates.", kpis:[["96","Proposals & funding"],["18","Awaiting client"],["12","Drafts"]], rows:[
+    ["Aurora booking app","Estimate v2 · sent 14 Nov · awaiting client","Sent","is-gold"],
+    ["Harbor logistics portal","Estimate v1 · accepted · contract signed","Accepted","is-success"],
+    ["Lumen e-commerce rebuild","Estimate v3 · disputed scope","Disputed","is-danger"],
+    ["Beacon analytics suite","Estimate v1 · accepted","Accepted","is-success"],
+    ["Drift travel planner","Draft · under review by the client","Draft",""]] },
+  external:{ title:"External projects", color:"#5b7a8c", sub:"Projects led outside the platform — no escrow held here.", kpis:[["64","External leads"],["12","Active"],["3","In dispute"]], rows:[
+    ["Atlas field app","External lead · funding pending","Funding","is-gold"],
+    ["Quartz inventory API","External lead · mission published","Published","is-success"],
+    ["Nimbus HR suite","External lead · team assigned","Assigned","is-accent"],
+    ["Fjord booking widget","External lead · in dispute","Dispute","is-danger"]] },
+  devcp:{ title:"Dev-CP mandates", color:"#7c5cbf", sub:"Client project-lead mandates — preparation, acceptance, oversight.", kpis:[["14","Active mandates"],["3","Awaiting acceptance"],["1","Under review"]], rows:[
+    ["Coral CRM migration","Mandate · M. Okafor · milestone 3 prepared","Active","is-success"],
+    ["Harbor logistics portal","Mandate · H. Marsh · client review","Active","is-accent"],
+    ["Atlas field app","Mandate · awaiting lead acceptance","Pending","is-gold"],
+    ["Beacon analytics suite","Mandate · completed · closed","Completed","is-success"]] },
+  missions:{ title:"Missions", color:"#00a0b0", sub:"Public mission board — first come, first served.", kpis:[["18","Published"],["6","Claimed"],["12","Open"]], rows:[
+    ["Quartz inventory API","Published 8 Nov · 2 applications","Open","is-success"],
+    ["Nimbus HR suite","Published 11 Nov · 1 application","Open","is-success"],
+    ["Drift travel planner","Published 9 Nov · claimed","Claimed","is-accent"],
+    ["Fjord booking widget","Published 13 Nov · 0 applications","Open",""]] },
+  "internal-missions":{ title:"Internal missions", color:"#5b7a8c", sub:"Missions reserved for internal staff.", kpis:[["5","Open"],["2","In progress"],["3","Completed"]], rows:[
+    ["Audit register cleanup","Internal · in progress","In progress","is-accent"],
+    ["Onboarding guide v3","Internal · open","Open",""],
+    ["Support macros review","Internal · completed","Completed","is-success"]] },
+  incidents:{ title:"Incidents", color:"#dc2626", sub:"Continuity — absences, dropouts, failures, replacements. No automatic sanction.", kpis:[["3","Open"],["1","Escalated"],["5","Resolved (30 days)"]], rows:[
+    ["INC-1042","Developer absence · handover prepared","Open","is-danger"],
+    ["INC-1039","Milestone blocked · client unresponsive 5 days","Escalated","is-danger"],
+    ["INC-1036","Lead reassigned · passation completed","Resolved","is-success"],
+    ["INC-1031","Payment provider outage · workaround active","Resolved","is-success"]] },
+  finance:{ title:"Finance center", color:"#c9a227", sub:"Money movements, read-only here — execution stays with the provider.", kpis:[["86","Payment attempts"],["52","Confirmed"],["5","Instructions to approve"]], rows:[
+    ["Contract funding","“Beacon analytics suite” · confirmed","Confirmed","is-success"],
+    ["Milestone payout","“Coral CRM migration” · prepared","Prepared","is-gold"],
+    ["Refund","“Lumen e-commerce rebuild” · prepared","Prepared","is-gold"],
+    ["Subscription renewal","214 active · next cycle 1 Dec","Scheduled","is-accent"]] },
+  settlements:{ title:"Settlements", color:"#c9a227", sub:"Payouts and refunds — dual control: preparer ≠ approver.", kpis:[["5","To approve"],["3","Payouts prepared"],["2","Refunds prepared"]], rows:[
+    ["PAY-1130","Milestone 3 · “Coral CRM migration” · M. Okafor","Prepared","is-gold"],
+    ["PAY-1128","Milestone 2 · “Aurora booking app” · M. Okafor","Prepared","is-gold"],
+    ["PAY-1125","Milestone 4 · “Harbor logistics portal” · M. Okafor","Prepared","is-gold"],
+    ["REF-0091","“Lumen e-commerce rebuild” · partial refund","Prepared","is-gold"],
+    ["REF-0088","“Drift travel planner” · deposit refund","Prepared","is-gold"]] },
+  invoices:{ title:"Invoices", color:"#5b7a8c", sub:"Issued invoices — amounts settled off-platform by the provider.", kpis:[["2","Issued"],["1","Paid"],["1","Pending"]], rows:[
+    ["INV-2041","“Beacon analytics suite” · issued 10 Nov","Paid","is-success"],
+    ["INV-2044","“Harbor logistics portal” · issued 14 Nov","Pending","is-gold"]] },
+  subscriptions:{ title:"Subscriptions", color:"#00a0b0", sub:"Platform subscriptions — active, renewal pending, expired.", kpis:[["214","Active"],["17","Expired"],["6","Renewal pending"]], rows:[
+    ["Studio plan","214 active · renewal 1 Dec","Active","is-success"],
+    ["Team plan","6 renewal pending","Pending","is-gold"],
+    ["Starter plan","17 expired · no renewal","Expired","is-danger"]] },
+  pricing:{ title:"Quotes & pricing", color:"#c9a227", sub:"Rate cards and quote templates used by the quoting engine.", kpis:[["12","Pricing policies"],["4","Quote templates"],["3","Rate cards"]], rows:[
+    ["Standard rate card","v3 · in force since 1 Nov","Active","is-success"],
+    ["Rush rate card","v2 · in force since 15 Oct","Active","is-success"],
+    ["Quote template — SaaS","4 sections · PERT estimation","Active","is-success"],
+    ["Quote template — Mobile","3 sections · PERT estimation","Draft","is-gold"]] },
+  disputes:{ title:"Disputes", color:"#dc2626", sub:"Disputes & arbitration — protective freeze from the moment a case opens.", kpis:[["7","Open"],["2","In arbitration"],["1","Appeal"]], rows:[
+    ["DIS-2481","“Aurora booking app” · opened 12 min ago","Open","is-danger"],
+    ["DIS-2477","“Lumen e-commerce rebuild” · arbitration","Arbitration","is-danger"],
+    ["DIS-2474","“Fjord booking widget” · arbitration","Arbitration","is-danger"],
+    ["DIS-2470","“Drift travel planner” · awaiting evidence","Open","is-gold"]] },
+  warranty:{ title:"Warranty", color:"#0e9f6e", sub:"Care warranty — 30-day cover, classification appeals.", kpis:[["4","Open tickets"],["1","Appeal"],["214","Acceptances"]], rows:[
+    ["CAR-0917","“Harbor logistics portal” · ready for re-test","In progress","is-accent"],
+    ["CAR-0915","“Beacon analytics suite” · fix in progress","In progress","is-accent"],
+    ["CAR-0912","“Aurora booking app” · classification appeal","Appeal","is-gold"],
+    ["CAR-0908","“Coral CRM migration” · open","Open","is-gold"]] },
+  support:{ title:"Consolidated support", color:"#00a0b0", sub:"Every support ticket in one queue — open, waiting, resolved.", kpis:[["11","Unresolved"],["3","Waiting"],["24","Resolved (30 days)"]], rows:[
+    ["SUP-3310","Login issue · client · 1 h ago","Open","is-danger"],
+    ["SUP-3307","Invoice copy request · waiting for finance","Waiting","is-gold"],
+    ["SUP-3302","Mission board filter · developer","Open","is-gold"],
+    ["SUP-3298","Password reset · resolved","Resolved","is-success"]] },
+  security:{ title:"Security & integrations", color:"#7c5cbf", sub:"Policies, sessions and connected providers.", kpis:[["3","Policies"],["2","Integrations"],["1","Alert"]], rows:[
+    ["Session lifetime","30 days · updated yesterday","Active","is-success"],
+    ["Payment provider","Not connected — no funds held","Alert","is-danger"],
+    ["E-mail provider","Test mode · domain not verified","Watch","is-gold"],
+    ["Password policy","Leaked-password check enabled","Active","is-success"]] },
+  audit:{ title:"Audit journal", color:"#5b7a8c", sub:"Every governance act, grouped — not a real-time feed.", kpis:[["10","Latest entries"],["3","Security acts"],["0","Sealed externally"]], rows:[
+    ["Dispute opened","DIS-2481 · A. Reynolds · Superadmin · 12 min ago","Security","is-danger"],
+    ["Payout instruction prepared","PAY-1130 · M. Okafor · Finance · 38 min ago","Finance","is-accent"],
+    ["Care ticket updated","CAR-0917 · S. Diallo · Support · 1 h ago","Support",""],
+    ["Account suspended","Developer account · A. Reynolds · 2 h ago","Security","is-danger"],
+    ["Project accepted","“Beacon analytics suite” · System · 3 h ago","System","is-success"]] },
+  reports:{ title:"Reports & exports", color:"#5b7a8c", sub:"Scheduled reports and one-off exports.", kpis:[["6","Scheduled"],["4","Templates"],["12","Exports (30 days)"]], rows:[
+    ["Weekly governance digest","Every Monday · 07:00 UTC","Scheduled","is-accent"],
+    ["Monthly finance summary","1st of month · 08:00 UTC","Scheduled","is-accent"],
+    ["Portfolio export","CSV · generated 15 Nov","Ready","is-success"],
+    ["Audit export","JSON · generated 14 Nov","Ready","is-success"]] },
+  settings:{ title:"Settings", color:"#5b7a8c", sub:"Platform rules — changes are logged in the audit journal.", kpis:[["4","Sections"],["2","Pending review"],["1","Draft"]], rows:[
+    ["Platform rules","Escrow, milestones, FCFS board","Configured","is-success"],
+    ["Notifications","Per-role routing · 2 rules pending review","Review","is-gold"],
+    ["Appearance","Light / dark · system default","Configured","is-success"],
+    ["Articles","Help centre · 1 draft","Draft","is-gold"]] },
+  articles:{ title:"Articles", color:"#00a0b0", sub:"Help centre articles — public guidance for clients and developers.", kpis:[["9","Published"],["2","Drafts"],["1","Scheduled"]], rows:[
+    ["How escrow works","Published · 12 Nov","Published","is-success"],
+    ["Milestone acceptance","Published · 10 Nov","Published","is-success"],
+    ["Care warranty, explained","Draft · under review","Draft","is-gold"],
+    ["First mission checklist","Scheduled · 18 Nov","Scheduled","is-accent"]] }
+};
+const MAX_TABS = 12;
+const tabBar = document.getElementById("tabBar");
+const panelsWrap = document.getElementById("consolePanels");
+const overviewView = document.getElementById("overviewView");
+const breadcrumb = document.querySelector(".breadcrumb");
+let tabs = [{ id:"overview" }];
+let activeTabId = "overview";
+const tabScroll = {};
+const builtPanels = new Set();
+
+function consoleRows(id){
+  if (id === "projects") return PROJECTS.map(p => [p.title, `${KIND_FR[p.kind]} · ${p.label}`, STATUS_FR[p.status] || p.status, STATUS_TONE[p.status] || ""]);
+  return (CONSOLES[id] && CONSOLES[id].rows) || [];
+}
+function buildPanel(id){
+  if (builtPanels.has(id)) return;
+  builtPanels.add(id);
+  const def = CONSOLES[id];
+  const rows = consoleRows(id);
+  const sec = document.createElement("section");
+  sec.className = "nv-console";
+  sec.id = "console-" + id;
+  sec.setAttribute("aria-label", def.title);
+  sec.innerHTML = `
+    <div class="ov-panel">
+      <header class="ov-panel-head">
+        <div><h2>${def.title}</h2><p>${def.sub || ""}</p></div>
+        <span class="ov-count"><span class="nv-count-num">${rows.length}</span> item(s)</span>
+      </header>
+      <div class="ov-indicators cols-3">${(def.kpis || []).map(k => `<div class="ov-indicator"><strong class="num">${k[0]}</strong><span>${k[1]}</span></div>`).join("")}</div>
+      <div class="nv-console-tools">
+        <label class="nv-console-search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" placeholder="Search in this console…" aria-label="Search in ${def.title}">
+        </label>
+      </div>
+      <div class="ov-chart-scroll"><table class="ov-table">
+        <thead><tr><th>Item</th><th>Detail</th><th>Status</th><th><span class="sr-only">Open</span></th></tr></thead>
+        <tbody>${rows.map(r => `<tr><td><strong>${r[0]}</strong></td><td>${r[1]}</td><td><span class="ov-badge ${r[3]}">${r[2]}</span></td><td><a href="#" class="text-link" data-console-open="${id}">Open</a></td></tr>`).join("")}</tbody>
+      </table></div>
+      <p class="muted nv-console-empty" hidden>No item matches this search.</p>
+      <p class="nv-console-note"><strong>Simplified console view.</strong> The full console lives in the product. All names, figures and projects are fictional — no backend, no real funds, no real data.</p>
+    </div>`;
+  panelsWrap.appendChild(sec);
+  const input = sec.querySelector("input");
+  const empty = sec.querySelector(".nv-console-empty");
+  const countNum = sec.querySelector(".nv-count-num");
+  input.addEventListener("input", () => {
+    const q = input.value.trim().toLowerCase();
+    let visible = 0;
+    sec.querySelectorAll("tbody tr").forEach(tr => {
+      const hit = !q || tr.textContent.toLowerCase().includes(q);
+      tr.style.display = hit ? "" : "none";
+      if (hit) visible++;
+    });
+    empty.hidden = visible > 0;
+    countNum.textContent = visible;
+  });
+}
+function renderTabs(){
+  tabBar.querySelectorAll(".nv-tab,.nv-tab-hint,.nv-tab-add").forEach(n => n.remove());
+  tabs.forEach(t => {
+    const def = CONSOLES[t.id] || CONSOLES.overview;
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "nv-tab" + (t.id === activeTabId ? " is-active" : "");
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", String(t.id === activeTabId));
+    b.title = def.title + (t.id === "overview" ? " — home view" : " — console (middle-click to close)");
+    b.innerHTML = `<span class="nv-tab-dot" style="background:${def.color}"></span><span class="nv-tab-title">${def.title}</span>` +
+      (t.id === "overview" ? "" : `<span class="nv-tab-close" role="button" aria-label="Close ${def.title} tab" tabindex="-1">×</span>`);
+    b.addEventListener("click", e => {
+      if (e.target.closest(".nv-tab-close")) { e.stopPropagation(); closeTab(t.id); return; }
+      activateTab(t.id);
+    });
+    b.addEventListener("auxclick", e => { if (e.button === 1) { e.preventDefault(); closeTab(t.id); } });
+    tabBar.appendChild(b);
+  });
+  const add = document.createElement("button");
+  add.type = "button";
+  add.className = "nv-tab-add";
+  add.setAttribute("aria-label", "Open a new tab");
+  add.title = "Open a new tab";
+  add.textContent = "+";
+  add.addEventListener("click", e => { e.stopPropagation(); toggleTabPicker(add); });
+  tabBar.appendChild(add);
+  const hint = document.createElement("span");
+  hint.className = "nv-tab-hint";
+  hint.innerHTML = "<kbd>Ctrl</kbd>+click opens a new tab · middle-click closes";
+  tabBar.appendChild(hint);
+}
+/* ---------- Bouton « + » : menu de choix d'une console (comme la coque) ---------- */
+let tabPicker = null;
+function closeTabPicker(){ if (tabPicker) { tabPicker.remove(); tabPicker = null; } }
+function toggleTabPicker(anchor){
+  if (tabPicker) { closeTabPicker(); return; }
+  const r = anchor.getBoundingClientRect();
+  tabPicker = document.createElement("div");
+  tabPicker.className = "nv-tab-picker";
+  tabPicker.setAttribute("role", "menu");
+  tabPicker.setAttribute("aria-label", "Choose a page for the new tab");
+  tabPicker.innerHTML = `<span class="nv-picker-note">Open in a new tab</span>` + Object.entries(CONSOLES).map(([id, def]) =>
+    `<button type="button" role="menuitem" data-pick="${id}"><span class="nv-tab-dot" style="background:${def.color}"></span>${def.title}</button>`).join("");
+  document.body.appendChild(tabPicker);
+  tabPicker.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 260)) + "px";
+  tabPicker.style.top = (r.bottom + 6) + "px";
+  tabPicker.addEventListener("click", e => {
+    const b = e.target.closest("[data-pick]");
+    if (!b) return;
+    closeTabPicker();
+    openConsole(b.dataset.pick, { newTab: true });
+  });
+}
+document.addEventListener("click", e => {
+  if (tabPicker && !e.target.closest(".nv-tab-picker") && !e.target.closest(".nv-tab-add")) closeTabPicker();
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeTabPicker(); });
+function persistTabs(){
+  try { sessionStorage.setItem("northstar.tabs.v2", JSON.stringify({ tabs: tabs.map(t => t.id), active: activeTabId })); } catch(e){}
+}
+function activateTab(id){
+  if (!CONSOLES[id]) id = "overview";
+  tabScroll[activeTabId] = window.scrollY;
+  activeTabId = id;
+  if (!tabs.some(t => t.id === id)) tabs.push({ id });
+  const isOverview = id === "overview";
+  if (isOverview) {
+    panelsWrap.hidden = true;
+    panelsWrap.classList.remove("is-visible");
+    overviewView.style.display = "";
+    document.querySelectorAll(".nv-console").forEach(p => p.classList.remove("is-active"));
+  } else {
+    buildPanel(id);
+    overviewView.style.display = "none";
+    panelsWrap.hidden = false;
+    panelsWrap.classList.add("is-visible");
+    document.querySelectorAll(".nv-console").forEach(p => p.classList.toggle("is-active", p.id === "console-" + id));
+  }
+  document.querySelectorAll(".app-nav-item").forEach(a => {
+    const on = a.dataset.console === id;
+    a.classList.toggle("is-active", on);
+    if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+  const def = CONSOLES[id];
+  breadcrumb.innerHTML = `Governance Console &nbsp;›&nbsp; <strong>${def.title}</strong>`;
+  document.title = `Northstar — ${def.title} · Governance Console`;
+  renderTabs();
+  window.scrollTo(0, tabScroll[id] || 0);
+  persistTabs();
+}
+function openConsole(id, opts){
+  const newTab = !!(opts && opts.newTab);
+  if (!CONSOLES[id]) id = "overview";
+  if (tabs.some(t => t.id === id)) { activateTab(id); return; }
+  if (newTab && tabs.length < MAX_TABS) { tabs.push({ id }); activateTab(id); return; }
+  const cur = tabs.find(t => t.id === activeTabId) || tabs[0];
+  cur.id = id;
+  activateTab(id);
+}
+function closeTab(id){
+  if (id === "overview" || tabs.length <= 1) return;
+  const idx = tabs.findIndex(t => t.id === id);
+  if (idx === -1) return;
+  tabs.splice(idx, 1);
+  if (activeTabId === id) activateTab(tabs[Math.max(0, idx - 1)].id);
+  else { renderTabs(); persistTabs(); }
+}
+document.querySelectorAll("a[data-console]").forEach(a => {
+  a.addEventListener("click", e => {
+    e.preventDefault();
+    openConsole(a.dataset.console, { newTab: e.ctrlKey || e.metaKey });
+    setDrawer(false);
+  });
+  a.addEventListener("auxclick", e => {
+    if (e.button === 1) { e.preventDefault(); openConsole(a.dataset.console, { newTab: true }); }
+  });
+});
+document.getElementById("consolePanels").addEventListener("click", e => {
+  if (e.target.closest("[data-console-open]")) e.preventDefault();
+});
+document.querySelectorAll('a[href^="#"]:not([data-console]):not([data-console-open])').forEach(a => {
+  a.addEventListener("click", () => {
+    if (activeTabId !== "overview") activateTab("overview");
+  });
+});
+try {
+  const saved = JSON.parse(sessionStorage.getItem("northstar.tabs.v2") || "null");
+  if (saved && Array.isArray(saved.tabs) && saved.tabs.length && saved.tabs.every(id => CONSOLES[id])) {
+    tabs = saved.tabs.map(id => ({ id }));
+    activeTabId = CONSOLES[saved.active] ? saved.active : tabs[0].id;
+  }
+} catch(e){}
+activateTab(activeTabId);
+</script>
+<script>
+/* Hover pass 2026-11-18 : infobulles partagées — barres empilées (01/02) et flux (04).
+   Chaque segment/barre affiche libellé + valeur exacte (+ part pour les empilées),
+   le segment survolé est mis en évidence, les autres sont atténués. */
+(function(){
+  const tip = document.createElement("div");
+  tip.className = "ov-tip";
+  tip.setAttribute("aria-hidden", "true");
+  document.body.appendChild(tip);
+  let raf = null, lastX = 0, lastY = 0;
+  function move(e){
+    lastX = e.clientX; lastY = e.clientY;
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = null;
+      tip.style.left = Math.min(Math.max(lastX, 90), window.innerWidth - 90) + "px";
+      tip.style.top = Math.max(lastY, 44) + "px";
+    });
+  }
+  function show(text, e){
+    tip.textContent = text;
+    tip.classList.add("is-on");
+    if (e) move(e);
+  }
+  function hide(){ tip.classList.remove("is-on"); }
+
+  document.querySelectorAll(".ov-stack").forEach(stack => {
+    stack.querySelectorAll("span[title]").forEach(seg => {
+      const label = seg.getAttribute("title");
+      const pct = parseFloat(seg.style.width) || 0;
+      seg.dataset.tip = label + " · " + pct.toFixed(1) + "% of total";
+      seg.removeAttribute("title");
+      seg.addEventListener("mouseenter", e => { stack.classList.add("has-hot"); seg.classList.add("is-hot"); show(seg.dataset.tip, e); });
+      seg.addEventListener("mousemove", move);
+      seg.addEventListener("mouseleave", () => { stack.classList.remove("has-hot"); seg.classList.remove("is-hot"); hide(); });
+    });
+  });
+
+  document.querySelectorAll(".ov-flux-row").forEach(row => {
+    const track = row.querySelector(".ov-flux-track");
+    const label = row.querySelector(".ov-flux-label");
+    const value = row.querySelector(".ov-flux-value");
+    if (!track || !label || !value) return;
+    track.style.cursor = "pointer";
+    const text = label.textContent.trim() + " : " + value.textContent.trim();
+    track.addEventListener("mouseenter", e => show(text, e));
+    track.addEventListener("mousemove", move);
+    track.addEventListener("mouseleave", hide);
+  });
+})();
+</script>
+</body>
+</html>
