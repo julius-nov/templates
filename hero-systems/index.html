@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Hero Systems — six animated hero sections for SaaS and agency sites. Kinetic type, aurora orbs, 3D tilt, marquees, particle fields and editorial splits in one kit.">
+<title>Hero Systems — 6 Animated Hero Sections</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#070A12; --glass:#0E1420; --glass2:#0B1120; --card:#101828; --line:rgba(148,163,184,.16); --line2:rgba(148,163,184,.28);
+  --text:#E9EEF6; --muted:#94A3B8; --muted2:#64748B;
+  --hue:187;
+  --acc1:hsl(var(--hue) 90% 60%); --acc2:hsl(calc(var(--hue) + 62) 84% 66%); --acc3:hsl(calc(var(--hue) + 124) 84% 68%);
+  --speed:1; --radius:20px;
+}
+html.light{
+  --ink:#F3F5F9; --glass:#FFFFFF; --glass2:#EDF1F7; --card:#FFFFFF; --line:rgba(15,23,42,.12); --line2:rgba(15,23,42,.22);
+  --text:#0B1220; --muted:#52617A; --muted2:#7A8AA3;
+}
+html,body{overflow-x:clip}
+body{background:var(--ink);color:var(--text);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
+.font-display{font-family:"Space Grotesk",sans-serif}
+.font-serif2{font-family:"Fraunces",serif}
+.font-mono2{font-family:"JetBrains Mono",monospace}
+.grad-text{background:linear-gradient(92deg,var(--acc1),var(--acc2) 52%,var(--acc3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.grad-bg{background:linear-gradient(92deg,var(--acc1),var(--acc2) 52%,var(--acc3))}
+.glass{background:var(--glass);border:1px solid var(--line)}
+.card{background:var(--card);border:1px solid var(--line)}
+.muted{color:var(--muted)}
+.hairline{border-color:var(--line)}
+.grid-bg{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px}
+.noise::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")}
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:600;font-size:.875rem;border-radius:999px;padding:.68rem 1.25rem;transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease;cursor:pointer;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(92deg,var(--acc1),var(--acc2));color:#06121A;box-shadow:0 8px 28px -8px var(--acc2)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 14px 34px -8px var(--acc2)}
+.btn-ghost{border:1px solid var(--line2);color:var(--text);background:transparent}
+.btn-ghost:hover{border-color:var(--acc1);color:var(--acc1)}
+.btn-sm{padding:.45rem .9rem;font-size:.8rem}
+/* ---------- hero tabs ---------- */
+.hero-tab{display:flex;flex-direction:column;align-items:flex-start;gap:.15rem;padding:.8rem 1rem;border:1px solid var(--line);border-radius:14px;background:var(--glass);cursor:pointer;text-align:left;min-width:150px;transition:border-color .2s,background .2s,transform .2s}
+.hero-tab:hover{border-color:var(--line2);transform:translateY(-2px)}
+.hero-tab.active{border-color:var(--acc1);background:linear-gradient(180deg,color-mix(in srgb,var(--acc1) 12%,transparent),var(--glass));box-shadow:0 0 0 1px var(--acc1),0 10px 30px -12px var(--acc1)}
+.hero-tab .num{font-family:"JetBrains Mono",monospace;font-size:.68rem;letter-spacing:.14em;color:var(--acc1)}
+.hero-tab .nm{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:.92rem}
+.hero-tab .tg{font-size:.72rem;color:var(--muted)}
+/* ---------- stage ---------- */
+#stage{position:relative;min-height:560px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:var(--glass)}
+.hero-pane{display:none;position:relative;height:100%;min-height:560px}
+.hero-pane.active{display:block;animation:paneIn .55s cubic-bezier(.22,1,.36,1) both}
+@keyframes paneIn{from{opacity:0;transform:translateY(14px) scale(.995)}to{opacity:1;transform:none}}
+/* kinetic words */
+.kword{display:inline-block;overflow:hidden;vertical-align:bottom}
+.kword span{display:inline-block;animation:kwordIn .7s cubic-bezier(.22,1,.36,1) both}
+@keyframes kwordIn{from{opacity:0;transform:translateY(110%) rotate(3deg)}to{opacity:1;transform:none}}
+/* aurora blobs */
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.75;will-change:transform}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(70px,-46px) scale(1.15)}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-64px,40px) scale(.9)}}
+@keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,52px) scale(1.2)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.floaty{animation:floaty calc(5s / var(--speed)) ease-in-out infinite}
+.floaty2{animation:floaty calc(6.5s / var(--speed)) ease-in-out .8s infinite}
+.floaty3{animation:floaty calc(7.5s / var(--speed)) ease-in-out 1.6s infinite}
+/* marquee */
+.marquee{overflow:hidden;white-space:nowrap}
+.marquee-track{display:inline-flex;animation:mq calc(26s / var(--speed)) linear infinite;will-change:transform}
+.marquee-track.rev{animation:mqr calc(32s / var(--speed)) linear infinite}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes mqr{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+/* tilt cards */
+.tilt{transform-style:preserve-3d;transition:transform .18s ease-out,box-shadow .25s ease;will-change:transform}
+.tilt .glare{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(420px circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.14),transparent 55%);opacity:0;transition:opacity .25s}
+.tilt:hover .glare{opacity:1}
+/* bars */
+.bar{transition:height .5s cubic-bezier(.22,1,.36,1),background .2s;cursor:pointer}
+.bar:hover{filter:brightness(1.35)}
+/* count-up */
+.stat-num{font-variant-numeric:tabular-nums}
+/* tooltip */
+#tooltip{position:fixed;z-index:90;pointer-events:none;background:#0B1220;color:#E9EEF6;border:1px solid rgba(148,163,184,.35);border-radius:10px;padding:.45rem .7rem;font-size:.78rem;font-family:"JetBrains Mono",monospace;box-shadow:0 12px 32px -8px rgba(0,0,0,.6);opacity:0;transform:translate(-50%,-115%) scale(.96);transition:opacity .15s,transform .15s;max-width:280px;white-space:nowrap}
+html.light #tooltip{background:#0B1220;color:#E9EEF6}
+#tooltip.show{opacity:1;transform:translate(-50%,-115%) scale(1)}
+#tooltip .tt-title{color:#94A3B8;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:1px}
+[data-tip]{cursor:help}
+/* gallery cards */
+.gcard{transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.gcard:hover{transform:translateY(-4px);border-color:var(--line2);box-shadow:0 20px 44px -18px rgba(0,0,0,.55)}
+/* inputs */
+input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--acc1),var(--acc2),var(--acc3));outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--acc2);box-shadow:0 2px 10px rgba(0,0,0,.4);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--acc2);cursor:pointer}
+.switch{position:relative;width:48px;height:26px;border-radius:999px;background:var(--glass2);border:1px solid var(--line2);cursor:pointer;transition:background .2s;flex:none}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.switch.on{background:linear-gradient(92deg,var(--acc1),var(--acc2))}
+.switch.on::after{transform:translateX(22px)}
+/* command palette */
+#palette{transition:opacity .18s}
+#palette .panel{animation:paneIn .25s cubic-bezier(.22,1,.36,1) both}
+.pal-item{display:flex;align-items:center;gap:.75rem;padding:.7rem .85rem;border-radius:12px;cursor:pointer}
+.pal-item.sel,.pal-item:hover{background:var(--glass2)}
+/* toast */
+#toast{transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .3s;transform:translate(-50%,20px);opacity:0}
+#toast.show{transform:translate(-50%,0);opacity:1}
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+/* gradient word pulse */
+@keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.grad-anim{background:linear-gradient(92deg,var(--acc1),var(--acc2),var(--acc3),var(--acc1));background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gradShift calc(6s / var(--speed)) ease-in-out infinite}
+/* pulse dot */
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 0 rgba(34,211,238,.5)}50%{box-shadow:0 0 0 6px rgba(34,211,238,0)}}
+.pulse-dot{animation:pulseDot 2.2s ease-in-out infinite}
+/* scrollbar */
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#26324a;border-radius:99px}
+::-webkit-scrollbar-track{background:transparent}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+}
+html.rm *,html.rm *::before,html.rm *::after{animation-play-state:paused !important;animation-duration:.01ms !important;transition-duration:.01ms !important}
+html.rm .marquee-track{animation:none !important}
+</style>
+</head>
+<body class="noise">
+<!-- tooltip + toast + palette live outside flow -->
+<div id="tooltip" role="status"></div>
+<div id="toast" class="fixed bottom-6 left-1/2 z-[100] glass rounded-full px-5 py-3 text-sm font-medium shadow-2xl flex items-center gap-2">
+  <span class="w-2 h-2 rounded-full grad-bg inline-block"></span><span id="toast-msg">Copied</span>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="sticky top-0 z-50 backdrop-blur-xl" style="background:color-mix(in srgb,var(--ink) 78%,transparent);border-bottom:1px solid var(--line)">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 h-[68px] flex items-center gap-4">
+    <a href="#" class="flex items-center gap-2.5 shrink-0" aria-label="Hero Systems home">
+      <span class="w-9 h-9 rounded-xl grad-bg flex items-center justify-center shadow-lg">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5 21 8v8l-9 5.5L3 16V8l9-5.5Z" stroke="#06121A" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 2.5v19M3 8l9 5.5L21 8" stroke="#06121A" stroke-width="1.4"/></svg>
+      </span>
+      <span class="font-display font-700 leading-none">
+        <span class="font-bold tracking-tight text-[17px]">HERO<span class="grad-text"> SYSTEMS</span></span>
+        <span class="block font-mono2 text-[9px] tracking-[.22em] muted mt-0.5">ANIMATED HERO KIT · 01</span>
+      </span>
+    </a>
+    <nav class="hidden md:flex items-center gap-1 ml-6 text-sm font-medium">
+      <a href="#heroes" class="px-3 py-2 rounded-lg hover:opacity-70 transition">Heroes</a>
+      <a href="#gallery" class="px-3 py-2 rounded-lg hover:opacity-70 transition">Gallery</a>
+      <a href="#playground" class="px-3 py-2 rounded-lg hover:opacity-70 transition">Playground</a>
+      <a href="#pricing" class="px-3 py-2 rounded-lg hover:opacity-70 transition">Pricing</a>
+    </nav>
+    <div class="flex-1"></div>
+    <button id="search-open" class="hidden sm:flex items-center gap-2 text-sm muted border hairline rounded-full px-3.5 py-2 hover:border-[var(--acc1)] transition bg-[var(--glass)]" aria-label="Search heroes">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <span class="hidden lg:inline">Search heroes…</span>
+      <kbd class="font-mono2 text-[10px] border hairline rounded px-1.5 py-0.5">⌘K</kbd>
+    </button>
+    <button id="theme-toggle" class="w-10 h-10 rounded-full border hairline flex items-center justify-center hover:border-[var(--acc1)] transition bg-[var(--glass)]" aria-label="Toggle light and dark theme">
+      <svg id="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 13.5A8.5 8.5 0 0 1 10.5 4 8.5 8.5 0 1 0 20 13.5Z"/></svg>
+      <svg id="icon-sun" class="hidden" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+    </button>
+    <a href="#pricing" class="btn btn-primary btn-sm hidden md:inline-flex">Get Pro — $39</a>
+    <button id="burger" class="md:hidden w-10 h-10 rounded-full border hairline flex items-center justify-center bg-[var(--glass)]" aria-label="Open menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+  <div id="mobile-nav" class="md:hidden hidden border-t hairline px-5 py-4 flex-col gap-1 text-sm font-medium" style="background:var(--ink)">
+    <a href="#heroes" class="px-3 py-2.5 rounded-lg">Heroes</a>
+    <a href="#gallery" class="px-3 py-2.5 rounded-lg">Gallery</a>
+    <a href="#playground" class="px-3 py-2.5 rounded-lg">Playground</a>
+    <a href="#pricing" class="px-3 py-2.5 rounded-lg">Pricing</a>
+    <a href="#pricing" class="btn btn-primary mt-2 justify-center">Get Pro — $39</a>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-5 md:px-8">
+  <!-- ============ INTRO HERO ============ -->
+  <section class="pt-14 md:pt-20 pb-10 relative">
+    <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-[720px] max-w-full h-[380px] pointer-events-none" style="background:radial-gradient(closest-side,color-mix(in srgb,var(--acc2) 26%,transparent),transparent 70%);filter:blur(20px)"></div>
+    <div class="relative text-center max-w-4xl mx-auto">
+      <p class="font-mono2 text-[11px] md:text-xs tracking-[.28em] muted flex flex-wrap items-center justify-center gap-2.5 text-center leading-relaxed px-2" style="text-wrap:balance">
+        <span class="w-2 h-2 rounded-full grad-bg pulse-dot shrink-0"></span>
+        <span>NOCTURNE PRISM · HERO KIT 01 · 6 SECTIONS · 1 SYSTEM</span>
+      </p>
+      <h1 class="font-display font-bold tracking-tight leading-[0.98] mt-6 text-[52px] sm:text-[72px] md:text-[96px]">
+        Six heroes.<br><span class="grad-anim">One system.</span>
+      </h1>
+      <p class="mt-6 text-base md:text-lg muted max-w-2xl mx-auto leading-relaxed">
+        A showcase kit of six production-ready animated hero sections for SaaS and agency sites.
+        Switch them live, tune the motion, copy the code — and ship a landing page that moves.
+      </p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <a href="#heroes" class="btn btn-primary">Browse the heroes
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </a>
+        <a href="#playground" class="btn btn-ghost">Open the playground</a>
+      </div>
+      <!-- intro stats with tooltips -->
+      <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto text-left">
+        <div class="card rounded-2xl px-5 py-4" data-tip="Hero sections|6 animated sections, all live in this demo">
+          <p class="font-display font-bold text-2xl stat-num">6</p><p class="text-xs muted mt-0.5">Animated heroes</p>
+        </div>
+        <div class="card rounded-2xl px-5 py-4" data-tip="Motion language|24 named animations, one easing curve, one speed control">
+          <p class="font-display font-bold text-2xl stat-num">24</p><p class="text-xs muted mt-0.5">Named animations</p>
+        </div>
+        <div class="card rounded-2xl px-5 py-4" data-tip="Performance|60 fps transform / opacity motion, no layout thrash">
+          <p class="font-display font-bold text-2xl stat-num">60<span class="text-sm muted font-medium"> fps</span></p><p class="text-xs muted mt-0.5">Motion budget</p>
+        </div>
+        <div class="card rounded-2xl px-5 py-4" data-tip="Setup time|Drop index.html anywhere — no build step, no dependencies">
+          <p class="font-display font-bold text-2xl stat-num">0<span class="text-sm muted font-medium"> min</span></p><p class="text-xs muted mt-0.5">Build step</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SWITCHER ============ -->
+  <section id="heroes" class="pt-6 pb-4 scroll-mt-24">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-5 reveal">
+      <div>
+        <p class="font-mono2 text-[11px] tracking-[.24em] muted">01 — LIVE STAGE</p>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mt-1">Pick a hero. Watch it move.</h2>
+      </div>
+      <p class="text-sm muted max-w-sm">Every section below is a real, working hero — not a screenshot. Tabs, arrows and the gallery all drive the same stage.</p>
+    </div>
+    <div class="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1" id="hero-tabs" role="tablist" aria-label="Hero sections">
+      <button class="hero-tab active shrink-0" data-hero="1" role="tab" aria-selected="true"><span class="num">01 / KINETIC</span><span class="nm">Kinetic Type</span><span class="tg">Sliding headline · bars</span></button>
+      <button class="hero-tab shrink-0" data-hero="2" role="tab" aria-selected="false"><span class="num">02 / AURORA</span><span class="nm">Aurora Orb</span><span class="tg">Blobs · parallax cards</span></button>
+      <button class="hero-tab shrink-0" data-hero="3" role="tab" aria-selected="false"><span class="num">03 / PRISM</span><span class="nm">Prism Tilt</span><span class="tg">3D cards · mouse tilt</span></button>
+      <button class="hero-tab shrink-0" data-hero="4" role="tab" aria-selected="false"><span class="num">04 / STREAM</span><span class="nm">Marquee Stream</span><span class="tg">Ticker bands · big type</span></button>
+      <button class="hero-tab shrink-0" data-hero="5" role="tab" aria-selected="false"><span class="num">05 / FIELD</span><span class="nm">Particle Field</span><span class="tg">Canvas network · mouse</span></button>
+      <button class="hero-tab shrink-0" data-hero="6" role="tab" aria-selected="false"><span class="num">06 / EDITORIAL</span><span class="nm">Editorial Split</span><span class="tg">Serif · count-up stats</span></button>
+    </div>
+    <div class="flex items-center gap-3 mt-4">
+      <button id="prev-hero" class="w-10 h-10 rounded-full border hairline flex items-center justify-center hover:border-[var(--acc1)] transition bg-[var(--glass)]" aria-label="Previous hero">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button id="next-hero" class="w-10 h-10 rounded-full border hairline flex items-center justify-center hover:border-[var(--acc1)] transition bg-[var(--glass)]" aria-label="Next hero">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+      <p class="font-mono2 text-xs muted"><span id="stage-label" class="text-[var(--acc1)]">01 / 06</span> — <span id="stage-name">Kinetic Type</span></p>
+      <div class="flex-1"></div>
+      <label class="hidden sm:flex items-center gap-2 text-xs muted cursor-pointer"><input type="checkbox" id="autoplay" class="accent-cyan-400 w-4 h-4"> Auto-play</label>
+    </div>
+  </section>
+
+  <!-- ============ STAGE ============ -->
+  <section id="stage" class="mt-2 grid-bg" aria-live="polite">
+    <!-- HERO 1 · KINETIC TYPE -->
+    <div class="hero-pane active" data-pane="1">
+      <div class="h-full min-h-[560px] flex flex-col justify-center px-6 md:px-14 py-12">
+        <p class="font-mono2 text-[11px] tracking-[.26em] muted">01 · KINETIC TYPE — SAAS LAUNCH</p>
+        <h3 class="font-display font-bold tracking-tight leading-[1.02] text-[44px] sm:text-[64px] md:text-[84px] mt-4">
+          <span class="kword"><span id="kword-1">Ship</span></span>
+          <span class="kword"><span id="kword-2" class="grad-text">fast.</span></span><br>
+          <span class="kword"><span id="kword-3">Launch</span></span>
+          <span class="kword"><span id="kword-4" class="grad-text">loud.</span></span>
+        </h3>
+        <p class="mt-5 muted max-w-xl leading-relaxed">The headline that sells the launch. Words slide in on a stagger, the gradient word cycles through three promises, and the proof sits right underneath.</p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <button class="btn btn-primary hero-cta" data-hero-name="Kinetic Type">Start free trial</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">See pricing</button>
+        </div>
+        <div class="mt-10 max-w-xl">
+          <div class="flex items-center justify-between text-xs muted mb-2"><span class="font-mono2 tracking-widest">CONVERSION LIFT · 7 WEEKS</span><span class="font-mono2" id="kbar-total">Avg +18.4%</span></div>
+          <div class="flex items-end gap-2 h-24" id="kbar-chart" role="img" aria-label="Bar chart of weekly conversion lift"></div>
+          <div class="flex gap-2 mt-1.5 font-mono2 text-[10px] muted"><span class="flex-1 text-center">W1</span><span class="flex-1 text-center">W2</span><span class="flex-1 text-center">W3</span><span class="flex-1 text-center">W4</span><span class="flex-1 text-center">W5</span><span class="flex-1 text-center">W6</span><span class="flex-1 text-center">W7</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO 2 · AURORA ORB -->
+    <div class="hero-pane" data-pane="2">
+      <div class="blob w-[380px] h-[380px] -top-20 -left-16" style="background:var(--acc1);animation:drift1 calc(11s / var(--speed)) ease-in-out infinite"></div>
+      <div class="blob w-[320px] h-[320px] top-1/3 right-[8%]" style="background:var(--acc2);animation:drift2 calc(13s / var(--speed)) ease-in-out infinite"></div>
+      <div class="blob w-[240px] h-[240px] bottom-0 left-[38%]" style="background:var(--acc3);animation:drift3 calc(15s / var(--speed)) ease-in-out infinite"></div>
+      <div class="relative h-full min-h-[560px] flex flex-col justify-center px-6 md:px-14 py-12" id="aurora-inner">
+        <p class="font-mono2 text-[11px] tracking-[.26em] muted">02 · AURORA ORB — ANALYTICS PRODUCT</p>
+        <h3 class="font-display font-bold tracking-tight leading-[1.02] text-[40px] sm:text-[56px] md:text-[72px] mt-4 max-w-3xl">Your metrics,<br><span class="grad-text">in full colour.</span></h3>
+        <p class="mt-5 muted max-w-lg leading-relaxed">Move your cursor — the glass cards drift with you. Aurora is the hero for products that want to feel alive before a single chart loads.</p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <button class="btn btn-primary hero-cta" data-hero-name="Aurora Orb">Explore the demo</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})">View all heroes</button>
+        </div>
+        <div class="mt-10 flex flex-wrap gap-3">
+          <div class="parallax-card glass rounded-2xl px-5 py-4 backdrop-blur-md floaty" data-depth="14" data-tip="Lighthouse score|98 / 100 — measured on this page">
+            <p class="font-mono2 text-[10px] tracking-widest muted">LIGHTHOUSE</p><p class="font-display font-bold text-2xl mt-1">98<span class="text-sm muted"> / 100</span></p>
+          </div>
+          <div class="parallax-card glass rounded-2xl px-5 py-4 backdrop-blur-md floaty2" data-depth="24" data-tip="Click-through rate|+38% vs. the previous static hero">
+            <p class="font-mono2 text-[10px] tracking-widest muted">CLICK-THROUGH</p><p class="font-display font-bold text-2xl mt-1 grad-text">+38%</p>
+          </div>
+          <div class="parallax-card glass rounded-2xl px-5 py-4 backdrop-blur-md floaty3" data-depth="10" data-tip="Largest contentful paint|1.2 s on a 4G connection">
+            <p class="font-mono2 text-[10px] tracking-widest muted">LARGEST PAINT</p><p class="font-display font-bold text-2xl mt-1">1.2<span class="text-sm muted"> s</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO 3 · PRISM TILT -->
+    <div class="hero-pane" data-pane="3">
+      <div class="h-full min-h-[560px] flex flex-col justify-center px-6 md:px-14 py-12">
+        <p class="font-mono2 text-[11px] tracking-[.26em] muted">03 · PRISM TILT — PRICING / PRODUCT</p>
+        <h3 class="font-display font-bold tracking-tight leading-[1.02] text-[40px] sm:text-[56px] md:text-[68px] mt-4">Pick your <span class="grad-text">prism.</span></h3>
+        <p class="mt-4 muted max-w-xl leading-relaxed">Three plans, one tilt. Hover a card and it leans toward your cursor — the glare follows, the numbers stay honest.</p>
+        <div class="mt-8 grid sm:grid-cols-3 gap-4 max-w-3xl" style="perspective:1200px">
+          <div class="tilt card rounded-3xl p-5 relative overflow-hidden" data-tip="Starter plan|$19 / mo — 3 projects, 10 seats">
+            <div class="glare"></div>
+            <p class="font-mono2 text-[10px] tracking-widest muted">STARTER</p>
+            <p class="font-display font-bold text-3xl mt-2">$19<span class="text-sm muted font-medium"> /mo</span></p>
+            <p class="text-sm muted mt-2">For solo builders shipping their first product.</p>
+            <div class="flex items-end gap-1 h-12 mt-4" data-bars="12,26,18,34,22"></div>
+            <button class="btn btn-ghost btn-sm w-full justify-center mt-4 plan-pick" data-plan="Starter">Choose Starter</button>
+          </div>
+          <div class="tilt rounded-3xl p-5 relative overflow-hidden" style="background:linear-gradient(160deg,color-mix(in srgb,var(--acc1) 22%,var(--card)),var(--card));border:1px solid var(--acc1)" data-tip="Growth plan|$49 / mo — unlimited projects, 50 seats">
+            <div class="glare"></div>
+            <p class="font-mono2 text-[10px] tracking-widest" style="color:var(--acc1)">GROWTH · MOST POPULAR</p>
+            <p class="font-display font-bold text-3xl mt-2">$49<span class="text-sm muted font-medium"> /mo</span></p>
+            <p class="text-sm muted mt-2">For teams that ship every week, together.</p>
+            <div class="flex items-end gap-1 h-12 mt-4" data-bars="22,38,30,52,44"></div>
+            <button class="btn btn-primary btn-sm w-full justify-center mt-4 plan-pick" data-plan="Growth">Choose Growth</button>
+          </div>
+          <div class="tilt card rounded-3xl p-5 relative overflow-hidden" data-tip="Scale plan|$99 / mo — SSO, SLA, dedicated support">
+            <div class="glare"></div>
+            <p class="font-mono2 text-[10px] tracking-widest muted">SCALE</p>
+            <p class="font-display font-bold text-3xl mt-2">$99<span class="text-sm muted font-medium"> /mo</span></p>
+            <p class="text-sm muted mt-2">For companies that need guarantees, not promises.</p>
+            <div class="flex items-end gap-1 h-12 mt-4" data-bars="30,44,52,48,66"></div>
+            <button class="btn btn-ghost btn-sm w-full justify-center mt-4 plan-pick" data-plan="Scale">Choose Scale</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO 4 · MARQUEE STREAM -->
+    <div class="hero-pane" data-pane="4">
+      <div class="h-full min-h-[560px] flex flex-col justify-center py-12 overflow-hidden">
+        <div class="marquee border-y hairline py-3" style="background:color-mix(in srgb,var(--acc1) 8%,transparent)">
+          <div class="marquee-track font-display font-bold text-lg md:text-xl tracking-tight" id="mq1"></div>
+        </div>
+        <div class="px-6 md:px-14 text-center mt-8">
+          <p class="font-mono2 text-[11px] tracking-[.26em] muted">04 · MARQUEE STREAM — MEDIA / COMMUNITY</p>
+          <h3 class="font-display font-bold tracking-tight leading-[1.02] text-[44px] sm:text-[64px] md:text-[80px] mt-4">The feed<br><span class="grad-text">never sleeps.</span></h3>
+          <p class="mt-5 muted max-w-xl mx-auto leading-relaxed">Two ticker bands stream live signals above and below the headline. Perfect for launches, live events and communities with something to say.</p>
+          <div class="mt-7 flex flex-wrap justify-center gap-3">
+            <button class="btn btn-primary hero-cta" data-hero-name="Marquee Stream">Join the stream</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('playground').scrollIntoView({behavior:'smooth'})">Tune the motion</button>
+          </div>
+          <div class="mt-8 flex flex-wrap justify-center gap-3 font-mono2 text-xs">
+            <span class="glass rounded-full px-4 py-2" data-tip="Live viewers|12,480 people watching right now">● LIVE · <span class="text-[var(--acc1)]">12,480</span> watching</span>
+            <span class="glass rounded-full px-4 py-2" data-tip="Messages today|8,214 messages posted in the last 24 hours">8,214 messages today</span>
+            <span class="glass rounded-full px-4 py-2" data-tip="Uptime, last 90 days|99.98% uptime over the last 90 days">99.98% uptime</span>
+          </div>
+        </div>
+        <div class="marquee border-y hairline py-3 mt-8" style="background:color-mix(in srgb,var(--acc3) 8%,transparent)">
+          <div class="marquee-track rev font-mono2 text-sm tracking-widest muted" id="mq2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO 5 · PARTICLE FIELD -->
+    <div class="hero-pane" data-pane="5">
+      <canvas id="particles" class="absolute inset-0 w-full h-full" aria-hidden="true"></canvas>
+      <div class="relative h-full min-h-[560px] flex flex-col justify-center px-6 md:px-14 py-12 pointer-events-none">
+        <p class="font-mono2 text-[11px] tracking-[.26em] muted">05 · PARTICLE FIELD — DEEP TECH / AI</p>
+        <h3 class="font-display font-bold tracking-tight leading-[1.02] text-[40px] sm:text-[56px] md:text-[72px] mt-4 max-w-2xl">Connected by<br><span class="grad-text">every node.</span></h3>
+        <p class="mt-5 muted max-w-lg leading-relaxed">A living network of <span id="node-count" class="text-[var(--acc1)] font-semibold">72 nodes</span>. Move your mouse through the field — the particles react, the links rewire.</p>
+        <div class="mt-7 flex flex-wrap gap-3 pointer-events-auto">
+          <button class="btn btn-primary hero-cta" data-hero-name="Particle Field">Request access</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})">See the gallery</button>
+        </div>
+        <div class="mt-10 flex flex-wrap gap-3 pointer-events-auto">
+          <div class="glass rounded-2xl px-5 py-4 backdrop-blur-md" data-tip="Active nodes|72 nodes rendered on this canvas">
+            <p class="font-mono2 text-[10px] tracking-widest muted">NODES</p><p class="font-display font-bold text-2xl mt-1 stat-num" id="stat-nodes">72</p>
+          </div>
+          <div class="glass rounded-2xl px-5 py-4 backdrop-blur-md" data-tip="Live links|Links redrawn every frame between nodes closer than 120 px">
+            <p class="font-mono2 text-[10px] tracking-widest muted">LIVE LINKS</p><p class="font-display font-bold text-2xl mt-1 stat-num" id="stat-links">148</p>
+          </div>
+          <div class="glass rounded-2xl px-5 py-4 backdrop-blur-md" data-tip="Frame rate|Canvas runs at the display refresh rate, 60 fps target">
+            <p class="font-mono2 text-[10px] tracking-widest muted">FRAME RATE</p><p class="font-display font-bold text-2xl mt-1 stat-num">60<span class="text-sm muted"> fps</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO 6 · EDITORIAL SPLIT -->
+    <div class="hero-pane" data-pane="6">
+      <div class="h-full min-h-[560px] grid md:grid-cols-2">
+        <div class="flex flex-col justify-center px-6 md:px-14 py-12">
+          <p class="font-mono2 text-[11px] tracking-[.26em] muted">06 · EDITORIAL SPLIT — AGENCY / STUDIO</p>
+          <h3 class="font-serif2 font-semibold leading-[1.04] text-[42px] sm:text-[56px] md:text-[64px] mt-4">Type that sells<br><em class="grad-text not-italic font-bold">the story.</em></h3>
+          <p class="mt-5 muted max-w-md leading-relaxed">A serif headline on the left, the proof on the right. Editorial Split is the quiet hero — for studios that let the work speak first.</p>
+          <div class="mt-7 flex flex-wrap gap-3">
+            <button class="btn btn-primary hero-cta" data-hero-name="Editorial Split">View our work</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Get the kit — $39</button>
+          </div>
+          <p class="font-mono2 text-[11px] tracking-widest muted mt-8">EST. 2019 — PARIS · DAKAR · NEW YORK</p>
+        </div>
+        <div class="flex flex-col justify-center px-6 md:px-10 py-12 gap-4" style="background:color-mix(in srgb,var(--acc2) 7%,transparent);border-left:1px solid var(--line)">
+          <div class="card rounded-2xl p-5 flex items-center justify-between gap-4" data-tip="Projects shipped|48 client projects shipped since 2019">
+            <div><p class="font-mono2 text-[10px] tracking-widest muted">PROJECTS SHIPPED</p><p class="font-display font-bold text-3xl mt-1 stat-num"><span class="count-up" data-target="48">0</span></p></div>
+            <span class="font-mono2 text-xs px-2.5 py-1 rounded-full" style="color:var(--acc1);background:color-mix(in srgb,var(--acc1) 12%,transparent)">+12 THIS YEAR</span>
+          </div>
+          <div class="card rounded-2xl p-5 flex items-center justify-between gap-4" data-tip="Design awards|12 international design awards, 3 this year">
+            <div><p class="font-mono2 text-[10px] tracking-widest muted">DESIGN AWARDS</p><p class="font-display font-bold text-3xl mt-1 stat-num"><span class="count-up" data-target="12">0</span></p></div>
+            <span class="font-mono2 text-xs px-2.5 py-1 rounded-full" style="color:var(--acc2);background:color-mix(in srgb,var(--acc2) 12%,transparent)">3 IN 2026</span>
+          </div>
+          <div class="card rounded-2xl p-5" data-tip="Client retention|96% of clients return for a second project">
+            <div class="flex items-center justify-between"><p class="font-mono2 text-[10px] tracking-widest muted">CLIENT RETENTION</p><p class="font-display font-bold text-2xl stat-num"><span class="count-up" data-target="96">0</span>%</p></div>
+            <div class="flex items-end gap-1.5 h-14 mt-3" id="retention-bars" role="img" aria-label="Retention by year bar chart"></div>
+            <div class="flex gap-1.5 mt-1.5 font-mono2 text-[10px] muted"><span class="flex-1 text-center">2022</span><span class="flex-1 text-center">2023</span><span class="flex-1 text-center">2024</span><span class="flex-1 text-center">2025</span><span class="flex-1 text-center">2026</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GALLERY ============ -->
+  <section id="gallery" class="pt-16 md:pt-20 scroll-mt-24">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-6 reveal">
+      <div>
+        <p class="font-mono2 text-[11px] tracking-[.24em] muted">02 — THE GALLERY</p>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mt-1">Six sections. One file each.</h2>
+      </div>
+      <p class="text-sm muted max-w-sm">Preview any hero on the stage, or copy its standalone snippet straight to your clipboard.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4" id="gallery-grid"></div>
+  </section>
+
+  <!-- ============ PLAYGROUND ============ -->
+  <section id="playground" class="pt-16 md:pt-20 scroll-mt-24">
+    <div class="glass rounded-3xl p-6 md:p-10 reveal">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p class="font-mono2 text-[11px] tracking-[.24em] muted">03 — PLAYGROUND</p>
+          <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mt-1">Tune the whole system.</h2>
+          <p class="text-sm muted mt-2 max-w-lg">One speed, one hue, one motion switch — every hero on this page obeys them live.</p>
+        </div>
+        <button id="pg-reset" class="btn btn-ghost btn-sm">Reset defaults</button>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6 mt-8">
+        <div class="card rounded-2xl p-5">
+          <div class="flex items-center justify-between"><label for="pg-speed" class="font-display font-semibold">Animation speed</label><span class="font-mono2 text-sm px-2.5 py-1 rounded-lg" style="color:var(--acc1);background:color-mix(in srgb,var(--acc1) 12%,transparent)" id="pg-speed-val">1.00×</span></div>
+          <input type="range" id="pg-speed" min="0.5" max="2" step="0.25" value="1" class="w-full mt-5" aria-label="Animation speed">
+          <div class="flex justify-between font-mono2 text-[10px] muted mt-2"><span>0.5× SLOW</span><span>2× FAST</span></div>
+          <p class="text-xs muted mt-3">Marquees, blobs, gradient words and floats all scale together.</p>
+        </div>
+        <div class="card rounded-2xl p-5">
+          <div class="flex items-center justify-between"><label for="pg-hue" class="font-display font-semibold">Accent hue</label><span class="flex items-center gap-2"><span id="pg-hue-swatch" class="w-5 h-5 rounded-full grad-bg inline-block"></span><span class="font-mono2 text-sm" id="pg-hue-val">187°</span></span></div>
+          <input type="range" id="pg-hue" min="0" max="360" step="1" value="187" class="w-full mt-5" aria-label="Accent hue">
+          <div class="flex gap-2 mt-3" id="pg-swatches"></div>
+          <p class="text-xs muted mt-3">Cyan, violet and rose shift together — the gradient never breaks.</p>
+        </div>
+        <div class="card rounded-2xl p-5">
+          <div class="flex items-center justify-between"><span class="font-display font-semibold">Reduced motion</span><button id="pg-motion" class="switch" role="switch" aria-checked="false" aria-label="Toggle reduced motion"></button></div>
+          <p class="text-xs muted mt-4 leading-relaxed">Freezes marquees, blobs and floats. The page also honours your operating-system <span class="font-mono2">prefers-reduced-motion</span> setting automatically.</p>
+          <p class="font-mono2 text-[11px] mt-4 px-3 py-2 rounded-lg" style="background:var(--glass2)" id="pg-motion-state">Motion: full · animations running</p>
+        </div>
+      </div>
+      <div class="mt-6 flex flex-wrap gap-2" id="pg-quick"></div>
+    </div>
+  </section>
+
+  <!-- ============ PRICING ============ -->
+  <section id="pricing" class="pt-16 md:pt-20 scroll-mt-24">
+    <div class="text-center reveal">
+      <p class="font-mono2 text-[11px] tracking-[.24em] muted">04 — PRICING</p>
+      <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mt-1">Free to try. $39 to ship.</h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto mt-8">
+      <div class="card rounded-3xl p-7 reveal">
+        <p class="font-mono2 text-[11px] tracking-widest muted">FREE</p>
+        <p class="font-display font-bold text-4xl mt-3">$0</p>
+        <p class="text-sm muted mt-2">Taste the system. Three heroes, personal projects.</p>
+        <ul class="mt-5 space-y-2.5 text-sm">
+          <li class="flex gap-2.5"><span style="color:var(--acc1)">✓</span> Heroes 01–03 included</li>
+          <li class="flex gap-2.5"><span style="color:var(--acc1)">✓</span> Dark + light themes</li>
+          <li class="flex gap-2.5"><span style="color:var(--acc1)">✓</span> Playground controls</li>
+          <li class="flex gap-2.5 muted"><span>—</span> Commercial licence</li>
+          <li class="flex gap-2.5 muted"><span>—</span> Particle Field + Editorial Split</li>
+        </ul>
+        <button class="btn btn-ghost w-full justify-center mt-6 plan-pick" data-plan="Free">Start free</button>
+      </div>
+      <div class="rounded-3xl p-7 relative overflow-hidden reveal" style="background:linear-gradient(160deg,color-mix(in srgb,var(--acc1) 16%,var(--card)),var(--card));border:1px solid var(--acc1)">
+        <span class="absolute top-5 right-5 font-mono2 text-[10px] tracking-widest px-2.5 py-1 rounded-full grad-bg" style="color:#06121A">BEST VALUE</span>
+        <p class="font-mono2 text-[11px] tracking-widest" style="color:var(--acc1)">PRO — ONE-TIME</p>
+        <p class="font-display font-bold text-4xl mt-3">$39</p>
+        <p class="text-sm muted mt-2">The full kit. Six heroes, commercial licence, forever.</p>
+        <ul class="mt-5 space-y-2.5 text-sm">
+          <li class="flex gap-2.5"><span style="color:var(--acc1)">✓</span> All 6 animated heroes</li>
+          <li class="flex gap-2.5"><span style="color:var(--acc1)">✓</span> Commercial licence, unlimited sites</li>
+          <li class="flex gap-2.5"><span style="color:var(--acc1)">✓</span> Copy-code snippets for every hero</li>
+          <li class="flex gap-2.5"><span style="color:var(--acc1)">✓</span> Playground + hue system</li>
+          <li class="flex gap-2.5"><span style="color:var(--acc1)">✓</span> Free updates, forever</li>
+        </ul>
+        <button class="btn btn-primary w-full justify-center mt-6 plan-pick" data-plan="Pro">Get Pro — $39</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="mt-20 border-t hairline py-10">
+    <div class="flex flex-wrap items-center justify-between gap-6">
+      <div class="flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-lg grad-bg flex items-center justify-center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5 21 8v8l-9 5.5L3 16V8l9-5.5Z" stroke="#06121A" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 2.5v19M3 8l9 5.5L21 8" stroke="#06121A" stroke-width="1.4"/></svg>
+        </span>
+        <div>
+          <p class="font-display font-bold text-sm">HERO<span class="grad-text"> SYSTEMS</span></p>
+          <p class="font-mono2 text-[10px] tracking-widest muted">NOCTURNE PRISM · KIT 01</p>
+        </div>
+      </div>
+      <nav class="flex flex-wrap gap-5 text-sm muted">
+        <a href="#heroes" class="hover:opacity-70">Heroes</a><a href="#gallery" class="hover:opacity-70">Gallery</a><a href="#playground" class="hover:opacity-70">Playground</a><a href="#pricing" class="hover:opacity-70">Pricing</a>
+      </nav>
+      <p class="text-xs muted">© 2026 Julius Vibe Studio — Hero Systems. All visuals are CSS, SVG and canvas. No stock imagery.</p>
+    </div>
+  </footer>
+</main>
+
+<!-- ============ COMMAND PALETTE ============ -->
+<div id="palette" class="fixed inset-0 z-[80] hidden items-start justify-center pt-[14vh] px-4" style="background:rgba(3,6,12,.72);backdrop-filter:blur(6px)">
+  <div class="panel w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl" style="background:var(--glass);border:1px solid var(--line2)">
+    <div class="flex items-center gap-3 px-4 py-3.5 border-b hairline">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="muted" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="pal-input" type="text" placeholder="Search heroes, sections, actions…" class="flex-1 bg-transparent outline-none text-sm placeholder:text-[var(--muted)]" autocomplete="off">
+      <kbd class="font-mono2 text-[10px] border hairline rounded px-1.5 py-0.5 muted">ESC</kbd>
+    </div>
+    <div id="pal-list" class="p-2 max-h-[320px] overflow-y-auto"></div>
+    <div class="px-4 py-2.5 border-t hairline font-mono2 text-[10px] tracking-widest muted flex gap-4"><span>↑↓ NAVIGATE</span><span>↵ OPEN</span><span>ESC CLOSE</span></div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,c){return (c||document).querySelector(s)};
+var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+var root=document.documentElement, reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- toast ---------- */
+var toastTimer=null;
+function toast(msg){var t=$("#toast");$("#toast-msg").textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show")},2600)}
+
+/* ---------- tooltip (exact values on hover, JULIUS rule) ---------- */
+var tip=$("#tooltip");
+function bindTips(scope){
+  $$("[data-tip]",scope).forEach(function(el){
+    if(el._tipBound)return; el._tipBound=true;
+    el.addEventListener("mouseenter",function(){var parts=(el.getAttribute("data-tip")||"").split("|");tip.innerHTML=(parts[1]?'<span class="tt-title">'+parts[0]+'</span>'+parts[1]:parts[0]);tip.classList.add("show")});
+    el.addEventListener("mousemove",function(e){tip.style.left=Math.min(Math.max(e.clientX,120),window.innerWidth-120)+"px";tip.style.top=Math.max(e.clientY,48)+"px"});
+    el.addEventListener("mouseleave",function(){tip.classList.remove("show")});
+  });
+}
+bindTips(document);
+
+/* ---------- theme ---------- */
+var themeBtn=$("#theme-toggle");
+function setTheme(light){
+  root.classList.toggle("light",light); root.classList.toggle("dark",!light);
+  $("#icon-moon").classList.toggle("hidden",light); $("#icon-sun").classList.toggle("hidden",!light);
+  try{localStorage.setItem("hs-theme",light?"light":"dark")}catch(e){}
+}
+themeBtn.addEventListener("click",function(){setTheme(!root.classList.contains("light"));toast(root.classList.contains("light")?"Light theme on":"Dark theme on")});
+try{if(localStorage.getItem("hs-theme")==="light")setTheme(true)}catch(e){}
+$("#burger").addEventListener("click",function(){var m=$("#mobile-nav");var open=m.classList.contains("hidden");m.classList.toggle("hidden",!open);m.classList.toggle("flex",open)});
+$$("#mobile-nav a").forEach(function(a){a.addEventListener("click",function(){$("#mobile-nav").classList.add("hidden");$("#mobile-nav").classList.remove("flex")})});
+
+/* ---------- hero data ---------- */
+var HEROES=[
+ {n:1,name:"Kinetic Type",tag:"Sliding headline · bars",tags:["Typography","SaaS launch","Charts"],desc:"Giant words slide in on a stagger while a 7-week conversion bar chart proves the promise underneath.",accent:"cyan"},
+ {n:2,name:"Aurora Orb",tag:"Blobs · parallax cards",tags:["Glassmorphism","Parallax","Analytics"],desc:"Drifting gradient blobs and floating glass stat cards that follow your cursor across the stage.",accent:"violet"},
+ {n:3,name:"Prism Tilt",tag:"3D cards · mouse tilt",tags:["3D tilt","Pricing","Product"],desc:"Three pricing cards lean toward the cursor with a moving glare — the numbers stay honest.",accent:"rose"},
+ {n:4,name:"Marquee Stream",tag:"Ticker bands · big type",tags:["Marquee","Media","Live"],desc:"Two counter-scrolling ticker bands stream live signals above and below a giant headline.",accent:"cyan"},
+ {n:5,name:"Particle Field",tag:"Canvas network · mouse",tags:["Canvas","Deep tech","Interactive"],desc:"A living particle network that rewires itself around your cursor, with live node and link counts.",accent:"violet"},
+ {n:6,name:"Editorial Split",tag:"Serif · count-up stats",tags:["Editorial","Serif","Agency"],desc:"A Fraunces serif headline on the left, count-up proof and a retention chart on the right.",accent:"rose"}
+];
+var SNIPPETS={
+ 1:'<section class="hero-kinetic">\n  <h1>Ship <em>fast.</em><br>Launch <em>loud.</em></h1>\n  <p>The headline that sells the launch.</p>\n  <a class="btn-primary" href="#">Start free trial</a>\n  <!-- 7-week conversion bars: W1 +9% … W7 +27% -->\n</section>',
+ 2:'<section class="hero-aurora">\n  <div class="blob blob-cyan"></div>\n  <div class="blob blob-violet"></div>\n  <h1>Your metrics, <em>in full colour.</em></h1>\n  <div class="glass-card">Lighthouse 98 / 100</div>\n  <!-- parallax: cards translate with the cursor -->\n</section>',
+ 3:'<section class="hero-prism">\n  <h1>Pick your <em>prism.</em></h1>\n  <article class="tilt-card" data-plan="Growth">\n    <h2>$49 / mo</h2><p>For teams that ship weekly.</p>\n  </article>\n  <!-- 3D tilt: rotateX / rotateY follow the mouse -->\n</section>',
+ 4:'<section class="hero-marquee">\n  <div class="ticker">LAUNCHING · SHIPPING · CONVERTING ·</div>\n  <h1>The feed <em>never sleeps.</em></h1>\n  <div class="ticker reverse">12,480 WATCHING · 8,214 MESSAGES ·</div>\n</section>',
+ 5:'<section class="hero-particles">\n  <canvas id="field"></canvas>\n  <h1>Connected by <em>every node.</em></h1>\n  <!-- canvas: 72 nodes, links under 120 px, mouse repel -->\n</section>',
+ 6:'<section class="hero-editorial">\n  <h1 class="serif">Type that sells <em>the story.</em></h1>\n  <aside class="proof">\n    <strong data-count="48">48</strong> projects shipped\n    <strong data-count="96">96%</strong> client retention\n  </aside>\n</section>'
+};
+
+/* ---------- gallery ---------- */
+var grid=$("#gallery-grid");
+HEROES.forEach(function(h){
+  var card=document.createElement("article");
+  card.className="gcard card rounded-3xl p-6 flex flex-col reveal in";
+  card.innerHTML=
+   '<div class="flex items-start justify-between"><span class="font-mono2 text-[11px] tracking-[.2em]" style="color:var(--acc1)">0'+h.n+' / '+h.tag.toUpperCase()+'</span>'+
+   '<span class="w-9 h-9 rounded-xl grad-bg flex items-center justify-center font-display font-bold text-sm" style="color:#06121A">'+h.n+'</span></div>'+
+   '<h3 class="font-display font-bold text-xl mt-4">'+h.name+'</h3>'+
+   '<p class="text-sm muted mt-2 leading-relaxed flex-1">'+h.desc+'</p>'+
+   '<div class="flex flex-wrap gap-1.5 mt-4">'+h.tags.map(function(t){return '<span class="font-mono2 text-[10px] px-2 py-1 rounded-full border hairline muted">'+t+'</span>'}).join("")+'</div>'+
+   '<div class="flex gap-2 mt-5"><button class="btn btn-primary btn-sm flex-1 justify-center gal-preview" data-hero="'+h.n+'">Preview</button>'+
+   '<button class="btn btn-ghost btn-sm flex-1 justify-center gal-copy" data-hero="'+h.n+'">Copy code</button></div>';
+  grid.appendChild(card);
+});
+$$(".gal-preview").forEach(function(b){b.addEventListener("click",function(){showHero(+b.getAttribute("data-hero"));document.getElementById("heroes").scrollIntoView({behavior:"smooth"})})});
+$$(".gal-copy").forEach(function(b){b.addEventListener("click",function(){copySnippet(+b.getAttribute("data-hero"),b)})});
+function copySnippet(n,btn){
+  var text=SNIPPETS[n]||"";
+  function done(){toast("Hero 0"+n+" snippet copied — paste it anywhere");if(btn){var old=btn.textContent;btn.textContent="Copied ✓";setTimeout(function(){btn.textContent=old},1800)}}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,function(){fallbackCopy(text);done()})}
+  else{fallbackCopy(text);done()}
+}
+function fallbackCopy(text){var ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy")}catch(e){}document.body.removeChild(ta)}
+
+/* ---------- hero switcher ---------- */
+var current=1, autoTimer=null;
+function showHero(n){
+  current=n;
+  $$(".hero-tab").forEach(function(t){var on=+t.getAttribute("data-hero")===n;t.classList.toggle("active",on);t.setAttribute("aria-selected",on?"true":"false")});
+  $$(".hero-pane").forEach(function(p){p.classList.toggle("active",+p.getAttribute("data-pane")===n)});
+  var h=HEROES[n-1];
+  $("#stage-label").textContent="0"+n+" / 06"; $("#stage-name").textContent=h.name;
+  if(n===6)runCountUps();
+  if(n===5)startParticles();
+}
+$$(".hero-tab").forEach(function(t){t.addEventListener("click",function(){showHero(+t.getAttribute("data-hero"));restartAutoplay()})});
+$("#prev-hero").addEventListener("click",function(){showHero(current===1?6:current-1);restartAutoplay()});
+$("#next-hero").addEventListener("click",function(){showHero(current===6?1:current+1);restartAutoplay()});
+function restartAutoplay(){clearInterval(autoTimer);if($("#autoplay").checked){autoTimer=setInterval(function(){showHero(current===6?1:current+1)},6000)}}
+$("#autoplay").addEventListener("change",restartAutoplay);
+document.addEventListener("keydown",function(e){
+  if(e.key==="ArrowRight"&&$("#palette").classList.contains("hidden")){showHero(current===6?1:current+1)}
+  if(e.key==="ArrowLeft"&&$("#palette").classList.contains("hidden")){showHero(current===1?6:current-1)}
+});
+
+/* ---------- kinetic words cycle ---------- */
+var kwords=[["Ship","fast."],["Grow","louder."],["Convert","more."]];
+var kidx=0;
+function cycleWords(){
+  kidx=(kidx+1)%kwords.length;
+  var w=kwords[kidx];
+  [["kword-1",w[0]],["kword-2",w[1]],["kword-3",kidx===0?"Launch":(kidx===1?"Scale":"Win")],["kword-4",kidx===0?"loud.":(kidx===1?"faster.":"bigger.")]].forEach(function(pair){
+    var el=document.getElementById(pair[0]); if(!el)return;
+    el.textContent=pair[1];
+    el.style.animation="none"; void el.offsetWidth; el.style.animation="";
+  });
+}
+setInterval(cycleWords,2600);
+
+/* ---------- bar charts (hover tooltips with exact values) ---------- */
+function buildBars(container,values,labels,unit){
+  var max=Math.max.apply(null,values);
+  values.forEach(function(v,i){
+    var b=document.createElement("div");
+    b.className="bar flex-1 rounded-t-md grad-bg";
+    b.style.height=Math.max(8,Math.round(v/max*100))+"%";
+    b.setAttribute("data-tip",(labels[i]||("Week "+(i+1)))+"|"+unit+v);
+    b.setAttribute("role","img");
+    container.appendChild(b);
+  });
+  bindTips(container);
+}
+buildBars($("#kbar-chart"),[9,14,11,19,23,17,27],["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6","Week 7"],"+","%");
+$$("#kbar-chart .bar").forEach(function(b,i){b.setAttribute("data-tip",["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6","Week 7"][i]+"|Conversion lift +"+[9,14,11,19,23,17,27][i]+"%")});
+buildBars($("#retention-bars"),[88,91,93,95,96],["2022","2023","2024","2025","2026"],"%");
+$$("#retention-bars .bar").forEach(function(b,i){b.setAttribute("data-tip",["2022","2023","2024","2025","2026"][i]+" retention|"+[88,91,93,95,96][i]+"% of clients returned")});
+$$("[data-bars]").forEach(function(wrap){
+  var vals=wrap.getAttribute("data-bars").split(",").map(Number);
+  var max=Math.max.apply(null,vals);
+  vals.forEach(function(v,i){
+    var b=document.createElement("div");
+    b.className="bar flex-1 rounded-t grad-bg"; b.style.height=Math.max(10,Math.round(v/max*100))+"%";
+    b.setAttribute("data-tip","Month "+(i+1)+"|"+v+" signups");
+    wrap.appendChild(b);
+  });
+  bindTips(wrap);
+});
+
+/* ---------- count-ups ---------- */
+var counted=false;
+function runCountUps(){
+  if(counted)return; counted=true;
+  $$(".count-up").forEach(function(el){
+    var target=+el.getAttribute("data-target"), start=null;
+    function step(ts){if(!start)start=ts;var p=Math.min(1,(ts-start)/1200);el.textContent=Math.round(target*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step)}
+    requestAnimationFrame(step);
+  });
+}
+
+/* ---------- aurora parallax ---------- */
+var aurora=$("#aurora-inner");
+if(aurora){
+  aurora.parentElement.addEventListener("mousemove",function(e){
+    var r=aurora.parentElement.getBoundingClientRect();
+    var x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+    $$(".parallax-card",aurora).forEach(function(c){
+      var d=+c.getAttribute("data-depth")||12;
+      c.style.transform="translate("+(x*d)+"px,"+(y*d)+"px)";
+    });
+  });
+  aurora.parentElement.addEventListener("mouseleave",function(){
+    $$(".parallax-card",aurora).forEach(function(c){c.style.transform=""});
+  });
+}
+
+/* ---------- prism tilt ---------- */
+$$(".tilt").forEach(function(card){
+  card.addEventListener("mousemove",function(e){
+    var r=card.getBoundingClientRect();
+    var px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
+    card.style.transform="rotateY("+((px-.5)*14)+"deg) rotateX("+((.5-py)*12)+"deg) translateY(-4px)";
+    card.style.setProperty("--gx",(px*100)+"%"); card.style.setProperty("--gy",(py*100)+"%");
+  });
+  card.addEventListener("mouseleave",function(){card.style.transform=""});
+});
+
+/* ---------- marquee content ---------- */
+function fillMarquee(el,items,sep){
+  var half=items.map(function(t){return '<span class="mx-4">'+t+'</span><span style="color:var(--acc1)">'+sep+'</span>'}).join("");
+  el.innerHTML=half+half;
+}
+fillMarquee($("#mq1"),["LAUNCHING","SHIPPING","CONVERTING","DESIGNING","MEASURING","ITERATING"],"✦");
+fillMarquee($("#mq2"),["12,480 WATCHING","8,214 MESSAGES TODAY","99.98% UPTIME","48 PROJECTS SHIPPED","NEW DROP EVERY FRIDAY"],"·");
+
+/* ---------- particle field ---------- */
+var pCanvas=$("#particles"), pCtx=pCanvas.getContext("2d"), parts=[], mouse={x:-9999,y:-9999}, pRunning=false, pRaf=null;
+function sizeParticles(){
+  var r=pCanvas.parentElement.getBoundingClientRect();
+  pCanvas.width=r.width; pCanvas.height=r.height;
+  var count=Math.min(90,Math.floor(r.width*r.height/16000));
+  parts=[]; for(var i=0;i<count;i++){parts.push({x:Math.random()*r.width,y:Math.random()*r.height,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,r:1+Math.random()*1.8})}
+  $("#node-count").textContent=count+" nodes"; $("#stat-nodes").textContent=count;
+}
+function drawParticles(){
+  if(!pRunning)return;
+  var w=pCanvas.width,h=pCanvas.height;
+  pCtx.clearRect(0,0,w,h);
+  var links=0;
+  for(var i=0;i<parts.length;i++){
+    var p=parts[i];
+    var dx=p.x-mouse.x, dy=p.y-mouse.y, d=Math.sqrt(dx*dx+dy*dy);
+    if(d<110&&d>0){p.x+=dx/d*.9;p.y+=dy/d*.9}
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>w)p.vx*=-1; if(p.y<0||p.y>h)p.vy*=-1;
+    for(var j=i+1;j<parts.length;j++){
+      var q=parts[j], ddx=p.x-q.x, ddy=p.y-q.y, dd=Math.sqrt(ddx*ddx+ddy*ddy);
+      if(dd<120){links++;pCtx.strokeStyle="rgba(139,92,246,"+(0.35*(1-dd/120))+")";pCtx.lineWidth=1;pCtx.beginPath();pCtx.moveTo(p.x,p.y);pCtx.lineTo(q.x,q.y);pCtx.stroke()}
+    }
+    pCtx.fillStyle="rgba(34,211,238,.9)";pCtx.beginPath();pCtx.arc(p.x,p.y,p.r,0,Math.PI*2);pCtx.fill();
+  }
+  $("#stat-links").textContent=links;
+  pRaf=requestAnimationFrame(drawParticles);
+}
+function startParticles(){
+  if(pRunning)return; pRunning=true; sizeParticles(); drawParticles();
+}
+pCanvas.parentElement.addEventListener("mousemove",function(e){var r=pCanvas.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top});
+pCanvas.parentElement.addEventListener("mouseleave",function(){mouse.x=-9999;mouse.y=-9999});
+window.addEventListener("resize",function(){if(pRunning)sizeParticles()});
+if(reduced){pRunning=false}
+
+/* ---------- CTA + plan buttons ---------- */
+$$(".hero-cta").forEach(function(b){b.addEventListener("click",function(){toast(b.getAttribute("data-hero-name")+" added to your kit — nice choice")})});
+$$(".plan-pick").forEach(function(b){b.addEventListener("click",function(){var p=b.getAttribute("data-plan");toast(p==="Free"?"Free plan selected — heroes 01–03 are yours":p+" plan selected — welcome aboard");if(p!=="Free")document.getElementById("pricing").scrollIntoView({behavior:"smooth"})})});
+
+/* ---------- playground ---------- */
+var speedEl=$("#pg-speed"), hueEl=$("#pg-hue");
+function applySpeed(){var v=parseFloat(speedEl.value);root.style.setProperty("--speed",v);$("#pg-speed-val").textContent=v.toFixed(2)+"×"}
+function applyHue(){var v=+hueEl.value;root.style.setProperty("--hue",v);$("#pg-hue-val").textContent=v+"°"}
+speedEl.addEventListener("input",applySpeed);
+hueEl.addEventListener("input",applyHue);
+var swatches=[187,262,330,150,20,280];
+var swWrap=$("#pg-swatches");
+swatches.forEach(function(h){
+  var s=document.createElement("button");
+  s.className="w-8 h-8 rounded-full border-2 border-transparent hover:scale-110 transition";
+  s.style.background="linear-gradient(135deg,hsl("+h+" 90% 60%),hsl("+(h+62)+" 84% 66%))";
+  s.setAttribute("aria-label","Accent hue "+h+" degrees");
+  s.addEventListener("click",function(){hueEl.value=h;applyHue();toast("Accent hue set to "+h+"°")});
+  swWrap.appendChild(s);
+});
+var motionBtn=$("#pg-motion");
+function setReduced(on){
+  root.classList.toggle("rm",on);
+  motionBtn.classList.toggle("on",on); motionBtn.setAttribute("aria-checked",on?"true":"false");
+  $("#pg-motion-state").textContent=on?"Motion: reduced · animations paused":"Motion: full · animations running";
+  if(on){pRunning=false;if(pRaf)cancelAnimationFrame(pRaf)} else if(current===5){startParticles()}
+}
+motionBtn.addEventListener("click",function(){setReduced(!root.classList.contains("rm"));toast(root.classList.contains("rm")?"Reduced motion on":"Full motion restored")});
+if(reduced)setReduced(true);
+$("#pg-reset").addEventListener("click",function(){speedEl.value=1;hueEl.value=187;applySpeed();applyHue();setReduced(false);toast("Playground reset to defaults")});
+var quick=[["Slow & calm","0.5","187"],["Default","1","187"],["Fast & loud","2","330"],["Emerald","1","150"],["Sunset","1","20"]];
+var qWrap=$("#pg-quick");
+quick.forEach(function(q){
+  var b=document.createElement("button");
+  b.className="btn btn-ghost btn-sm"; b.textContent=q[0];
+  b.addEventListener("click",function(){speedEl.value=q[1];hueEl.value=q[2];applySpeed();applyHue();toast(q[0]+" preset applied")});
+  qWrap.appendChild(b);
+});
+
+/* ---------- command palette ---------- */
+var pal=$("#palette"), palInput=$("#pal-input"), palList=$("#pal-list"), palSel=0, palItems=[];
+var PAL=[
+ {label:"Go to hero 01 — Kinetic Type",hint:"Hero",run:function(){showHero(1);document.getElementById("heroes").scrollIntoView({behavior:"smooth"})}},
+ {label:"Go to hero 02 — Aurora Orb",hint:"Hero",run:function(){showHero(2);document.getElementById("heroes").scrollIntoView({behavior:"smooth"})}},
+ {label:"Go to hero 03 — Prism Tilt",hint:"Hero",run:function(){showHero(3);document.getElementById("heroes").scrollIntoView({behavior:"smooth"})}},
+ {label:"Go to hero 04 — Marquee Stream",hint:"Hero",run:function(){showHero(4);document.getElementById("heroes").scrollIntoView({behavior:"smooth"})}},
+ {label:"Go to hero 05 — Particle Field",hint:"Hero",run:function(){showHero(5);document.getElementById("heroes").scrollIntoView({behavior:"smooth"})}},
+ {label:"Go to hero 06 — Editorial Split",hint:"Hero",run:function(){showHero(6);document.getElementById("heroes").scrollIntoView({behavior:"smooth"})}},
+ {label:"Open the playground",hint:"Section",run:function(){document.getElementById("playground").scrollIntoView({behavior:"smooth"})}},
+ {label:"See pricing — Pro $39",hint:"Section",run:function(){document.getElementById("pricing").scrollIntoView({behavior:"smooth"})}},
+ {label:"Toggle light / dark theme",hint:"Action",run:function(){setTheme(!root.classList.contains("light"))}},
+ {label:"Toggle reduced motion",hint:"Action",run:function(){setReduced(!root.classList.contains("rm"))}},
+ {label:"Copy all hero snippets",hint:"Action",run:function(){var all=Object.keys(SNIPPETS).map(function(k){return SNIPPETS[k]}).join("\n\n");if(navigator.clipboard)navigator.clipboard.writeText(all).then(function(){toast("All 6 snippets copied")});}}
+];
+function renderPal(q){
+  palItems=PAL.filter(function(p){return p.label.toLowerCase().indexOf((q||"").toLowerCase())>-1});
+  palSel=0;
+  palList.innerHTML=palItems.length?palItems.map(function(p,i){
+    return '<div class="pal-item'+(i===0?" sel":"")+'" data-i="'+i+'"><span class="font-mono2 text-[10px] px-2 py-1 rounded-md border hairline muted shrink-0">'+p.hint.toUpperCase()+'</span><span class="text-sm">'+p.label+'</span></div>'
+  }).join(""):'<p class="text-sm muted px-3 py-4">No results for “'+q+'”.</p>';
+  $$(".pal-item",palList).forEach(function(el){el.addEventListener("click",function(){runPal(+el.getAttribute("data-i"))})});
+}
+function openPal(){pal.classList.remove("hidden");pal.classList.add("flex");renderPal("");palInput.value="";setTimeout(function(){palInput.focus()},30)}
+function closePal(){pal.classList.add("hidden");pal.classList.remove("flex")}
+function runPal(i){var item=palItems[i];if(!item)return;closePal();item.run()}
+$("#search-open").addEventListener("click",openPal);
+pal.addEventListener("click",function(e){if(e.target===pal)closePal()});
+palInput.addEventListener("input",function(){renderPal(palInput.value)});
+palInput.addEventListener("keydown",function(e){
+  if(e.key==="ArrowDown"){e.preventDefault();palSel=Math.min(palSel+1,palItems.length-1)}
+  else if(e.key==="ArrowUp"){e.preventDefault();palSel=Math.max(palSel-1,0)}
+  else if(e.key==="Enter"){e.preventDefault();runPal(palSel);return}
+  else return;
+  $$(".pal-item",palList).forEach(function(el,i){el.classList.toggle("sel",i===palSel)});
+});
+document.addEventListener("keydown",function(e){
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();pal.classList.contains("hidden")?openPal():closePal()}
+  else if(e.key==="Escape"){closePal()}
+});
+
+/* ---------- reveal on scroll ---------- */
+var io=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target)}})},{threshold:.12});
+$$(".reveal").forEach(function(el){io.observe(el)});
+
+/* ---------- init ---------- */
+applySpeed(); applyHue();
+if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){/* motion already reduced above */}
+})();
+</script>
+</body>
+</html>
