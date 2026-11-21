@@ -1,0 +1,937 @@
+<!DOCTYPE html><html lang="fr" class="dark"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Alto Studio — landing d’agence éditoriale. Identités, design éditorial, expériences digitales et direction motion, composées comme des magazines.">
+  <title>Alto Studio — Agence éditoriale &amp; studio de design</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#C98A4B',
+        'on-primary': '#0A0C10',
+        'primary-container': '#2D1E10',
+        'on-primary-container': '#F6D7B6',
+        'secondary': '#8FA98F',
+        'on-secondary': '#0A0C10',
+        'secondary-container': '#1B261C',
+        'on-secondary-container': '#CEEACD',
+        'surface': '#0A0C10',
+        'on-surface': '#F2EDE3',
+        'surface-container-low': '#0D1016',
+        'surface-container': '#11141B',
+        'surface-container-high': '#161A22',
+        'surface-container-highest': '#1E232E',
+        'on-surface-variant': '#B5AFA4',
+        'outline': '#8B857C',
+        'outline-variant': '#262B36',
+        'error': '#E06C65',
+        'on-error': '#0A0C10',
+        'success': '#8FA98F',
+        'on-success': '#0A0C10',
+      },
+      borderRadius: {
+        'none': '0px',
+        'sm': '2px',
+        'DEFAULT': '4px',
+        'md': '6px',
+        'lg': '8px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '80px',
+        'page-margin': '48px',
+        'page-margin-mobile': '20px',
+      },
+      fontFamily: {
+        'display': ['"Fraunces"', 'sans-serif'],
+        'headline': ['"Fraunces"', 'sans-serif'],
+        'title': ['"Inter"', 'sans-serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'label': ['"Inter"', 'sans-serif'],
+        'mono': ['"JetBrains Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-xl': ['96px', { lineHeight: '98px', letterSpacing: '-2px', fontWeight: '400' }],
+        'display-xl-mobile': ['32px', { lineHeight: '38px', letterSpacing: '-0.5px', fontWeight: '400' }],
+        'display-lg': ['64px', { lineHeight: '68px', letterSpacing: '-1.5px', fontWeight: '400' }],
+        'display-lg-mobile': ['30px', { lineHeight: '36px', letterSpacing: '-0.5px', fontWeight: '400' }],
+        'display-md': ['44px', { lineHeight: '50px', letterSpacing: '-0.75px', fontWeight: '400' }],
+        'display-md-mobile': ['26px', { lineHeight: '32px', letterSpacing: '-0.25px', fontWeight: '400' }],
+        'headline-lg': ['32px', { lineHeight: '38px', letterSpacing: '-0.4px', fontWeight: '400' }],
+        'headline-md': ['24px', { lineHeight: '30px', letterSpacing: '-0.2px', fontWeight: '400' }],
+        'title-lg': ['20px', { lineHeight: '28px', letterSpacing: '-0.1px', fontWeight: '500' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '500' }],
+        'body-lg': ['18px', { lineHeight: '28px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-md': ['15px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['13px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '20px', letterSpacing: '0.1px', fontWeight: '500' }],
+        'mono-md': ['12px', { lineHeight: '18px', letterSpacing: '0.6px', fontWeight: '400' }],
+        'mono-sm': ['11px', { lineHeight: '16px', letterSpacing: '0.8px', fontWeight: '400' }],
+      },
+      transitionDuration: {
+        'state-change': '140ms',
+        'surface-enter': '220ms',
+        'surface-exit': '160ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'surface-enter': '0ms',
+        'surface-exit': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'surface-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+        'surface-exit': 'cubic-bezier(0.3, 0, 1, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+
+  <style>
+    /* ---- Thème clair (sombre par défaut) ---- */
+    html.light body, html.light .bg-surface { background-color: #F7F3EC !important; }
+    html.light .bg-surface-container { background-color: #FFFFFF !important; }
+    html.light .bg-surface-container-low { background-color: #FBF8F2 !important; }
+    html.light .bg-surface-container-high { background-color: #EFE9DD !important; }
+    html.light .bg-surface-container-highest { background-color: #E7DFD0 !important; }
+    html.light .text-on-surface { color: #171310 !important; }
+    html.light .text-on-surface-variant { color: #5C564C !important; }
+    html.light .text-outline { color: #8A8172 !important; }
+    html.light .border-outline-variant { border-color: #DDD5C4 !important; }
+    html.light .divide-outline-variant > * + * { border-color: #DDD5C4 !important; }
+    html.light .text-primary { color: #9A6B2F !important; }
+    html.light .bg-primary { background-color: #9A6B2F !important; border-color: #9A6B2F !important; }
+    html.light .text-on-primary { color: #FFF8EC !important; }
+    html.light .bg-primary-container { background-color: #F3E2CB !important; }
+    html.light .text-on-primary-container { color: #4A2E12 !important; }
+    html.light .hover\:bg-on-primary-container:hover { background-color: #E4C79E !important; }
+    html.light .text-secondary { color: #4F6B4E !important; }
+    html.light .bg-secondary-container { background-color: #DCE8DA !important; }
+    html.light .text-on-secondary-container { color: #24402A !important; }
+    html.light .placeholder-outline::placeholder { color: #8A8172 !important; }
+    html.light header { background-color: #F7F3EC !important; }
+    html.light .bg-secondary { background-color: #4F6B4E !important; }
+    /* ---- Titres fluides ---- */
+    .text-display-xl { font-size: clamp(2.6rem, 8.5vw, 6rem) !important; line-height: 1.02 !important; }
+    .text-display-lg { font-size: clamp(2rem, 4.5vw, 4rem) !important; line-height: 1.06 !important; }
+    .text-display-md { font-size: clamp(1.7rem, 3.6vw, 2.75rem) !important; line-height: 1.12 !important; }
+    /* ---- Révélation au scroll ---- */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,0,0,1); }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    /* ---- Infobulle chiffres (règle survols) ---- */
+    .stat-cell { position: relative; cursor: help; }
+    .stat-cell:hover .stat-tip, .stat-cell:focus-within .stat-tip { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+    .stat-tip { position: absolute; left: 50%; bottom: calc(100% - 6px); transform: translate(-50%, 6px); opacity: 0; transition: opacity .18s ease, transform .18s ease; background: #1E232E; color: #F2EDE3; border: 1px solid #C98A4B; border-radius: 4px; padding: 8px 10px; font-family: "JetBrains Mono", monospace; font-size: 11px; line-height: 1.5; white-space: nowrap; z-index: 20; pointer-events: none; }
+    html.light .stat-tip { background: #171310; color: #F7F3EC; }
+    /* ---- Accordéon : signe + ---- */
+    .acc-plus { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; font-size: 1.4rem; line-height: 1; color: #8B857C; transition: transform .18s ease, color .14s ease; flex: none; }
+    details[open ] .acc-plus { transform: rotate(45deg); color: #C98A4B; }
+    /* ---- Modale projet / article ---- */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(5,6,8,.72); z-index: 60; display: flex; align-items: flex-start; justify-content: center; padding: 4vh 16px; overflow-y: auto; }
+    .modal-backdrop[hidden] { display: none; }
+    .modal-card { animation: modalIn .25s cubic-bezier(.2,0,0,1); }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    /* ---- Responsive recomposé ---- */
+    @media (max-width: 1023px) {
+      .grid-cols-12 > [class*="col-span-"] { grid-column: span 12 / span 12 !important; }
+      .grid-cols-4 { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+      .grid-cols-3 { grid-template-columns: repeat(1, minmax(0,1fr)) !important; }
+      .grid-cols-2 { grid-template-columns: repeat(1, minmax(0,1fr)) !important; }
+      .main-nav { display: none !important; }
+      .burger { display: inline-flex !important; }
+      .px-page-margin { padding-left: 20px !important; padding-right: 20px !important; }
+      .py-section { padding-top: 56px !important; padding-bottom: 56px !important; }
+      .pt-16 { padding-top: 2.5rem !important; }
+      .pb-16 { padding-bottom: 2.5rem !important; }
+      .mobile-nav { display: flex !important; }
+    }
+    @media (min-width: 1024px) { .burger, .mobile-nav { display: none !important; } }
+    .mobile-nav { display: none; flex-direction: column; border-top: 1px solid #262B36; background: #0A0C10; }
+    html.light .mobile-nav { background: #F7F3EC; border-color: #DDD5C4; }
+    .mobile-nav a { padding: 14px 20px; border-bottom: 1px solid #262B36; font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .6px; text-transform: uppercase; color: #B5AFA4; }
+    html.light .mobile-nav a { border-color: #DDD5C4; color: #5C564C; }
+    @media (max-width: 640px) { .stat-tip { white-space: normal; width: 230px; text-align: left; } }
+    html, body { overflow-x: clip; }
+    .project-card { cursor: pointer; }
+    .journal-card { cursor: pointer; }
+    input.invalid, textarea.invalid { border-color: #E06C65 !important; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+  <div class="min-h-[1024px] bg-surface text-on-surface flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+    <!-- Barre supérieure fine -->
+    <header class="sticky top-0 z-30 bg-surface border-b border-outline-variant">
+      <div class="max-w-7xl mx-auto px-page-margin h-16 flex items-center justify-between gap-8">
+        <a href="#top" class="font-display text-headline-md text-on-surface tracking-tight whitespace-nowrap">ALTO®</a>
+        <nav aria-label="Sommaire du numéro" class="main-nav flex items-center gap-7">
+          <a href="#manifeste" class="font-mono text-mono-md text-on-surface-variant hover:text-primary transition-colors duration-state-change whitespace-nowrap">Manifeste <span class="text-primary">01</span></a>
+          <a href="#projets" class="font-mono text-mono-md text-on-surface-variant hover:text-primary transition-colors duration-state-change whitespace-nowrap">Projets <span class="text-primary">02</span></a>
+          <a href="#services" class="font-mono text-mono-md text-on-surface-variant hover:text-primary transition-colors duration-state-change whitespace-nowrap">Services <span class="text-primary">03</span></a>
+          <a href="#studio" class="font-mono text-mono-md text-on-surface-variant hover:text-primary transition-colors duration-state-change whitespace-nowrap">Studio <span class="text-primary">04</span></a>
+          <a href="#journal" class="font-mono text-mono-md text-on-surface-variant hover:text-primary transition-colors duration-state-change whitespace-nowrap">Journal <span class="text-primary">05</span></a>
+          <a href="#contact" class="font-mono text-mono-md text-on-surface-variant hover:text-primary transition-colors duration-state-change whitespace-nowrap">Contact <span class="text-primary">06</span></a>
+        </nav>
+        <div class="flex items-center gap-3">
+          <span class="w-2 h-2 rounded-full bg-secondary"></span>
+          <span class="font-mono text-mono-sm text-secondary uppercase whitespace-nowrap hidden md:inline">DISPO T4</span>
+          <button type="button" id="theme-toggle" aria-label="Basculer clair / sombre" class="w-9 h-9 inline-flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-colors" title="Basculer clair / sombre"><span id="theme-icon" aria-hidden="true">☾</span></button>
+          <button type="button" id="burger" aria-label="Ouvrir le sommaire" aria-expanded="false" class="burger w-9 h-9 items-center justify-center rounded border border-outline-variant text-on-surface hover:border-primary hover:text-primary transition-colors" title="Sommaire"><span aria-hidden="true">☰</span></button>
+        </div>
+      </div>
+    </header>
+    <nav id="mobile-nav" class="mobile-nav" aria-label="Sommaire mobile">
+      <a href="#manifeste">Manifeste <span style="color:#C98A4B">01</span></a>
+      <a href="#projets">Projets <span style="color:#C98A4B">02</span></a>
+      <a href="#services">Services <span style="color:#C98A4B">03</span></a>
+      <a href="#studio">Studio <span style="color:#C98A4B">04</span></a>
+      <a href="#journal">Journal <span style="color:#C98A4B">05</span></a>
+      <a href="#contact">Contact <span style="color:#C98A4B">06</span></a>
+    </nav>
+
+    <main id="top" class="flex-1">
+
+      <!-- Héros éditorial -->
+      <section id="manifeste" class="max-w-7xl mx-auto px-page-margin pt-16 pb-16">
+        <div class="grid grid-cols-12 gap-gutter-xl items-start">
+          <!-- Colonne principale -->
+          <div class="col-span-8 flex flex-col gap-8 pr-6">
+            <div class="flex items-center gap-4">
+              <span class="font-mono text-mono-md text-primary uppercase">01 — MANIFESTE ÉDITORIAL</span>
+              <span class="h-px flex-1 bg-outline-variant"></span>
+            </div>
+
+            <h1 data-component-id="typography-display" data-component-type="typography" data-component-variant="display" data-design-text-token="display-xl" class="font-display text-display-xl text-on-surface text-balance">
+              Nous composons des marques <em class="italic text-primary">comme des magazines</em>
+            </h1>
+
+            <p class="font-body text-body-lg text-on-surface-variant max-w-prose text-pretty">
+              Alto Studio réunit directeurs artistiques, typographes et développeurs pour façonner des identités durables, des sites éditoriaux et des publications imprimées.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-4 pt-2">
+              <!-- COMPONENT: button-primary -->
+              <a href="#estimateur" data-component-id="button-primary" data-component-type="button" data-component-variant="primary" class="inline-flex items-center justify-center gap-2 bg-primary text-on-primary px-6 py-3.5 rounded border border-primary hover:bg-on-primary-container transition-colors duration-state-change ease-state-change">
+                <span data-design-text-token="label-lg" class="font-label text-label-lg whitespace-nowrap">Estimer un projet</span>
+              </a>
+              <!-- COMPONENT: button-secondary -->
+              <a href="#projets" data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" class="inline-flex items-center justify-center gap-2 bg-transparent text-on-surface px-6 py-3.5 rounded border border-outline-variant hover:border-primary hover:text-primary transition-colors duration-state-change ease-state-change">
+                <span data-design-text-token="label-lg" class="font-label text-label-lg whitespace-nowrap">Feuilleter les projets</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Colonne latérale : Nº 07 — Automne 2026 + Index -->
+          <aside class="col-span-4 bg-surface-container border border-outline-variant rounded p-6 flex flex-col gap-6">
+            <div class="flex items-center justify-between border-b border-outline-variant pb-4">
+              <span class="font-mono text-mono-md text-primary uppercase">Nº 07 — AUTOMNE 2026</span>
+              <span class="font-mono text-mono-sm text-outline">PARIS · LYON</span>
+            </div>
+
+            <div class="flex flex-col">
+              <span class="font-mono text-mono-sm text-outline uppercase mb-3">INDEX DES PROJETS</span>
+              <a href="#projets" class="py-3 border-b border-outline-variant flex items-baseline justify-between gap-4 hover:text-primary transition-colors duration-state-change group">
+                <span class="font-body text-body-md text-on-surface group-hover:text-primary">Maison Orée</span>
+                <span class="font-mono text-mono-sm text-outline tabular-nums">01 · IDENTITÉ</span>
+              </a>
+              <a href="#projets" class="py-3 border-b border-outline-variant flex items-baseline justify-between gap-4 hover:text-primary transition-colors duration-state-change group">
+                <span class="font-body text-body-md text-on-surface group-hover:text-primary">Helios Labs</span>
+                <span class="font-mono text-mono-sm text-outline tabular-nums">02 · DIGITAL</span>
+              </a>
+              <a href="#projets" class="py-3 border-b border-outline-variant flex items-baseline justify-between gap-4 hover:text-primary transition-colors duration-state-change group">
+                <span class="font-body text-body-md text-on-surface group-hover:text-primary">Northwind Press</span>
+                <span class="font-mono text-mono-sm text-outline tabular-nums">03 · ÉDITORIAL</span>
+              </a>
+              <a href="#projets" class="py-3 border-b border-outline-variant flex items-baseline justify-between gap-4 hover:text-primary transition-colors duration-state-change group">
+                <span class="font-body text-body-md text-on-surface group-hover:text-primary">Café Lumen</span>
+                <span class="font-mono text-mono-sm text-outline tabular-nums">04 · IDENTITÉ</span>
+              </a>
+              <a href="#projets" class="py-3 border-b border-outline-variant flex items-baseline justify-between gap-4 hover:text-primary transition-colors duration-state-change group">
+                <span class="font-body text-body-md text-on-surface group-hover:text-primary">Atlas Records</span>
+                <span class="font-mono text-mono-sm text-outline tabular-nums">05 · MOTION</span>
+              </a>
+              <a href="#projets" class="pt-3 flex items-baseline justify-between gap-4 hover:text-primary transition-colors duration-state-change group">
+                <span class="font-body text-body-md text-on-surface group-hover:text-primary">Studio Brume</span>
+                <span class="font-mono text-mono-sm text-outline tabular-nums">06 · DIGITAL</span>
+              </a>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Bande de chiffres -->
+      <section class="border-y border-outline-variant bg-surface-container">
+        <div class="max-w-7xl mx-auto px-page-margin grid grid-cols-4 divide-x divide-outline-variant">
+          <div class="stat-cell py-8 pr-6 flex flex-col gap-1" tabindex="0">
+            <span class="font-display text-display-lg text-on-surface tabular-nums"><span class="stat-num" data-target="48" data-suffix="">48</span></span>
+            <span class="font-mono text-mono-sm text-on-surface-variant uppercase">PROJETS PUBLIÉS</span>
+            <span class="stat-tip" role="tooltip">48 projets publiés · 2017 — 2026 · 6 disciplines couvertes</span>
+          </div>
+          <div class="stat-cell py-8 px-6 flex flex-col gap-1" tabindex="0">
+            <span class="font-display text-display-lg text-primary tabular-nums"><span class="stat-num" data-target="12" data-suffix="">12</span></span>
+            <span class="font-mono text-mono-sm text-on-surface-variant uppercase">PRIX ÉDITORIAUX</span>
+            <span class="stat-tip" role="tooltip">12 prix éditoriaux · dont 3 en 2026 · design &amp; typographie</span>
+          </div>
+          <div class="py-8 px-6 flex flex-col gap-1">
+            <span class="font-display text-display-lg text-on-surface tabular-nums"><span class="stat-num" data-target="9" data-suffix="">9</span> <em class="italic text-headline-lg text-primary">ans</em></span>
+            <span class="font-mono text-mono-sm text-on-surface-variant uppercase">D&#39;ATELIER INDÉPENDANT</span>
+          </div>
+          <div class="stat-cell py-8 pl-6 flex flex-col gap-1" tabindex="0">
+            <span class="font-display text-display-lg text-secondary tabular-nums"><span class="stat-num" data-target="96" data-suffix=" %">96 %</span></span>
+            <span class="font-mono text-mono-sm text-on-surface-variant uppercase">CLIENTS FIDÈLES</span>
+            <span class="stat-tip" role="tooltip">96 % de clients fidèles · 46 projets sur 48 avec un client revenu</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 Projets : Grille éditoriale asymétrique + filtres par discipline -->
+      <section id="projets" class="max-w-7xl mx-auto px-page-margin py-section flex flex-col gap-10">
+        <div class="flex items-end justify-between border-b border-outline-variant pb-6 gap-8">
+          <div class="flex flex-col gap-2">
+            <span class="font-mono text-mono-md text-primary uppercase">02 — SÉLECTION CHOISIE</span>
+            <h2 class="font-display text-display-lg text-on-surface">Cas clients <em class="italic text-primary">récents</em></h2>
+          </div>
+
+          <!-- Filtres par discipline -->
+          <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Filtrer les projets par discipline">
+            <button type="button" data-filter="all" class="filter-btn px-4 py-2 rounded-full border border-primary bg-primary-container text-on-primary-container font-mono text-mono-sm uppercase transition-colors duration-state-change">Tous (6)</button>
+            <button type="button" data-filter="identite" class="filter-btn px-4 py-2 rounded-full border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-mono text-mono-sm uppercase transition-colors duration-state-change">Identité</button>
+            <button type="button" data-filter="editorial" class="filter-btn px-4 py-2 rounded-full border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-mono text-mono-sm uppercase transition-colors duration-state-change">Éditorial</button>
+            <button type="button" data-filter="digital" class="filter-btn px-4 py-2 rounded-full border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-mono text-mono-sm uppercase transition-colors duration-state-change">Digital</button>
+            <button type="button" data-filter="motion" class="filter-btn px-4 py-2 rounded-full border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-mono text-mono-sm uppercase transition-colors duration-state-change">Motion</button>
+          </div>
+        </div>
+
+        <!-- Grille éditoriale asymétrique (7/5 puis 5/7 puis 7/5) -->
+        <div class="grid grid-cols-12 gap-gutter-xl">
+          <!-- 01 Maison Orée (7 cols) -->
+          <article data-discipline="identite editorial" data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="project-card col-span-7 group bg-surface-container border border-outline-variant rounded p-6 flex flex-col gap-5 hover:border-primary hover:bg-surface-container-highest transition-colors duration-state-change">
+            <div class="w-full h-80 rounded-sm overflow-hidden border border-outline-variant bg-surface-container-high">
+              <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221200%22%20height%3D%22800%22%20viewBox%3D%220%200%201200%20800%22%3E%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22%23171310%22%2F%3E%3Ccircle%20cx%3D%22820%22%20cy%3D%22330%22%20r%3D%22230%22%20fill%3D%22%232D1E10%22%2F%3E%3Crect%20x%3D%22760%22%20y%3D%22180%22%20width%3D%22120%22%20height%3D%22330%22%20rx%3D%226%22%20fill%3D%22%23C98A4B%22%2F%3E%3Crect%20x%3D%22790%22%20y%3D%22120%22%20width%3D%2260%22%20height%3D%2260%22%20fill%3D%22%23F6D7B6%22%2F%3E%3Crect%20x%3D%22700%22%20y%3D%22510%22%20width%3D%22240%22%20height%3D%2214%22%20fill%3D%22%238FA98F%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22560%22%20r%3D%2290%22%20fill%3D%22none%22%20stroke%3D%22%238FA98F%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%2264%22%20y%3D%22120%22%20font-family%3D%22monospace%22%20font-size%3D%2226%22%20letter-spacing%3D%226%22%20fill%3D%22%23C98A4B%22%3E01%20%C2%B7%20IDENTIT%C3%89%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Flacon ambré Maison Orée sur pierre sombre" class="w-full h-full object-cover">
+            </div>
+            <header class="flex items-baseline justify-between gap-4">
+              <div>
+                <span class="font-mono text-mono-sm text-primary uppercase block mb-1">01 — IDENTITÉ · ÉDITORIAL</span>
+                <h3 class="font-headline text-headline-lg text-on-surface group-hover:text-primary transition-colors duration-state-change">Maison Orée</h3>
+              </div>
+              <span class="font-mono text-mono-sm text-outline tabular-nums">2026</span>
+            </header>
+            <p class="font-body text-body-md text-on-surface-variant">Direction artistique, flaconnage gravé et monographie olfactive tirée à 1 500 exemplaires.</p>
+          </article>
+
+          <!-- 02 Helios Labs (5 cols) -->
+          <article data-discipline="digital motion" data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="project-card col-span-5 group bg-surface-container border border-outline-variant rounded p-6 flex flex-col gap-5 hover:border-primary hover:bg-surface-container-highest transition-colors duration-state-change">
+            <div class="w-full h-80 rounded-sm overflow-hidden border border-outline-variant bg-surface-container-high">
+              <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221200%22%20height%3D%22800%22%20viewBox%3D%220%200%201200%20800%22%3E%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22%230E1420%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22400%22%20r%3D%22260%22%20fill%3D%22none%22%20stroke%3D%22%23C98A4B%22%20stroke-width%3D%224%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22400%22%20r%3D%22180%22%20fill%3D%22none%22%20stroke%3D%22%238FA98F%22%20stroke-width%3D%223%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22400%22%20r%3D%22100%22%20fill%3D%22%23C98A4B%22%2F%3E%3Cline%20x1%3D%22600%22%20y1%3D%2260%22%20x2%3D%22600%22%20y2%3D%22740%22%20stroke%3D%22%23F2EDE3%22%20stroke-width%3D%222%22%2F%3E%3Cline%20x1%3D%22260%22%20y1%3D%22400%22%20x2%3D%22940%22%20y2%3D%22400%22%20stroke%3D%22%23F2EDE3%22%20stroke-width%3D%222%22%2F%3E%3Ctext%20x%3D%2264%22%20y%3D%22120%22%20font-family%3D%22monospace%22%20font-size%3D%2226%22%20letter-spacing%3D%226%22%20fill%3D%22%23C98A4B%22%3E02%20%C2%B7%20DIGITAL%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Sculpture cinétique en laiton Helios Labs" class="w-full h-full object-cover">
+            </div>
+            <header class="flex items-baseline justify-between gap-4">
+              <div>
+                <span class="font-mono text-mono-sm text-secondary uppercase block mb-1">02 — DIGITAL · MOTION</span>
+                <h3 class="font-headline text-headline-lg text-on-surface group-hover:text-primary transition-colors duration-state-change">Helios Labs</h3>
+              </div>
+              <span class="font-mono text-mono-sm text-outline tabular-nums">2026</span>
+            </header>
+            <p class="font-body text-body-md text-on-surface-variant">Plateforme scientifique interactive et rapport annuel animé pour un laboratoire photonique.</p>
+          </article>
+
+          <!-- 03 Northwind Press (5 cols) -->
+          <article data-discipline="editorial" data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="project-card col-span-5 group bg-surface-container border border-outline-variant rounded p-6 flex flex-col gap-5 hover:border-primary hover:bg-surface-container-highest transition-colors duration-state-change">
+            <div class="w-full h-72 rounded-sm overflow-hidden border border-outline-variant bg-surface-container-high">
+              <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221200%22%20height%3D%22800%22%20viewBox%3D%220%200%201200%20800%22%3E%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22%23141A16%22%2F%3E%3Crect%20x%3D%22240%22%20y%3D%22220%22%20width%3D%22180%22%20height%3D%22380%22%20fill%3D%22%238FA98F%22%2F%3E%3Crect%20x%3D%22450%22%20y%3D%22180%22%20width%3D%22180%22%20height%3D%22420%22%20fill%3D%22%23C98A4B%22%2F%3E%3Crect%20x%3D%22660%22%20y%3D%22250%22%20width%3D%22180%22%20height%3D%22350%22%20fill%3D%22%23F2EDE3%22%2F%3E%3Crect%20x%3D%22660%22%20y%3D%22300%22%20width%3D%22180%22%20height%3D%226%22%20fill%3D%22%230A0C10%22%2F%3E%3Crect%20x%3D%22450%22%20y%3D%22230%22%20width%3D%22180%22%20height%3D%226%22%20fill%3D%22%230A0C10%22%2F%3E%3Ctext%20x%3D%2264%22%20y%3D%22120%22%20font-family%3D%22monospace%22%20font-size%3D%2226%22%20letter-spacing%3D%226%22%20fill%3D%22%23C98A4B%22%3E03%20%C2%B7%20%C3%89DITORIAL%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Livres reliés toile et dorure cuivre Northwind Press" class="w-full h-full object-cover">
+            </div>
+            <header class="flex items-baseline justify-between gap-4">
+              <div>
+                <span class="font-mono text-mono-sm text-primary uppercase block mb-1">03 — ÉDITORIAL</span>
+                <h3 class="font-headline text-headline-lg text-on-surface group-hover:text-primary transition-colors duration-state-change">Northwind Press</h3>
+              </div>
+              <span class="font-mono text-mono-sm text-outline tabular-nums">2025</span>
+            </header>
+            <p class="font-body text-body-md text-on-surface-variant">Collection de six essais d&#39;architecture nordique : grilles suisses et papier Munken Kristall.</p>
+          </article>
+
+          <!-- 04 Café Lumen (7 cols) -->
+          <article data-discipline="identite digital" data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="project-card col-span-7 group bg-surface-container border border-outline-variant rounded p-6 flex flex-col gap-5 hover:border-primary hover:bg-surface-container-highest transition-colors duration-state-change">
+            <div class="w-full h-72 rounded-sm overflow-hidden border border-outline-variant bg-surface-container-high">
+              <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221200%22%20height%3D%22800%22%20viewBox%3D%220%200%201200%20800%22%3E%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22%231B1409%22%2F%3E%3Cellipse%20cx%3D%22600%22%20cy%3D%22620%22%20rx%3D%22330%22%20ry%3D%2260%22%20fill%3D%22%232D1E10%22%2F%3E%3Crect%20x%3D%22480%22%20y%3D%22300%22%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2210%22%20fill%3D%22%23F2EDE3%22%2F%3E%3Cpath%20d%3D%22M720%20340%20q90%2040%200%20120%22%20fill%3D%22none%22%20stroke%3D%22%23F2EDE3%22%20stroke-width%3D%2218%22%2F%3E%3Crect%20x%3D%22520%22%20y%3D%22380%22%20width%3D%22160%22%20height%3D%2214%22%20fill%3D%22%23C98A4B%22%2F%3E%3Ccircle%20cx%3D%22900%22%20cy%3D%22220%22%20r%3D%2270%22%20fill%3D%22%23C98A4B%22%2F%3E%3Ctext%20x%3D%2264%22%20y%3D%22120%22%20font-family%3D%22monospace%22%20font-size%3D%2226%22%20letter-spacing%3D%226%22%20fill%3D%22%23C98A4B%22%3E04%20%C2%B7%20IDENTIT%C3%89%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Comptoir noyer et cuivre du Café Lumen" class="w-full h-full object-cover">
+            </div>
+            <header class="flex items-baseline justify-between gap-4">
+              <div>
+                <span class="font-mono text-mono-sm text-secondary uppercase block mb-1">04 — IDENTITÉ · DIGITAL</span>
+                <h3 class="font-headline text-headline-lg text-on-surface group-hover:text-primary transition-colors duration-state-change">Café Lumen</h3>
+              </div>
+              <span class="font-mono text-mono-sm text-outline tabular-nums">2025</span>
+            </header>
+            <p class="font-body text-body-md text-on-surface-variant">Identité de torréfacteur, sachets numérotés à la main et boutique en ligne par abonnement.</p>
+          </article>
+
+          <!-- 05 Atlas Records (7 cols) -->
+          <article data-discipline="motion identite" data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="project-card col-span-7 group bg-surface-container border border-outline-variant rounded p-6 flex flex-col gap-5 hover:border-primary hover:bg-surface-container-highest transition-colors duration-state-change">
+            <div class="w-full h-72 rounded-sm overflow-hidden border border-outline-variant bg-surface-container-high">
+              <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221200%22%20height%3D%22800%22%20viewBox%3D%220%200%201200%20800%22%3E%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22%23120E18%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22400%22%20r%3D%22270%22%20fill%3D%22%23161A22%22%20stroke%3D%22%23262B36%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22400%22%20r%3D%22200%22%20fill%3D%22none%22%20stroke%3D%22%238FA98F%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22400%22%20r%3D%22130%22%20fill%3D%22none%22%20stroke%3D%22%23C98A4B%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22400%22%20r%3D%2270%22%20fill%3D%22%23C98A4B%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22400%22%20r%3D%2216%22%20fill%3D%22%230A0C10%22%2F%3E%3Crect%20x%3D%22880%22%20y%3D%22180%22%20width%3D%2214%22%20height%3D%22240%22%20fill%3D%22%23F2EDE3%22%20transform%3D%22rotate%2824%20880%20180%29%22%2F%3E%3Ctext%20x%3D%2264%22%20y%3D%22120%22%20font-family%3D%22monospace%22%20font-size%3D%2226%22%20letter-spacing%3D%226%22%20fill%3D%22%23C98A4B%22%3E05%20%C2%B7%20MOTION%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Pochette vinyle embossée Atlas Records" class="w-full h-full object-cover">
+            </div>
+            <header class="flex items-baseline justify-between gap-4">
+              <div>
+                <span class="font-mono text-mono-sm text-primary uppercase block mb-1">05 — MOTION · IDENTITÉ</span>
+                <h3 class="font-headline text-headline-lg text-on-surface group-hover:text-primary transition-colors duration-state-change">Atlas Records</h3>
+              </div>
+              <span class="font-mono text-mono-sm text-outline tabular-nums">2025</span>
+            </header>
+            <p class="font-body text-body-md text-on-surface-variant">Série de pochettes vinyles sérigraphiées et génériques animés pour les sessions live du label.</p>
+          </article>
+
+          <!-- 06 Studio Brume (5 cols) -->
+          <article data-discipline="digital editorial" data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="project-card col-span-5 group bg-surface-container border border-outline-variant rounded p-6 flex flex-col gap-5 hover:border-primary hover:bg-surface-container-highest transition-colors duration-state-change">
+            <div class="w-full h-72 rounded-sm overflow-hidden border border-outline-variant bg-surface-container-high">
+              <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221200%22%20height%3D%22800%22%20viewBox%3D%220%200%201200%20800%22%3E%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22%2310161A%22%2F%3E%3Crect%20x%3D%22300%22%20y%3D%22240%22%20width%3D%22600%22%20height%3D%2216%22%20fill%3D%22%23F2EDE3%22%2F%3E%3Crect%20x%3D%22340%22%20y%3D%22256%22%20width%3D%2218%22%20height%3D%22300%22%20fill%3D%22%238FA98F%22%2F%3E%3Crect%20x%3D%22560%22%20y%3D%22256%22%20width%3D%2218%22%20height%3D%22300%22%20fill%3D%22%238FA98F%22%2F%3E%3Crect%20x%3D%22780%22%20y%3D%22256%22%20width%3D%2218%22%20height%3D%22300%22%20fill%3D%22%238FA98F%22%2F%3E%3Crect%20x%3D%22300%22%20y%3D%22556%22%20width%3D%22600%22%20height%3D%2216%22%20fill%3D%22%23C98A4B%22%2F%3E%3Ccircle%20cx%3D%22980%22%20cy%3D%22180%22%20r%3D%2260%22%20fill%3D%22none%22%20stroke%3D%22%23C98A4B%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%2264%22%20y%3D%22120%22%20font-family%3D%22monospace%22%20font-size%3D%2226%22%20letter-spacing%3D%226%22%20fill%3D%22%23C98A4B%22%3E06%20%C2%B7%20DIGITAL%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Pavillon architectural minimaliste Studio Brume" class="w-full h-full object-cover">
+            </div>
+            <header class="flex items-baseline justify-between gap-4">
+              <div>
+                <span class="font-mono text-mono-sm text-secondary uppercase block mb-1">06 — DIGITAL · ÉDITORIAL</span>
+                <h3 class="font-headline text-headline-lg text-on-surface group-hover:text-primary transition-colors duration-state-change">Studio Brume</h3>
+              </div>
+              <span class="font-mono text-mono-sm text-outline tabular-nums">2024</span>
+            </header>
+            <p class="font-body text-body-md text-on-surface-variant">Portfolio monographique d&#39;architectes avec index chronologique des matériaux et plans.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 03 Services : 4 disciplines en lignes numérotées extensibles -->
+      <section id="services" class="bg-surface-container border-y border-outline-variant py-section">
+        <div class="max-w-7xl mx-auto px-page-margin grid grid-cols-12 gap-gutter-xl">
+          <div class="col-span-4 flex flex-col gap-4">
+            <span class="font-mono text-mono-md text-primary uppercase">03 — SAVOIR-FAIRE</span>
+            <h2 class="font-display text-display-md text-on-surface text-balance">Quatre disciplines <em class="italic text-primary">complémentaires</em></h2>
+            <p class="font-body text-body-md text-on-surface-variant text-pretty">
+              Chaque mandat associe stratégie éditoriale, exécution typographique et développement sur mesure.
+            </p>
+          </div>
+
+          <div class="col-span-8">
+            <!-- COMPONENT: accordion-group -->
+            <div data-component-id="accordion-group" data-component-type="accordion" data-component-variant="group" class="border-t border-outline-variant">
+              <details open class="group border-b border-outline-variant">
+                <summary class="flex items-center justify-between py-6 cursor-pointer list-none hover:text-primary transition-colors duration-state-change">
+                  <div class="flex items-baseline gap-8">
+                    <span data-design-text-token="mono-md" class="font-mono text-mono-md text-primary tabular-nums">01</span>
+                    <span data-design-text-token="headline-lg" class="font-headline text-headline-lg text-on-surface group-hover:text-primary transition-colors duration-state-change">Identité de marque</span>
+                  </div>
+                  <span class="acc-plus" aria-hidden="true">+</span>
+                </summary>
+                <div class="pb-6 pl-14 flex flex-col gap-3 max-w-prose">
+                  <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant">
+                    Positionnement, logotype dessiné sur mesure, direction typographique, palette de matières et cahier des normes imprimé ou numérique.
+                  </p>
+                  <span class="font-mono text-mono-sm text-secondary">LIVRABLES : PLATEFORME DE MARQUE · SYSTÈME GRAPHIQUE · PAPETERIE</span>
+                </div>
+              </details>
+
+              <details class="group border-b border-outline-variant">
+                <summary class="flex items-center justify-between py-6 cursor-pointer list-none hover:text-primary transition-colors duration-state-change">
+                  <div class="flex items-baseline gap-8">
+                    <span data-design-text-token="mono-md" class="font-mono text-mono-md text-primary tabular-nums">02</span>
+                    <span data-design-text-token="headline-lg" class="font-headline text-headline-lg text-on-surface group-hover:text-primary transition-colors duration-state-change">Design éditorial</span>
+                  </div>
+                  <span class="acc-plus" aria-hidden="true">+</span>
+                </summary>
+                <div class="pb-6 pl-14 flex flex-col gap-3 max-w-prose">
+                  <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant">
+                    Conception de revues culturelles, monographies, catalogues d&#39;exposition et rapports annuels, du chemin de fer au suivi de fabrication.
+                  </p>
+                  <span class="font-mono text-mono-sm text-secondary">LIVRABLES : MAQUETTE INDESIGN · CHOIX PAPIER · SUIVI D&#39;IMPRESSION</span>
+                </div>
+              </details>
+
+              <details class="group border-b border-outline-variant">
+                <summary class="flex items-center justify-between py-6 cursor-pointer list-none hover:text-primary transition-colors duration-state-change">
+                  <div class="flex items-baseline gap-8">
+                    <span data-design-text-token="mono-md" class="font-mono text-mono-md text-primary tabular-nums">03</span>
+                    <span data-design-text-token="headline-lg" class="font-headline text-headline-lg text-on-surface group-hover:text-primary transition-colors duration-state-change">Expériences digitales</span>
+                  </div>
+                  <span class="acc-plus" aria-hidden="true">+</span>
+                </summary>
+                <div class="pb-6 pl-14 flex flex-col gap-3 max-w-prose">
+                  <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant">
+                    Sites éditoriaux rapides, design systems documentés et boutiques sur mesure privilégiant la lisibilité, le contraste et la sobriété technique.
+                  </p>
+                  <span class="font-mono text-mono-sm text-secondary">LIVRABLES : DESIGN SYSTEM · PROTOTYPE · DÉVELOPPEMENT FRONT-END</span>
+                </div>
+              </details>
+
+              <details class="group border-b border-outline-variant">
+                <summary class="flex items-center justify-between py-6 cursor-pointer list-none hover:text-primary transition-colors duration-state-change">
+                  <div class="flex items-baseline gap-8">
+                    <span data-design-text-token="mono-md" class="font-mono text-mono-md text-primary tabular-nums">04</span>
+                    <span data-design-text-token="headline-lg" class="font-headline text-headline-lg text-on-surface group-hover:text-primary transition-colors duration-state-change">Direction motion</span>
+                  </div>
+                  <span class="acc-plus" aria-hidden="true">+</span>
+                </summary>
+                <div class="pb-6 pl-14 flex flex-col gap-3 max-w-prose">
+                  <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant">
+                    Typographie cinétique, génériques de lancement, micro-interactions d&#39;interface et capsules visuelles pour expositions et sorties de disques.
+                  </p>
+                  <span class="font-mono text-mono-sm text-secondary">LIVRABLES : BIBLE MOTION · CAPSULES 16:9 / 9:16 · LOTTIE / CSS</span>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 Studio : Manifeste + Équipe en initiales -->
+      <section id="studio" class="max-w-7xl mx-auto px-page-margin py-section grid grid-cols-12 gap-gutter-xl items-start">
+        <div class="col-span-6 flex flex-col gap-6">
+          <span class="font-mono text-mono-md text-primary uppercase">04 — LE STUDIO</span>
+          <h2 class="font-display text-display-md text-on-surface text-balance">
+            « Une bonne page web se lit avec la même attention qu&#39;un <em class="italic text-primary">cahier imprimé</em>. »
+          </h2>
+          <p class="font-body text-body-lg text-on-surface-variant text-pretty max-w-prose">
+            Fondé en 2017 entre Paris et Lyon, Alto Studio fonctionne volontairement en équipe resserrée : quatre associés présents sur chaque projet, du premier croquis au dernier bon à tirer.
+          </p>
+        </div>
+
+        <div class="col-span-6 grid grid-cols-2 gap-gutter-md">
+          <div class="bg-surface-container border border-outline-variant rounded p-6 flex flex-col gap-4">
+            <div class="w-14 h-14 rounded-full bg-primary-container border border-primary flex items-center justify-center">
+              <span class="font-display text-headline-md text-on-primary-container">CM</span>
+            </div>
+            <div>
+              <h3 class="font-title text-title-lg text-on-surface">Claire Moreau</h3>
+              <span class="font-mono text-mono-sm text-primary uppercase block">DIRECTION ÉDITORIALE</span>
+            </div>
+            <p class="font-body text-body-sm text-on-surface-variant">Ancienne maquettiste de revues d&#39;art, pilote la hiérarchie typographique.</p>
+          </div>
+
+          <div class="bg-surface-container border border-outline-variant rounded p-6 flex flex-col gap-4">
+            <div class="w-14 h-14 rounded-full bg-secondary-container border border-secondary flex items-center justify-center">
+              <span class="font-display text-headline-md text-on-secondary-container">TL</span>
+            </div>
+            <div>
+              <h3 class="font-title text-title-lg text-on-surface">Thomas Laurent</h3>
+              <span class="font-mono text-mono-sm text-secondary uppercase block">IDENTITÉ &amp; DESSIN DE CARACTÈRES</span>
+            </div>
+            <p class="font-body text-body-sm text-on-surface-variant">Spécialiste des monogrammes, systèmes modulaires et gravure papier.</p>
+          </div>
+
+          <div class="bg-surface-container border border-outline-variant rounded p-6 flex flex-col gap-4">
+            <div class="w-14 h-14 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center">
+              <span class="font-display text-headline-md text-on-surface">ND</span>
+            </div>
+            <div>
+              <h3 class="font-title text-title-lg text-on-surface">Nadia Diallo</h3>
+              <span class="font-mono text-mono-sm text-outline uppercase block">ARCHITECTURE DIGITALE</span>
+            </div>
+            <p class="font-body text-body-sm text-on-surface-variant">Conçoit les design systems et l&#39;ingénierie d&#39;interfaces accessibles.</p>
+          </div>
+
+          <div class="bg-surface-container border border-outline-variant rounded p-6 flex flex-col gap-4">
+            <div class="w-14 h-14 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center">
+              <span class="font-display text-headline-md text-on-surface">HR</span>
+            </div>
+            <div>
+              <h3 class="font-title text-title-lg text-on-surface">Hugo Renard</h3>
+              <span class="font-mono text-mono-sm text-outline uppercase block">DIRECTION MOTION</span>
+            </div>
+            <p class="font-body text-body-sm text-on-surface-variant">Orchestre les rythmes typographiques et transitions cinétiques.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 Journal : 3 articles -->
+      <section id="journal" class="border-t border-outline-variant py-section">
+        <div class="max-w-7xl mx-auto px-page-margin flex flex-col gap-10">
+          <div class="flex items-baseline justify-between border-b border-outline-variant pb-4">
+            <div class="flex items-baseline gap-4">
+              <span class="font-mono text-mono-md text-primary">05</span>
+              <h2 class="font-display text-display-md text-on-surface">Journal d&#39;atelier</h2>
+            </div>
+            <span class="font-mono text-mono-sm text-outline uppercase">ESSAIS &amp; NOTES DE FABRICATION</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-gutter-lg items-stretch">
+            <!-- COMPONENT: card-action -->
+            <article data-component-id="card-action" data-component-type="card" data-component-variant="action" class="journal-card bg-surface-container border border-outline-variant rounded p-6 flex flex-col justify-between gap-6 hover:border-primary transition-colors duration-state-change">
+              <header class="flex flex-col gap-2">
+                <span class="font-mono text-mono-sm text-secondary uppercase">ESSAI · 06 MIN</span>
+                <h3 class="font-headline text-headline-md text-on-surface">Pourquoi le web gagne à penser comme une revue</h3>
+              </header>
+              <p class="font-body text-body-md text-on-surface-variant">Grilles asymétriques, filets de séparation et respiration : ce que l&#39;édition papier enseigne aux écrans.</p>
+              <footer class="pt-4 border-t border-outline-variant flex items-center justify-between">
+                <span class="font-mono text-mono-sm text-outline">14 OCT. 2026</span>
+                <span class="font-label text-label-lg text-primary">Lire →</span>
+              </footer>
+            </article>
+
+            <article data-component-id="card-action" data-component-type="card" data-component-variant="action" class="journal-card bg-surface-container border border-outline-variant rounded p-6 flex flex-col justify-between gap-6 hover:border-primary transition-colors duration-state-change">
+              <header class="flex flex-col gap-2">
+                <span class="font-mono text-mono-sm text-primary uppercase">FABRICATION · 04 MIN</span>
+                <h3 class="font-headline text-headline-md text-on-surface">Choisir un papier teinté masse pour Maison Orée</h3>
+              </header>
+              <p class="font-body text-body-md text-on-surface-variant">Retour sur nos essais de dorure cuivre à chaud et la tenue des encres métalliques sur fibre coton.</p>
+              <footer class="pt-4 border-t border-outline-variant flex items-center justify-between">
+                <span class="font-mono text-mono-sm text-outline">28 SEPT. 2026</span>
+                <span class="font-label text-label-lg text-primary">Lire →</span>
+              </footer>
+            </article>
+
+            <article data-component-id="card-action" data-component-type="card" data-component-variant="action" class="journal-card bg-surface-container border border-outline-variant rounded p-6 flex flex-col justify-between gap-6 hover:border-primary transition-colors duration-state-change">
+              <header class="flex flex-col gap-2">
+                <span class="font-mono text-mono-sm text-secondary uppercase">TYPOGRAPHIE · 05 MIN</span>
+                <h3 class="font-headline text-headline-md text-on-surface">Associer Fraunces et JetBrains Mono en mode sombre</h3>
+              </header>
+              <p class="font-body text-body-md text-on-surface-variant">Calibrer les graisses optiques et les contrastes AA pour éviter l&#39;éblouissement sur fond d&#39;encre.</p>
+              <footer class="pt-4 border-t border-outline-variant flex items-center justify-between">
+                <span class="font-mono text-mono-sm text-outline">09 SEPT. 2026</span>
+                <span class="font-label text-label-lg text-primary">Lire →</span>
+              </footer>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Estimateur de projet -->
+      <section id="estimateur" class="bg-surface-container border-y border-outline-variant py-section">
+        <div class="max-w-7xl mx-auto px-page-margin grid grid-cols-12 gap-gutter-xl items-start">
+          <div class="col-span-5 flex flex-col gap-4">
+            <span class="font-mono text-mono-md text-primary uppercase">ESTIMATEUR INDICATIF</span>
+            <h2 class="font-display text-display-md text-on-surface">Estimer votre <em class="italic text-primary">enveloppe</em></h2>
+            <p class="font-body text-body-md text-on-surface-variant text-pretty">
+              Sélectionnez vos disciplines, votre horizon budgétaire et le délai souhaité pour obtenir une fourchette réaliste.
+            </p>
+
+            <div class="mt-4 bg-surface-container-high border border-primary rounded p-6 flex flex-col gap-2">
+              <span class="font-mono text-mono-sm text-primary uppercase">FOURCHETTE ESTIMÉE</span>
+              <span id="est-result" class="font-display text-display-md text-on-surface tabular-nums">18 000 € — 26 000 €</span>
+              <span id="est-summary" class="font-mono text-mono-sm text-secondary">Identité + Digital · Délai standard (8–10 sem.)</span>
+            </div>
+          </div>
+
+          <div class="col-span-7 bg-surface border border-outline-variant rounded p-8 flex flex-col gap-8">
+            <!-- Discipline -->
+            <div class="flex flex-col gap-3">
+              <span class="font-mono text-mono-sm text-outline uppercase">1. DISCIPLINE PRINCIPALE</span>
+              <div class="grid grid-cols-4 gap-gutter-sm">
+                <button type="button" data-est-disc="1.0" data-name="Identité" class="est-disc px-4 py-3 rounded border border-primary bg-primary-container text-on-primary-container font-label text-label-lg">Identité</button>
+                <button type="button" data-est-disc="1.15" data-name="Éditorial" class="est-disc px-4 py-3 rounded border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-label text-label-lg">Éditorial</button>
+                <button type="button" data-est-disc="1.3" data-name="Digital" class="est-disc px-4 py-3 rounded border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-label text-label-lg">Digital</button>
+                <button type="button" data-est-disc="0.9" data-name="Motion" class="est-disc px-4 py-3 rounded border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-label text-label-lg">Motion</button>
+              </div>
+            </div>
+
+            <!-- Budget base -->
+            <div class="flex flex-col gap-3">
+              <span class="font-mono text-mono-sm text-outline uppercase">2. AMPLEUR DU MANDAT</span>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter-sm">
+                <button type="button" data-est-budget="12000" class="est-budget px-4 py-3 rounded border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-mono text-mono-md tabular-nums">Essentiel (~12 k€)</button>
+                <button type="button" data-est-budget="22000" class="est-budget px-4 py-3 rounded border border-primary bg-primary-container text-on-primary-container font-mono text-mono-md tabular-nums">Complet (~22 k€)</button>
+                <button type="button" data-est-budget="38000" class="est-budget px-4 py-3 rounded border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-mono text-mono-md tabular-nums">Global (~38 k€)</button>
+              </div>
+            </div>
+
+            <!-- Délai -->
+            <div class="flex flex-col gap-3">
+              <span class="font-mono text-mono-sm text-outline uppercase">3. DÉLAI SOUHAITÉ</span>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter-sm">
+                <button type="button" data-est-time="1.25" data-tname="Accéléré (4–5 sem.)" class="est-time px-3 py-3 rounded border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-label text-label-lg whitespace-nowrap">Accéléré (4–5s)</button>
+                <button type="button" data-est-time="1.0" data-tname="Standard (8–10 sem.)" class="est-time px-3 py-3 rounded border border-primary bg-primary-container text-on-primary-container font-label text-label-lg whitespace-nowrap">Standard (8–10s)</button>
+                <button type="button" data-est-time="0.92" data-tname="Long cours (14+ sem.)" class="est-time px-3 py-3 rounded border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-label text-label-lg whitespace-nowrap">Long cours (14s+)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 06 Contact & Pied de page avec énorme wordmark -->
+    <footer id="contact" class="bg-surface pt-section pb-12">
+      <div class="max-w-7xl mx-auto px-page-margin flex flex-col gap-16">
+        <div class="grid grid-cols-12 gap-gutter-xl items-start">
+          <div class="col-span-5 flex flex-col gap-4">
+            <span class="font-mono text-mono-md text-primary uppercase">06 — PRENDRE RENDEZ-VOUS</span>
+            <h2 class="font-display text-display-md text-on-surface">Parlons de votre <em class="italic text-primary">prochaine édition</em></h2>
+            <p class="font-body text-body-md text-on-surface-variant">
+              14 rue des Jeûneurs, 75002 Paris · bonjour@alto-studio.fr
+            </p>
+          </div>
+
+          <form id="contact-form" class="col-span-7 grid grid-cols-2 gap-gutter-md bg-surface-container border border-outline-variant rounded p-8">
+            <div class="flex flex-col gap-2">
+              <label for="c-name" class="font-mono text-mono-sm text-outline uppercase">NOM &amp; MAISON</label>
+              <input id="c-name" type="text" placeholder="Camille Bernard — Éditions du Nord" class="bg-surface-container-high border border-outline-variant rounded px-4 py-3 font-body text-body-md text-on-surface placeholder-outline focus:border-primary focus:ring-0">
+            </div>
+            <div class="flex flex-col gap-2">
+              <label for="c-email" class="font-mono text-mono-sm text-outline uppercase">COURRIEL</label>
+              <input id="c-email" type="email" placeholder="camille@editionsdunord.fr" class="bg-surface-container-high border border-outline-variant rounded px-4 py-3 font-body text-body-md text-on-surface placeholder-outline focus:border-primary focus:ring-0">
+            </div>
+            <div class="col-span-2 flex flex-col gap-2">
+              <label for="c-msg" class="font-mono text-mono-sm text-outline uppercase">VOTRE PROJET EN QUELQUES LIGNES</label>
+              <textarea id="c-msg" rows="3" placeholder="Refonte éditoriale et identité visuelle pour notre lancement d&#39;automne..." class="bg-surface-container-high border border-outline-variant rounded px-4 py-3 font-body text-body-md text-on-surface placeholder-outline focus:border-primary focus:ring-0"></textarea>
+            </div>
+            <div class="col-span-2 flex items-center justify-between pt-2">
+              <span id="form-feedback" class="font-mono text-mono-sm text-secondary">Réponse sous 48 h ouvrées.</span>
+              <button type="submit" class="inline-flex items-center justify-center gap-2 bg-primary text-on-primary px-6 py-3 rounded border border-primary hover:bg-on-primary-container transition-colors duration-state-change">
+                <span class="font-label text-label-lg">Envoyer la note</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="border-t border-outline-variant pt-10 flex items-end justify-between gap-8">
+          <span class="font-display text-display-xl text-on-surface leading-none tracking-tight">ALTO®</span>
+          <span class="font-mono text-mono-sm text-outline uppercase">© 2026 ALTO STUDIO — ENCRE &amp; CUIVRE · PARIS &amp; LYON</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      // Filtres projets
+      var filterBtns = document.querySelectorAll('.filter-btn');
+      var cards = document.querySelectorAll('.project-card');
+      filterBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var f = btn.getAttribute('data-filter');
+          filterBtns.forEach(function (b) {
+            b.className = 'filter-btn px-4 py-2 rounded-full border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-mono text-mono-sm uppercase transition-colors duration-state-change';
+          });
+          btn.className = 'filter-btn px-4 py-2 rounded-full border border-primary bg-primary-container text-on-primary-container font-mono text-mono-sm uppercase transition-colors duration-state-change';
+          cards.forEach(function (c) {
+            var d = c.getAttribute('data-discipline') || '';
+            if (f === 'all' || d.indexOf(f) !== -1) {
+              c.classList.remove('hidden');
+            } else {
+              c.classList.add('hidden');
+            }
+          });
+        });
+      });
+
+      // Estimateur
+      var multDisc = 1.0;
+      var discName = 'Identité';
+      var baseBudget = 22000;
+      var multTime = 1.0;
+      var timeName = 'Standard (8–10 sem.)';
+      var resEl = document.getElementById('est-result');
+      var sumEl = document.getElementById('est-summary');
+
+      function updateEst() {
+        var mid = Math.round((baseBudget * multDisc * multTime) / 1000) * 1000;
+        var low = Math.round(mid * 0.85 / 1000) * 1000;
+        var high = Math.round(mid * 1.18 / 1000) * 1000;
+        if (resEl) resEl.textContent = low.toLocaleString('fr-FR') + ' € — ' + high.toLocaleString('fr-FR') + ' €';
+        if (sumEl) sumEl.textContent = discName + ' · Délai : ' + timeName;
+      }
+
+      document.querySelectorAll('.est-disc').forEach(function (b) {
+        b.addEventListener('click', function () {
+          document.querySelectorAll('.est-disc').forEach(function (x) {
+            x.className = 'est-disc px-4 py-3 rounded border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-label text-label-lg';
+          });
+          b.className = 'est-disc px-4 py-3 rounded border border-primary bg-primary-container text-on-primary-container font-label text-label-lg';
+          multDisc = parseFloat(b.getAttribute('data-est-disc'));
+          discName = b.getAttribute('data-name');
+          updateEst();
+        });
+      });
+
+      document.querySelectorAll('.est-budget').forEach(function (b) {
+        b.addEventListener('click', function () {
+          document.querySelectorAll('.est-budget').forEach(function (x) {
+            x.className = 'est-budget px-4 py-3 rounded border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-mono text-mono-md tabular-nums';
+          });
+          b.className = 'est-budget px-4 py-3 rounded border border-primary bg-primary-container text-on-primary-container font-mono text-mono-md tabular-nums';
+          baseBudget = parseInt(b.getAttribute('data-est-budget'), 10);
+          updateEst();
+        });
+      });
+
+      document.querySelectorAll('.est-time').forEach(function (b) {
+        b.addEventListener('click', function () {
+          document.querySelectorAll('.est-time').forEach(function (x) {
+            x.className = 'est-time px-3 py-3 rounded border border-outline-variant bg-surface-container text-on-surface-variant hover:border-primary font-label text-label-lg';
+          });
+          b.className = 'est-time px-3 py-3 rounded border border-primary bg-primary-container text-on-primary-container font-label text-label-lg';
+          multTime = parseFloat(b.getAttribute('data-est-time'));
+          timeName = b.getAttribute('data-tname');
+          updateEst();
+        });
+      });
+
+      var form = document.getElementById('contact-form');
+      var feedback = document.getElementById('form-feedback');
+      if (form && feedback) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          feedback.textContent = 'Note transmise à l’atelier — merci.';
+        });
+      }
+    })();
+  </script>
+
+
+  <!-- Modale projet / article -->
+  <div id="modal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card w-full max-w-2xl bg-surface-container border border-outline-variant rounded overflow-hidden">
+      <div class="relative">
+        <img id="modal-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="w-full h-64 object-cover" hidden>
+        <button type="button" id="modal-close" aria-label="Fermer" class="absolute top-3 right-3 w-9 h-9 inline-flex items-center justify-center rounded-full bg-surface text-on-surface border border-outline-variant hover:border-primary hover:text-primary">✕</button>
+      </div>
+      <div class="p-7 flex flex-col gap-4">
+        <span id="modal-kicker" class="font-mono text-mono-sm text-primary uppercase"></span>
+        <h3 id="modal-title" class="font-display text-display-md text-on-surface"></h3>
+        <p id="modal-body" class="font-body text-body-md text-on-surface-variant"></p>
+        <div id="modal-meta" class="flex flex-wrap gap-2"></div>
+        <div class="flex items-center justify-between pt-2 border-t border-outline-variant">
+          <span id="modal-foot" class="font-mono text-mono-sm text-outline"></span>
+          <a href="#estimateur" id="modal-cta" class="inline-flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 rounded border border-primary hover:bg-on-primary-container transition-colors font-label text-label-lg">Estimer un projet similaire</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      /* Thème clair / sombre (sombre par défaut) */
+      var toggle = document.getElementById('theme-toggle');
+      var icon = document.getElementById('theme-icon');
+      function applyTheme(light) {
+        document.documentElement.classList.toggle('light', light);
+        if (icon) icon.textContent = light ? '☀' : '☾';
+      }
+      if (toggle) toggle.addEventListener('click', function () {
+        applyTheme(!document.documentElement.classList.contains('light'));
+      });
+      /* Menu mobile */
+      var burger = document.getElementById('burger');
+      var mnav = document.getElementById('mobile-nav');
+      if (burger && mnav) {
+        burger.addEventListener('click', function () {
+          var open = mnav.style.display === 'flex';
+          mnav.style.display = open ? 'none' : 'flex';
+          burger.setAttribute('aria-expanded', String(!open));
+        });
+        mnav.querySelectorAll('a').forEach(function (a) {
+          a.addEventListener('click', function () { mnav.style.display = 'none'; burger.setAttribute('aria-expanded', 'false'); });
+        });
+      }
+      /* Révélation au scroll */
+      var revealEls = document.querySelectorAll('main section, footer > div');
+      revealEls.forEach(function (el) { el.classList.add('reveal'); });
+      if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        revealEls.forEach(function (el) { io.observe(el); });
+      } else { revealEls.forEach(function (el) { el.classList.add('in'); }); }
+      /* Compteurs animés */
+      var nums = document.querySelectorAll('.stat-num');
+      function animateNum(el) {
+        var target = parseInt(el.getAttribute('data-target'), 10);
+        var suffix = el.getAttribute('data-suffix') || '';
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = target + suffix; return; }
+        var start = null, dur = 1100;
+        function step(ts) {
+          if (!start) start = ts;
+          var p = Math.min((ts - start) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased) + suffix;
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+      if ('IntersectionObserver' in window) {
+        var nio = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { animateNum(e.target); nio.unobserve(e.target); } });
+        }, { threshold: 0.4 });
+        nums.forEach(function (n) { nio.observe(n); });
+      } else { nums.forEach(animateNum); }
+      /* Modales projets & journal */
+      var modal = document.getElementById('modal');
+      var mImg = document.getElementById('modal-img'), mKick = document.getElementById('modal-kicker'),
+          mTitle = document.getElementById('modal-title'), mBody = document.getElementById('modal-body'),
+          mMeta = document.getElementById('modal-meta'), mFoot = document.getElementById('modal-foot');
+      var PROJECTS = {
+        'Maison Orée': { kicker: '01 — Identité · Éditorial · 2026', body: 'Direction artistique complète pour une maison de parfum : flaconnage gravé, monographie olfactive tirée à 1 500 exemplaires et système typographique cuivre sur papier teinté masse. La grille éditoriale du site reprend le chemin de fer de la monographie, page pour page.', meta: ['Identité', 'Éditorial', 'Print', 'Direction artistique'], foot: 'Client : Maison Orée · Paris' },
+        'Helios Labs': { kicker: '02 — Digital · Motion · 2026', body: 'Plateforme scientifique interactive et rapport annuel animé pour un laboratoire photonique : visualisations de données en temps réel, schémas cinétiques et un rapport annuel dont chaque chapitre s’ouvre comme une planche d’atlas.', meta: ['Digital', 'Motion', 'Dataviz', 'Rapport annuel'], foot: 'Client : Helios Labs · Lyon' },
+        'Northwind Press': { kicker: '03 — Éditorial · 2025', body: 'Collection de six essais d’architecture nordique : grilles suisses, papier Munken Kristall et reliure toile. Le site prolonge le livre : index chronologique des matériaux, plans annotés et extraits feuilletables.', meta: ['Éditorial', 'Collection', 'Reliure', 'Site'], foot: 'Client : Northwind Press · Oslo' },
+        'Café Lumen': { kicker: '04 — Identité · Digital · 2025', body: 'Identité de torréfacteur : sachets numérotés à la main, comptoir noyer et cuivre, boutique en ligne par abonnement. Le système de numérotation devient la signature — chaque lot porte son numéro d’édition.', meta: ['Identité', 'Digital', 'E-commerce', 'Packaging'], foot: 'Client : Café Lumen · Paris' },
+        'Atlas Records': { kicker: '05 — Motion · Identité · 2025', body: 'Série de pochettes vinyles sérigraphiées et génériques animés pour les sessions live du label : typographie cinétique synchronisée au tempo, embossage et encres métalliques.', meta: ['Motion', 'Identité', 'Vinyle', 'Génériques'], foot: 'Client : Atlas Records · Berlin' },
+        'Studio Brume': { kicker: '06 — Digital · Éditorial · 2024', body: 'Portfolio monographique d’architectes avec index chronologique des matériaux et plans : une lecture lente, en colonnes, où chaque projet se feuillette comme un chapitre.', meta: ['Digital', 'Éditorial', 'Portfolio', 'Architecture'], foot: 'Client : Studio Brume · Bordeaux' }
+      };
+      var ARTICLES = {
+        'Pourquoi le web gagne à penser comme une revue': { kicker: 'Essai · 06 min · 14 oct. 2026', body: 'Grilles asymétriques, filets de séparation et respiration : ce que l’édition papier enseigne aux écrans. Une page web bien composée se parcourt comme un sommaire — on y entre par le titre, on s’y attarde par les marges.', meta: ['Essai', 'Grilles', 'Édition'], foot: 'Par Claire Moreau' },
+        'Choisir un papier teinté masse pour Maison Orée': { kicker: 'Fabrication · 04 min · 28 sept. 2026', body: 'Retour sur nos essais de dorure cuivre à chaud et la tenue des encres métalliques sur fibre coton : trois papiers testés, deux dorures rejetées, une teinte retenue — celle qui ne jaunit pas sous la lumière du comptoir.', meta: ['Fabrication', 'Papier', 'Dorure'], foot: 'Par Thomas Laurent' },
+        'Associer Fraunces et JetBrains Mono en mode sombre': { kicker: 'Typographie · 05 min · 09 sept. 2026', body: 'Calibrer les graisses optiques et les contrastes AA pour éviter l’éblouissement sur fond d’encre : Fraunces en display, JetBrains Mono en repérage, et jamais plus de deux poids par famille sur un même écran.', meta: ['Typographie', 'Contraste', 'Mode sombre'], foot: 'Par Nadia Diallo' }
+      };
+      function openModal(data, imgSrc, imgAlt) {
+        mKick.textContent = data.kicker; mTitle.textContent = data.title;
+        mBody.textContent = data.body; mFoot.textContent = data.foot;
+        mMeta.innerHTML = '';
+        data.meta.forEach(function (m) {
+          var s = document.createElement('span');
+          s.className = 'font-mono text-mono-sm uppercase px-3 py-1 rounded-full border border-outline-variant text-on-surface-variant';
+          s.textContent = m; mMeta.appendChild(s);
+        });
+        if (imgSrc) { mImg.src = imgSrc; mImg.alt = imgAlt || ''; mImg.hidden = false; } else { mImg.hidden = true; }
+        modal.hidden = false; document.body.style.overflow = 'hidden';
+      }
+      function closeModal() { modal.hidden = true; document.body.style.overflow = ''; }
+      document.querySelectorAll('.project-card').forEach(function (card) {
+        card.addEventListener('click', function () {
+          var name = card.querySelector('h3').textContent.trim();
+          var d = PROJECTS[name]; if (!d) return;
+          var img = card.querySelector('img');
+          openModal(Object.assign({ title: name }, d), img ? img.src : '', img ? img.alt : '');
+        });
+      });
+      document.querySelectorAll('.journal-card').forEach(function (card) {
+        card.addEventListener('click', function () {
+          var name = card.querySelector('h3').textContent.trim();
+          var d = ARTICLES[name]; if (!d) return;
+          openModal(Object.assign({ title: name }, d), '', '');
+        });
+      });
+      document.getElementById('modal-close').addEventListener('click', closeModal);
+      modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+      document.getElementById('modal-cta').addEventListener('click', closeModal);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+      /* Formulaire : validation réelle */
+      var form = document.getElementById('contact-form');
+      var feedback = document.getElementById('form-feedback');
+      if (form && feedback) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var name = document.getElementById('c-name'), email = document.getElementById('c-email'), msg = document.getElementById('c-msg');
+          var ok = true;
+          [name, email, msg].forEach(function (f) { f.classList.remove('invalid'); if (!f.value.trim()) { f.classList.add('invalid'); ok = false; } });
+          if (email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { email.classList.add('invalid'); ok = false; }
+          if (!ok) { feedback.textContent = 'Complétez les champs surlignés — un courriel valide est requis.'; feedback.style.color = '#E06C65'; return; }
+          feedback.style.color = '';
+          feedback.textContent = 'Note transmise à l\u2019atelier — merci, ' + name.value.trim().split(' ')[0] + ' ! Réponse sous 48 h ouvrées.';
+          form.reset();
+        });
+      }
+    })();
+  </script>
+</body></html>
