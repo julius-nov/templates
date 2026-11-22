@@ -1,0 +1,1194 @@
+<!DOCTYPE html><html lang="en" class="dark"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing Lab — Advanced Pricing Sections for SaaS</title>
+  <meta name="description" content="Pricing Lab — 8 advanced, interactive pricing sections for SaaS: 3 tiers with monthly/annual billing, live price calculator, 12-row comparison table, ROI model, metered usage rates and FAQ. Dark-first Nocturne Mint design system.">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'background': '#06090F',
+        'on-background': '#F1F5F9',
+        'surface': '#06090F',
+        'on-surface': '#F1F5F9',
+        'surface-container-lowest': '#04060A',
+        'surface-container-low': '#090E17',
+        'surface-container': '#0D1420',
+        'surface-container-high': '#131D2E',
+        'surface-container-highest': '#1A263B',
+        'on-surface-variant': '#94A3B8',
+        'outline': '#2B3B52',
+        'outline-variant': '#1E293B',
+        'primary': '#34D399',
+        'on-primary': '#002114',
+        'primary-container': '#003825',
+        'on-primary-container': '#68FCBF',
+        'secondary': '#38BDF8',
+        'on-secondary': '#001E2C',
+        'secondary-container': '#00354A',
+        'on-secondary-container': '#C4E7FF',
+        'tertiary': '#FBBF24',
+        'on-tertiary': '#261A00',
+        'tertiary-container': '#402D00',
+        'on-tertiary-container': '#FFDF9F',
+        'violet': '#A78BFA',
+        'on-violet': '#21005E',
+        'violet-container': '#381385',
+        'on-violet-container': '#E8DDFF',
+        'error': '#F87171',
+        'on-error': '#410006',
+        'error-container': '#670211',
+        'on-error-container': '#FFDAD8',
+        'mint': '#34D399',
+        'amber': '#FBBF24',
+        'cyan': '#38BDF8',
+        'glass-panel': '#0D1420',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '20px',
+        'full': '9999px',
+      },
+      spacing: {
+        'xs': '4px',
+        'sm': '8px',
+        'md': '16px',
+        'lg': '24px',
+        'xl': '32px',
+        '2xl': '48px',
+        '3xl': '64px',
+        'section': '96px',
+      },
+      fontFamily: {
+        'display': ['"Space Grotesk"', 'sans-serif'],
+        'headline': ['"Space Grotesk"', 'sans-serif'],
+        'title': ['"Space Grotesk"', 'sans-serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'label': ['"Inter"', 'sans-serif'],
+        'mono': ['"JetBrains Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-lg': ['56px', { lineHeight: '62px', letterSpacing: '-1.5px', fontWeight: '700' }],
+        'display-lg-mobile': ['32px', { lineHeight: '38px', letterSpacing: '-0.75px', fontWeight: '700' }],
+        'headline-lg': ['36px', { lineHeight: '44px', letterSpacing: '-0.75px', fontWeight: '700' }],
+        'headline-lg-mobile': ['28px', { lineHeight: '34px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'headline-md': ['24px', { lineHeight: '32px', letterSpacing: '-0.25px', fontWeight: '600' }],
+        'title-lg': ['20px', { lineHeight: '28px', letterSpacing: '-0.15px', fontWeight: '600' }],
+        'title-md': ['16px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-lg': ['18px', { lineHeight: '28px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-md': ['15px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['13px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'label-md': ['12px', { lineHeight: '16px', letterSpacing: '0.25px', fontWeight: '600' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.5px', fontWeight: '600' }],
+        'mono-xl': ['44px', { lineHeight: '48px', letterSpacing: '-1px', fontWeight: '700' }],
+        'mono-xl-mobile': ['32px', { lineHeight: '36px', letterSpacing: '-0.75px', fontWeight: '700' }],
+        'mono-lg': ['24px', { lineHeight: '30px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'mono-md': ['15px', { lineHeight: '22px', letterSpacing: '0px', fontWeight: '500' }],
+        'mono-sm': ['12px', { lineHeight: '16px', letterSpacing: '0.5px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '150ms',
+        'panel-expand': '240ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'panel-expand': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'cubic-bezier(0.2, 0, 0, 1)',
+        'panel-expand': 'cubic-bezier(0.2, 0, 0, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <style>
+    /* ---- Pricing Lab additions: light theme, responsive, tooltip, palette, modal ---- */
+    html { scroll-behavior: smooth; }
+    section[id] { scroll-margin-top: 88px; }
+    :focus-visible { outline: 2px solid #34D399; outline-offset: 2px; }
+    /* Light theme (dark is default) */
+    html.light body, html.light .bg-surface { background-color: #F4F7FA !important; }
+    html.light .bg-surface-container { background-color: #FFFFFF !important; }
+    html.light .bg-surface-container-low { background-color: #EDF1F6 !important; }
+    html.light .bg-surface-container-high { background-color: #E4EAF2 !important; }
+    html.light .bg-surface-container-highest { background-color: #D7DEE8 !important; }
+    html.light .text-on-surface { color: #0B1220 !important; }
+    html.light .text-on-surface-variant { color: #5A6B80 !important; }
+    html.light .border-outline-variant { border-color: #D9E1EB !important; }
+    html.light .border-outline { border-color: #C2CEDD !important; }
+    html.light .divide-outline-variant > * + * { border-color: #D9E1EB !important; }
+    html.light .bg-primary-container { background-color: #D1FAE5 !important; }
+    html.light .text-on-primary-container { color: #065F46 !important; }
+    html.light .bg-secondary-container { background-color: #E0F2FE !important; }
+    html.light .text-on-secondary-container { color: #075985 !important; }
+    html.light .bg-tertiary-container { background-color: #FEF3C7 !important; }
+    html.light .text-on-tertiary-container { color: #92400E !important; }
+    html.light .bg-violet-container { background-color: #EDE9FE !important; }
+    html.light .text-on-violet-container { color: #5B21B6 !important; }
+    html.light .text-primary { color: #047857 !important; }
+    html.light .text-secondary { color: #0369A1 !important; }
+    html.light .text-tertiary { color: #B45309 !important; }
+    html.light .text-violet { color: #6D28D9 !important; }
+    html.light .bg-surface\/85 { background-color: rgba(244,247,250,.88) !important; }
+    html.light .bg-grid-pattern { opacity: .18 !important; }
+    html.light input[type="range"].mint-slider::-webkit-slider-runnable-track { background: #CBD5E1; }
+    html.light input[type="range"].mint-slider::-webkit-slider-thumb { border-color: #F4F7FA; }
+    html.light input[type="range"].mint-slider::-moz-range-track { height: 6px; border-radius: 9999px; background: #CBD5E1; }
+    html.light input[type="range"].mint-slider::-moz-range-thumb { height: 20px; width: 20px; border-radius: 9999px; background: #34D399; border: 3px solid #F4F7FA; }
+    html.light .faq-item button:hover { background-color: rgba(19,29,46,.04) !important; }
+    /* Mobile recomposition */
+    @media (max-width: 767px) {
+      .text-display-lg { font-size: 32px !important; line-height: 38px !important; letter-spacing: -.75px !important; }
+      .text-mono-xl { font-size: 32px !important; line-height: 36px !important; }
+      .text-headline-md { font-size: 22px !important; line-height: 28px !important; }
+      .px-2xl { padding-left: 20px !important; padding-right: 20px !important; }
+      .p-xl { padding: 20px !important; }
+      .gap-section { gap: 56px !important; }
+      .py-3xl { padding-top: 40px !important; padding-bottom: 40px !important; }
+    }
+    /* Tooltip */
+    #tip { position: fixed; z-index: 100; pointer-events: none; max-width: 280px; background: #131D2E; color: #F1F5F9; border: 1px solid #2B3B52; border-radius: 10px; padding: 8px 12px; font-family: Inter, sans-serif; font-size: 13px; line-height: 19px; box-shadow: 0 12px 32px rgba(0,0,0,.45); opacity: 0; transform: translateY(4px); transition: opacity .15s ease, transform .15s ease; }
+    #tip.on { opacity: 1; transform: translateY(0); }
+    #tip .tip-k { color: #34D399; font-family: "JetBrains Mono", monospace; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; display: block; margin-bottom: 2px; }
+    html.light #tip { background: #0B1220; color: #F1F5F9; border-color: #0B1220; }
+    /* Reveal on scroll */
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s cubic-bezier(.2,0,0,1), transform .6s cubic-bezier(.2,0,0,1); }
+    .reveal.in { opacity: 1; transform: none; }
+    /* Command palette */
+    #palette { position: fixed; inset: 0; z-index: 90; display: none; align-items: flex-start; justify-content: center; padding-top: 16vh; background: rgba(4,6,10,.6); backdrop-filter: blur(4px); }
+    #palette.open { display: flex; }
+    #palette .pal-box { width: min(560px, calc(100vw - 32px)); background: #0D1420; border: 1px solid #2B3B52; border-radius: 16px; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,.55); }
+    html.light #palette .pal-box { background: #FFFFFF; border-color: #D9E1EB; }
+    #palette input { width: 100%; background: transparent; border: 0; outline: 0; padding: 16px 18px; font: 500 15px Inter, sans-serif; color: #F1F5F9; }
+    html.light #palette input { color: #0B1220; }
+    #palette .pal-item { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 11px 18px; font: 500 14px Inter, sans-serif; color: #94A3B8; background: transparent; border: 0; cursor: pointer; }
+    html.light #palette .pal-item { color: #5A6B80; }
+    #palette .pal-item.sel, #palette .pal-item:hover { background: rgba(52,211,153,.1); color: #F1F5F9; }
+    html.light #palette .pal-item.sel, html.light #palette .pal-item:hover { color: #0B1220; }
+    #palette .pal-item kbd { margin-left: auto; font: 500 11px "JetBrains Mono", monospace; color: #94A3B8; border: 1px solid #2B3B52; border-radius: 6px; padding: 2px 6px; }
+    /* Toast + modal */
+    #toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 16px); z-index: 110; background: #131D2E; color: #F1F5F9; border: 1px solid #34D399; border-radius: 9999px; padding: 10px 18px; font: 500 14px Inter, sans-serif; opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s ease; box-shadow: 0 12px 32px rgba(0,0,0,.45); max-width: calc(100vw - 32px); text-align: center; }
+    #toast.on { opacity: 1; transform: translate(-50%, 0); }
+    #quoteModal { position: fixed; inset: 0; z-index: 95; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(4,6,10,.65); backdrop-filter: blur(4px); }
+    #quoteModal.open { display: flex; }
+    #quoteModal .qm-box { width: min(480px, 100%); background: #0D1420; border: 1px solid #2B3B52; border-radius: 16px; padding: 24px; box-shadow: 0 24px 64px rgba(0,0,0,.55); }
+    html.light #quoteModal .qm-box { background: #FFFFFF; border-color: #D9E1EB; }
+    .tier-pill[aria-pressed="true"] { background: #34D399 !important; color: #002114 !important; border-color: #34D399 !important; }
+    .cmp-pill[aria-pressed="true"] { background: #34D399 !important; color: #002114 !important; border-color: #34D399 !important; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+    .bg-grid-pattern {
+      background-image: linear-gradient(to right, rgba(30, 41, 59, 0.32) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(30, 41, 59, 0.32) 1px, transparent 1px);
+      background-size: 56px 56px;
+    }
+    input[type="range"].mint-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    input[type="range"].mint-slider::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: 9999px;
+      background: #1A263B;
+    }
+    input[type="range"].mint-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      margin-top: -7px;
+      height: 20px;
+      width: 20px;
+      border-radius: 9999px;
+      background: #34D399;
+      border: 3px solid #06090F;
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.5);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-[1024px] selection:bg-primary/30 selection:text-on-surface" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <div class="relative min-h-[1024px] bg-surface overflow-x-hidden" data-stitch-vh="min-h-[1024px]===min-h-screen">
+    <!-- Ambient atmospheric backdrop -->
+    <div class="pointer-events-none fixed inset-0 bg-grid-pattern opacity-35"></div>
+    <div class="pointer-events-none fixed -top-40 left-1/3 w-[680px] h-[420px] rounded-full bg-primary/10 blur-[130px]"></div>
+    <div class="pointer-events-none fixed top-1/2 -right-32 w-[520px] h-[420px] rounded-full bg-secondary/10 blur-[130px]"></div>
+
+    <!-- Top Navigation -->
+    <header class="sticky top-0 z-40 border-b border-outline-variant bg-surface/85 backdrop-blur-md">
+      <div class="max-w-[1200px] mx-auto px-2xl h-16 flex items-center justify-between gap-lg">
+        <a href="#top" class="flex items-center gap-sm">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="6" fill="#0D1420" stroke="#34D399" stroke-width="1.5"></rect>
+            <path d="M7 14L10.5 10.5L13.5 13L17 8.5" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          <span class="font-title text-title-md text-on-surface whitespace-nowrap">Pricing Lab</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-xl font-label text-label-lg text-on-surface-variant">
+          <a href="#tiers" class="hover:text-on-surface transition-colors duration-state-change">Tiers</a>
+          <a href="#calculator" class="hover:text-on-surface transition-colors duration-state-change">Calculator</a>
+          <a href="#compare" class="hover:text-on-surface transition-colors duration-state-change">Compare</a>
+          <a href="#roi" class="hover:text-on-surface transition-colors duration-state-change">ROI</a>
+          <a href="#usage" class="hover:text-on-surface transition-colors duration-state-change">Usage</a>
+          <a href="#faq" class="hover:text-on-surface transition-colors duration-state-change">FAQ</a>
+        </nav>
+        <div class="flex items-center gap-sm md:gap-md">
+          <button id="paletteBtn" type="button" onclick="openPalette()" aria-label="Open command palette" class="hidden sm:inline-flex items-center gap-sm px-md py-sm rounded border border-outline-variant font-mono text-mono-sm text-on-surface-variant hover:text-on-surface transition-colors duration-state-change">Search <kbd class="px-sm py-xs rounded bg-surface-container-high border border-outline-variant font-mono text-mono-sm">⌘K</kbd></button>
+          <button id="themeBtn" type="button" onclick="toggleTheme()" aria-label="Toggle light and dark theme" class="p-sm rounded border border-outline-variant text-on-surface-variant hover:text-on-surface transition-colors duration-state-change"><svg id="themeIconMoon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4 6.8 6.8 0 0 0 20 13.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg id="themeIconSun" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="display:none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+          <button type="button" onclick="demoToast('Demo only — sign-in is disabled in this template preview.')" class="hidden sm:block px-md py-sm rounded text-on-surface-variant hover:text-on-surface font-label text-label-lg transition-colors duration-state-change">Sign in</button>
+          <button type="button" onclick="selectTier('growth');document.getElementById('tiers').scrollIntoView({behavior:'smooth'})" class="px-md md:px-lg py-sm rounded bg-primary text-on-primary font-label text-label-lg whitespace-nowrap hover:opacity-90 transition-opacity duration-state-change">Start free trial</button>
+          <button id="menuBtn" type="button" onclick="toggleMenu()" aria-label="Open menu" aria-expanded="false" class="md:hidden p-sm rounded border border-outline-variant text-on-surface-variant hover:text-on-surface transition-colors duration-state-change"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+    </header>
+    <div id="mobileMenu" class="hidden md:hidden sticky top-16 z-40 border-b border-outline-variant bg-surface/95 backdrop-blur-md">
+      <nav class="max-w-[1200px] mx-auto px-2xl py-md flex flex-col gap-sm font-label text-label-lg text-on-surface-variant">
+        <a href="#tiers" onclick="toggleMenu(true)">Tiers</a>
+        <a href="#calculator" onclick="toggleMenu(true)">Calculator</a>
+        <a href="#compare" onclick="toggleMenu(true)">Compare</a>
+        <a href="#roi" onclick="toggleMenu(true)">ROI</a>
+        <a href="#usage" onclick="toggleMenu(true)">Usage</a>
+        <a href="#faq" onclick="toggleMenu(true)">FAQ</a>
+      </nav>
+    </div>
+
+    <main id="top" class="relative z-10 max-w-[1200px] mx-auto px-2xl py-3xl flex flex-col gap-section">
+
+      <!-- HERO -->
+      <section class="reveal flex flex-col items-center text-center gap-lg pt-lg">
+        <span class="inline-flex items-center gap-sm px-md py-xs rounded-full bg-surface-container border border-outline-variant font-mono text-mono-sm text-primary uppercase tracking-widest">
+          <span class="w-2 h-2 rounded-full bg-primary"></span>
+          PRICING LAB — 08 ADVANCED SECTIONS
+        </span>
+        <h1 class="font-display text-display-lg text-on-surface max-w-3xl text-balance">
+          Pricing, engineered to convert.
+        </h1>
+        <p class="font-body text-body-lg text-on-surface-variant max-w-2xl text-pretty">
+          Transparent seat plans, live infrastructure metering, and instant ROI modeling. Switch billing cadence below to preview annual savings across every module.
+        </p>
+
+        <!-- Monthly / Annual Billing Toggle -->
+        <div class="mt-sm inline-flex items-center p-xs rounded-full bg-surface-container border border-outline-variant" role="group" aria-label="Billing cadence">
+          <button id="btn-monthly" type="button" onclick="setBilling(&#39;monthly&#39;)" class="px-lg py-sm rounded-full font-label text-label-lg text-on-surface-variant transition-colors duration-state-change">
+            Monthly
+          </button>
+          <button id="btn-annual" type="button" onclick="setBilling(&#39;annual&#39;)" class="inline-flex items-center gap-sm px-lg py-sm rounded-full bg-surface-container-high border border-outline font-label text-label-lg text-on-surface transition-colors duration-state-change">
+            <span>Annual</span>
+            <span class="px-sm py-xs rounded-full bg-tertiary-container border border-tertiary/40 text-on-tertiary-container font-mono text-mono-sm">−20%</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 01. PRICING TIERS -->
+      <section id="tiers" class="reveal flex flex-col gap-xl">
+        <div class="flex flex-wrap items-baseline justify-between gap-sm border-b border-outline-variant pb-md">
+          <div class="flex items-baseline gap-md">
+            <span class="font-mono text-mono-md text-primary">01</span>
+            <h2 class="font-headline text-headline-md text-on-surface">Core Tiers</h2>
+          </div>
+          <span class="font-mono text-mono-sm text-on-surface-variant">Predictable base + metered headroom</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-lg items-stretch">
+          <!-- Starter -->
+          <article data-tier="starter" class="tier-card rounded-lg bg-surface-container border border-outline-variant p-xl flex flex-col justify-between gap-xl h-full">
+            <div class="flex flex-col gap-lg">
+              <div class="flex flex-col gap-xs">
+                <h3 class="font-title text-title-lg text-on-surface">Starter</h3>
+                <p class="font-body text-body-sm text-on-surface-variant">For early-stage product teams shipping their first telemetry pipeline.</p>
+              </div>
+              <div class="flex items-baseline gap-sm">
+                <span id="price-starter" class="font-mono text-mono-xl text-on-surface tabular-nums transition-opacity duration-state-change">$15</span>
+                <span class="font-body text-body-md text-on-surface-variant">/ mo</span>
+                <span id="orig-starter" class="font-mono text-mono-sm text-on-surface-variant line-through tabular-nums ml-xs">$19</span>
+              </div>
+              <!-- Small usage bar -->
+              <div class="p-md rounded bg-surface border border-outline-variant flex flex-col gap-xs" data-tip="Starter quota|25,000 of 100,000 events used this month — 25% of the monthly quota.">
+                <div class="flex justify-between font-mono text-mono-sm">
+                  <span class="text-on-surface-variant">Monthly quota</span>
+                  <span class="text-secondary tabular-nums">100k events</span>
+                </div>
+                <div class="h-1.5 w-full rounded-full bg-surface-container-highest overflow-hidden">
+                  <div class="h-full rounded-full bg-secondary" style="width:25%"></div>
+                </div>
+              </div>
+              <ul class="flex flex-col gap-sm font-body text-body-md text-on-surface-variant">
+                <li class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#34D399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Up to 5 team seats included</span></li>
+                <li class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#34D399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Real-time webhook streaming</span></li>
+                <li class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#34D399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>30-day event retention</span></li>
+                <li class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#34D399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Community &amp; email support</span></li>
+              </ul>
+            </div>
+            <button type="button" onclick="selectTier('starter');document.getElementById('calculator').scrollIntoView({behavior:'smooth'})" class="w-full py-md px-lg rounded bg-surface-container-high border border-outline text-on-surface font-label text-label-lg hover:border-primary/50 transition-colors duration-state-change">
+              Choose Starter
+            </button>
+          </article>
+
+          <!-- Growth (Featured) -->
+          <article data-tier="growth" class="tier-card order-first md:order-none rounded-lg bg-surface-container border border-primary/50 p-xl flex flex-col justify-between gap-xl h-full shadow-[0_0_48px_-12px_rgba(52,211,153,0.28)]">
+            <div class="flex flex-col gap-lg">
+              <div class="flex flex-col gap-xs">
+                <div class="flex items-center justify-between gap-sm">
+                  <h3 class="font-title text-title-lg text-on-surface">Growth</h3>
+                  <span class="px-md py-xs rounded-full bg-primary-container border border-primary/40 text-on-primary-container font-label text-label-sm uppercase tracking-wider">Most popular</span>
+                </div>
+                <p class="font-body text-body-sm text-on-surface-variant">Built for scaling SaaS teams needing multi-seat analytics and SLA guarantees.</p>
+              </div>
+              <div class="flex items-baseline gap-sm">
+                <span id="price-growth" class="font-mono text-mono-xl text-primary tabular-nums transition-opacity duration-state-change">$39</span>
+                <span class="font-body text-body-md text-on-surface-variant">/ mo</span>
+                <span id="orig-growth" class="font-mono text-mono-sm text-on-surface-variant line-through tabular-nums ml-xs">$49</span>
+              </div>
+              <!-- Small usage bar -->
+              <div class="p-md rounded bg-surface border border-primary/25 flex flex-col gap-xs" data-tip="Growth quota|640,000 of 1,000,000 events used this month — 64% of the monthly quota.">
+                <div class="flex justify-between font-mono text-mono-sm">
+                  <span class="text-on-surface-variant">Monthly quota</span>
+                  <span class="text-primary tabular-nums">1M events</span>
+                </div>
+                <div class="h-1.5 w-full rounded-full bg-surface-container-highest overflow-hidden">
+                  <div class="h-full rounded-full bg-primary" style="width:64%"></div>
+                </div>
+              </div>
+              <ul class="flex flex-col gap-sm font-body text-body-md text-on-surface">
+                <li class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#34D399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Up to 25 team seats included</span></li>
+                <li class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#34D399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>SAML SSO &amp; role-based access</span></li>
+                <li class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#34D399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>12-month hot event retention</span></li>
+                <li class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#34D399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Priority 4-hour response SLA</span></li>
+              </ul>
+            </div>
+            <button type="button" onclick="selectTier('growth');document.getElementById('calculator').scrollIntoView({behavior:'smooth'})" class="w-full py-md px-lg rounded bg-primary text-on-primary font-label text-label-lg hover:opacity-90 transition-opacity duration-state-change">
+              Start 14-day trial
+            </button>
+          </article>
+
+          <!-- Scale -->
+          <article data-tier="scale" class="tier-card rounded-lg bg-surface-container border border-outline-variant p-xl flex flex-col justify-between gap-xl h-full">
+            <div class="flex flex-col gap-lg">
+              <div class="flex flex-col gap-xs">
+                <div class="flex items-center justify-between gap-sm">
+                  <h3 class="font-title text-title-lg text-on-surface">Scale</h3>
+                  <span class="px-md py-xs rounded-full bg-violet-container border border-violet/40 text-on-violet-container font-label text-label-sm">Enterprise Ready</span>
+                </div>
+                <p class="font-body text-body-sm text-on-surface-variant">Dedicated throughput, custom compliance, and multi-region data residency.</p>
+              </div>
+              <div class="flex items-baseline gap-sm">
+                <span id="price-scale" class="font-mono text-mono-xl text-on-surface tabular-nums transition-opacity duration-state-change">$79</span>
+                <span class="font-body text-body-md text-on-surface-variant">/ mo</span>
+                <span id="orig-scale" class="font-mono text-mono-sm text-on-surface-variant line-through tabular-nums ml-xs">$99</span>
+              </div>
+              <!-- Small usage bar -->
+              <div class="p-md rounded bg-surface border border-outline-variant flex flex-col gap-xs" data-tip="Scale quota|9,200,000 of 10,000,000 events used this month — 92% of the monthly quota.">
+                <div class="flex justify-between font-mono text-mono-sm">
+                  <span class="text-on-surface-variant">Monthly quota</span>
+                  <span class="text-violet tabular-nums">10M+ events</span>
+                </div>
+                <div class="h-1.5 w-full rounded-full bg-surface-container-highest overflow-hidden">
+                  <div class="h-full rounded-full bg-violet" style="width:92%"></div>
+                </div>
+              </div>
+              <ul class="flex flex-col gap-sm font-body text-body-md text-on-surface-variant">
+                <li class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#34D399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Unlimited workspaces &amp; seats</span></li>
+                <li class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#34D399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Dedicated VPC &amp; EU/US pinning</span></li>
+                <li class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#34D399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>36-month cold archive + exports</span></li>
+                <li class="flex items-center gap-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#34D399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>99.99% uptime SLA &amp; Slack channel</span></li>
+              </ul>
+            </div>
+            <button type="button" onclick="selectTier('scale');document.getElementById('calculator').scrollIntoView({behavior:'smooth'})" class="w-full py-md px-lg rounded bg-surface-container-high border border-outline text-on-surface font-label text-label-lg hover:border-violet/60 transition-opacity duration-state-change">
+              Choose Scale
+            </button>
+          </article>
+        </div>
+      </section>
+
+      <!-- 02. INTERACTIVE PRICE CALCULATOR -->
+      <section id="calculator" class="reveal flex flex-col gap-xl">
+        <div class="flex flex-wrap items-baseline justify-between gap-sm border-b border-outline-variant pb-md">
+          <div class="flex items-baseline gap-md">
+            <span class="font-mono text-mono-md text-primary">02</span>
+            <h2 class="font-headline text-headline-md text-on-surface">Interactive Price Calculator</h2>
+          </div>
+          <span class="font-mono text-mono-sm text-on-surface-variant">Model seats &amp; compliance add-ons</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-lg items-stretch">
+          <!-- Controls (7 cols) -->
+          <div class="lg:col-span-7 rounded-lg bg-surface-container border border-outline-variant p-xl flex flex-col gap-xl">
+            <div class="flex flex-col gap-md">
+              <span class="font-title text-title-md text-on-surface">Base tier</span>
+              <div class="flex flex-wrap gap-sm" role="group" aria-label="Calculator base tier">
+                <button type="button" data-calc-tier="starter" onclick="selectTier('starter')" class="tier-pill px-lg py-sm rounded-full border border-outline font-label text-label-lg text-on-surface transition-colors duration-state-change" aria-pressed="false">Starter · $19</button>
+                <button type="button" data-calc-tier="growth" onclick="selectTier('growth')" class="tier-pill px-lg py-sm rounded-full border border-outline font-label text-label-lg text-on-surface transition-colors duration-state-change" aria-pressed="true">Growth · $49</button>
+                <button type="button" data-calc-tier="scale" onclick="selectTier('scale')" class="tier-pill px-lg py-sm rounded-full border border-outline font-label text-label-lg text-on-surface transition-colors duration-state-change" aria-pressed="false">Scale · $99</button>
+              </div>
+              <p class="font-body text-body-sm text-on-surface-variant">Base price follows the billing toggle above. Extra seats are billed at $10 / seat monthly ($8 on annual).</p>
+            </div>
+            <div class="flex flex-col gap-md">
+              <div class="flex items-center justify-between">
+                <label for="seat-slider" class="font-title text-title-md text-on-surface">Active Team Seats</label>
+                <span id="seat-count-display" class="px-md py-xs rounded bg-surface border border-outline font-mono text-mono-lg text-primary tabular-nums">25 seats</span>
+              </div>
+              <input id="seat-slider" type="range" min="1" max="200" value="25" oninput="updateCalculator()" class="mint-slider w-full">
+              <div class="flex justify-between font-mono text-mono-sm text-on-surface-variant tabular-nums">
+                <span>1 seat</span>
+                <span>50</span>
+                <span>100</span>
+                <span>150</span>
+                <span>200 seats</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-md">
+              <span class="font-title text-title-md text-on-surface">Infrastructure &amp; Security Add-ons</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
+                <label class="flex items-start gap-md p-md rounded bg-surface border border-outline-variant cursor-pointer hover:border-outline transition-colors duration-state-change">
+                  <input type="checkbox" class="addon-cb mt-xs rounded border-outline bg-surface-container-high text-primary focus:ring-primary" data-price="120" onchange="updateCalculator()" checked>
+                  <div class="flex flex-col gap-xs">
+                    <span class="font-label text-label-lg text-on-surface">Dedicated VPC Peering</span>
+                    <span class="font-mono text-mono-sm text-secondary tabular-nums">+$120 / mo</span>
+                  </div>
+                </label>
+                <label class="flex items-start gap-md p-md rounded bg-surface border border-outline-variant cursor-pointer hover:border-outline transition-colors duration-state-change">
+                  <input type="checkbox" class="addon-cb mt-xs rounded border-outline bg-surface-container-high text-primary focus:ring-primary" data-price="85" onchange="updateCalculator()">
+                  <div class="flex flex-col gap-xs">
+                    <span class="font-label text-label-lg text-on-surface">SOC2 Audit Stream</span>
+                    <span class="font-mono text-mono-sm text-violet tabular-nums">+$85 / mo</span>
+                  </div>
+                </label>
+                <label class="flex items-start gap-md p-md rounded bg-surface border border-outline-variant cursor-pointer hover:border-outline transition-colors duration-state-change">
+                  <input type="checkbox" class="addon-cb mt-xs rounded border-outline bg-surface-container-high text-primary focus:ring-primary" data-price="150" onchange="updateCalculator()">
+                  <div class="flex flex-col gap-xs">
+                    <span class="font-label text-label-lg text-on-surface">24/7 Priority Slack SLA</span>
+                    <span class="font-mono text-mono-sm text-primary tabular-nums">+$150 / mo</span>
+                  </div>
+                </label>
+                <label class="flex items-start gap-md p-md rounded bg-surface border border-outline-variant cursor-pointer hover:border-outline transition-colors duration-state-change">
+                  <input type="checkbox" class="addon-cb mt-xs rounded border-outline bg-surface-container-high text-primary focus:ring-primary" data-price="60" onchange="updateCalculator()">
+                  <div class="flex flex-col gap-xs">
+                    <span class="font-label text-label-lg text-on-surface">36-Month Cold Archive</span>
+                    <span class="font-mono text-mono-sm text-tertiary tabular-nums">+$60 / mo</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Summary (5 cols) -->
+          <div class="lg:col-span-5 rounded-lg bg-surface-container border border-primary/40 p-xl flex flex-col justify-between gap-lg">
+            <div class="flex flex-col gap-lg">
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-mono-sm text-primary uppercase tracking-wider">Estimated Plan Total</span>
+                <span id="calc-cadence-badge" class="px-sm py-xs rounded-full bg-tertiary-container text-on-tertiary-container font-mono text-mono-sm">Annual (−20%)</span>
+              </div>
+              <div class="flex items-baseline gap-sm">
+                <span id="calc-total" class="font-mono text-mono-xl text-on-surface tabular-nums">$339</span>
+                <span class="font-body text-body-md text-on-surface-variant">/ month</span>
+              </div>
+              <div class="p-md rounded bg-surface border border-outline-variant flex items-center justify-between">
+                <span class="font-body text-body-md text-on-surface-variant">Effective per-seat rate</span>
+                <span id="calc-per-seat" class="font-mono text-mono-lg text-secondary tabular-nums">$13.56 / seat</span>
+              </div>
+              <div class="flex flex-col gap-sm font-body text-body-sm text-on-surface-variant">
+                <div class="flex justify-between">
+                  <span id="calc-base-label">Growth base + seat allocation</span>
+                  <span id="calc-base-breakdown" class="font-mono text-on-surface tabular-nums">$243</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Selected add-ons</span>
+                  <span id="calc-addons-breakdown" class="font-mono text-on-surface tabular-nums">$96</span>
+                </div>
+              </div>
+              <div class="flex flex-col gap-xs">
+                <div class="flex h-2.5 w-full rounded-full overflow-hidden bg-surface-container-highest">
+                  <div id="calc-bar-base" class="h-full bg-primary transition-all duration-panel-expand" style="width:71%" data-tip="Base + seats|$239 — Growth base $39 plus 25 seats at $8 on annual billing."></div>
+                  <div id="calc-bar-addons" class="h-full bg-tertiary transition-all duration-panel-expand" style="width:29%" data-tip="Add-ons|$96 — Dedicated VPC Peering at the annual −20% rate."></div>
+                </div>
+                <div class="flex justify-between font-mono text-mono-sm text-on-surface-variant"><span class="text-primary">■ Base + seats</span><span class="text-tertiary">■ Add-ons</span></div>
+              </div>
+            </div>
+            <button type="button" onclick="openQuote()" class="w-full py-md px-lg rounded bg-primary text-on-primary font-label text-label-lg hover:opacity-90 transition-opacity duration-state-change">
+              Lock in custom quote
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03. FULL COMPARISON TABLE (12 rows x 3 tiers) -->
+      <section id="compare" class="reveal flex flex-col gap-xl">
+        <div class="flex flex-wrap items-baseline justify-between gap-sm border-b border-outline-variant pb-md">
+          <div class="flex items-baseline gap-md">
+            <span class="font-mono text-mono-md text-primary">03</span>
+            <h2 class="font-headline text-headline-md text-on-surface">Full Capability Comparison</h2>
+          </div>
+          <span class="font-mono text-mono-sm text-on-surface-variant">12 Core Specifications × 3 Tiers</span>
+        </div>
+
+        <div class="rounded-lg bg-surface-container border border-outline-variant overflow-hidden hidden md:block">
+          <div class="overflow-x-auto">
+          <table class="w-full min-w-[720px] text-left border-collapse">
+            <thead>
+              <tr class="border-b border-outline-variant bg-surface-container-low">
+                <th scope="col" class="py-md px-lg font-label text-label-md text-on-surface-variant w-2/5">Specification</th>
+                <th scope="col" class="py-md px-lg font-title text-title-md text-on-surface text-center">Starter</th>
+                <th scope="col" class="py-md px-lg font-title text-title-md text-primary text-center bg-primary/5">Growth</th>
+                <th scope="col" class="py-md px-lg font-title text-title-md text-on-surface text-center">Scale</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant font-body text-body-md">
+              <tr>
+                <td class="py-md px-lg text-on-surface">Monthly tracked events</td>
+                <td class="py-md px-lg font-mono text-mono-md text-on-surface-variant text-center tabular-nums">100k</td>
+                <td class="py-md px-lg font-mono text-mono-md text-primary text-center bg-primary/5 tabular-nums">1M</td>
+                <td class="py-md px-lg font-mono text-mono-md text-on-surface text-center tabular-nums">10M+</td>
+              </tr>
+              <tr>
+                <td class="py-md px-lg text-on-surface">Included team seats</td>
+                <td class="py-md px-lg font-mono text-mono-md text-on-surface-variant text-center tabular-nums">5</td>
+                <td class="py-md px-lg font-mono text-mono-md text-primary text-center bg-primary/5 tabular-nums">25</td>
+                <td class="py-md px-lg font-mono text-mono-md text-on-surface text-center">Unlimited</td>
+              </tr>
+              <tr>
+                <td class="py-md px-lg text-on-surface">Hot event retention</td>
+                <td class="py-md px-lg font-mono text-mono-md text-on-surface-variant text-center tabular-nums">30 days</td>
+                <td class="py-md px-lg font-mono text-mono-md text-primary text-center bg-primary/5 tabular-nums">12 months</td>
+                <td class="py-md px-lg font-mono text-mono-md text-on-surface text-center tabular-nums">36 months</td>
+              </tr>
+              <tr>
+                <td class="py-md px-lg text-on-surface">Real-time webhook streams</td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+                <td class="py-md px-lg text-center bg-primary/5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+              </tr>
+              <tr>
+                <td class="py-md px-lg text-on-surface">Custom billing &amp; usage alerts</td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+                <td class="py-md px-lg text-center bg-primary/5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+              </tr>
+              <tr>
+                <td class="py-md px-lg text-on-surface">Role-based access control (RBAC)</td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="1.8" opacity=".45"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" opacity=".45"/></svg></td>
+                <td class="py-md px-lg text-center bg-primary/5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+              </tr>
+              <tr>
+                <td class="py-md px-lg text-on-surface">SAML SSO &amp; SCIM directory sync</td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="1.8" opacity=".45"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" opacity=".45"/></svg></td>
+                <td class="py-md px-lg text-center bg-primary/5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+              </tr>
+              <tr>
+                <td class="py-md px-lg text-on-surface">Warehouse sync (Snowflake / BigQuery)</td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="1.8" opacity=".45"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" opacity=".45"/></svg></td>
+                <td class="py-md px-lg text-center bg-primary/5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+              </tr>
+              <tr>
+                <td class="py-md px-lg text-on-surface">Multi-currency localized pricing</td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="1.8" opacity=".45"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" opacity=".45"/></svg></td>
+                <td class="py-md px-lg text-center bg-primary/5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+              </tr>
+              <tr>
+                <td class="py-md px-lg text-on-surface">Dedicated VPC peering</td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="1.8" opacity=".45"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" opacity=".45"/></svg></td>
+                <td class="py-md px-lg text-center bg-primary/5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="1.8" opacity=".45"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" opacity=".45"/></svg></td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+              </tr>
+              <tr>
+                <td class="py-md px-lg text-on-surface">EU / US data residency pinning</td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="1.8" opacity=".45"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" opacity=".45"/></svg></td>
+                <td class="py-md px-lg text-center bg-primary/5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="1.8" opacity=".45"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" opacity=".45"/></svg></td>
+                <td class="py-md px-lg text-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+              </tr>
+              <tr>
+                <td class="py-md px-lg text-on-surface">Uptime SLA guarantee</td>
+                <td class="py-md px-lg font-mono text-mono-md text-on-surface-variant text-center tabular-nums">99.5%</td>
+                <td class="py-md px-lg font-mono text-mono-md text-primary text-center bg-primary/5 tabular-nums">99.9%</td>
+                <td class="py-md px-lg font-mono text-mono-md text-on-surface text-center tabular-nums">99.99%</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+        <div class="md:hidden rounded-lg bg-surface-container border border-outline-variant p-lg flex flex-col gap-md">
+          <div class="flex flex-wrap gap-sm" role="group" aria-label="Compare tier">
+            <button type="button" data-cmp-tier="starter" onclick="selectCompareTier('starter')" class="cmp-pill px-md py-sm rounded-full border border-outline font-label text-label-lg text-on-surface" aria-pressed="false">Starter</button>
+            <button type="button" data-cmp-tier="growth" onclick="selectCompareTier('growth')" class="cmp-pill px-md py-sm rounded-full border border-outline font-label text-label-lg text-on-surface" aria-pressed="true">Growth</button>
+            <button type="button" data-cmp-tier="scale" onclick="selectCompareTier('scale')" class="cmp-pill px-md py-sm rounded-full border border-outline font-label text-label-lg text-on-surface" aria-pressed="false">Scale</button>
+          </div>
+          <div id="cmpMobileList" class="flex flex-col gap-sm font-body text-body-md"></div>
+        </div>
+      </section>
+
+      <!-- 04. TOGGLEABLE ROI PANEL -->
+      <section id="roi" class="reveal flex flex-col gap-xl">
+        <div class="flex flex-wrap items-baseline justify-between gap-sm border-b border-outline-variant pb-md">
+          <div class="flex items-baseline gap-md">
+            <span class="font-mono text-mono-md text-primary">04</span>
+            <h2 class="font-headline text-headline-md text-on-surface">Toggleable ROI Panel</h2>
+          </div>
+          <span class="font-mono text-mono-sm text-on-surface-variant">Projected checkout lift &amp; billing savings</span>
+        </div>
+
+        <div class="rounded-lg bg-surface-container border border-outline-variant p-xl grid grid-cols-1 lg:grid-cols-12 gap-xl items-center">
+          <div class="lg:col-span-5 flex flex-col gap-lg">
+            <div class="flex items-center justify-between">
+              <span class="font-title text-title-md text-on-surface">ROI Model Mode</span>
+              <button id="roi-mode-toggle" type="button" role="switch" aria-checked="true" onclick="toggleRoiMode()" class="inline-flex items-center gap-sm px-md py-xs rounded-full bg-primary-container border border-primary/40 text-on-primary-container font-mono text-mono-sm">
+                <span class="w-2 h-2 rounded-full bg-primary"></span>
+                <span id="roi-mode-label">Expansion + Lift</span>
+              </button>
+            </div>
+            <div class="flex flex-col gap-sm">
+              <label for="roi-revenue-input" class="font-label text-label-md text-on-surface-variant">Current Monthly Recurring Revenue (USD)</label>
+              <div class="relative">
+                <span class="absolute left-md top-1/2 -translate-y-1/2 font-mono text-mono-lg text-on-surface-variant">$</span>
+                <input id="roi-revenue-input" type="number" value="50000" min="1000" step="1000" oninput="updateRoi()" class="w-full pl-xl pr-lg py-md rounded bg-surface border border-outline text-on-surface font-mono text-mono-lg tabular-nums focus:border-primary focus:ring-primary">
+              </div>
+            </div>
+            <div class="flex gap-sm">
+              <button type="button" onclick="setRoiPreset(25000)" class="px-md py-xs rounded bg-surface-container-high border border-outline-variant font-mono text-mono-sm text-on-surface-variant hover:text-on-surface">$25k</button>
+              <button type="button" onclick="setRoiPreset(50000)" class="px-md py-xs rounded bg-surface-container-high border border-outline-variant font-mono text-mono-sm text-on-surface-variant hover:text-on-surface">$50k</button>
+              <button type="button" onclick="setRoiPreset(150000)" class="px-md py-xs rounded bg-surface-container-high border border-outline-variant font-mono text-mono-sm text-on-surface-variant hover:text-on-surface">$150k</button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 p-xl rounded-lg bg-surface border border-outline-variant flex flex-col gap-lg">
+            <div class="grid grid-cols-3 gap-md">
+              <div class="flex flex-col gap-xs">
+                <span class="font-label text-label-sm text-on-surface-variant uppercase">Annual Net Lift</span>
+                <span id="roi-annual-lift" class="font-mono text-mono-lg text-primary tabular-nums">+$72,000</span>
+              </div>
+              <div class="flex flex-col gap-xs">
+                <span class="font-label text-label-sm text-on-surface-variant uppercase">Payback Period</span>
+                <span id="roi-payback" class="font-mono text-mono-lg text-secondary tabular-nums">4 days</span>
+              </div>
+              <div class="flex flex-col gap-xs">
+                <span class="font-label text-label-sm text-on-surface-variant uppercase">Conversion Gain</span>
+                <span id="roi-gain-pct" class="font-mono text-mono-lg text-tertiary tabular-nums">+12.0%</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-sm">
+              <div class="flex justify-between font-mono text-mono-sm">
+                <span class="text-on-surface-variant">Net lift retained after plan cost</span>
+                <span id="roi-bar-label" class="text-primary tabular-nums">78% efficiency index</span>
+              </div>
+              <div class="h-3 w-full rounded-full bg-surface-container-highest overflow-hidden" data-tip="Net lift retained|Share of the projected annual lift that remains after the selected plan cost.">
+                <div id="roi-bar-fill" class="h-full rounded-full bg-primary transition-all duration-panel-expand" style="width: 78%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05. USAGE-BASED PRICING STRIP (4 metered blocks) -->
+      <section id="usage" class="reveal flex flex-col gap-xl">
+        <div class="flex flex-wrap items-baseline justify-between gap-sm border-b border-outline-variant pb-md">
+          <div class="flex items-baseline gap-md">
+            <span class="font-mono text-mono-md text-primary">05</span>
+            <h2 class="font-headline text-headline-md text-on-surface">Usage-Based Metered Strip</h2>
+          </div>
+          <span class="font-mono text-mono-sm text-on-surface-variant">Pay-as-you-grow overage rates</span>
+        </div>
+
+        <div id="meteredGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md items-stretch">
+          <div class="rounded-lg bg-surface-container border border-outline-variant p-lg flex flex-col justify-between gap-md">
+            <div class="flex items-center justify-between">
+              <span class="font-title text-title-md text-on-surface">Tracked Events</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+            </div>
+            <div class="flex items-baseline gap-xs" data-tip="Tracked Events|$0.12 per 10,000 events, billed at cycle close. Volume discounts above 50M monthly events.">
+              <span class="font-mono text-mono-lg text-primary tabular-nums">$0.12</span>
+              <span class="font-mono text-mono-sm text-on-surface-variant">/ 10k events</span>
+            </div>
+            <p class="font-body text-body-sm text-on-surface-variant">Automatic volume discounts above 50M monthly events.</p>
+          </div>
+
+          <div class="rounded-lg bg-surface-container border border-outline-variant p-lg flex flex-col justify-between gap-md">
+            <div class="flex items-center justify-between">
+              <span class="font-title text-title-md text-on-surface">Webhook Calls</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+            </div>
+            <div class="flex items-baseline gap-xs" data-tip="Webhook Calls|$0.05 per 1,000 deliveries, retries and dead-letter queues included.">
+              <span class="font-mono text-mono-lg text-secondary tabular-nums">$0.05</span>
+              <span class="font-mono text-mono-sm text-on-surface-variant">/ 1k deliveries</span>
+            </div>
+            <p class="font-body text-body-sm text-on-surface-variant">Includes exponential backoff retries and dead-letter queues.</p>
+          </div>
+
+          <div class="rounded-lg bg-surface-container border border-outline-variant p-lg flex flex-col justify-between gap-md">
+            <div class="flex items-center justify-between">
+              <span class="font-title text-title-md text-on-surface">Compute Time</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+            </div>
+            <div class="flex items-baseline gap-xs" data-tip="Compute Time|$0.008 per vCPU-minute for custom pricing rules and webhooks.">
+              <span class="font-mono text-mono-lg text-tertiary tabular-nums">$0.008</span>
+              <span class="font-mono text-mono-sm text-on-surface-variant">/ vCPU-min</span>
+            </div>
+            <p class="font-body text-body-sm text-on-surface-variant">Sub-second cold starts for custom pricing rules and webhooks.</p>
+          </div>
+
+          <div class="rounded-lg bg-surface-container border border-outline-variant p-lg flex flex-col justify-between gap-md">
+            <div class="flex items-center justify-between">
+              <span class="font-title text-title-md text-on-surface">Cold Archive</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-violet"></span>
+            </div>
+            <div class="flex items-baseline gap-xs" data-tip="Cold Archive|$0.18 per GB-month, AES-256 encrypted Parquet snapshots.">
+              <span class="font-mono text-mono-lg text-violet tabular-nums">$0.18</span>
+              <span class="font-mono text-mono-sm text-on-surface-variant">/ GB-month</span>
+            </div>
+            <p class="font-body text-body-sm text-on-surface-variant">AES-256 encrypted Parquet snapshots queryable on demand.</p>
+          </div>
+        </div>
+
+        <div class="rounded-lg bg-surface-container border border-outline-variant p-xl flex flex-col gap-lg">
+          <div class="flex flex-wrap items-center justify-between gap-sm">
+            <span class="font-title text-title-md text-on-surface">Overage simulator — try your volume</span>
+            <span id="usage-tier-badge" class="px-md py-xs rounded-full bg-primary-container border border-primary/40 text-on-primary-container font-mono text-mono-sm">Growth plan · 1M events included</span>
+          </div>
+          <div class="flex flex-col gap-md">
+            <div class="flex items-center justify-between">
+              <label for="usage-slider" class="font-label text-label-lg text-on-surface-variant">Monthly tracked events</label>
+              <span id="usage-events-display" class="px-md py-xs rounded bg-surface border border-outline font-mono text-mono-lg text-primary tabular-nums">1,200,000</span>
+            </div>
+            <input id="usage-slider" type="range" min="0" max="1000" value="12" step="1" oninput="updateUsage()" class="mint-slider w-full" aria-label="Monthly tracked events in units of 100,000">
+            <div class="flex justify-between font-mono text-mono-sm text-on-surface-variant tabular-nums"><span>0</span><span>25M</span><span>50M</span><span>75M</span><span>100M</span></div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-md">
+            <div class="p-md rounded bg-surface border border-outline-variant flex flex-col gap-xs"><span class="font-label text-label-sm text-on-surface-variant uppercase">Included</span><span id="usage-included" class="font-mono text-mono-lg text-on-surface tabular-nums">1,000,000</span></div>
+            <div class="p-md rounded bg-surface border border-outline-variant flex flex-col gap-xs"><span class="font-label text-label-sm text-on-surface-variant uppercase">Overage events</span><span id="usage-overage" class="font-mono text-mono-lg text-tertiary tabular-nums">200,000</span></div>
+            <div class="p-md rounded bg-surface border border-primary/40 flex flex-col gap-xs"><span class="font-label text-label-sm text-on-surface-variant uppercase">Metered cost / mo</span><span id="usage-cost" class="font-mono text-mono-lg text-primary tabular-nums">$2.40</span></div>
+          </div>
+          <p class="font-body text-body-sm text-on-surface-variant">Overage is billed at $0.12 per 10,000 events beyond your plan quota — never a hard cutoff, never dropped telemetry.</p>
+        </div>
+      </section>
+
+      <!-- 06. COMPACT FAQ ACCORDION (4 questions) -->
+      <section id="faq" class="reveal flex flex-col gap-xl">
+        <div class="flex flex-wrap items-baseline justify-between gap-sm border-b border-outline-variant pb-md">
+          <div class="flex items-baseline gap-md">
+            <span class="font-mono text-mono-md text-primary">06</span>
+            <h2 class="font-headline text-headline-md text-on-surface">Frequently Asked Questions</h2>
+          </div>
+          <span class="font-mono text-mono-sm text-on-surface-variant">Billing, migrations &amp; overages</span>
+        </div>
+
+        <div class="grid grid-cols-1 gap-md">
+          <div class="faq-item rounded-lg bg-surface-container border border-outline-variant overflow-hidden">
+            <button type="button" aria-expanded="true" onclick="toggleFaq(this)" class="w-full p-lg flex items-center justify-between text-left gap-md hover:bg-surface-container-high/50 transition-colors duration-state-change">
+              <span class="font-title text-title-md text-on-surface">What happens if we exceed our monthly event quota?</span>
+              <svg class="faq-icon transition-transform duration-state-change" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="transform:rotate(180deg)"><path d="M6 9.5l6 6 6-6" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faq-body px-lg pb-lg font-body text-body-md text-on-surface-variant">
+              We never drop incoming telemetry or lock your dashboard. Overages are metered at $0.12 per 10,000 events and appear as a single transparent line item at the end of your billing cycle.
+            </div>
+          </div>
+
+          <div class="faq-item rounded-lg bg-surface-container border border-outline-variant overflow-hidden">
+            <button type="button" aria-expanded="false" onclick="toggleFaq(this)" class="w-full p-lg flex items-center justify-between text-left gap-md hover:bg-surface-container-high/50 transition-colors duration-state-change">
+              <span class="font-title text-title-md text-on-surface">Can we switch between Monthly and Annual billing later?</span>
+              <svg class="faq-icon transition-transform duration-state-change" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5l6 6 6-6" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faq-body hidden px-lg pb-lg font-body text-body-md text-on-surface-variant">
+              Yes. Upgrading to Annual applies the 20% discount immediately and prorates any remaining days from your current monthly cycle.
+            </div>
+          </div>
+
+          <div class="faq-item rounded-lg bg-surface-container border border-outline-variant overflow-hidden">
+            <button type="button" aria-expanded="false" onclick="toggleFaq(this)" class="w-full p-lg flex items-center justify-between text-left gap-md hover:bg-surface-container-high/50 transition-colors duration-state-change">
+              <span class="font-title text-title-md text-on-surface">Do all team members count as paid seats?</span>
+              <svg class="faq-icon transition-transform duration-state-change" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5l6 6 6-6" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faq-body hidden px-lg pb-lg font-body text-body-md text-on-surface-variant">
+              Only active editors who create or modify pricing rules count toward your seat allocation. Read-only finance and executive stakeholders are free on every tier.
+            </div>
+          </div>
+
+          <div class="faq-item rounded-lg bg-surface-container border border-outline-variant overflow-hidden">
+            <button type="button" aria-expanded="false" onclick="toggleFaq(this)" class="w-full p-lg flex items-center justify-between text-left gap-md hover:bg-surface-container-high/50 transition-colors duration-state-change">
+              <span class="font-title text-title-md text-on-surface">How does the 14-day Growth trial work?</span>
+              <svg class="faq-icon transition-transform duration-state-change" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5l6 6 6-6" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faq-body hidden px-lg pb-lg font-body text-body-md text-on-surface-variant">
+              You get full access to SAML SSO, warehouse sync, and 1M monthly events with no credit card required. At day 14, choose a plan or downgrade to a sandbox workspace.
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="relative z-10 border-t border-outline-variant py-xl">
+      <div class="max-w-[1200px] mx-auto px-2xl flex items-center justify-between font-body text-body-sm text-on-surface-variant">
+        <span>Pricing Lab — Nocturne Mint Design System · Single self-contained file · Press ⌘K / Ctrl+K to jump anywhere</span>
+        <span class="font-mono text-mono-sm">99.99% SLA · SOC2 Type II</span>
+      </div>
+    </footer>
+  </div>
+
+<div id="tip" role="tooltip"></div>
+<div id="palette" role="dialog" aria-label="Command palette">
+  <div class="pal-box">
+    <input id="palInput" type="text" placeholder="Type a command or search sections…" oninput="renderPalette(this.value)" aria-label="Search commands">
+    <div id="palList" class="max-h-[320px] overflow-y-auto pb-sm"></div>
+    <div class="px-lg py-sm border-t border-outline-variant font-mono text-mono-sm text-on-surface-variant">↑↓ navigate · ↵ run · esc close</div>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="quoteModal" role="dialog" aria-label="Custom quote" onclick="if(event.target===this)closeQuote()">
+  <div class="qm-box flex flex-col gap-lg">
+    <div class="flex items-center justify-between">
+      <h3 class="font-title text-title-lg text-on-surface">Your custom quote</h3>
+      <button type="button" onclick="closeQuote()" aria-label="Close" class="p-sm rounded border border-outline-variant text-on-surface-variant hover:text-on-surface">✕</button>
+    </div>
+    <div class="flex flex-col gap-sm font-body text-body-md text-on-surface-variant">
+      <div class="flex justify-between"><span>Plan</span><span id="qmTier" class="font-mono text-on-surface tabular-nums"></span></div>
+      <div class="flex justify-between"><span>Team seats</span><span id="qmSeats" class="font-mono text-on-surface tabular-nums"></span></div>
+      <div class="flex justify-between"><span>Add-ons</span><span id="qmAddons" class="font-mono text-on-surface tabular-nums text-right"></span></div>
+      <div class="flex justify-between border-t border-outline-variant pt-sm"><span>Estimated total</span><span id="qmTotal" class="font-mono text-mono-lg text-primary tabular-nums"></span></div>
+      <div class="flex justify-between"><span>Effective per-seat</span><span id="qmPerSeat" class="font-mono text-on-surface tabular-nums"></span></div>
+    </div>
+    <div class="flex gap-sm">
+      <button type="button" onclick="copyQuote()" class="flex-1 py-md px-lg rounded bg-primary text-on-primary font-label text-label-lg hover:opacity-90">Copy quote</button>
+      <button type="button" onclick="closeQuote()" class="py-md px-lg rounded bg-surface-container-high border border-outline text-on-surface font-label text-label-lg">Close</button>
+    </div>
+    <p class="font-body text-body-sm text-on-surface-variant">Demo quote — no account, no card, no data leaves this page.</p>
+  </div>
+</div>
+  <script>
+    let billingMode = 'annual';
+    let roiExpanded = true;
+    let calcTier = 'growth';
+    let cmpTier = 'growth';
+
+    const TIERS = {
+      starter: { name: 'Starter', monthly: 19, annual: 15, events: 100000, eventsLabel: '100k', seats: 5, seatsLabel: '5', retention: '30 days', sla: '99.5%', color: '#38BDF8' },
+      growth:  { name: 'Growth',  monthly: 49, annual: 39, events: 1000000, eventsLabel: '1M', seats: 25, seatsLabel: '25', retention: '12 months', sla: '99.9%', color: '#34D399' },
+      scale:   { name: 'Scale',   monthly: 99, annual: 79, events: 10000000, eventsLabel: '10M+', seats: Infinity, seatsLabel: 'Unlimited', retention: '36 months', sla: '99.99%', color: '#A78BFA' }
+    };
+    const CMP_ROWS = [
+      ['Monthly tracked events', t => TIERS[t].eventsLabel, 'mono'],
+      ['Included team seats', t => TIERS[t].seatsLabel, 'mono'],
+      ['Hot event retention', t => TIERS[t].retention, 'mono'],
+      ['Real-time webhook streams', () => true, 'check'],
+      ['Custom billing & usage alerts', () => true, 'check'],
+      ['Role-based access control (RBAC)', t => t !== 'starter', 'check'],
+      ['SAML SSO & SCIM directory sync', t => t !== 'starter', 'check'],
+      ['Warehouse sync (Snowflake / BigQuery)', t => t !== 'starter', 'check'],
+      ['Multi-currency localized pricing', t => t !== 'starter', 'check'],
+      ['Dedicated VPC peering', t => t === 'scale', 'check'],
+      ['EU / US data residency pinning', t => t === 'scale', 'check'],
+      ['Uptime SLA guarantee', t => TIERS[t].sla, 'mono']
+    ];
+    const ADDONS = { vpc: 120, soc2: 85, slack: 150, archive: 60 };
+
+    function fmt(n) { return n.toLocaleString('en-US'); }
+    function money(n) { return '$' + fmt(Math.round(n)); }
+
+    function animatePrice(el, target) {
+      el.style.opacity = '0.3';
+      setTimeout(() => { el.textContent = '$' + target; el.style.opacity = '1'; }, 110);
+    }
+
+    function setBilling(mode) {
+      billingMode = mode;
+      const btnM = document.getElementById('btn-monthly');
+      const btnA = document.getElementById('btn-annual');
+      if (mode === 'annual') {
+        btnA.className = 'inline-flex items-center gap-sm px-lg py-sm rounded-full bg-surface-container-high border border-outline font-label text-label-lg text-on-surface transition-colors duration-state-change';
+        btnM.className = 'px-lg py-sm rounded-full font-label text-label-lg text-on-surface-variant transition-colors duration-state-change';
+        ['orig-starter','orig-growth','orig-scale'].forEach(id => document.getElementById(id).classList.remove('hidden'));
+      } else {
+        btnM.className = 'px-lg py-sm rounded-full bg-surface-container-high border border-outline font-label text-label-lg text-on-surface transition-colors duration-state-change';
+        btnA.className = 'inline-flex items-center gap-sm px-lg py-sm rounded-full font-label text-label-lg text-on-surface-variant transition-colors duration-state-change';
+        ['orig-starter','orig-growth','orig-scale'].forEach(id => document.getElementById(id).classList.add('hidden'));
+      }
+      animatePrice(document.getElementById('price-starter'), TIERS.starter[mode]);
+      animatePrice(document.getElementById('price-growth'), TIERS.growth[mode]);
+      animatePrice(document.getElementById('price-scale'), TIERS.scale[mode]);
+      document.querySelectorAll('[data-calc-tier]').forEach(b => {
+        const t = b.dataset.calcTier;
+        b.textContent = TIERS[t].name + ' · $' + TIERS[t][mode];
+      });
+      updateCalculator();
+      updateRoi();
+    }
+
+    function selectTier(t) {
+      calcTier = t;
+      document.querySelectorAll('[data-calc-tier]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.calcTier === t)));
+      document.querySelectorAll('.tier-card').forEach(c => {
+        c.style.outline = c.dataset.tier === t ? '2px solid #34D399' : 'none';
+        c.style.outlineOffset = '4px';
+      });
+      updateCalculator();
+      updateUsage();
+      updateRoi();
+    }
+
+    function selectCompareTier(t) {
+      cmpTier = t;
+      document.querySelectorAll('[data-cmp-tier]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.cmpTier === t)));
+      renderCmpMobile();
+    }
+
+    function renderCmpMobile() {
+      const list = document.getElementById('cmpMobileList');
+      if (!list) return;
+      list.innerHTML = CMP_ROWS.map(([label, val, kind]) => {
+        const v = val(cmpTier);
+        const cell = kind === 'check'
+          ? (v ? '<span class="font-label text-label-lg" style="color:#34D399">Included</span>' : '<span class="font-label text-label-lg text-on-surface-variant">Not included</span>')
+          : '<span class="font-mono text-mono-md text-on-surface tabular-nums">' + v + '</span>';
+        return '<div class="flex items-center justify-between gap-md py-sm border-b border-outline-variant last:border-0"><span class="text-on-surface">' + label + '</span>' + cell + '</div>';
+      }).join('');
+    }
+
+    function updateCalculator() {
+      const seats = parseInt(document.getElementById('seat-slider').value, 10);
+      document.getElementById('seat-count-display').textContent = seats + (seats === 1 ? ' seat' : ' seats');
+      const t = TIERS[calcTier];
+      const basePrice = t[billingMode];
+      const seatRate = billingMode === 'annual' ? 8 : 10;
+      const baseTotal = basePrice + (seats * seatRate);
+      let addonsRaw = 0;
+      document.querySelectorAll('.addon-cb:checked').forEach(cb => { addonsRaw += parseInt(cb.dataset.price, 10); });
+      const addonsTotal = billingMode === 'annual' ? Math.round(addonsRaw * 0.8) : addonsRaw;
+      const grandTotal = baseTotal + addonsTotal;
+      const perSeat = (grandTotal / seats).toFixed(2);
+      document.getElementById('calc-total').textContent = '$' + fmt(grandTotal);
+      document.getElementById('calc-per-seat').textContent = '$' + perSeat + ' / seat';
+      document.getElementById('calc-base-label').textContent = t.name + ' base + seat allocation';
+      document.getElementById('calc-base-breakdown').textContent = '$' + fmt(baseTotal);
+      document.getElementById('calc-addons-breakdown').textContent = '$' + fmt(addonsTotal);
+      document.getElementById('calc-cadence-badge').textContent = billingMode === 'annual' ? 'Annual (−20%)' : 'Monthly';
+      const bp = Math.round(baseTotal / grandTotal * 100);
+      document.getElementById('calc-bar-base').style.width = bp + '%';
+      document.getElementById('calc-bar-addons').style.width = (100 - bp) + '%';
+      document.getElementById('calc-bar-base').dataset.tip = 'Base + seats|' + money(baseTotal) + ' — ' + t.name + ' base $' + basePrice + ' plus ' + seats + ' seats at $' + seatRate + ' (' + billingMode + ').';
+      const addonNames = [];
+      document.querySelectorAll('.addon-cb:checked').forEach(cb => { addonNames.push(cb.closest('label').querySelector('.font-label').textContent.trim()); });
+      document.getElementById('calc-bar-addons').dataset.tip = 'Add-ons|' + money(addonsTotal) + (addonNames.length ? ' — ' + addonNames.join(', ') + (billingMode === 'annual' ? ' at the annual −20% rate.' : '.') : ' — no add-ons selected.');
+    }
+
+    function toggleRoiMode() {
+      roiExpanded = !roiExpanded;
+      const btn = document.getElementById('roi-mode-toggle');
+      document.getElementById('roi-mode-label').textContent = roiExpanded ? 'Expansion + Lift' : 'Conservative';
+      btn.setAttribute('aria-checked', String(roiExpanded));
+      updateRoi();
+    }
+
+    function setRoiPreset(val) {
+      document.getElementById('roi-revenue-input').value = val;
+      updateRoi();
+    }
+
+    function updateRoi() {
+      const mrr = Math.max(1000, parseInt(document.getElementById('roi-revenue-input').value || '50000', 10));
+      const liftPct = roiExpanded ? 0.12 : 0.07;
+      const annualLift = Math.round(mrr * liftPct * 12);
+      const annualCost = TIERS[calcTier].monthly * 12;
+      const paybackDays = Math.max(1, Math.round(annualCost / (annualLift / 365)));
+      const retained = Math.max(0, Math.round((annualLift - annualCost) / annualLift * 1000) / 10);
+      document.getElementById('roi-annual-lift').textContent = '+$' + fmt(annualLift);
+      document.getElementById('roi-payback').textContent = paybackDays + (paybackDays === 1 ? ' day' : ' days');
+      document.getElementById('roi-gain-pct').textContent = '+' + (liftPct * 100).toFixed(1) + '%';
+      document.getElementById('roi-bar-label').textContent = retained.toFixed(1) + '% of lift retained';
+      document.getElementById('roi-bar-fill').style.width = retained + '%';
+      document.getElementById('roi-bar-fill').parentElement.dataset.tip = 'Net lift retained|' + retained.toFixed(1) + '% of the projected $' + fmt(annualLift) + ' annual lift remains after the ' + TIERS[calcTier].name + ' plan cost of $' + fmt(annualCost) + ' / year.';
+    }
+
+    function updateUsage() {
+      const units = parseInt(document.getElementById('usage-slider').value, 10);
+      const events = units * 100000;
+      const t = TIERS[calcTier];
+      const overage = Math.max(0, events - t.events);
+      const cost = overage / 10000 * 0.12;
+      document.getElementById('usage-events-display').textContent = fmt(events);
+      document.getElementById('usage-included').textContent = fmt(t.events);
+      document.getElementById('usage-overage').textContent = fmt(overage);
+      document.getElementById('usage-cost').textContent = '$' + cost.toFixed(2);
+      document.getElementById('usage-tier-badge').textContent = t.name + ' plan · ' + t.eventsLabel + ' events included';
+    }
+
+    function toggleFaq(btn) {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      const body = btn.nextElementSibling;
+      const icon = btn.querySelector('.faq-icon');
+      if (expanded) {
+        body.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+        icon.querySelector('path').setAttribute('stroke', '#94A3B8');
+      } else {
+        body.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+        icon.querySelector('path').setAttribute('stroke', '#34D399');
+      }
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const light = !html.classList.contains('light');
+      html.classList.toggle('light', light);
+      html.classList.toggle('dark', !light);
+      document.getElementById('themeIconMoon').style.display = light ? 'none' : '';
+      document.getElementById('themeIconSun').style.display = light ? '' : 'none';
+    }
+
+    function toggleMenu(forceClose) {
+      const m = document.getElementById('mobileMenu');
+      const btn = document.getElementById('menuBtn');
+      const show = forceClose ? false : m.classList.contains('hidden');
+      m.classList.toggle('hidden', !show);
+      btn.setAttribute('aria-expanded', String(show));
+    }
+
+    let toastTimer = null;
+    function demoToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('on');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('on'), 3200);
+    }
+
+    function quoteSummary() {
+      const seats = document.getElementById('seat-slider').value;
+      const addons = [];
+      document.querySelectorAll('.addon-cb:checked').forEach(cb => { addons.push(cb.closest('label').querySelector('.font-label').textContent.trim() + ' (+$' + cb.dataset.price + '/mo)'); });
+      return {
+        tier: TIERS[calcTier].name,
+        billing: billingMode === 'annual' ? 'Annual (−20%)' : 'Monthly',
+        seats: seats,
+        addons: addons,
+        total: document.getElementById('calc-total').textContent,
+        perSeat: document.getElementById('calc-per-seat').textContent
+      };
+    }
+
+    function openQuote() {
+      const q = quoteSummary();
+      document.getElementById('qmTier').textContent = q.tier + ' · ' + q.billing;
+      document.getElementById('qmSeats').textContent = q.seats + ' seats';
+      document.getElementById('qmAddons').textContent = q.addons.length ? q.addons.join(' · ') : 'No add-ons';
+      document.getElementById('qmTotal').textContent = q.total + ' / month';
+      document.getElementById('qmPerSeat').textContent = q.perSeat;
+      document.getElementById('quoteModal').classList.add('open');
+    }
+    function closeQuote() { document.getElementById('quoteModal').classList.remove('open'); }
+    function copyQuote() {
+      const q = quoteSummary();
+      const txt = 'Pricing Lab quote — ' + q.tier + ' plan, ' + q.billing + ', ' + q.seats + ' seats, add-ons: ' + (q.addons.join('; ') || 'none') + '. Estimated total ' + q.total + ' / month (' + q.perSeat + ').';
+      navigator.clipboard.writeText(txt).then(() => demoToast('Quote copied to clipboard.')).catch(() => demoToast('Copy blocked by the browser — select the text manually.'));
+    }
+
+    /* Command palette */
+    const PAL_ACTIONS = [
+      { label: 'Go to Core Tiers', hint: 'Section 01', run: () => document.getElementById('tiers').scrollIntoView({ behavior: 'smooth' }) },
+      { label: 'Go to Price Calculator', hint: 'Section 02', run: () => document.getElementById('calculator').scrollIntoView({ behavior: 'smooth' }) },
+      { label: 'Go to Comparison Table', hint: 'Section 03', run: () => document.getElementById('compare').scrollIntoView({ behavior: 'smooth' }) },
+      { label: 'Go to ROI Panel', hint: 'Section 04', run: () => document.getElementById('roi').scrollIntoView({ behavior: 'smooth' }) },
+      { label: 'Go to Usage Metering', hint: 'Section 05', run: () => document.getElementById('usage').scrollIntoView({ behavior: 'smooth' }) },
+      { label: 'Go to FAQ', hint: 'Section 06', run: () => document.getElementById('faq').scrollIntoView({ behavior: 'smooth' }) },
+      { label: 'Switch billing to Monthly', hint: 'Billing', run: () => setBilling('monthly') },
+      { label: 'Switch billing to Annual (−20%)', hint: 'Billing', run: () => setBilling('annual') },
+      { label: 'Select Starter tier', hint: 'Calculator', run: () => selectTier('starter') },
+      { label: 'Select Growth tier', hint: 'Calculator', run: () => selectTier('growth') },
+      { label: 'Select Scale tier', hint: 'Calculator', run: () => selectTier('scale') },
+      { label: 'Toggle light / dark theme', hint: 'Theme', run: () => toggleTheme() },
+      { label: 'Copy quote summary', hint: 'Calculator', run: () => copyQuote() }
+    ];
+    let palSel = 0;
+    function openPalette() {
+      document.getElementById('palette').classList.add('open');
+      const inp = document.getElementById('palInput');
+      inp.value = '';
+      renderPalette('');
+      inp.focus();
+    }
+    function closePalette() { document.getElementById('palette').classList.remove('open'); }
+    function renderPalette(q) {
+      const list = PAL_ACTIONS.filter(a => a.label.toLowerCase().includes(q.toLowerCase()));
+      palSel = 0;
+      document.getElementById('palList').innerHTML = list.length
+        ? list.map((a, i) => '<button type="button" class="pal-item' + (i === 0 ? ' sel' : '') + '" data-pal="' + PAL_ACTIONS.indexOf(a) + '">' + a.label + '<kbd>' + a.hint + '</kbd></button>').join('')
+        : '<div class="pal-item">No matching action</div>';
+      document.querySelectorAll('#palList .pal-item[data-pal]').forEach(el => el.addEventListener('click', () => { closePalette(); PAL_ACTIONS[+el.dataset.pal].run(); }));
+    }
+    document.addEventListener('keydown', e => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); document.getElementById('palette').classList.contains('open') ? closePalette() : openPalette(); }
+      if (e.key === 'Escape') { closePalette(); closeQuote(); }
+      if (document.getElementById('palette').classList.contains('open')) {
+        const items = [...document.querySelectorAll('#palList .pal-item[data-pal]')];
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          palSel = (palSel + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % Math.max(items.length, 1);
+          items.forEach((el, i) => el.classList.toggle('sel', i === palSel));
+        }
+        if (e.key === 'Enter' && items[palSel]) { closePalette(); PAL_ACTIONS[+items[palSel].dataset.pal].run(); }
+      }
+    });
+
+    /* Tooltip (all charts, bars and metered values) */
+    const tip = document.getElementById('tip');
+    function bindTips(scope) {
+      (scope || document).querySelectorAll('[data-tip]').forEach(el => {
+        el.addEventListener('mouseenter', ev => {
+          const [k, v] = el.dataset.tip.split('|');
+          tip.innerHTML = '<span class="tip-k">' + k + '</span>' + v;
+          tip.classList.add('on');
+          moveTip(ev);
+        });
+        el.addEventListener('mousemove', moveTip);
+        el.addEventListener('mouseleave', () => tip.classList.remove('on'));
+        el.addEventListener('focus', () => {
+          const [k, v] = el.dataset.tip.split('|');
+          tip.innerHTML = '<span class="tip-k">' + k + '</span>' + v;
+          const r = el.getBoundingClientRect();
+          tip.style.left = Math.min(window.innerWidth - 300, Math.max(12, r.left)) + 'px';
+          tip.style.top = (r.bottom + 10) + 'px';
+          tip.classList.add('on');
+        });
+        el.addEventListener('blur', () => tip.classList.remove('on'));
+      });
+    }
+    function moveTip(ev) {
+      const w = tip.offsetWidth, h = tip.offsetHeight;
+      let x = ev.clientX + 14, y = ev.clientY + 16;
+      if (x + w > window.innerWidth - 8) x = ev.clientX - w - 14;
+      if (y + h > window.innerHeight - 8) y = ev.clientY - h - 14;
+      tip.style.left = Math.max(8, x) + 'px';
+      tip.style.top = Math.max(8, y) + 'px';
+    }
+
+    /* Reveal on scroll */
+    const io = new IntersectionObserver(entries => entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    renderCmpMobile();
+    selectTier('growth');
+    setBilling('annual');
+    updateUsage();
+    updateRoi();
+    bindTips(document);
+  </script>
+
+
+</body></html>
