@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Launchpad — a complete SaaS launch system. Hero with live mission control, pricing with a real calculator, comparison table, FAQ and signup.">
+<title>Launchpad — SaaS Landing + Pricing</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#070B10; --deep:#0C1219; --glass:#101A24; --card:#0D1520;
+  --line:rgba(148,163,184,.16); --line2:rgba(148,163,184,.30);
+  --text:#EAF2F8; --muted:#94A3B8; --muted2:#64748B;
+  --lime:#A3E635; --cyan:#22D3EE; --amber:#F59E0B; --rose:#F472B6;
+  --radius:20px;
+}
+html.light{
+  --ink:#F2F5F8; --deep:#FFFFFF; --glass:#FFFFFF; --card:#FFFFFF;
+  --line:rgba(15,23,42,.12); --line2:rgba(15,23,42,.24);
+  --text:#0B1220; --muted:#52617A; --muted2:#7A8AA3;
+}
+html,body{overflow-x:clip}
+body{background:var(--ink);color:var(--text);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
+.font-display{font-family:"Space Grotesk",sans-serif}
+.font-mono2{font-family:"JetBrains Mono",monospace}
+.grad-text{background:linear-gradient(92deg,var(--lime),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.grad-bg{background:linear-gradient(92deg,var(--lime),var(--cyan))}
+.glass{background:var(--glass);border:1px solid var(--line)}
+.card{background:var(--card);border:1px solid var(--line)}
+.muted{color:var(--muted)}
+.dot-grid{background-image:radial-gradient(rgba(148,163,184,.20) 1px,transparent 1px);background-size:26px 26px}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:600;font-size:.875rem;border-radius:999px;padding:.68rem 1.3rem;transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease;cursor:pointer;white-space:nowrap;border:1px solid transparent}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(92deg,var(--lime),var(--cyan));color:#06121A;box-shadow:0 8px 28px -8px rgba(163,230,53,.55)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 14px 34px -8px rgba(163,230,53,.6)}
+.btn-ghost{border-color:var(--line2);color:var(--text);background:transparent}
+.btn-ghost:hover{border-color:var(--lime);color:var(--lime)}
+.btn-sm{padding:.45rem .95rem;font-size:.8rem}
+.chip{display:inline-flex;align-items:center;gap:.4rem;font-family:"JetBrains Mono",monospace;font-size:.68rem;letter-spacing:.08em;padding:.32rem .7rem;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--glass)}
+.navlink{font-size:.875rem;font-weight:500;color:var(--muted);transition:color .15s}
+.navlink:hover{color:var(--text)}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+/* tooltip */
+.tip{position:absolute;pointer-events:none;z-index:40;background:#0B1220;color:#EAF2F8;border:1px solid rgba(148,163,184,.35);border-radius:10px;padding:.45rem .65rem;font-family:"JetBrains Mono",monospace;font-size:.72rem;line-height:1.5;white-space:nowrap;opacity:0;transform:translate(-50%,-8px);transition:opacity .15s,transform .15s;box-shadow:0 12px 30px -10px rgba(0,0,0,.6)}
+html.light .tip{background:#0B1220;color:#EAF2F8}
+.tip.on{opacity:1;transform:translate(-50%,-100%)}
+.tip b{color:var(--lime)}
+/* pricing */
+.price-card{transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.price-card:hover{transform:translateY(-4px)}
+.price-card.pop{border-color:rgba(163,230,53,.65);box-shadow:0 0 0 1px rgba(163,230,53,.45),0 24px 60px -24px rgba(163,230,53,.45)}
+.toggle-pill{transition:background .2s}
+.toggle-pill.on{background:linear-gradient(92deg,var(--lime),var(--cyan));color:#06121A}
+input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--lime) var(--fill,20%),rgba(148,163,184,.25) var(--fill,20%));outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--lime);box-shadow:0 4px 14px rgba(0,0,0,.45);cursor:grab}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--lime);cursor:grab}
+.switch{position:relative;width:44px;height:24px;border-radius:999px;background:rgba(148,163,184,.3);transition:background .2s;cursor:pointer;flex:none;border:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s}
+.switch.on{background:linear-gradient(92deg,var(--lime),var(--cyan))}
+.switch.on::after{transform:translateX(20px)}
+/* faq */
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.22,1,.36,1)}
+.faq-item.open .faq-a{max-height:220px}
+.faq-item.open .faq-chev{transform:rotate(45deg)}
+.faq-chev{transition:transform .25s}
+/* table */
+.cmp-row{transition:background .15s}
+.cmp-row:hover{background:rgba(163,230,53,.05)}
+/* checklist */
+.check-item{cursor:pointer;transition:background .15s}
+.check-item:hover{background:rgba(163,230,53,.06)}
+.check-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line2);display:flex;align-items:center;justify-content:center;flex:none;transition:all .2s;font-size:.65rem;color:#06121A}
+.check-item.done .check-dot{background:var(--lime);border-color:var(--lime)}
+.check-item.done .check-label{color:var(--muted);text-decoration:line-through}
+/* palette */
+#palette{position:fixed;inset:0;z-index:80;display:none;align-items:flex-start;justify-content:center;padding-top:14vh;background:rgba(2,6,12,.6);backdrop-filter:blur(4px)}
+#palette.open{display:flex}
+.pal-item{display:flex;align-items:center;gap:.7rem;width:100%;text-align:left;padding:.65rem .8rem;border-radius:12px;cursor:pointer;font-size:.9rem}
+.pal-item:hover,.pal-item.sel{background:rgba(163,230,53,.12)}
+/* marquee */
+@keyframes scrollX{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marquee-track{display:flex;gap:3.5rem;width:max-content;animation:scrollX 30s linear infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.floaty{animation:floaty 5s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.35}}
+.pulse-dot{animation:pulse-dot 1.6s ease-in-out infinite}
+@keyframes riseIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.rise{animation:riseIn .7s cubic-bezier(.22,1,.36,1) both}
+.bar{transition:height .5s cubic-bezier(.22,1,.36,1),opacity .2s}
+.bar:hover{opacity:1}
+.area-pt{cursor:pointer}
+.area-pt circle{transition:r .15s}
+.area-pt:hover circle{stroke-width:3}
+input.field,select.field{width:100%;background:var(--deep);border:1px solid var(--line2);border-radius:12px;padding:.7rem .95rem;font-size:.9rem;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}
+input.field:focus,select.field:focus{border-color:var(--lime);box-shadow:0 0 0 3px rgba(163,230,53,.18)}
+input.field.err{border-color:#F87171;box-shadow:0 0 0 3px rgba(248,113,113,.15)}
+</style>
+</head>
+<body>
+<div id="tip" class="tip"></div>
+
+<!-- ============ NAV ============ -->
+<header class="sticky top-0 z-50" style="background:color-mix(in srgb,var(--ink) 82%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 h-[64px] flex items-center gap-4">
+    <a href="#top" class="flex items-center gap-2.5 flex-none">
+      <span class="w-9 h-9 rounded-xl grad-bg flex items-center justify-center shadow-lg" style="box-shadow:0 8px 22px -6px rgba(163,230,53,.6)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06121A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+      </span>
+      <span class="font-display font-700 tracking-tight text-[1.05rem]" style="font-weight:700">LAUNCHPAD</span>
+      <span class="hidden sm:inline chip !py-0.5">v2.4</span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-7 ml-8">
+      <a class="navlink" href="#product">Product</a>
+      <a class="navlink" href="#pricing">Pricing</a>
+      <a class="navlink" href="#compare">Compare</a>
+      <a class="navlink" href="#faq">FAQ</a>
+    </nav>
+    <div class="flex-1"></div>
+    <button id="palBtn" class="hidden md:flex items-center gap-2 text-[.8rem] muted border rounded-full px-3 py-1.5 hover:border-[var(--lime)] transition-colors" style="border-color:var(--line2)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      Search
+      <kbd class="font-mono2 text-[.65rem] border rounded px-1.5 py-0.5" style="border-color:var(--line2)">⌘K</kbd>
+    </button>
+    <button id="themeBtn" class="w-9 h-9 rounded-full border flex items-center justify-center hover:border-[var(--lime)] transition-colors" style="border-color:var(--line2)" aria-label="Toggle theme">
+      <span id="themeIcon">☾</span>
+    </button>
+    <a href="#cta" class="btn btn-primary btn-sm hidden sm:inline-flex">Start free</a>
+    <button id="burger" class="lg:hidden w-9 h-9 rounded-full border flex items-center justify-center" style="border-color:var(--line2)" aria-label="Menu">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+  <div id="mobileMenu" class="lg:hidden hidden border-t px-5 py-4 flex-col gap-3" style="border-color:var(--line);background:var(--ink)">
+    <a class="navlink block py-1.5" href="#product">Product</a>
+    <a class="navlink block py-1.5" href="#pricing">Pricing</a>
+    <a class="navlink block py-1.5" href="#compare">Compare</a>
+    <a class="navlink block py-1.5" href="#faq">FAQ</a>
+    <a href="#cta" class="btn btn-primary btn-sm mt-2 self-start">Start free</a>
+  </div>
+</header>
+
+<main id="top">
+<!-- ============ HERO ============ -->
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 dot-grid opacity-60 pointer-events-none" style="mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,black 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,black 30%,transparent 75%)"></div>
+  <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[820px] h-[420px] rounded-full pointer-events-none" style="background:radial-gradient(ellipse at center,rgba(163,230,53,.16),rgba(34,211,238,.08) 55%,transparent 75%);filter:blur(10px)"></div>
+  <div class="relative max-w-7xl mx-auto px-5 lg:px-8 pt-14 lg:pt-20 pb-10 text-center">
+    <div class="rise inline-flex items-center gap-2 chip !text-[.7rem]">
+      <span class="w-2 h-2 rounded-full grad-bg pulse-dot"></span>
+      LAUNCH CONTROL &nbsp;·&nbsp; T-MINUS 14 DAYS &nbsp;·&nbsp; V2.4 LIVE
+    </div>
+    <h1 class="rise font-display font-bold tracking-tight leading-[1.02] mt-6 text-[2.6rem] sm:text-[3.6rem] lg:text-[4.6rem]" style="animation-delay:.08s">
+      Ship your product.<br><span class="grad-text">Watch it take off.</span>
+    </h1>
+    <p class="rise muted max-w-2xl mx-auto mt-5 text-[1.02rem] lg:text-lg leading-relaxed" style="animation-delay:.16s">
+      Launchpad is the all-in-one launch system for SaaS teams: plan the release,
+      rally the waitlist, track every signup live — and price it right from day one.
+    </p>
+    <div class="rise flex flex-wrap items-center justify-center gap-3 mt-8" style="animation-delay:.24s">
+      <a href="#cta" class="btn btn-primary">Start free
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#product" class="btn btn-ghost">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+        Watch the demo
+      </a>
+    </div>
+    <p class="rise font-mono2 text-[.72rem] muted mt-4 tracking-wide" style="animation-delay:.3s">FREE FOR 14 DAYS · NO CREDIT CARD · CANCEL ANYTIME</p>
+
+    <!-- telemetry -->
+    <div class="rise grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mt-12 text-left" style="animation-delay:.36s">
+      <div class="glass rounded-2xl p-4 lg:p-5" data-tip="Total products launched on Launchpad since 2023">
+        <div class="font-mono2 text-[.65rem] tracking-[.18em] muted">LAUNCHES</div>
+        <div class="font-display font-bold text-[1.7rem] lg:text-[2rem] mt-1"><span class="count" data-count="12480" data-format="comma">0</span></div>
+        <div class="text-[.78rem] mt-0.5" style="color:var(--lime)">▲ 18.4% this quarter</div>
+      </div>
+      <div class="glass rounded-2xl p-4 lg:p-5" data-tip="Average uptime across all Launchpad-hosted launch pages, trailing 90 days">
+        <div class="font-mono2 text-[.65rem] tracking-[.18em] muted">UPTIME · 90D</div>
+        <div class="font-display font-bold text-[1.7rem] lg:text-[2rem] mt-1"><span class="count" data-count="98.2" data-decimals="1">0</span>%</div>
+        <div class="text-[.78rem] muted mt-0.5">99.99% on Growth &amp; Scale</div>
+      </div>
+      <div class="glass rounded-2xl p-4 lg:p-5" data-tip="Average rating across 2,140 verified customer reviews">
+        <div class="font-mono2 text-[.65rem] tracking-[.18em] muted">AVG RATING</div>
+        <div class="font-display font-bold text-[1.7rem] lg:text-[2rem] mt-1"><span class="count" data-count="4.9" data-decimals="1">0</span><span class="text-[1.1rem] muted"> / 5</span></div>
+        <div class="text-[.78rem] mt-0.5" style="color:var(--amber)">★★★★★ 2,140 reviews</div>
+      </div>
+      <div class="glass rounded-2xl p-4 lg:p-5" data-tip="GMV processed through Launchpad checkout pages, trailing 12 months">
+        <div class="font-mono2 text-[.65rem] tracking-[.18em] muted">PROCESSED · 12 MO</div>
+        <div class="font-display font-bold text-[1.7rem] lg:text-[2rem] mt-1">$<span class="count" data-count="2.4" data-decimals="1">0</span>M</div>
+        <div class="text-[.78rem] muted mt-0.5">0% fees on annual plans</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MISSION CONTROL ============ -->
+  <div id="product" class="relative max-w-7xl mx-auto px-5 lg:px-8 pb-16 scroll-mt-24">
+    <div class="glass rounded-[24px] overflow-hidden shadow-2xl">
+      <div class="flex items-center gap-3 px-5 py-3.5 border-b" style="border-color:var(--line)">
+        <span class="flex gap-1.5">
+          <i class="w-3 h-3 rounded-full inline-block" style="background:#F87171"></i>
+          <i class="w-3 h-3 rounded-full inline-block" style="background:#FBBF24"></i>
+          <i class="w-3 h-3 rounded-full inline-block" style="background:#34D399"></i>
+        </span>
+        <span class="font-mono2 text-[.72rem] muted tracking-wider">MISSION CONTROL — NOVA v2.4 LAUNCH</span>
+        <span class="flex-1"></span>
+        <span class="chip !text-[.65rem]"><span class="w-1.5 h-1.5 rounded-full grad-bg pulse-dot"></span> LIVE SYNC</span>
+      </div>
+      <div class="grid lg:grid-cols-[300px_1fr] gap-px" style="background:var(--line)">
+        <!-- checklist -->
+        <div class="p-5 lg:p-6" style="background:var(--deep)">
+          <div class="flex items-center gap-4">
+            <div class="relative w-[76px] h-[76px] flex-none">
+              <svg width="76" height="76" viewBox="0 0 76 76">
+                <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(148,163,184,.2)" stroke-width="7"/>
+                <circle id="ringFg" cx="38" cy="38" r="32" fill="none" stroke="url(#ringGrad)" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="44" transform="rotate(-90 38 38)" style="transition:stroke-dashoffset .6s cubic-bezier(.22,1,.36,1)"/>
+                <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#A3E635"/><stop offset="100%" stop-color="#22D3EE"/></linearGradient></defs>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span id="ringPct" class="font-display font-bold text-[1.15rem] leading-none">78%</span>
+                <span class="font-mono2 text-[.55rem] muted tracking-widest mt-0.5">READY</span>
+              </div>
+            </div>
+            <div>
+              <div class="font-display font-semibold">Launch checklist</div>
+              <div class="text-[.8rem] muted mt-0.5"><span id="checkDone">7</span> of 9 tasks done</div>
+              <div class="text-[.78rem] mt-1.5" style="color:var(--amber)">Click a task to toggle it</div>
+            </div>
+          </div>
+          <div id="checklist" class="mt-5 space-y-1.5">
+            <div class="check-item done flex items-center gap-3 rounded-xl px-3 py-2.5"><span class="check-dot">✓</span><span class="check-label text-[.88rem]">Landing page published</span></div>
+            <div class="check-item done flex items-center gap-3 rounded-xl px-3 py-2.5"><span class="check-dot">✓</span><span class="check-label text-[.88rem]">Waitlist capture live</span></div>
+            <div class="check-item done flex items-center gap-3 rounded-xl px-3 py-2.5"><span class="check-dot">✓</span><span class="check-label text-[.88rem]">Pricing page reviewed</span></div>
+            <div class="check-item done flex items-center gap-3 rounded-xl px-3 py-2.5"><span class="check-dot">✓</span><span class="check-label text-[.88rem]">Analytics connected</span></div>
+            <div class="check-item done flex items-center gap-3 rounded-xl px-3 py-2.5"><span class="check-dot">✓</span><span class="check-label text-[.88rem]">Email sequence drafted</span></div>
+            <div class="check-item done flex items-center gap-3 rounded-xl px-3 py-2.5"><span class="check-dot">✓</span><span class="check-label text-[.88rem]">Social assets exported</span></div>
+            <div class="check-item done flex items-center gap-3 rounded-xl px-3 py-2.5"><span class="check-dot">✓</span><span class="check-label text-[.88rem]">Press kit assembled</span></div>
+            <div class="check-item flex items-center gap-3 rounded-xl px-3 py-2.5"><span class="check-dot"></span><span class="check-label text-[.88rem]">Final QA pass</span></div>
+            <div class="check-item flex items-center gap-3 rounded-xl px-3 py-2.5"><span class="check-dot"></span><span class="check-label text-[.88rem]">Press the big red button</span></div>
+          </div>
+          <!-- countdown -->
+          <div class="mt-6 rounded-2xl p-4 border" style="border-color:var(--line);background:var(--glass)">
+            <div class="font-mono2 text-[.65rem] tracking-[.18em] muted">T-MINUS TO LIFTOFF</div>
+            <div id="countdown" class="font-mono2 font-bold text-[1.35rem] mt-2 tracking-wide">13d 23:59:41</div>
+            <div class="flex gap-1.5 mt-3">
+              <span class="flex-1 h-1.5 rounded-full" style="background:var(--lime)"></span>
+              <span class="flex-1 h-1.5 rounded-full" style="background:var(--lime)"></span>
+              <span class="flex-1 h-1.5 rounded-full" style="background:var(--lime)"></span>
+              <span class="flex-1 h-1.5 rounded-full" style="background:rgba(163,230,53,.35)"></span>
+              <span class="flex-1 h-1.5 rounded-full" style="background:rgba(148,163,184,.2)"></span>
+            </div>
+            <div class="flex justify-between font-mono2 text-[.62rem] muted mt-2"><span>T-14D</span><span>ANNOUNCE</span><span>TEASER</span><span>QA</span><span>LIFTOFF</span></div>
+          </div>
+        </div>
+        <!-- chart + timeline -->
+        <div class="p-5 lg:p-6" style="background:var(--glass)">
+          <div class="flex flex-wrap items-center gap-3">
+            <div>
+              <div class="font-display font-semibold">Waitlist signups — last 12 weeks</div>
+              <div class="text-[.8rem] muted mt-0.5">Live from the Nova launch · hover any point for the exact count</div>
+            </div>
+            <span class="flex-1"></span>
+            <div class="flex gap-1.5" id="rangeBtns">
+              <button data-range="12" class="toggle-pill on font-mono2 text-[.7rem] px-3 py-1.5 rounded-full border" style="border-color:var(--line2)">12W</button>
+              <button data-range="6" class="toggle-pill font-mono2 text-[.7rem] px-3 py-1.5 rounded-full border" style="border-color:var(--line2)">6W</button>
+              <button data-range="4" class="toggle-pill font-mono2 text-[.7rem] px-3 py-1.5 rounded-full border" style="border-color:var(--line2)">4W</button>
+            </div>
+          </div>
+          <div class="relative mt-4">
+            <svg id="areaChart" viewBox="0 0 720 240" class="w-full" role="img" aria-label="Waitlist signups area chart"></svg>
+            <div class="flex justify-between font-mono2 text-[.62rem] muted mt-1 px-0.5" id="areaLabels"></div>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-3 mt-5">
+            <div class="rounded-2xl border p-4" style="border-color:var(--line);background:var(--deep)">
+              <div class="font-mono2 text-[.65rem] tracking-[.16em] muted">THIS WEEK</div>
+              <div class="font-display font-bold text-[1.4rem] mt-1"><span class="count" data-count="486">0</span> signups</div>
+              <div class="text-[.78rem] mt-0.5" style="color:var(--lime)">▲ 32% vs last week</div>
+            </div>
+            <div class="rounded-2xl border p-4" style="border-color:var(--line);background:var(--deep)">
+              <div class="font-mono2 text-[.65rem] tracking-[.16em] muted">CONVERSION</div>
+              <div class="font-display font-bold text-[1.4rem] mt-1"><span class="count" data-count="38.4" data-decimals="1">0</span>%</div>
+              <div class="text-[.78rem] muted mt-0.5">visitor → waitlist</div>
+            </div>
+            <div class="rounded-2xl border p-4" style="border-color:var(--line);background:var(--deep)">
+              <div class="font-mono2 text-[.65rem] tracking-[.16em] muted">TOP SOURCE</div>
+              <div class="font-display font-bold text-[1.4rem] mt-1">Product Hunt</div>
+              <div class="text-[.78rem] muted mt-0.5">41% of signups</div>
+            </div>
+          </div>
+          <div class="mt-5 rounded-2xl border p-4" style="border-color:var(--line);background:var(--deep)">
+            <div class="font-mono2 text-[.65rem] tracking-[.16em] muted mb-3">LAUNCH TIMELINE</div>
+            <div class="flex items-center gap-0">
+              <div class="flex flex-col items-center gap-1.5 flex-none w-[52px]"><span class="w-3 h-3 rounded-full" style="background:var(--lime)"></span><span class="font-mono2 text-[.6rem] muted">T-14D</span></div>
+              <div class="flex-1 h-0.5" style="background:var(--lime)"></div>
+              <div class="flex flex-col items-center gap-1.5 flex-none w-[52px]"><span class="w-3 h-3 rounded-full" style="background:var(--lime)"></span><span class="font-mono2 text-[.6rem] muted">TEASE</span></div>
+              <div class="flex-1 h-0.5" style="background:var(--lime)"></div>
+              <div class="flex flex-col items-center gap-1.5 flex-none w-[52px]"><span class="w-3 h-3 rounded-full" style="background:var(--lime)"></span><span class="font-mono2 text-[.6rem] muted">BETA</span></div>
+              <div class="flex-1 h-0.5" style="background:var(--amber)"></div>
+              <div class="flex flex-col items-center gap-1.5 flex-none w-[52px]"><span class="w-3 h-3 rounded-full border-2 floaty" style="border-color:var(--amber);background:transparent"></span><span class="font-mono2 text-[.6rem]" style="color:var(--amber)">QA · NOW</span></div>
+              <div class="flex-1 h-0.5" style="background:rgba(148,163,184,.25)"></div>
+              <div class="flex flex-col items-center gap-1.5 flex-none w-[52px]"><span class="w-3 h-3 rounded-full border-2" style="border-color:var(--muted2);background:transparent"></span><span class="font-mono2 text-[.6rem] muted">LIFTOFF</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LOGO STRIP ============ -->
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 pb-14 overflow-hidden">
+    <div class="eyebrow text-center mb-6">TRUSTED BY TEAMS SHIPPING EVERY WEEK</div>
+    <div class="relative" style="mask-image:linear-gradient(90deg,transparent,black 12%,black 88%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 12%,black 88%,transparent)">
+      <div class="marquee-track font-display font-semibold text-[1.15rem] muted">
+        <span>NORTHWIND</span><span>◆</span><span>HELIOS</span><span>◆</span><span>ATLAS LABS</span><span>◆</span><span>QUANTUM&amp;CO</span><span>◆</span><span>FIELDNOTE</span><span>◆</span><span>ORBITAL</span><span>◆</span>
+        <span>NORTHWIND</span><span>◆</span><span>HELIOS</span><span>◆</span><span>ATLAS LABS</span><span>◆</span><span>QUANTUM&amp;CO</span><span>◆</span><span>FIELDNOTE</span><span>◆</span><span>ORBITAL</span><span>◆</span>
+      </div>
+    </div>
+  </div>
+
+<!-- ============ FEATURES BENTO ============ -->
+<section class="max-w-7xl mx-auto px-5 lg:px-8 pb-20">
+  <div class="reveal max-w-2xl">
+    <div class="eyebrow">EVERYTHING A LAUNCH NEEDS</div>
+    <h2 class="font-display font-bold tracking-tight text-[2rem] lg:text-[2.6rem] leading-[1.08] mt-3">One control room,<br>every launch lever.</h2>
+    <p class="muted mt-3 leading-relaxed">No duct-taped tools. Plan, capture, convert and measure from a single dashboard — every module below is live in this demo.</p>
+  </div>
+  <div class="grid md:grid-cols-3 gap-4 mt-10">
+    <!-- Analytics -->
+    <div class="reveal card rounded-[20px] p-5 md:col-span-2">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="font-display font-semibold text-[1.05rem]">Launch analytics</div>
+          <p class="text-[.85rem] muted mt-1">Signups, sources and conversion — hover any bar for the exact value.</p>
+        </div>
+        <span class="chip">LIVE</span>
+      </div>
+      <div class="flex items-end gap-2 h-[130px] mt-6 px-1" id="bentoBars"></div>
+      <div class="flex justify-between font-mono2 text-[.62rem] muted mt-2 px-1"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
+    </div>
+    <!-- Automations -->
+    <div class="reveal card rounded-[20px] p-5">
+      <div class="font-display font-semibold text-[1.05rem]">Automations</div>
+      <p class="text-[.85rem] muted mt-1">Set it once. Launchpad runs the playbook.</p>
+      <div class="space-y-3 mt-5" id="autoList">
+        <div class="flex items-center justify-between gap-3"><span class="text-[.88rem]">Welcome email on signup</span><button class="switch on" data-auto="Welcome email" aria-label="Toggle welcome email"></button></div>
+        <div class="flex items-center justify-between gap-3"><span class="text-[.88rem]">Slack alert at 100 signups</span><button class="switch on" data-auto="Slack alert" aria-label="Toggle Slack alert"></button></div>
+        <div class="flex items-center justify-between gap-3"><span class="text-[.88rem]">Weekly digest to the team</span><button class="switch" data-auto="Weekly digest" aria-label="Toggle weekly digest"></button></div>
+        <div class="flex items-center justify-between gap-3"><span class="text-[.88rem]">Referral reward trigger</span><button class="switch on" data-auto="Referral reward" aria-label="Toggle referral reward"></button></div>
+      </div>
+      <div id="autoToast" class="font-mono2 text-[.7rem] mt-4 h-4" style="color:var(--lime)"></div>
+    </div>
+    <!-- Templates -->
+    <div class="reveal card rounded-[20px] p-5">
+      <div class="font-display font-semibold text-[1.05rem]">Launch templates</div>
+      <p class="text-[.85rem] muted mt-1">Start from a proven page, not a blank canvas.</p>
+      <div class="space-y-2.5 mt-5" id="tplList">
+        <button class="tpl-btn w-full text-left rounded-xl border px-3.5 py-3 flex items-center gap-3 hover:border-[var(--lime)] transition-colors" style="border-color:var(--line)" data-tpl="SaaS Classic"><span class="font-display font-bold text-[1.1rem] grad-text">01</span><span><span class="block text-[.9rem] font-medium">SaaS Classic</span><span class="block text-[.75rem] muted">Hero + pricing + FAQ</span></span><span class="flex-1"></span><span class="font-mono2 text-[.65rem]" style="color:var(--lime)">USE →</span></button>
+        <button class="tpl-btn w-full text-left rounded-xl border px-3.5 py-3 flex items-center gap-3 hover:border-[var(--lime)] transition-colors" style="border-color:var(--line)" data-tpl="Waitlist Drop"><span class="font-display font-bold text-[1.1rem] grad-text">02</span><span><span class="block text-[.9rem] font-medium">Waitlist Drop</span><span class="block text-[.75rem] muted">Countdown + referral</span></span><span class="flex-1"></span><span class="font-mono2 text-[.65rem]" style="color:var(--lime)">USE →</span></button>
+        <button class="tpl-btn w-full text-left rounded-xl border px-3.5 py-3 flex items-center gap-3 hover:border-[var(--lime)] transition-colors" style="border-color:var(--line)" data-tpl="Founder Story"><span class="font-display font-bold text-[1.1rem] grad-text">03</span><span><span class="block text-[.9rem] font-medium">Founder Story</span><span class="block text-[.75rem] muted">Narrative + manifesto</span></span><span class="flex-1"></span><span class="font-mono2 text-[.65rem]" style="color:var(--lime)">USE →</span></button>
+      </div>
+      <div id="tplToast" class="font-mono2 text-[.7rem] mt-4 h-4" style="color:var(--lime)"></div>
+    </div>
+    <!-- Integrations -->
+    <div class="reveal card rounded-[20px] p-5">
+      <div class="font-display font-semibold text-[1.05rem]">Integrations</div>
+      <p class="text-[.85rem] muted mt-1">Plugs into the stack you already run.</p>
+      <div class="flex flex-wrap gap-2 mt-5" id="intChips">
+        <button class="chip int-chip !py-1.5 !px-3 hover:border-[var(--lime)]" data-int="Slack">Slack</button>
+        <button class="chip int-chip !py-1.5 !px-3 hover:border-[var(--lime)]" data-int="Stripe">Stripe</button>
+        <button class="chip int-chip !py-1.5 !px-3 hover:border-[var(--lime)]" data-int="HubSpot">HubSpot</button>
+        <button class="chip int-chip !py-1.5 !px-3 hover:border-[var(--lime)]" data-int="Zapier">Zapier</button>
+        <button class="chip int-chip !py-1.5 !px-3 hover:border-[var(--lime)]" data-int="Mailchimp">Mailchimp</button>
+        <button class="chip int-chip !py-1.5 !px-3 hover:border-[var(--lime)]" data-int="Notion">Notion</button>
+        <button class="chip int-chip !py-1.5 !px-3 hover:border-[var(--lime)]" data-int="Linear">Linear</button>
+        <button class="chip int-chip !py-1.5 !px-3 hover:border-[var(--lime)]" data-int="Segment">Segment</button>
+      </div>
+      <div id="intToast" class="font-mono2 text-[.7rem] mt-4 h-4" style="color:var(--lime)">40+ integrations · click to connect</div>
+    </div>
+    <!-- Team seats -->
+    <div class="reveal card rounded-[20px] p-5">
+      <div class="font-display font-semibold text-[1.05rem]">Team seats</div>
+      <p class="text-[.85rem] muted mt-1">Invite the crew, assign a role, ship together.</p>
+      <div class="flex items-center mt-5">
+        <span class="w-9 h-9 rounded-full grad-bg text-[#06121A] font-bold text-[.8rem] flex items-center justify-center border-2" style="border-color:var(--card)">AK</span>
+        <span class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-[.8rem] border-2 -ml-2" style="background:#1E293B;color:#E2E8F0;border-color:var(--card)">JM</span>
+        <span class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-[.8rem] border-2 -ml-2" style="background:#312E81;color:#C7D2FE;border-color:var(--card)">RS</span>
+        <span id="seatAvatars" class="flex items-center"></span>
+        <span id="seatCount" class="font-mono2 text-[.75rem] muted ml-2">3 seats used</span>
+      </div>
+      <div class="flex gap-2 mt-4">
+        <input id="seatEmail" type="email" class="field !py-2 !text-[.85rem]" placeholder="teammate@company.com" aria-label="Teammate email">
+        <button id="seatAdd" class="btn btn-primary btn-sm flex-none">Invite</button>
+      </div>
+      <div id="seatToast" class="font-mono2 text-[.7rem] mt-3 h-4" style="color:var(--lime)"></div>
+    </div>
+    <!-- Security -->
+    <div class="reveal card rounded-[20px] p-5 md:col-span-2 lg:col-span-1">
+      <div class="font-display font-semibold text-[1.05rem]">Security, by default</div>
+      <p class="text-[.85rem] muted mt-1">Enterprise-grade without the enterprise paperwork.</p>
+      <div class="flex flex-wrap gap-2 mt-5">
+        <span class="chip">SOC 2 TYPE II</span><span class="chip">GDPR READY</span><span class="chip">SSO / SAML</span><span class="chip">2FA ENFORCED</span><span class="chip">EU DATA RESIDENCY</span>
+      </div>
+      <div class="flex items-center gap-2.5 mt-5 rounded-xl border px-3.5 py-3" style="border-color:var(--line);background:var(--glass)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A3E635" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span class="text-[.85rem]">99.99% uptime SLA on Growth &amp; Scale</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section id="pricing" class="max-w-7xl mx-auto px-5 lg:px-8 pb-20 scroll-mt-24">
+  <div class="reveal text-center max-w-2xl mx-auto">
+    <div class="eyebrow">PRICING — SIMPLE, HONEST, SCALABLE</div>
+    <h2 class="font-display font-bold tracking-tight text-[2rem] lg:text-[2.6rem] leading-[1.08] mt-3">Pick a trajectory.</h2>
+    <p class="muted mt-3 leading-relaxed">Start free, upgrade when the countdown hits zero. Every plan includes the full launch system — no feature hostages.</p>
+    <div class="inline-flex items-center gap-1 mt-7 rounded-full border p-1" style="border-color:var(--line2);background:var(--glass)">
+      <button id="billMonthly" class="toggle-pill on font-medium text-[.85rem] px-4 py-2 rounded-full">Monthly</button>
+      <button id="billAnnual" class="toggle-pill font-medium text-[.85rem] px-4 py-2 rounded-full">Annual <span class="font-mono2 text-[.68rem] ml-1" style="color:inherit;opacity:.75">−20%</span></button>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-4 lg:gap-5 mt-10 items-stretch">
+    <!-- Starter -->
+    <div class="reveal price-card card rounded-[22px] p-6 flex flex-col">
+      <div class="flex items-center justify-between"><span class="font-display font-semibold text-[1.05rem]">Starter</span><span class="chip">FOR TRYING</span></div>
+      <p class="text-[.85rem] muted mt-1.5">Validate the idea before you commit.</p>
+      <div class="flex items-baseline gap-1.5 mt-6"><span class="font-display font-bold text-[2.6rem]" data-price-monthly="0" data-price-annual="0">$<span class="pval">0</span></span><span class="muted text-[.85rem]">/ mo</span></div>
+      <div class="font-mono2 text-[.7rem] muted mt-1 h-4" data-bill-note>Free forever · no card required</div>
+      <a href="#cta" class="btn btn-ghost w-full justify-center mt-5">Start free</a>
+      <ul class="space-y-2.5 mt-6 text-[.88rem]">
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>1 active launch</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>500 waitlist signups</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>Launch page + countdown</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>Basic analytics</li>
+        <li class="flex gap-2.5"><span class="muted">—</span><span class="muted">Automations</span></li>
+        <li class="flex gap-2.5"><span class="muted">—</span><span class="muted">Custom domain</span></li>
+      </ul>
+    </div>
+    <!-- Growth -->
+    <div class="reveal price-card card pop rounded-[22px] p-6 flex flex-col relative max-lg:order-first">
+      <span class="absolute -top-3 left-1/2 -translate-x-1/2 grad-bg text-[#06121A] font-mono2 font-bold text-[.65rem] tracking-[.14em] px-3 py-1 rounded-full">★ MOST POPULAR</span>
+      <div class="flex items-center justify-between"><span class="font-display font-semibold text-[1.05rem]">Growth</span><span class="chip" style="color:var(--lime);border-color:rgba(163,230,53,.4)">FOR SHIPPING</span></div>
+      <p class="text-[.85rem] muted mt-1.5">The full launch system for serious teams.</p>
+      <div class="flex items-baseline gap-1.5 mt-6"><span class="font-display font-bold text-[2.6rem]" data-price-monthly="29" data-price-annual="23">$<span class="pval">29</span></span><span class="muted text-[.85rem]">/ mo</span></div>
+      <div class="font-mono2 text-[.7rem] mt-1 h-4" data-bill-note style="color:var(--lime)">Billed monthly · cancel anytime</div>
+      <a href="#cta" class="btn btn-primary w-full justify-center mt-5">Start 14-day trial</a>
+      <ul class="space-y-2.5 mt-6 text-[.88rem]">
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>Unlimited launches</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>10,000 waitlist signups</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>Automations + referral engine</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>Full analytics + exports</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>Custom domain + SSL</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>5 team seats included</li>
+      </ul>
+    </div>
+    <!-- Scale -->
+    <div class="reveal price-card card rounded-[22px] p-6 flex flex-col">
+      <div class="flex items-center justify-between"><span class="font-display font-semibold text-[1.05rem]">Scale</span><span class="chip" style="color:var(--rose);border-color:rgba(244,114,182,.4)">FOR BREAKOUTS</span></div>
+      <p class="text-[.85rem] muted mt-1.5">When the launch goes viral and stays up.</p>
+      <div class="flex items-baseline gap-1.5 mt-6"><span class="font-display font-bold text-[2.6rem]" data-price-monthly="79" data-price-annual="63">$<span class="pval">79</span></span><span class="muted text-[.85rem]">/ mo</span></div>
+      <div class="font-mono2 text-[.7rem] muted mt-1 h-4" data-bill-note>Billed monthly · cancel anytime</div>
+      <a href="#cta" class="btn btn-ghost w-full justify-center mt-5">Start 14-day trial</a>
+      <ul class="space-y-2.5 mt-6 text-[.88rem]">
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>Everything in Growth</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>Unlimited signups &amp; seats</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>99.99% uptime SLA</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>SSO / SAML + audit log</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>Priority support · 1h response</li>
+        <li class="flex gap-2.5"><span style="color:var(--lime)">✓</span>Dedicated success manager</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- calculator -->
+  <div class="reveal glass rounded-[22px] p-6 lg:p-7 mt-6">
+    <div class="flex flex-wrap items-center gap-3">
+      <div>
+        <div class="font-display font-semibold text-[1.1rem]">Price calculator</div>
+        <p class="text-[.85rem] muted mt-0.5">Slide, toggle, watch the total move. No surprises at checkout.</p>
+      </div>
+      <span class="flex-1"></span>
+      <span class="chip">GROWTH PLAN · BILLED <span id="calcBillLabel">MONTHLY</span></span>
+    </div>
+    <div class="grid lg:grid-cols-[1fr_280px] gap-8 mt-6">
+      <div>
+        <div class="flex items-baseline justify-between">
+          <label for="seats" class="font-medium text-[.9rem]">Team seats</label>
+          <span class="font-mono2 font-bold text-[1.05rem]"><span id="seatsVal">5</span> seats</span>
+        </div>
+        <input id="seats" type="range" min="1" max="50" value="5" class="w-full mt-3" aria-label="Team seats">
+        <div class="flex justify-between font-mono2 text-[.65rem] muted mt-1.5"><span>1</span><span>25</span><span>50</span></div>
+        <div class="grid sm:grid-cols-2 gap-3 mt-6">
+          <label class="flex items-center justify-between gap-3 rounded-xl border px-4 py-3.5 cursor-pointer hover:border-[var(--lime)] transition-colors" style="border-color:var(--line)">
+            <span><span class="block text-[.9rem] font-medium">Analytics Pro</span><span class="block text-[.75rem] muted">Funnels, cohorts, exports</span></span>
+            <span class="flex items-center gap-2"><span class="font-mono2 text-[.8rem]">+$9</span><button type="button" class="switch" id="addonAnalytics" aria-label="Toggle Analytics Pro"></button></span>
+          </label>
+          <label class="flex items-center justify-between gap-3 rounded-xl border px-4 py-3.5 cursor-pointer hover:border-[var(--lime)] transition-colors" style="border-color:var(--line)">
+            <span><span class="block text-[.9rem] font-medium">Priority support</span><span class="block text-[.75rem] muted">1h response, 24/7</span></span>
+            <span class="flex items-center gap-2"><span class="font-mono2 text-[.8rem]">+$12</span><button type="button" class="switch" id="addonSupport" aria-label="Toggle Priority support"></button></span>
+          </label>
+        </div>
+      </div>
+      <div class="rounded-2xl border p-5 flex flex-col" style="border-color:var(--line);background:var(--deep)">
+        <div class="font-mono2 text-[.65rem] tracking-[.18em] muted">ESTIMATED MONTHLY TOTAL</div>
+        <div class="font-display font-bold text-[2.4rem] mt-2">$<span id="calcTotal">29</span><span class="text-[1rem] muted font-medium"> / mo</span></div>
+        <div id="calcLines" class="text-[.82rem] muted space-y-1.5 mt-3 leading-relaxed"></div>
+        <div class="border-t mt-4 pt-3 flex justify-between text-[.85rem]" style="border-color:var(--line)"><span class="muted">Per seat</span><span class="font-mono2 font-semibold" id="calcPerSeat">$5.80</span></div>
+        <a href="#cta" class="btn btn-primary w-full justify-center mt-5">Start with Growth</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMPARISON ============ -->
+<section id="compare" class="max-w-7xl mx-auto px-5 lg:px-8 pb-20 scroll-mt-24">
+  <div class="reveal max-w-2xl">
+    <div class="eyebrow">SIDE BY SIDE</div>
+    <h2 class="font-display font-bold tracking-tight text-[2rem] lg:text-[2.6rem] leading-[1.08] mt-3">Compare every plan,<br>line by line.</h2>
+  </div>
+  <div class="reveal overflow-x-auto rounded-[22px] border mt-8" style="border-color:var(--line)">
+    <table class="w-full text-left min-w-[640px] border-collapse" style="background:var(--glass)">
+      <thead>
+        <tr class="border-b sticky top-0" style="border-color:var(--line);background:var(--deep)">
+          <th class="px-5 py-4 font-display font-semibold text-[.95rem]">Feature</th>
+          <th class="px-5 py-4 font-display font-semibold text-[.95rem]">Starter · $0</th>
+          <th class="px-5 py-4 font-display font-semibold text-[.95rem]" style="color:var(--lime)">Growth · <span class="cmp-price" data-m="29" data-a="23">$29</span>/mo</th>
+          <th class="px-5 py-4 font-display font-semibold text-[.95rem]">Scale · <span class="cmp-price" data-m="79" data-a="63">$79</span>/mo</th>
+        </tr>
+      </thead>
+      <tbody class="text-[.88rem]">
+        <tr class="cmp-row border-b" style="border-color:var(--line)"><td class="px-5 py-3.5 font-medium">Active launches</td><td class="px-5 py-3.5">1</td><td class="px-5 py-3.5">Unlimited</td><td class="px-5 py-3.5">Unlimited</td></tr>
+        <tr class="cmp-row border-b" style="border-color:var(--line)"><td class="px-5 py-3.5 font-medium">Waitlist signups</td><td class="px-5 py-3.5">500</td><td class="px-5 py-3.5">10,000</td><td class="px-5 py-3.5">Unlimited</td></tr>
+        <tr class="cmp-row border-b" style="border-color:var(--line)"><td class="px-5 py-3.5 font-medium">Launch page + countdown</td><td class="px-5 py-3.5" style="color:var(--lime)">✓</td><td class="px-5 py-3.5" style="color:var(--lime)">✓</td><td class="px-5 py-3.5" style="color:var(--lime)">✓</td></tr>
+        <tr class="cmp-row border-b" style="border-color:var(--line)"><td class="px-5 py-3.5 font-medium">Analytics</td><td class="px-5 py-3.5 muted">Basic</td><td class="px-5 py-3.5">Full + exports</td><td class="px-5 py-3.5">Full + API</td></tr>
+        <tr class="cmp-row border-b" style="border-color:var(--line)"><td class="px-5 py-3.5 font-medium">Automations &amp; referrals</td><td class="px-5 py-3.5 muted">—</td><td class="px-5 py-3.5" style="color:var(--lime)">✓</td><td class="px-5 py-3.5" style="color:var(--lime)">✓</td></tr>
+        <tr class="cmp-row border-b" style="border-color:var(--line)"><td class="px-5 py-3.5 font-medium">Custom domain + SSL</td><td class="px-5 py-3.5 muted">—</td><td class="px-5 py-3.5" style="color:var(--lime)">✓</td><td class="px-5 py-3.5" style="color:var(--lime)">✓</td></tr>
+        <tr class="cmp-row border-b" style="border-color:var(--line)"><td class="px-5 py-3.5 font-medium">Team seats</td><td class="px-5 py-3.5">1</td><td class="px-5 py-3.5">5 included</td><td class="px-5 py-3.5">Unlimited</td></tr>
+        <tr class="cmp-row border-b" style="border-color:var(--line)"><td class="px-5 py-3.5 font-medium">Uptime SLA</td><td class="px-5 py-3.5 muted">—</td><td class="px-5 py-3.5">99.9%</td><td class="px-5 py-3.5">99.99%</td></tr>
+        <tr class="cmp-row border-b" style="border-color:var(--line)"><td class="px-5 py-3.5 font-medium">SSO / SAML + audit log</td><td class="px-5 py-3.5 muted">—</td><td class="px-5 py-3.5 muted">—</td><td class="px-5 py-3.5" style="color:var(--lime)">✓</td></tr>
+        <tr class="cmp-row" style="border-color:var(--line)"><td class="px-5 py-3.5 font-medium">Support</td><td class="px-5 py-3.5">Community</td><td class="px-5 py-3.5">Email · 24h</td><td class="px-5 py-3.5">Priority · 1h</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="font-mono2 text-[.7rem] muted mt-3">ALL PRICES IN USD · SWITCH MONTHLY / ANNUAL ABOVE TO UPDATE EVERY PRICE ON THIS PAGE</p>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="max-w-7xl mx-auto px-5 lg:px-8 pb-20">
+  <div class="reveal flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <div class="eyebrow">LOVED BY SHIPPERS</div>
+      <h2 class="font-display font-bold tracking-tight text-[2rem] lg:text-[2.6rem] leading-[1.08] mt-3">Teams that launched<br>loud — and lived to tell.</h2>
+    </div>
+    <div class="font-mono2 text-[.75rem] muted">4.9 / 5 · 2,140 VERIFIED REVIEWS</div>
+  </div>
+  <div class="grid md:grid-cols-3 gap-4 mt-8">
+    <figure class="reveal card rounded-[20px] p-6 flex flex-col">
+      <div class="text-[.95rem]" style="color:var(--amber)">★★★★★</div>
+      <blockquote class="mt-3 leading-relaxed text-[.95rem]">“We went from a Google Doc launch plan to 4,200 waitlist signups in nine days. The countdown alone doubled our conversion.”</blockquote>
+      <figcaption class="flex items-center gap-3 mt-5 pt-4 border-t" style="border-color:var(--line)">
+        <span class="w-10 h-10 rounded-full grad-bg text-[#06121A] font-bold text-[.8rem] flex items-center justify-center">MK</span>
+        <span><span class="block font-medium text-[.9rem]">Maya Kim</span><span class="block text-[.78rem] muted">Co-founder, Fieldnote</span></span>
+      </figcaption>
+    </figure>
+    <figure class="reveal card rounded-[20px] p-6 flex flex-col">
+      <div class="text-[.95rem]" style="color:var(--amber)">★★★★★</div>
+      <blockquote class="mt-3 leading-relaxed text-[.95rem]">“The pricing calculator sold our CFO before the demo did. We knew the exact cost at 12 seats before we ever talked to sales.”</blockquote>
+      <figcaption class="flex items-center gap-3 mt-5 pt-4 border-t" style="border-color:var(--line)">
+        <span class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[.8rem]" style="background:#1E293B;color:#E2E8F0">DO</span>
+        <span><span class="block font-medium text-[.9rem]">Daniel Okafor</span><span class="block text-[.78rem] muted">Head of Growth, Helios</span></span>
+      </figcaption>
+    </figure>
+    <figure class="reveal card rounded-[20px] p-6 flex flex-col">
+      <div class="text-[.95rem]" style="color:var(--amber)">★★★★★</div>
+      <blockquote class="mt-3 leading-relaxed text-[.95rem]">“Our launch stayed up through a Product Hunt #1 day. 38k visitors, zero downtime, and the live chart made the whole team cheer.”</blockquote>
+      <figcaption class="flex items-center gap-3 mt-5 pt-4 border-t" style="border-color:var(--line)">
+        <span class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[.8rem]" style="background:#312E81;color:#C7D2FE">SR</span>
+        <span><span class="block font-medium text-[.9rem]">Sofia Reyes</span><span class="block text-[.78rem] muted">CEO, Orbital</span></span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="max-w-4xl mx-auto px-5 lg:px-8 pb-20 scroll-mt-24">
+  <div class="reveal text-center">
+    <div class="eyebrow">QUESTIONS, ANSWERED</div>
+    <h2 class="font-display font-bold tracking-tight text-[2rem] lg:text-[2.6rem] leading-[1.08] mt-3">Before you ask.</h2>
+  </div>
+  <div class="mt-8 space-y-3" id="faqList">
+    <div class="faq-item card rounded-2xl overflow-hidden">
+      <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-5 py-4 font-medium text-[.95rem]">Do I need a credit card for the free trial?<span class="faq-chev font-mono2 text-[1.2rem] leading-none" style="color:var(--lime)">+</span></button>
+      <div class="faq-a"><p class="px-5 pb-5 text-[.9rem] muted leading-relaxed">No. The 14-day trial of Growth or Scale runs on an email address only. We ask for payment details only if you decide to keep the plan after the trial ends.</p></div>
+    </div>
+    <div class="faq-item card rounded-2xl overflow-hidden">
+      <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-5 py-4 font-medium text-[.95rem]">Can I import an existing waitlist CSV?<span class="faq-chev font-mono2 text-[1.2rem] leading-none" style="color:var(--lime)">+</span></button>
+      <div class="faq-a"><p class="px-5 pb-5 text-[.9rem] muted leading-relaxed">Yes. Upload a CSV with names and emails and Launchpad maps the columns automatically, de-duplicates against your current list, and tags every import with its source so your analytics stay clean.</p></div>
+    </div>
+    <div class="faq-item card rounded-2xl overflow-hidden">
+      <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-5 py-4 font-medium text-[.95rem]">Can I use my own domain?<span class="faq-chev font-mono2 text-[1.2rem] leading-none" style="color:var(--lime)">+</span></button>
+      <div class="faq-a"><p class="px-5 pb-5 text-[.9rem] muted leading-relaxed">Yes — Growth and Scale include a custom domain with automatic SSL. Point a CNAME at launchpad.app and the certificate is issued in under a minute.</p></div>
+    </div>
+    <div class="faq-item card rounded-2xl overflow-hidden">
+      <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-5 py-4 font-medium text-[.95rem]">How does annual billing work?<span class="faq-chev font-mono2 text-[1.2rem] leading-none" style="color:var(--lime)">+</span></button>
+      <div class="faq-a"><p class="px-5 pb-5 text-[.9rem] muted leading-relaxed">Annual billing charges 12 months at the discounted rate — 20% off, so Growth drops from $29 to $23 per month. Switch between monthly and annual from Settings at any time; we prorate the difference.</p></div>
+    </div>
+    <div class="faq-item card rounded-2xl overflow-hidden">
+      <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-5 py-4 font-medium text-[.95rem]">Is Launchpad SOC 2 compliant for enterprise launches?<span class="faq-chev font-mono2 text-[1.2rem] leading-none" style="color:var(--lime)">+</span></button>
+      <div class="faq-a"><p class="px-5 pb-5 text-[.9rem] muted leading-relaxed">Yes. Launchpad is SOC 2 Type II certified and GDPR-ready, with SSO/SAML, audit logs and EU data residency on the Scale plan. Our security page lists the full control set and the latest audit report.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section id="cta" class="max-w-7xl mx-auto px-5 lg:px-8 pb-20 scroll-mt-24">
+  <div class="reveal relative overflow-hidden rounded-[28px] border p-8 lg:p-14 text-center" style="border-color:var(--line);background:linear-gradient(160deg,rgba(163,230,53,.14),rgba(34,211,238,.07) 55%,transparent)">
+    <div class="absolute inset-0 dot-grid opacity-40 pointer-events-none"></div>
+    <div class="relative">
+      <div class="eyebrow">T-MINUS 14 DAYS · YOUR LAUNCH STARTS NOW</div>
+      <h2 class="font-display font-bold tracking-tight text-[2.2rem] lg:text-[3.2rem] leading-[1.05] mt-4">Ready for <span class="grad-text">liftoff?</span></h2>
+      <p class="muted max-w-xl mx-auto mt-4 leading-relaxed">Join 12,480 teams shipping with Launchpad. Your first launch is free — set it up in under ten minutes.</p>
+      <form id="ctaForm" class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto mt-8" novalidate>
+        <input id="ctaEmail" type="email" class="field flex-1 !py-3.5" placeholder="you@company.com" aria-label="Work email">
+        <button type="submit" class="btn btn-primary justify-center !py-3.5">Start free →</button>
+      </form>
+      <div id="ctaMsg" class="font-mono2 text-[.75rem] mt-3 h-5"></div>
+      <p class="text-[.78rem] muted">Free 14-day trial · No credit card · Cancel anytime</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t" style="border-color:var(--line)">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 py-10">
+    <div class="flex flex-wrap gap-8 justify-between">
+      <div class="max-w-xs">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-lg grad-bg flex items-center justify-center">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#06121A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+          </span>
+          <span class="font-display font-bold">LAUNCHPAD</span>
+        </div>
+        <p class="text-[.85rem] muted mt-3 leading-relaxed">The all-in-one launch system for SaaS teams. Ship it. Watch it take off.</p>
+      </div>
+      <div class="flex gap-14 text-[.88rem]">
+        <div><div class="font-mono2 text-[.68rem] tracking-[.16em] muted mb-3">PRODUCT</div><div class="space-y-2"><a href="#product" class="block navlink">Mission Control</a><a href="#pricing" class="block navlink">Pricing</a><a href="#compare" class="block navlink">Compare</a></div></div>
+        <div><div class="font-mono2 text-[.68rem] tracking-[.16em] muted mb-3">COMPANY</div><div class="space-y-2"><a href="#top" class="block navlink">About</a><a href="#faq" class="block navlink">FAQ</a><a href="#cta" class="block navlink">Contact</a></div></div>
+        <div><div class="font-mono2 text-[.68rem] tracking-[.16em] muted mb-3">LEGAL</div><div class="space-y-2"><a href="#top" class="block navlink">Privacy</a><a href="#top" class="block navlink">Terms</a><a href="#top" class="block navlink">Security</a></div></div>
+      </div>
+    </div>
+    <div class="flex flex-wrap justify-between gap-3 border-t mt-8 pt-6 text-[.78rem] muted" style="border-color:var(--line)">
+      <span>© 2026 Launchpad Inc. — Demo template. All data shown is fictional.</span>
+      <span class="font-mono2">STATUS: ALL SYSTEMS GO ●</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ COMMAND PALETTE ============ -->
+<div id="palette" role="dialog" aria-label="Command palette">
+  <div class="w-[min(560px,92vw)] rounded-2xl border overflow-hidden shadow-2xl" style="border-color:var(--line2);background:var(--deep)">
+    <div class="flex items-center gap-3 px-4 py-3.5 border-b" style="border-color:var(--line)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" class="muted"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="palInput" type="text" placeholder="Search actions, sections…" class="flex-1 bg-transparent outline-none text-[.95rem]" style="color:var(--text)">
+      <kbd class="font-mono2 text-[.65rem] border rounded px-1.5 py-0.5 muted" style="border-color:var(--line2)">ESC</kbd>
+    </div>
+    <div id="palList" class="p-2 max-h-[320px] overflow-y-auto"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const tip=$('#tip');
+function showTip(html,x,y){tip.innerHTML=html;tip.style.left=x+'px';tip.style.top=y+'px';tip.classList.add('on')}
+function hideTip(){tip.classList.remove('on');tip.style.left='-9999px';tip.style.top='-9999px';} /* off-screen so a stale position can never widen the document */
+window.addEventListener('resize',hideTip);
+function bindTip(el,getHtml){
+  el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect();showTip(getHtml(),e.clientX,e.clientY-r.top+window.scrollY-4);});
+  el.addEventListener('mouseleave',hideTip);
+}
+/* ---------- theme ---------- */
+const rootEl=document.documentElement;
+function setTheme(light){
+  rootEl.classList.toggle('light',light);rootEl.classList.toggle('dark',!light);
+  $('#themeIcon').textContent=light?'☀':'☾';
+}
+$('#themeBtn').addEventListener('click',()=>setTheme(!rootEl.classList.contains('light')));
+/* ---------- mobile menu ---------- */
+$('#burger').addEventListener('click',()=>{const m=$('#mobileMenu');m.classList.toggle('hidden');m.classList.toggle('flex');});
+$$('#mobileMenu a').forEach(a=>a.addEventListener('click',()=>{$('#mobileMenu').classList.add('hidden');$('#mobileMenu').classList.remove('flex');}));
+/* ---------- reveal on scroll ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
+$$('.reveal').forEach(el=>io.observe(el));
+/* ---------- count-up ---------- */
+const cio=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;cio.unobserve(e.target);
+  const el=e.target,end=parseFloat(el.dataset.count),dec=parseInt(el.dataset.decimals||'0'),fmt=el.dataset.format==='comma';
+  const t0=performance.now(),dur=1400;
+  (function tick(t){const p=Math.min(1,(t-t0)/dur),ease=1-Math.pow(1-p,3),v=end*ease;
+    el.textContent=fmt?Math.round(v).toLocaleString('en-US'):v.toFixed(dec);
+    if(p<1)requestAnimationFrame(tick);})(t0);
+}),{threshold:.4});
+$$('.count').forEach(el=>cio.observe(el));
+/* ---------- countdown ---------- */
+const launchAt=Date.now()+14*24*3600*1000-3720000; /* T-13d 23h */
+function pad(n){return String(n).padStart(2,'0')}
+function tickCd(){
+  let d=Math.max(0,launchAt-Date.now());
+  const days=Math.floor(d/86400000);d-=days*86400000;
+  const h=Math.floor(d/3600000);d-=h*3600000;
+  const m=Math.floor(d/60000);d-=m*60000;
+  const s=Math.floor(d/1000);
+  $('#countdown').textContent=days+'d '+pad(h)+':'+pad(m)+':'+pad(s);
+}
+tickCd();setInterval(tickCd,1000);
+/* ---------- area chart ---------- */
+const WEEKS=['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12'];
+const SIGNUPS=[42,68,95,88,132,171,158,204,238,296,341,486];
+function renderArea(n){
+  const data=SIGNUPS.slice(-n),labels=WEEKS.slice(-n);
+  const W=720,H=240,PL=8,PR=8,PT=18,PB=28,max=Math.max(...data)*1.15;
+  const x=i=>PL+i*(W-PL-PR)/(data.length-1), y=v=>PT+(1-v/max)*(H-PT-PB);
+  let d='M'+x(0).toFixed(1)+' '+y(data[0]).toFixed(1);
+  for(let i=1;i<data.length;i++){const xm=(x(i-1)+x(i))/2;d+=' C'+xm.toFixed(1)+' '+y(data[i-1]).toFixed(1)+' '+xm.toFixed(1)+' '+y(data[i]).toFixed(1)+' '+x(i).toFixed(1)+' '+y(data[i]).toFixed(1);}
+  const area=d+' L'+x(data.length-1).toFixed(1)+' '+(H-PB)+' L'+x(0).toFixed(1)+' '+(H-PB)+' Z';
+  let grid='';
+  for(let g=0;g<=4;g++){const gy=PT+g*(H-PT-PB)/4;grid+='<line x1="'+PL+'" y1="'+gy+'" x2="'+(W-PR)+'" y2="'+gy+'" stroke="rgba(148,163,184,.12)" stroke-width="1"/><text x="'+(W-PR-2)+'" y="'+(gy-4)+'" fill="#64748B" font-size="10" font-family="JetBrains Mono" text-anchor="end">'+Math.round(max*(1-g/4))+'</text>';}
+  let pts='';
+  data.forEach((v,i)=>{
+    pts+='<g class="area-pt" data-i="'+i+'"><circle cx="'+x(i)+'" cy="'+y(v)+'" r="14" fill="transparent"/><circle cx="'+x(i)+'" cy="'+y(v)+'" r="4.5" fill="#070B10" stroke="#A3E635" stroke-width="2.5"/></g>';
+  });
+  $('#areaChart').innerHTML='<defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#A3E635" stop-opacity=".35"/><stop offset="100%" stop-color="#22D3EE" stop-opacity="0"/></linearGradient><linearGradient id="lg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#A3E635"/><stop offset="100%" stop-color="#22D3EE"/></linearGradient></defs>'
+    +grid+'<path d="'+area+'" fill="url(#ag)"/><path d="'+d+'" fill="none" stroke="url(#lg)" stroke-width="2.5" stroke-linecap="round"/>'+pts;
+  $('#areaLabels').innerHTML=labels.map(l=>'<span>'+l+'</span>').join('');
+  $$('#areaChart .area-pt').forEach(g=>{
+    const i=+g.dataset.i,v=data[i];
+    g.addEventListener('mousemove',e=>{const r=$('#areaChart').getBoundingClientRect();showTip('<b>'+labels[i]+'</b> · '+v.toLocaleString('en-US')+' signups',e.clientX,e.clientY-r.top+window.scrollY-6);});
+    g.addEventListener('mouseleave',hideTip);
+  });
+}
+renderArea(12);
+$('#rangeBtns').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  $$('#rangeBtns button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  renderArea(+b.dataset.range);
+});
+/* ---------- bento bars ---------- */
+const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],BARS=[182,241,198,287,342,265,156];
+$('#bentoBars').innerHTML=BARS.map((v,i)=>'<div class="bar flex-1 rounded-t-lg relative" data-i="'+i+'" style="height:'+Math.round(v/342*100)+'%;background:linear-gradient(180deg,#A3E635,#22D3EE);opacity:.85" title=""></div>').join('');
+$$('#bentoBars .bar').forEach(el=>{
+  const i=+el.dataset.i;
+  el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect();showTip('<b>'+DAYS[i]+'</b> · '+BARS[i]+' signups',e.clientX,e.clientY-r.top+window.scrollY-6);});
+  el.addEventListener('mouseleave',hideTip);
+});
+/* ---------- checklist ---------- */
+function updateRing(){
+  const items=$$('#checklist .check-item'),done=items.filter(i=>i.classList.contains('done')).length;
+  const pct=Math.round(done/items.length*100);
+  $('#checkDone').textContent=done;$('#ringPct').textContent=pct+'%';
+  $('#ringFg').style.strokeDashoffset=(201*(1-pct/100)).toFixed(1);
+}
+$$('#checklist .check-item').forEach(it=>it.addEventListener('click',()=>{
+  it.classList.toggle('done');
+  it.querySelector('.check-dot').textContent=it.classList.contains('done')?'✓':'';
+  updateRing();
+}));
+/* ---------- automations ---------- */
+$$('#autoList .switch').forEach(sw=>sw.addEventListener('click',()=>{
+  sw.classList.toggle('on');
+  $('#autoToast').textContent=sw.dataset.auto+' '+(sw.classList.contains('on')?'enabled ✓':'paused');
+  setTimeout(()=>$('#autoToast').textContent='',2600);
+}));
+/* ---------- templates ---------- */
+$$('.tpl-btn').forEach(b=>b.addEventListener('click',()=>{
+  $('#tplToast').textContent='Template "'+b.dataset.tpl+'" loaded into the builder ✓';
+  setTimeout(()=>$('#tplToast').textContent='',2600);
+}));
+/* ---------- integrations ---------- */
+$$('.int-chip').forEach(c=>c.addEventListener('click',()=>{
+  const on=c.style.borderColor==='rgb(163, 230, 53)';
+  c.style.borderColor=on?'':'#A3E635';c.style.color=on?'':'#A3E635';
+  $('#intToast').textContent=c.dataset.int+(on?' disconnected':' connected ✓');
+  setTimeout(()=>{$('#intToast').textContent='40+ integrations · click to connect';},2600);
+}));
+/* ---------- team seats ---------- */
+let extraSeats=0;
+$('#seatAdd').addEventListener('click',()=>{
+  const em=$('#seatEmail').value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){$('#seatToast').textContent='Enter a valid work email to invite.';$('#seatEmail').classList.add('err');return;}
+  $('#seatEmail').classList.remove('err');
+  const ini=em.slice(0,2).toUpperCase();
+  const s=document.createElement('span');
+  s.className='w-9 h-9 rounded-full flex items-center justify-center font-bold text-[.8rem] border-2 -ml-2';
+  s.style.cssText='background:#0F766E;color:#CCFBF1;border-color:var(--card)';s.textContent=ini;
+  $('#seatAvatars').appendChild(s);
+  extraSeats++;$('#seatCount').textContent=(3+extraSeats)+' seats used';
+  $('#seatToast').textContent='Invite sent to '+em+' ✓';$('#seatEmail').value='';
+  setTimeout(()=>$('#seatToast').textContent='',3000);
+});
+$('#seatEmail').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#seatAdd').click();}});
+/* ---------- billing toggle + prices ---------- */
+let annual=false;
+function setBilling(isAnnual){
+  annual=isAnnual;
+  $('#billMonthly').classList.toggle('on',!isAnnual);
+  $('#billAnnual').classList.toggle('on',isAnnual);
+  $$('[data-price-monthly]').forEach(el=>{
+    const target=+(isAnnual?el.dataset.priceAnnual:el.dataset.priceMonthly);
+    const span=el.querySelector('.pval'),from=+span.textContent||0,t0=performance.now();
+    (function anim(t){const p=Math.min(1,(t-t0)/450),e=1-Math.pow(1-p,3);
+      span.textContent=Math.round(from+(target-from)*e);
+      if(p<1)requestAnimationFrame(anim);})(t0);
+  });
+  $$('.cmp-price').forEach(el=>{el.textContent=isAnnual?el.dataset.a:el.dataset.m;});
+  $$('[data-bill-note]').forEach(n=>{
+    if(n.dataset.priceMonthly!==undefined){}
+  });
+  const notes=$$('[data-bill-note]');
+  notes[0].textContent='Free forever · no card required';
+  notes[1].textContent=isAnnual?'Billed annually · $276/yr — you save $72':'Billed monthly · cancel anytime';
+  notes[2].textContent=isAnnual?'Billed annually · $756/yr — you save $192':'Billed monthly · cancel anytime';
+  $('#calcBillLabel').textContent=isAnnual?'ANNUAL −20%':'MONTHLY';
+  calcPrice();
+}
+$('#billMonthly').addEventListener('click',()=>setBilling(false));
+$('#billAnnual').addEventListener('click',()=>setBilling(true));
+/* ---------- calculator ---------- */
+function calcPrice(){
+  const seats=+$('#seats').value;
+  $('#seatsVal').textContent=seats;
+  $('#seats').style.setProperty('--fill',((seats-1)/49*100)+'%');
+  const base=29,extra=Math.max(0,seats-5)*4;
+  const addons=($('#addonAnalytics').classList.contains('on')?9:0)+($('#addonSupport').classList.contains('on')?12:0);
+  let total=base+extra+addons;
+  if(annual)total=Math.round(total*0.8);
+  $('#calcTotal').textContent=total;
+  $('#calcPerSeat').textContent='$'+(total/seats).toFixed(2);
+  let lines='<div>Growth base — $'+(annual?Math.round(base*0.8):base)+'/mo</div>';
+  if(extra)lines+='<div>Extra seats ('+(seats-5)+' × $4) — +$'+(annual?Math.round(extra*0.8):extra)+'/mo</div>';
+  if($('#addonAnalytics').classList.contains('on'))lines+='<div>Analytics Pro — +$'+(annual?7:9)+'/mo</div>';
+  if($('#addonSupport').classList.contains('on'))lines+='<div>Priority support — +$'+(annual?10:12)+'/mo</div>';
+  if(annual)lines+='<div style="color:var(--lime)">Annual discount −20% applied ✓</div>';
+  if(!extra&&!addons)lines+='<div>5 seats included · add seats or add-ons above</div>';
+  $('#calcLines').innerHTML=lines;
+}
+$('#seats').addEventListener('input',calcPrice);
+$('#addonAnalytics').addEventListener('click',function(){this.classList.toggle('on');calcPrice();});
+$('#addonSupport').addEventListener('click',function(){this.classList.toggle('on');calcPrice();});
+calcPrice();
+/* ---------- FAQ ---------- */
+$$('.faq-item').forEach(item=>{
+  item.querySelector('.faq-q').addEventListener('click',()=>{
+    const was=item.classList.contains('open');
+    $$('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!was)item.classList.add('open');
+  });
+});
+/* ---------- CTA form ---------- */
+$('#ctaForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const em=$('#ctaEmail'),msg=$('#ctaMsg');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())){
+    em.classList.add('err');msg.textContent='Please enter a valid work email.';msg.style.color='#F87171';return;
+  }
+  em.classList.remove('err');
+  msg.textContent='✓ You are on the list — check '+em.value.trim()+' for your launch link.';
+  msg.style.color='#A3E635';em.value='';
+  setTimeout(()=>msg.textContent='',6000);
+});
+$('#ctaEmail').addEventListener('input',function(){this.classList.remove('err');});
+/* ---------- telemetry tooltips ---------- */
+$$('[data-tip]').forEach(el=>bindTip(el,()=>el.dataset.tip));
+/* ---------- command palette ---------- */
+const ACTIONS=[
+  {label:'Go to Pricing',hint:'Section',run:()=>scrollToId('pricing')},
+  {label:'Go to Comparison table',hint:'Section',run:()=>scrollToId('compare')},
+  {label:'Go to Mission Control',hint:'Section',run:()=>scrollToId('product')},
+  {label:'Go to FAQ',hint:'Section',run:()=>scrollToId('faq')},
+  {label:'Go to Signup',hint:'Section',run:()=>scrollToId('cta')},
+  {label:'Toggle light / dark theme',hint:'Appearance',run:()=>setTheme(!rootEl.classList.contains('light'))},
+  {label:'Switch to annual billing (−20%)',hint:'Pricing',run:()=>{setBilling(true);scrollToId('pricing');}},
+  {label:'Switch to monthly billing',hint:'Pricing',run:()=>{setBilling(false);scrollToId('pricing');}},
+  {label:'Open price calculator',hint:'Pricing',run:()=>scrollToId('pricing')},
+];
+function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+let palSel=0,palFiltered=ACTIONS;
+function renderPal(){
+  const q=$('#palInput').value.trim().toLowerCase();
+  palFiltered=ACTIONS.filter(a=>a.label.toLowerCase().includes(q));
+  palSel=Math.min(palSel,Math.max(0,palFiltered.length-1));
+  $('#palList').innerHTML=palFiltered.length?palFiltered.map((a,i)=>
+    '<button class="pal-item'+(i===palSel?' sel':'')+'" data-i="'+i+'"><span class="font-mono2 text-[.65rem] px-2 py-0.5 rounded border" style="border-color:var(--line2);color:var(--lime)">'+a.hint.toUpperCase()+'</span><span>'+a.label+'</span></button>').join('')
+    :'<div class="px-3 py-4 text-[.88rem] muted">No actions match “'+q+'”.</div>';
+  $$('#palList .pal-item').forEach(b=>b.addEventListener('click',()=>{closePal();palFiltered[+b.dataset.i].run();}));
+}
+function openPal(){$('#palette').classList.add('open');palSel=0;renderPal();setTimeout(()=>$('#palInput').focus(),30);}
+function closePal(){$('#palette').classList.remove('open');$('#palInput').value='';}
+$('#palBtn').addEventListener('click',openPal);
+$('#palette').addEventListener('click',e=>{if(e.target.id==='palette')closePal();});
+$('#palInput').addEventListener('input',()=>{palSel=0;renderPal();});
+$('#palInput').addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'){e.preventDefault();palSel=Math.min(palSel+1,palFiltered.length-1);renderPal();}
+  if(e.key==='ArrowUp'){e.preventDefault();palSel=Math.max(palSel-1,0);renderPal();}
+  if(e.key==='Enter'&&palFiltered[palSel]){closePal();palFiltered[palSel].run();}
+});
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#palette').classList.contains('open')?closePal():openPal();}
+  if(e.key==='Escape')closePal();
+});
+</script>
+</body>
+</html>
