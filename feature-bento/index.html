@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-accent="coral">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feature Bento — Bento Feature Grids for SaaS</title>
+<meta name="description" content="Feature Bento — a bento-grid kit for SaaS feature pages. Four live layouts, twenty-six working cells, charts with real hover data, a live playground and copyable code. Dark by default.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+/* ============ Bento Atelier — tokens ============ */
+:root{
+  --ink:#07080C; --surface:#0E1016; --surface-2:#12141C; --surface-3:#171A24;
+  --paper:#F4EFE6; --muted:#9AA3B2; --faint:#6B7484;
+  --accent:#FF5C47; --accent-soft:rgba(255,92,71,.12); --accent-ink:#FF8A75;
+  --butter:#FFC53D; --mint:#3DDC97; --sky:#4CC9F0; --violet:#A78BFA;
+  --border:rgba(244,239,230,.09); --border-strong:rgba(244,239,230,.18);
+  --shadow:0 18px 50px rgba(0,0,0,.45);
+  --radius:18px; --gap:14px;
+  --font-display:"Space Grotesk",sans-serif; --font-ui:"Inter",sans-serif; --font-mono:"JetBrains Mono",monospace;
+}
+html[data-accent="butter"]{ --accent:#FFC53D; --accent-soft:rgba(255,197,61,.12); --accent-ink:#FFD479; }
+html[data-accent="mint"]{ --accent:#3DDC97; --accent-soft:rgba(61,220,151,.12); --accent-ink:#6FE8B4; }
+html[data-accent="sky"]{ --accent:#4CC9F0; --accent-soft:rgba(76,201,240,.12); --accent-ink:#7ED7F5; }
+html[data-accent="violet"]{ --accent:#A78BFA; --accent-soft:rgba(167,139,250,.13); --accent-ink:#C0AAFB; }
+html[data-theme="light"]{
+  --ink:#F6F2EA; --surface:#FFFFFF; --surface-2:#F4F1EA; --surface-3:#ECE8DF;
+  --paper:#14161C; --muted:#5B6472; --faint:#8A919E;
+  --accent:#E8492F; --accent-soft:rgba(232,73,47,.09); --accent-ink:#D63E24;
+  --border:rgba(20,22,28,.10); --border-strong:rgba(20,22,28,.20);
+  --shadow:0 18px 44px rgba(20,22,28,.12);
+}
+html[data-theme="light"][data-accent="butter"]{ --accent:#B8860B; --accent-soft:rgba(184,134,11,.10); --accent-ink:#9A7000; }
+html[data-theme="light"][data-accent="mint"]{ --accent:#0E9F6E; --accent-soft:rgba(14,159,110,.10); --accent-ink:#0B7A55; }
+html[data-theme="light"][data-accent="sky"]{ --accent:#0284C7; --accent-soft:rgba(2,132,199,.10); --accent-ink:#0369A1; }
+html[data-theme="light"][data-accent="violet"]{ --accent:#7C3AED; --accent-soft:rgba(124,58,237,.10); --accent-ink:#6D28D9; }
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+html,body{ overflow-x:clip; }
+body{ margin:0; background:var(--ink); color:var(--paper); font-family:var(--font-ui); -webkit-font-smoothing:antialiased; }
+::selection{ background:var(--accent); color:#fff; }
+h1,h2,h3,.display{ font-family:var(--font-display); letter-spacing:-.02em; }
+.mono{ font-family:var(--font-mono); }
+a{ color:inherit; }
+button{ font-family:inherit; cursor:pointer; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:6px; }
+
+/* ---------- layout helpers ---------- */
+.wrap{ max-width:1180px; margin:0 auto; padding:0 24px; }
+.eyebrow{ font-family:var(--font-mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-ink); }
+.card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); }
+.card-hover{ transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+.card-hover:hover{ transform:translateY(-3px); border-color:var(--border-strong); box-shadow:var(--shadow); }
+.chip{ display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:4px 10px; border-radius:999px; border:1px solid var(--border); color:var(--muted); background:var(--surface-2); white-space:nowrap; }
+.btn{ display:inline-flex; align-items:center; gap:8px; font-weight:600; font-size:14px; padding:11px 18px; border-radius:12px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--paper); transition:transform .18s ease, background .18s ease, border-color .18s ease; }
+.btn:hover{ transform:translateY(-1px); border-color:var(--accent); }
+.btn-primary{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.btn-primary:hover{ background:var(--accent-ink); }
+.btn-ghost{ background:transparent; }
+.kbd{ font-family:var(--font-mono); font-size:11px; border:1px solid var(--border-strong); border-bottom-width:2px; border-radius:6px; padding:2px 6px; color:var(--muted); background:var(--surface); }
+
+/* ---------- topbar ---------- */
+.topbar{ position:sticky; top:0; z-index:50; backdrop-filter:blur(14px); background:color-mix(in srgb, var(--ink) 82%, transparent); border-bottom:1px solid var(--border); }
+.topbar-inner{ display:flex; align-items:center; gap:16px; height:62px; }
+.logo-mark{ width:34px; height:34px; border-radius:10px; background:var(--accent); display:grid; grid-template-columns:1fr 1fr; gap:2px; padding:5px; flex:none; }
+.logo-mark i{ background:#fff; border-radius:3px; display:block; }
+.logo-mark i:nth-child(1){ grid-row:span 2; }
+.nav-desktop{ display:flex; gap:2px; margin-left:14px; }
+.navlink{ font-size:14px; font-weight:500; color:var(--muted); padding:8px 10px; border-radius:8px; text-decoration:none; transition:color .15s; }
+.navlink:hover{ color:var(--paper); }
+.navlink.active{ color:var(--paper); background:var(--surface-2); }
+
+/* ---------- bento grid ---------- */
+.bento{ display:grid; grid-template-columns:repeat(12,1fr); gap:var(--gap); }
+.cell{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; position:relative; overflow:hidden; min-width:0; transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+.cell:hover{ border-color:var(--border-strong); box-shadow:var(--shadow); }
+.cell .cell-tag{ font-family:var(--font-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); }
+.cell h3{ margin:6px 0 4px; font-size:18px; font-weight:600; }
+.cell p{ margin:0; font-size:13.5px; line-height:1.55; color:var(--muted); }
+.span-3{ grid-column:span 3; } .span-4{ grid-column:span 4; } .span-5{ grid-column:span 5; }
+.span-6{ grid-column:span 6; } .span-7{ grid-column:span 7; } .span-8{ grid-column:span 8; }
+.span-9{ grid-column:span 9; } .span-12{ grid-column:span 12; }
+.row-2{ grid-row:span 2; }
+.cell-accent{ background:var(--accent); border-color:transparent; color:#fff; }
+.cell-accent p{ color:rgba(255,255,255,.82); }
+.cell-accent .cell-tag{ color:rgba(255,255,255,.65); }
+.cell-accent h3{ color:#fff; }
+.cell-dark{ background:#0A0C11; border-color:rgba(244,239,230,.07); }
+html[data-theme="light"] .cell-dark{ background:#14161C; }
+html[data-theme="light"] .cell-dark p, html[data-theme="light"] .cell-dark h3{ color:#F4EFE6; }
+html[data-theme="light"] .cell-dark .cell-tag{ color:#8A919E; }
+
+/* ---------- charts & tooltips ---------- */
+.bar{ cursor:pointer; transition:opacity .15s; }
+.bar:hover{ opacity:1 !important; }
+#tip{ position:fixed; z-index:90; pointer-events:none; background:var(--surface-3); border:1px solid var(--border-strong); color:var(--paper); font-size:12px; font-weight:600; padding:7px 10px; border-radius:9px; box-shadow:var(--shadow); opacity:0; transform:translate(-50%,-8px); transition:opacity .15s ease, transform .15s ease; white-space:nowrap; }
+#tip.show{ opacity:1; transform:translate(-50%,0); }
+#tip .mono{ color:var(--accent-ink); }
+.spark path{ fill:none; stroke:var(--accent); stroke-width:2; stroke-linecap:round; }
+.spark .dot{ fill:var(--accent); }
+.toggle{ width:46px; height:26px; border-radius:999px; background:var(--surface-3); border:1px solid var(--border-strong); position:relative; transition:background .2s; flex:none; padding:0; }
+.toggle::after{ content:""; position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%; background:var(--paper); transition:transform .2s ease; }
+.toggle[aria-checked="true"]{ background:var(--accent); border-color:var(--accent); }
+.toggle[aria-checked="true"]::after{ transform:translateX(20px); background:#fff; }
+.pring{ transform:rotate(-90deg); }
+.pring-bg{ stroke:var(--surface-3); }
+.pring-fg{ stroke:var(--accent); stroke-linecap:round; transition:stroke-dashoffset .8s ease; }
+
+/* ---------- layout tabs / gallery ---------- */
+.tab{ font-size:14px; font-weight:600; padding:10px 16px; border-radius:11px; border:1px solid var(--border); background:var(--surface); color:var(--muted); transition:all .18s; }
+.tab:hover{ color:var(--paper); }
+.tab.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.layout-panel{ display:none; }
+.layout-panel.active{ display:grid; animation:fadeUp .45s ease both; }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:none;} }
+.reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+.reveal.in{ opacity:1; transform:none; }
+
+/* ---------- playground ---------- */
+.swatch{ width:34px; height:34px; border-radius:50%; border:2px solid transparent; padding:0; transition:transform .15s, border-color .15s; }
+.swatch:hover{ transform:scale(1.12); }
+.swatch.active{ border-color:var(--paper); box-shadow:0 0 0 3px var(--border-strong); }
+.seg{ display:flex; border:1px solid var(--border-strong); border-radius:11px; overflow:hidden; }
+.seg button{ padding:9px 14px; font-size:13px; font-weight:600; background:transparent; border:0; color:var(--muted); }
+.seg button.active{ background:var(--surface-3); color:var(--paper); }
+input[type="range"]{ accent-color:var(--accent); width:100%; }
+
+/* ---------- code / palette / toast ---------- */
+.codeblock{ background:#0A0C11; border:1px solid rgba(244,239,230,.10); border-radius:14px; padding:18px 20px; overflow-x:auto; font-family:var(--font-mono); font-size:12.5px; line-height:1.7; color:#D7DEE8; white-space:pre; }
+.codeblock .tk{ color:#FF8A75; } .codeblock .tn{ color:#7ED7F5; } .codeblock .ts{ color:#FFD479; }
+#palette{ position:fixed; inset:0; z-index:100; background:rgba(0,0,0,.55); backdrop-filter:blur(4px); display:none; align-items:flex-start; justify-content:center; padding-top:14vh; }
+#palette.open{ display:flex; }
+.palette-box{ width:min(560px,92vw); background:var(--surface); border:1px solid var(--border-strong); border-radius:16px; box-shadow:var(--shadow); overflow:hidden; }
+.palette-item{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:12px 16px; background:none; border:0; color:var(--paper); font-size:14px; }
+.palette-item.sel, .palette-item:hover{ background:var(--surface-3); }
+#toast{ position:fixed; bottom:24px; left:50%; transform:translate(-50%,16px); z-index:110; background:var(--surface-3); border:1px solid var(--border-strong); color:var(--paper); font-size:13.5px; font-weight:600; padding:11px 18px; border-radius:12px; box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; }
+#toast.show{ opacity:1; transform:translate(-50%,0); }
+details.faq{ border:1px solid var(--border); border-radius:14px; background:var(--surface); padding:16px 20px; }
+details.faq summary{ cursor:pointer; font-weight:600; font-size:15px; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+details.faq summary::-webkit-details-marker{ display:none; }
+details.faq p{ color:var(--muted); font-size:14px; line-height:1.6; margin:10px 0 0; }
+.tabbar{ display:none; }
+.hamburger{ display:none; }
+.marquee{ display:flex; gap:12px; overflow:hidden; mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent); }
+.marquee-track{ display:flex; gap:12px; animation:scrollX 32s linear infinite; flex:none; }
+.marquee:hover .marquee-track{ animation-play-state:paused; }
+@keyframes scrollX{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+  .reveal{ opacity:1; transform:none; }
+}
+@media (max-width:900px){
+  .span-3,.span-4,.span-5,.span-6,.span-7,.span-8,.span-9{ grid-column:span 12; }
+  .row-2{ grid-row:auto; }
+  #statsRow{ grid-template-columns:repeat(2,1fr) !important; }
+  #statsRow > *{ min-width:0; }
+  .nav-desktop{ display:none; }
+  #paletteBtn, #ctaTop{ display:none; }
+  .theme-label{ display:none; }
+  #themeToggle{ padding:9px 10px !important; }
+  .hamburger{ display:inline-flex; }
+  .tabbar{ display:flex; position:fixed; left:0; right:0; bottom:0; z-index:60; background:color-mix(in srgb, var(--ink) 88%, transparent); backdrop-filter:blur(14px); border-top:1px solid var(--border); padding:8px 10px calc(8px + env(safe-area-inset-bottom)); justify-content:space-around; }
+  .tabbar button{ display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:0; color:var(--muted); font-size:11px; font-weight:600; padding:4px 8px; }
+  .tabbar button.active{ color:var(--accent-ink); }
+  body{ padding-bottom:64px; }
+}
+</style>
+</head>
+<body>
+<div id="tip" role="status"></div>
+<div id="toast" role="status"></div>
+
+<!-- ================= TOPBAR ================= -->
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="#top" style="display:flex;align-items:center;gap:10px;text-decoration:none">
+      <span class="logo-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="display" style="font-size:19px;font-weight:700">Feature&nbsp;Bento</span>
+      <span class="chip" style="margin-left:2px">v1.0</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Main">
+      <a class="navlink active" href="#layouts">Layouts</a>
+      <a class="navlink" href="#playground">Playground</a>
+      <a class="navlink" href="#cells">Cells</a>
+      <a class="navlink" href="#code">Code</a>
+      <a class="navlink" href="#faq">FAQ</a>
+    </nav>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <button class="btn btn-ghost" id="paletteBtn" style="padding:9px 12px" aria-label="Open command palette">Search <span class="kbd">⌘K</span></button>
+      <button class="btn btn-ghost" id="themeToggle" style="padding:9px 12px" aria-label="Toggle light and dark theme">◐ <span class="theme-label">Theme</span></button>
+      <button class="btn btn-primary" id="ctaTop" style="padding:9px 16px">Get the kit — $39</button>
+      <button class="btn btn-ghost hamburger" id="hamburger" style="padding:9px 12px" aria-label="Open menu">☰</button>
+    </div>
+  </div>
+</header>
+<div id="mobileMenu" style="display:none;border-bottom:1px solid var(--border);background:var(--surface);padding:10px 24px">
+  <a class="navlink" style="display:block" href="#layouts">Layouts</a>
+  <a class="navlink" style="display:block" href="#playground">Playground</a>
+  <a class="navlink" style="display:block" href="#cells">Cells</a>
+  <a class="navlink" style="display:block" href="#code">Code</a>
+  <a class="navlink" style="display:block" href="#faq">FAQ</a>
+</div>
+
+<main id="top">
+<!-- ================= HERO ================= -->
+<section class="wrap" style="padding:72px 24px 40px">
+  <div class="reveal in">
+    <p class="eyebrow">Bento feature grids · for SaaS teams</p>
+    <h1 class="display" style="font-size:clamp(44px,7vw,84px);line-height:1.02;font-weight:700;margin:14px 0 18px;max-width:900px">
+      Every feature,<br>in its <span style="color:var(--accent)">place.</span>
+    </h1>
+    <p style="font-size:18px;line-height:1.6;color:var(--muted);max-width:620px;margin:0 0 26px">
+      Four production-ready bento layouts, twenty-six working cells and a live
+      playground — the fastest way to ship a feature page that looks designed,
+      not assembled. One file. No framework. Dark by default.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" id="ctaHero">Browse the layouts ↓</button>
+      <button class="btn" id="copyHeroBtn">Copy the hero grid</button>
+    </div>
+  </div>
+
+  <!-- hero stats -->
+  <div id="statsRow" style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-top:44px" class="reveal in">
+    <div class="card card-hover" style="padding:18px 20px" data-tip="4 layouts · Classic, Editorial, Metrics, Minimal">
+      <div class="display" style="font-size:32px;font-weight:700"><span class="count" data-count="4">0</span></div>
+      <div style="font-size:13px;color:var(--muted);margin-top:2px">Bento layouts</div>
+    </div>
+    <div class="card card-hover" style="padding:18px 20px" data-tip="26 cells · every one interactive, none a placeholder">
+      <div class="display" style="font-size:32px;font-weight:700"><span class="count" data-count="26">0</span></div>
+      <div style="font-size:13px;color:var(--muted);margin-top:2px">Working cells</div>
+    </div>
+    <div class="card card-hover" style="padding:18px 20px" data-tip="12 components · charts, rings, toggles, lists, quotes">
+      <div class="display" style="font-size:32px;font-weight:700"><span class="count" data-count="12">0</span></div>
+      <div style="font-size:13px;color:var(--muted);margin-top:2px">Cell components</div>
+    </div>
+    <div class="card card-hover" style="padding:18px 20px" data-tip="1 file · a single self-contained HTML file, no build step">
+      <div class="display" style="font-size:32px;font-weight:700"><span class="count" data-count="1">0</span></div>
+      <div style="font-size:13px;color:var(--muted);margin-top:2px">HTML file</div>
+    </div>
+  </div>
+
+  <!-- hero bento -->
+  <div class="bento" style="margin-top:var(--gap)" id="heroBento">
+    <article class="cell span-7 row-2" data-tip="Weekly signups · hover any bar for the exact value">
+      <span class="cell-tag">Live chart · Signups</span>
+      <h3>Growth you can point at</h3>
+      <p>Twelve weeks of signups, hoverable to the number. This week is up
+      <strong style="color:var(--paper)">+18.4%</strong> on the trailing average.</p>
+      <svg id="heroChart" viewBox="0 0 560 150" style="width:100%;height:150px;margin-top:16px" role="img" aria-label="Bar chart of weekly signups"></svg>
+    </article>
+    <article class="cell span-5" data-tip="Retention · 94.2% of teams stay after 90 days">
+      <span class="cell-tag">KPI · Retention</span>
+      <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px">
+        <span class="display" style="font-size:40px;font-weight:700">94.2%</span>
+        <span class="chip" style="color:var(--mint);border-color:rgba(61,220,151,.35)">▲ +2.1 pts</span>
+      </div>
+      <svg class="spark" viewBox="0 0 300 54" style="width:100%;height:54px;margin-top:10px" role="img" aria-label="Retention sparkline trending up"><path id="sparkPath" d="M0,44 L25,40 L50,42 L75,34 L100,36 L125,28 L150,30 L175,22 L200,24 L225,16 L250,18 L275,10 L300,6"/><circle class="dot" cx="300" cy="6" r="3.5"/></svg>
+      <p style="margin-top:8px">90-day retention, all plans. Hover the stat cards above for the same treatment.</p>
+    </article>
+    <article class="cell span-5" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div><span class="cell-tag">Control · Automations</span><h3 style="margin-top:6px">Ship while you sleep</h3></div>
+        <button class="toggle" id="autoToggle" role="switch" aria-checked="true" aria-label="Toggle automations"></button>
+      </div>
+      <p id="autoState">Automations on — 3 rules ran in the last hour, 0 needed you.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="chip">⚡ Auto-triage</span><span class="chip">↻ Weekly digest</span><span class="chip">✦ Smart routing</span>
+      </div>
+    </article>
+    <article class="cell span-4" data-tip="Sprint goal · 31 of 40 points shipped">
+      <span class="cell-tag">Progress · Sprint 24</span>
+      <div style="display:flex;align-items:center;gap:16px;margin-top:10px">
+        <svg width="86" height="86" viewBox="0 0 86 86" class="pring" role="img" aria-label="Sprint progress ring, 78 percent">
+          <circle class="pring-bg" cx="43" cy="43" r="36" fill="none" stroke-width="8"/>
+          <circle class="pring-fg" cx="43" cy="43" r="36" fill="none" stroke-width="8" stroke-dasharray="226.2" stroke-dashoffset="50" data-ring="78"/>
+        </svg>
+        <div><div class="display" style="font-size:30px;font-weight:700">78%</div><p>31 / 40 points shipped</p></div>
+      </div>
+    </article>
+    <article class="cell span-4 cell-accent">
+      <span class="cell-tag">Quote · From the field</span>
+      <p style="font-family:var(--font-display);font-size:19px;line-height:1.4;color:#fff;margin-top:8px">“We replaced four pages with one bento. Conversion on the feature page doubled in a week.”</p>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
+        <span style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;font-weight:700;font-size:13px">MR</span>
+        <div><div style="font-weight:600;font-size:13.5px">Mara Reyes</div><div style="font-size:12px;color:rgba(255,255,255,.75)">Head of Product, Northwind</div></div>
+      </div>
+    </article>
+    <article class="cell span-4">
+      <span class="cell-tag">Live · Activity</span>
+      <h3>Right now</h3>
+      <ul style="list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:13.5px">
+        <li>● <strong>12:04</strong> — Team Aurora published a layout</li>
+        <li>● <strong>11:58</strong> — 3 new signups from the pricing page</li>
+        <li>● <strong>11:41</strong> — Deploy #482 passed all checks</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<!-- ================= LAYOUTS ================= -->
+<section class="wrap" id="layouts" style="padding:48px 24px 24px">
+  <div class="reveal">
+    <p class="eyebrow">01 — The gallery</p>
+    <h2 class="display" style="font-size:clamp(30px,4vw,44px);font-weight:700;margin:10px 0 10px">Four layouts, one system</h2>
+    <p style="color:var(--muted);font-size:16px;line-height:1.6;max-width:640px;margin:0 0 24px">
+      Every layout is a real, working grid — switch tabs, hover the charts,
+      flip the toggles. Pick one, copy its code, make it yours.
+    </p>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap" role="tablist" aria-label="Bento layouts" class="reveal">
+    <button class="tab active" data-layout="classic" role="tab" aria-selected="true">Classic 6</button>
+    <button class="tab" data-layout="editorial" role="tab" aria-selected="false">Editorial</button>
+    <button class="tab" data-layout="metrics" role="tab" aria-selected="false">Metrics wall</button>
+    <button class="tab" data-layout="minimal" role="tab" aria-selected="false">Minimal 4</button>
+  </div>
+
+  <!-- CLASSIC -->
+  <div class="bento layout-panel active" id="layout-classic" style="margin-top:18px" role="tabpanel">
+    <article class="cell span-8 row-2" data-tip="Activation funnel · hover any step for the exact count">
+      <span class="cell-tag">Funnel · Activation</span><h3>From visit to value in four steps</h3>
+      <div id="funnelBars" style="display:flex;flex-direction:column;gap:10px;margin-top:16px"></div>
+    </article>
+    <article class="cell span-4" data-tip="NPS · 62 from 1,204 responses this quarter">
+      <span class="cell-tag">Score · NPS</span>
+      <div class="display" style="font-size:40px;font-weight:700;margin-top:6px">62</div>
+      <p>Net Promoter Score — up 9 points since Q3. Promoters 71%, detractors 9%.</p>
+    </article>
+    <article class="cell span-4">
+      <span class="cell-tag">Checklist · Onboarding</span><h3>Set up in minutes</h3>
+      <div style="display:flex;flex-direction:column;gap:9px;margin-top:12px" id="checklist">
+        <label style="display:flex;gap:9px;align-items:center;font-size:13.5px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--accent);width:16px;height:16px"> Connect your workspace</label>
+        <label style="display:flex;gap:9px;align-items:center;font-size:13.5px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--accent);width:16px;height:16px"> Import your first project</label>
+        <label style="display:flex;gap:9px;align-items:center;font-size:13.5px;cursor:pointer"><input type="checkbox" style="accent-color:var(--accent);width:16px;height:16px"> Invite your team</label>
+        <label style="display:flex;gap:9px;align-items:center;font-size:13.5px;cursor:pointer"><input type="checkbox" style="accent-color:var(--accent);width:16px;height:16px"> Publish your first layout</label>
+      </div>
+      <p id="checkProgress" style="margin-top:12px;font-weight:600;color:var(--paper)">2 of 4 done — keep going</p>
+    </article>
+    <article class="cell span-4 cell-dark">
+      <span class="cell-tag">Integrations</span><h3>Plays well with your stack</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <span class="chip">Slack</span><span class="chip">Figma</span><span class="chip">GitHub</span><span class="chip">Linear</span><span class="chip">Notion</span><span class="chip">Zapier</span>
+      </div>
+      <p style="margin-top:12px">One-click OAuth, no API keys to paste. 40+ integrations, more every month.</p>
+    </article>
+    <article class="cell span-4" data-tip="Uptime · 99.99% over the last 90 days">
+      <span class="cell-tag">Reliability · Uptime</span>
+      <div class="display" style="font-size:40px;font-weight:700;margin-top:6px">99.99%</div>
+      <p>Last incident 41 days ago — 11 minutes, fully disclosed in the status log.</p>
+    </article>
+    <article class="cell span-4">
+      <span class="cell-tag">Support</span><h3>Humans, not bots</h3>
+      <p style="margin-top:8px">Median first reply <strong style="color:var(--paper)">4 min</strong>. Real product people, on every plan — including free.</p>
+      <button class="btn" style="margin-top:14px" data-action="support">Chat with support →</button>
+    </article>
+  </div>
+
+  <!-- EDITORIAL -->
+  <div class="bento layout-panel" id="layout-editorial" style="margin-top:18px" role="tabpanel">
+    <article class="cell span-12" style="padding:28px">
+      <span class="cell-tag">Editorial · The manifesto cell</span>
+      <p class="display" style="font-size:clamp(26px,3.4vw,40px);line-height:1.25;font-weight:600;color:var(--paper);margin:10px 0 0;max-width:900px">
+        “A feature page should read like a magazine spread — one big idea,
+        a few sharp details, and nothing that wastes the reader's time.”
+      </p>
+      <p style="margin-top:12px">— The Bento Atelier manifesto, cell nº 1</p>
+    </article>
+    <article class="cell span-5" data-tip="Time to value · median 6 minutes from signup to first layout">
+      <span class="cell-tag">Metric · Time to value</span>
+      <div class="display" style="font-size:40px;font-weight:700;margin-top:6px">6 min</div>
+      <p>Median time from signup to a published layout. The record is 2 min 41 s.</p>
+    </article>
+    <article class="cell span-7 row-2">
+      <span class="cell-tag">Anatomy · What makes a bento</span><h3>Five rules, zero exceptions</h3>
+      <ol style="margin:14px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.55;color:var(--muted)">
+        <li><strong style="color:var(--paper)">One hero cell</strong> — the biggest idea owns the biggest space.</li>
+        <li><strong style="color:var(--paper)">No filler</strong> — if a cell says nothing, it goes.</li>
+        <li><strong style="color:var(--paper)">Numbers are live</strong> — every figure updates, every chart answers a hover.</li>
+        <li><strong style="color:var(--paper)">Rhythm over symmetry</strong> — 7/5 beats 6/6 when the story needs it.</li>
+        <li><strong style="color:var(--paper)">One accent</strong> — colour is a highlighter, not a rainbow.</li>
+      </ol>
+    </article>
+    <article class="cell span-5 cell-accent">
+      <span class="cell-tag">Try it · No signup</span>
+      <h3 style="margin-top:6px">Drag the grid yourself</h3>
+      <p style="margin-top:6px">Open the playground below and bend this system — accent, density, radius — live.</p>
+      <button class="btn" style="margin-top:14px;background:#fff;color:#111;border-color:#fff" data-action="goto-playground">Open the playground →</button>
+    </article>
+  </div>
+
+  <!-- METRICS -->
+  <div class="bento layout-panel" id="layout-metrics" style="margin-top:18px" role="tabpanel">
+    <article class="cell span-3" data-tip="MRR · $48,620, up 12.4% month over month">
+      <span class="cell-tag">MRR</span><div class="display" style="font-size:32px;font-weight:700;margin-top:6px">$48,620</div><p>▲ 12.4% MoM</p>
+      <svg class="spark" viewBox="0 0 200 40" style="width:100%;height:40px;margin-top:8px"><path d="M0,32 L25,28 L50,30 L75,22 L100,24 L125,16 L150,18 L175,10 L200,6"/></svg>
+    </article>
+    <article class="cell span-3" data-tip="Active users · 18,432 this month, 6,204 daily">
+      <span class="cell-tag">Active users</span><div class="display" style="font-size:32px;font-weight:700;margin-top:6px">18,432</div><p>6,204 daily · 33.7% DAU/MAU</p>
+      <svg class="spark" viewBox="0 0 200 40" style="width:100%;height:40px;margin-top:8px"><path d="M0,30 L25,26 L50,28 L75,20 L100,22 L125,14 L150,16 L175,10 L200,4"/></svg>
+    </article>
+    <article class="cell span-3" data-tip="Churn · 1.8% monthly, down from 2.6% in Q2">
+      <span class="cell-tag">Churn</span><div class="display" style="font-size:32px;font-weight:700;margin-top:6px">1.8%</div><p>▼ 0.8 pts since Q2</p>
+      <svg class="spark" viewBox="0 0 200 40" style="width:100%;height:40px;margin-top:8px"><path d="M0,8 L25,12 L50,10 L75,16 L100,14 L125,20 L150,18 L175,24 L200,28"/></svg>
+    </article>
+    <article class="cell span-3" data-tip="NRR · 118% — existing customers expand faster than they churn">
+      <span class="cell-tag">Net revenue retention</span><div class="display" style="font-size:32px;font-weight:700;margin-top:6px">118%</div><p>Expansion beats churn</p>
+      <svg class="spark" viewBox="0 0 200 40" style="width:100%;height:40px;margin-top:8px"><path d="M0,34 L25,30 L50,32 L75,26 L100,28 L125,20 L150,22 L175,14 L200,8"/></svg>
+    </article>
+    <article class="cell span-8" data-tip="Revenue by plan · hover any segment for the exact share">
+      <span class="cell-tag">Mix · Revenue by plan</span><h3>Where the money comes from</h3>
+      <div id="mixBars" style="display:flex;height:26px;border-radius:8px;overflow:hidden;margin-top:16px" role="img" aria-label="Revenue mix bar: Starter 18 percent, Growth 46 percent, Scale 27 percent, Enterprise 9 percent"></div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--muted)">
+        <span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--accent)"></i> Growth 46%</span>
+        <span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--sky)"></i> Scale 27%</span>
+        <span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--mint)"></i> Starter 18%</span>
+        <span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--butter)"></i> Enterprise 9%</span>
+      </div>
+    </article>
+    <article class="cell span-4" data-tip="Goal · $60,000 MRR by end of quarter, 81% of the way there">
+      <span class="cell-tag">Goal · Q4 MRR</span>
+      <div style="display:flex;align-items:center;gap:16px;margin-top:10px">
+        <svg width="86" height="86" viewBox="0 0 86 86" class="pring"><circle class="pring-bg" cx="43" cy="43" r="36" fill="none" stroke-width="8"/><circle class="pring-fg" cx="43" cy="43" r="36" fill="none" stroke-width="8" stroke-dasharray="226.2" stroke-dashoffset="43" data-ring="81"/></svg>
+        <div><div class="display" style="font-size:30px;font-weight:700">81%</div><p>$48,620 / $60,000</p></div>
+      </div>
+    </article>
+  </div>
+
+  <!-- MINIMAL -->
+  <div class="bento layout-panel" id="layout-minimal" style="margin-top:18px" role="tabpanel">
+    <article class="cell span-6 row-2" style="display:flex;flex-direction:column;justify-content:center;padding:32px">
+      <span class="cell-tag">Minimal · One idea per cell</span>
+      <h3 class="display" style="font-size:32px;line-height:1.2;margin:10px 0">Four cells.<br>Nothing else.</h3>
+      <p style="max-width:380px">When the product is obvious, the page should be too. Minimal strips the bento to its skeleton — four cells, one message each, generous air.</p>
+      <button class="btn btn-primary" style="margin-top:20px;align-self:flex-start" data-action="copy-minimal">Copy this layout</button>
+    </article>
+    <article class="cell span-6" data-tip="Speed · median page load 0.8 s, no JavaScript framework">
+      <span class="cell-tag">Speed</span><div class="display" style="font-size:36px;font-weight:700;margin-top:6px">0.8 s</div><p>Median load. One file, no framework, no build step.</p>
+    </article>
+    <article class="cell span-6" data-tip="Accessibility · WCAG AA contrast, keyboard-first, reduced motion respected">
+      <span class="cell-tag">Accessible</span><div class="display" style="font-size:36px;font-weight:700;margin-top:6px">AA</div><p>WCAG 2.1 AA contrast, full keyboard support, reduced-motion respected.</p>
+    </article>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px" class="reveal">
+    <button class="btn btn-primary" id="copyLayoutBtn">Copy current layout code</button>
+    <button class="btn" id="downloadBtn">Download the kit (.zip)</button>
+    <span style="align-self:center;font-size:13px;color:var(--muted)" id="layoutNote">Showing Classic 6 — 6 cells, funnel + NPS + checklist + integrations + uptime + support.</span>
+  </div>
+</section>
+
+<!-- ================= PLAYGROUND ================= -->
+<section class="wrap" id="playground" style="padding:48px 24px 24px">
+  <div class="reveal">
+    <p class="eyebrow">02 — The playground</p>
+    <h2 class="display" style="font-size:clamp(30px,4vw,44px);font-weight:700;margin:10px 0 10px">Bend the system, live</h2>
+    <p style="color:var(--muted);font-size:16px;line-height:1.6;max-width:640px;margin:0 0 24px">
+      The controls below re-skin the entire page in real time — the same tokens
+      your buyers will edit. Try an accent, tighten the density, soften the corners.
+    </p>
+  </div>
+  <div class="bento reveal">
+    <article class="cell span-4">
+      <span class="cell-tag">Accent</span><h3>Pick a voice</h3>
+      <div style="display:flex;gap:10px;margin-top:14px" role="group" aria-label="Accent colour">
+        <button class="swatch active" data-accent-btn="coral" style="background:#FF5C47" aria-label="Coral accent"></button>
+        <button class="swatch" data-accent-btn="butter" style="background:#FFC53D" aria-label="Butter accent"></button>
+        <button class="swatch" data-accent-btn="mint" style="background:#3DDC97" aria-label="Mint accent"></button>
+        <button class="swatch" data-accent-btn="sky" style="background:#4CC9F0" aria-label="Sky accent"></button>
+        <button class="swatch" data-accent-btn="violet" style="background:#A78BFA" aria-label="Violet accent"></button>
+      </div>
+      <p style="margin-top:14px">Current accent: <strong style="color:var(--paper)" id="accentName">Coral #FF5C47</strong></p>
+    </article>
+    <article class="cell span-4">
+      <span class="cell-tag">Density</span><h3>Room to breathe</h3>
+      <div class="seg" style="margin-top:14px" role="group" aria-label="Density">
+        <button data-density="cozy" class="active">Cozy</button>
+        <button data-density="compact">Compact</button>
+        <button data-density="airy">Airy</button>
+      </div>
+      <p style="margin-top:14px">Gap + padding follow the density. Compact fits 30% more cells above the fold.</p>
+    </article>
+    <article class="cell span-4">
+      <span class="cell-tag">Corners</span><h3>Soft or sharp</h3>
+      <label style="display:block;font-size:13px;color:var(--muted);margin-top:14px">Corner radius — <span id="radiusVal" style="color:var(--paper);font-weight:600">18 px</span></label>
+      <input type="range" id="radiusRange" min="4" max="28" value="18" aria-label="Corner radius">
+      <label style="display:block;font-size:13px;color:var(--muted);margin-top:14px">Grid gap — <span id="gapVal" style="color:var(--paper);font-weight:600">14 px</span></label>
+      <input type="range" id="gapRange" min="6" max="28" value="14" aria-label="Grid gap">
+      <button class="btn" id="resetPlayground" style="margin-top:16px">Reset playground</button>
+    </article>
+    <article class="cell span-12" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <span class="cell-tag">Live preview</span>
+      <p style="flex:1;min-width:220px">Everything above — the hero chart, the rings, the toggles — already follows your choices. That's the point: one token, whole page.</p>
+      <button class="btn btn-primary" id="copyTokensBtn">Copy my tokens</button>
+    </article>
+  </div>
+</section>
+
+<!-- ================= CELLS LIBRARY ================= -->
+<section class="wrap" id="cells" style="padding:48px 24px 24px">
+  <div class="reveal">
+    <p class="eyebrow">03 — The cell library</p>
+    <h2 class="display" style="font-size:clamp(30px,4vw,44px);font-weight:700;margin:10px 0 10px">Twelve components, zero filler</h2>
+    <p style="color:var(--muted);font-size:16px;line-height:1.6;max-width:640px;margin:0 0 24px">
+      Every cell type in the kit, with what it does and where it earns its place.
+      Filter by job to find the right cell faster.
+    </p>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap" class="reveal" role="group" aria-label="Filter cells by job">
+    <button class="tab active" data-filter="all">All 12</button>
+    <button class="tab" data-filter="prove">Prove it</button>
+    <button class="tab" data-filter="guide">Guide</button>
+    <button class="tab" data-filter="convert">Convert</button>
+  </div>
+  <div class="bento" style="margin-top:18px" id="cellGrid"></div>
+</section>
+
+<!-- ================= MARQUEE ================= -->
+<section class="wrap" style="padding:48px 24px 8px">
+  <p style="text-align:center;font-size:13px;color:var(--faint);letter-spacing:.14em;text-transform:uppercase;font-family:var(--font-mono)">Trusted by product teams at</p>
+  <div class="marquee" style="margin-top:18px" aria-hidden="true">
+    <div class="marquee-track" id="marqueeTrack"></div>
+  </div>
+</section>
+
+<!-- ================= CODE ================= -->
+<section class="wrap" id="code" style="padding:48px 24px 24px">
+  <div class="reveal">
+    <p class="eyebrow">04 — The code</p>
+    <h2 class="display" style="font-size:clamp(30px,4vw,44px);font-weight:700;margin:10px 0 10px">Copy. Paste. Ship.</h2>
+    <p style="color:var(--muted);font-size:16px;line-height:1.6;max-width:640px;margin:0 0 24px">
+      The whole kit is one self-contained HTML file — Tailwind via CDN, CSS
+      custom properties for theming, vanilla JS for every interaction. No build
+      step, no dependencies to install, no framework lock-in.
+    </p>
+  </div>
+  <div class="reveal" style="position:relative">
+    <div class="codeblock" id="codeBlock"><span class="tk">&lt;!-- Feature Bento — one file, four layouts --&gt;</span>
+<span class="tk">&lt;div</span> <span class="tn">class</span>=<span class="ts">"bento"</span><span class="tk">&gt;</span>
+  <span class="tk">&lt;article</span> <span class="tn">class</span>=<span class="ts">"cell span-7 row-2"</span><span class="tk">&gt;</span>
+    <span class="tk">&lt;span</span> <span class="tn">class</span>=<span class="ts">"cell-tag"</span><span class="tk">&gt;</span>Live chart · Signups<span class="tk">&lt;/span&gt;</span>
+    <span class="tk">&lt;h3&gt;</span>Growth you can point at<span class="tk">&lt;/h3&gt;</span>
+    <span class="tk">&lt;svg</span> <span class="tn">id</span>=<span class="ts">"heroChart"</span> <span class="tn">viewBox</span>=<span class="ts">"0 0 560 150"</span><span class="tk">&gt;&lt;/svg&gt;</span>
+  <span class="tk">&lt;/article&gt;</span>
+  <span class="tk">&lt;article</span> <span class="tn">class</span>=<span class="ts">"cell span-5"</span><span class="tk">&gt;</span>
+    <span class="tk">&lt;!-- KPI, sparkline, toggle, ring, quote… --&gt;</span>
+  <span class="tk">&lt;/article&gt;</span>
+<span class="tk">&lt;/div&gt;</span>
+
+<span class="tk">&lt;!-- Theme it in one line --&gt;</span>
+<span class="tk">&lt;html</span> <span class="tn">data-theme</span>=<span class="ts">"dark"</span> <span class="tn">data-accent</span>=<span class="ts">"coral"</span><span class="tk">&gt;</span></div>
+    <button class="btn" id="copyCodeBtn" style="position:absolute;top:12px;right:12px">Copy code</button>
+  </div>
+  <div class="bento" style="margin-top:var(--gap)">
+    <article class="cell span-4 card-hover"><span class="cell-tag">What's inside</span><h3>The kit, itemised</h3><p>4 layouts · 26 cells · 12 components · command palette · light &amp; dark themes · 5 accents · playground · FAQ · full documentation in the README.</p></article>
+    <article class="cell span-4 card-hover"><span class="cell-tag">License</span><h3>Use it anywhere</h3><p>One purchase, unlimited projects. Commercial use included. Resale of the file itself excluded — standard 21st.dev terms.</p></article>
+    <article class="cell span-4 card-hover"><span class="cell-tag">Support</span><h3>Updates included</h3><p>Free updates for life, plus the changelog in the kit. Questions answered by the studio within one business day.</p></article>
+  </div>
+</section>
+
+<!-- ================= FAQ + CTA ================= -->
+<section class="wrap" id="faq" style="padding:48px 24px 24px">
+  <div class="reveal">
+    <p class="eyebrow">05 — Questions</p>
+    <h2 class="display" style="font-size:clamp(30px,4vw,44px);font-weight:700;margin:10px 0 24px">Before you ask</h2>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;max-width:780px" class="reveal">
+    <details class="faq"><summary>Do I need a build step or a framework? <span aria-hidden="true">+</span></summary><p>No. The kit is a single HTML file. Open it in a browser and it works — Tailwind loads from CDN, all interactions are vanilla JavaScript. Drop it into any static host.</p></details>
+    <details class="faq"><summary>Can I change the accent colour and the dark theme? <span aria-hidden="true">+</span></summary><p>Yes — both are one attribute on the &lt;html&gt; tag: data-theme="dark|light" and data-accent="coral|butter|mint|sky|violet". The playground above previews every combination live.</p></details>
+    <details class="faq"><summary>Are the charts real or images? <span aria-hidden="true">+</span></summary><p>Real. Bars, sparklines, rings and funnels are inline SVG drawn from data in the file. Hover any of them for exact values — and swap the data arrays to make them yours.</p></details>
+    <details class="faq"><summary>Does it work on mobile? <span aria-hidden="true">+</span></summary><p>Yes. Below 900 px every bento recomposes into a single-column stack, the top navigation becomes a bottom tab bar, and touch targets stay above 44 px.</p></details>
+    <details class="faq"><summary>What do I get when I buy? <span aria-hidden="true">+</span></summary><p>The full source (index.html), a README with the token reference and layout guide, and free updates for life. Delivered as a .zip through 21st.dev.</p></details>
+  </div>
+
+  <div class="cell cell-accent reveal" style="margin-top:36px;padding:36px;text-align:center">
+    <p class="eyebrow" style="color:rgba(255,255,255,.7)">Feature Bento — $39 · one-time</p>
+    <h2 class="display" style="font-size:clamp(28px,4vw,42px);font-weight:700;margin:12px 0 10px;color:#fff">Ship a feature page that looks designed.</h2>
+    <p style="color:rgba(255,255,255,.85);max-width:520px;margin:0 auto 22px;font-size:16px;line-height:1.6">Four layouts, twenty-six working cells, a live playground — and a page your visitors will actually read to the bottom.</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn" id="ctaBottom" style="background:#fff;color:#111;border-color:#fff">Get Feature Bento — $39</button>
+      <button class="btn" id="ctaBrowse" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.5)">Browse the layouts ↑</button>
+    </div>
+    <p style="color:rgba(255,255,255,.65);font-size:12.5px;margin:16px 0 0">One-time purchase · Unlimited projects · Free updates for life</p>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer style="border-top:1px solid var(--border);margin-top:48px">
+  <div class="wrap" style="padding:36px 24px 28px;display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;justify-content:space-between">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="logo-mark" aria-hidden="true"><i></i><i></i><i></i></span><span class="display" style="font-size:17px;font-weight:700">Feature Bento</span></div>
+      <p style="color:var(--muted);font-size:13.5px;max-width:320px;line-height:1.6;margin:12px 0 0">Bento feature grids for SaaS teams. A template by JULIUS VIBE STUDIO — fictional data throughout, built for demonstration.</p>
+    </div>
+    <div style="display:flex;gap:48px;flex-wrap:wrap">
+      <div><p class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)">Kit</p><p style="font-size:14px;line-height:2;margin:8px 0 0"><a href="#layouts" style="text-decoration:none">Layouts</a><br><a href="#playground" style="text-decoration:none">Playground</a><br><a href="#cells" style="text-decoration:none">Cells</a><br><a href="#code" style="text-decoration:none">Code</a></p></div>
+      <div><p class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)">Studio</p><p style="font-size:14px;line-height:2;margin:8px 0 0">JULIUS VIBE STUDIO<br>Templates &amp; design systems<br>21st.dev</p></div>
+    </div>
+  </div>
+  <div class="wrap" style="padding:0 24px 28px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--faint)">
+    <span>© 2026 JULIUS VIBE STUDIO — Feature Bento v1.0</span>
+    <span>Dark by default · Light theme included · <span class="mono">data-theme / data-accent</span></span>
+  </div>
+</footer>
+
+<!-- mobile tab bar -->
+<nav class="tabbar" aria-label="Mobile">
+  <button data-tab="layouts" class="active">▦<span>Layouts</span></button>
+  <button data-tab="playground">🎛<span>Playground</span></button>
+  <button data-tab="cells">▤<span>Cells</span></button>
+  <button data-tab="code">⌘<span>Code</span></button>
+</nav>
+
+<!-- command palette -->
+<div id="palette" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div class="palette-box">
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border)">
+      <span aria-hidden="true">⌘</span>
+      <input id="paletteInput" type="text" placeholder="Jump to a layout, toggle the theme, copy code…" style="flex:1;background:none;border:0;outline:none;color:var(--paper);font-size:15px;font-family:inherit" autocomplete="off">
+      <span class="kbd">ESC</span>
+    </div>
+    <div id="paletteList" style="max-height:320px;overflow:auto;padding:6px"></div>
+  </div>
+</div>
+
+<script>
+/* ================= data ================= */
+const WEEKS = [182,214,198,246,231,268,254,289,276,312,298,342];
+const WEEK_LABELS = ["W1","W2","W3","W4","W5","W6","W7","W8","W9","W10","W11","W12"];
+const FUNNEL = [
+  { label:"Visited the feature page", value:12480, pct:100 },
+  { label:"Started the interactive tour", value:8736, pct:70 },
+  { label:"Created a first layout", value:5242, pct:42 },
+  { label:"Published a page", value:3119, pct:25 },
+];
+const MIX = [
+  { label:"Growth", pct:46, color:"var(--accent)" },
+  { label:"Scale", pct:27, color:"var(--sky)" },
+  { label:"Starter", pct:18, color:"var(--mint)" },
+  { label:"Enterprise", pct:9, color:"var(--butter)" },
+];
+const CELLS = [
+  { name:"Chart cell", job:"prove", desc:"Bars, lines and funnels with hover tooltips carrying exact values." },
+  { name:"KPI cell", job:"prove", desc:"One big number, a delta chip and a sparkline. Count-up on scroll." },
+  { name:"Progress ring", job:"prove", desc:"Goal tracking with an animated SVG ring — sprint, quota, MRR." },
+  { name:"Distribution bar", job:"prove", desc:"Stacked revenue mix or NPS split, hoverable segment by segment." },
+  { name:"Checklist cell", job:"guide", desc:"Onboarding steps with live progress — checked items update the counter." },
+  { name:"Anatomy cell", job:"guide", desc:"Numbered rules or steps, editorial type, built for skimming." },
+  { name:"Manifesto cell", job:"guide", desc:"One big serif statement that carries the whole page's argument." },
+  { name:"Integration grid", job:"guide", desc:"Chips of tools and partners, one click to the docs." },
+  { name:"Toggle cell", job:"convert", desc:"A real switch that changes state — automations, plans, features." },
+  { name:"Quote cell", job:"convert", desc:"Social proof with avatar, name and role. Accent background option." },
+  { name:"Activity feed", job:"convert", desc:"A live-looking log that makes the product feel used right now." },
+  { name:"CTA cell", job:"convert", desc:"Price, promise and one button. The cell that closes the page." },
+];
+const COMMANDS = [
+  { label:"Go to Layouts gallery", hint:"Section 01", run:()=>goTo("#layouts") },
+  { label:"Go to Playground", hint:"Section 02", run:()=>goTo("#playground") },
+  { label:"Go to Cell library", hint:"Section 03", run:()=>goTo("#cells") },
+  { label:"Go to Code", hint:"Section 04", run:()=>goTo("#code") },
+  { label:"Go to FAQ", hint:"Section 05", run:()=>goTo("#faq") },
+  { label:"Switch layout: Classic 6", hint:"Layout", run:()=>setLayout("classic") },
+  { label:"Switch layout: Editorial", hint:"Layout", run:()=>setLayout("editorial") },
+  { label:"Switch layout: Metrics wall", hint:"Layout", run:()=>setLayout("metrics") },
+  { label:"Switch layout: Minimal 4", hint:"Layout", run:()=>setLayout("minimal") },
+  { label:"Toggle light / dark theme", hint:"Theme", run:toggleTheme },
+  { label:"Copy the hero grid code", hint:"Copy", run:()=>copyText(heroSnippet(),"Hero grid code copied") },
+  { label:"Copy current layout code", hint:"Copy", run:copyCurrentLayout },
+  { label:"Reset the playground", hint:"Playground", run:resetPlayground },
+];
+const LAYOUT_NOTES = {
+  classic:"Showing Classic 6 — 6 cells, funnel + NPS + checklist + integrations + uptime + support.",
+  editorial:"Showing Editorial — 4 cells, manifesto + time-to-value + anatomy + playground CTA.",
+  metrics:"Showing Metrics wall — 6 cells, MRR / users / churn / NRR + revenue mix + Q4 goal.",
+  minimal:"Showing Minimal 4 — 4 cells, one idea each, maximum air.",
+};
+const LAYOUT_SNIPPETS = {
+  classic:'<div class="bento">\n  <!-- Classic 6: funnel (span-8) + NPS + checklist -->\n  <article class="cell span-8 row-2">…funnel…</article>\n  <article class="cell span-4">…NPS 62…</article>\n  <article class="cell span-4">…checklist…</article>\n  <article class="cell span-4 cell-dark">…integrations…</article>\n  <article class="cell span-4">…uptime 99.99%…</article>\n  <article class="cell span-4">…support…</article>\n</div>',
+  editorial:'<div class="bento">\n  <!-- Editorial: manifesto (span-12) + metric + anatomy -->\n  <article class="cell span-12">…manifesto…</article>\n  <article class="cell span-5">…6 min time-to-value…</article>\n  <article class="cell span-7 row-2">…five rules…</article>\n  <article class="cell span-5 cell-accent">…playground CTA…</article>\n</div>',
+  metrics:'<div class="bento">\n  <!-- Metrics wall: 4 KPI cells + mix + goal -->\n  <article class="cell span-3">…MRR $48,620…</article>\n  <article class="cell span-3">…18,432 users…</article>\n  <article class="cell span-3">…churn 1.8%…</article>\n  <article class="cell span-3">…NRR 118%…</article>\n  <article class="cell span-8">…revenue mix…</article>\n  <article class="cell span-4">…Q4 goal ring 81%…</article>\n</div>',
+  minimal:'<div class="bento">\n  <!-- Minimal 4: one idea per cell -->\n  <article class="cell span-6 row-2">…four cells, nothing else…</article>\n  <article class="cell span-6">…0.8 s load…</article>\n  <article class="cell span-6">…WCAG AA…</article>\n</div>',
+};
+function heroSnippet(){ return LAYOUT_SNIPPETS.classic; }
+
+/* ================= helpers ================= */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const tip = $("#tip");
+function showTip(html, x, y){ tip.innerHTML = html; tip.style.left = Math.min(Math.max(x, 90), innerWidth-90) + "px"; tip.style.top = (y - 12) + "px"; tip.classList.add("show"); }
+function hideTip(){ tip.classList.remove("show"); }
+function bindTip(el, html){ el.addEventListener("mousemove", e => { e.stopPropagation(); showTip(html, e.clientX, e.clientY); }); el.addEventListener("mouseleave", hideTip); el.addEventListener("focus", ()=>{ const r = el.getBoundingClientRect(); showTip(html, r.left + r.width/2, r.top); }); el.addEventListener("blur", hideTip); }
+let toastTimer;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove("show"), 2600); }
+async function copyText(text, msg){
+  try{ await navigator.clipboard.writeText(text); toast(msg || "Copied to clipboard"); }
+  catch(e){ const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); toast(msg || "Copied to clipboard"); }catch(_){ toast("Copy failed — select the code manually"); } ta.remove(); }
+}
+function goTo(sel){ const el = $(sel); if(el) el.scrollIntoView({ behavior:"smooth", block:"start" }); closePalette(); }
+
+/* ================= hero chart ================= */
+(function buildHeroChart(){
+  const svg = $("#heroChart"); const W = 560, H = 150, max = Math.max(...WEEKS);
+  const bw = 30, gap = (W - bw*WEEKS.length) / (WEEKS.length - 1);
+  WEEKS.forEach((v, i) => {
+    const h = Math.round(v / max * 120); const x = Math.round(i * (bw + gap)); const y = H - h;
+    const r = document.createElementNS("http://www.w3.org/2000/svg","rect");
+    r.setAttribute("x", x); r.setAttribute("y", y); r.setAttribute("width", bw); r.setAttribute("height", h);
+    r.setAttribute("rx", 6); r.setAttribute("fill", i === WEEKS.length-1 ? "var(--accent)" : "var(--accent)");
+    r.setAttribute("opacity", i === WEEKS.length-1 ? "1" : "0.45"); r.setAttribute("class","bar");
+    r.setAttribute("tabindex","0");
+    svg.appendChild(r);
+    bindTip(r, `<span class="mono">${WEEK_LABELS[i]}</span> · ${v.toLocaleString()} signups`);
+  });
+})();
+
+/* ================= funnel + mix ================= */
+(function buildFunnel(){
+  const wrap = $("#funnelBars");
+  FUNNEL.forEach(f => {
+    const row = document.createElement("div");
+    row.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>${f.label}</span><strong class="mono">${f.value.toLocaleString()} · ${f.pct}%</strong></div>
+    <div style="height:14px;border-radius:7px;background:var(--surface-3);overflow:hidden"><div class="bar" tabindex="0" style="height:100%;width:${f.pct}%;background:var(--accent);border-radius:7px;opacity:${0.45 + f.pct/200}"></div></div>`;
+    wrap.appendChild(row);
+    bindTip($(".bar", row), `<span class="mono">${f.label}</span> · ${f.value.toLocaleString()} (${f.pct}%)`);
+  });
+  const mix = $("#mixBars");
+  MIX.forEach(m => {
+    const seg = document.createElement("div");
+    seg.style.cssText = `width:${m.pct}%;background:${m.color};cursor:pointer`;
+    seg.setAttribute("tabindex","0");
+    mix.appendChild(seg);
+    bindTip(seg, `<span class="mono">${m.label}</span> · ${m.pct}% of revenue`);
+  });
+})();
+
+/* ================= stat tips + count-up ================= */
+$$("#statsRow .card").forEach(c => { if(c.dataset.tip) bindTip(c, c.dataset.tip); });
+$$("[data-tip]").forEach(el => { if(!el.classList.contains("card")) bindTip(el, el.dataset.tip); });
+const counters = $$(".count");
+const io = new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if(!en.isIntersecting) return;
+    const el = en.target, target = +el.dataset.count, t0 = performance.now();
+    (function tick(t){ const p = Math.min((t - t0)/900, 1); el.textContent = Math.round(target * (1 - Math.pow(1-p, 3))); if(p < 1) requestAnimationFrame(tick); })(t0);
+    io.unobserve(el);
+  });
+}, { threshold:.5 });
+counters.forEach(c => io.observe(c));
+const rio = new IntersectionObserver(entries => {
+  entries.forEach(en => { if(en.isIntersecting){ en.target.classList.add("in"); rio.unobserve(en.target); } });
+}, { threshold:.12 });
+$$(".reveal").forEach(el => rio.observe(el));
+
+/* ================= automations toggle ================= */
+$("#autoToggle").addEventListener("click", function(){
+  const on = this.getAttribute("aria-checked") !== "true";
+  this.setAttribute("aria-checked", String(on));
+  $("#autoState").textContent = on ? "Automations on — 3 rules ran in the last hour, 0 needed you." : "Automations paused — nothing runs until you switch them back on.";
+  toast(on ? "Automations switched on" : "Automations paused");
+});
+
+/* ================= checklist ================= */
+$("#checklist").addEventListener("change", () => {
+  const boxes = $$("#checklist input[type=checkbox]");
+  const done = boxes.filter(b => b.checked).length;
+  $("#checkProgress").textContent = done === boxes.length ? "4 of 4 done — you're set up 🎉" : `${done} of ${boxes.length} done — keep going`;
+});
+
+/* ================= layouts ================= */
+let currentLayout = "classic";
+function setLayout(name){
+  currentLayout = name;
+  $$(".tab[data-layout]").forEach(t => { const on = t.dataset.layout === name; t.classList.toggle("active", on); t.setAttribute("aria-selected", String(on)); });
+  $$(".layout-panel").forEach(p => p.classList.toggle("active", p.id === "layout-" + name));
+  $("#layoutNote").textContent = LAYOUT_NOTES[name];
+  if(name !== "classic") goTo("#layouts");
+}
+$$(".tab[data-layout]").forEach(t => t.addEventListener("click", () => setLayout(t.dataset.layout)));
+function copyCurrentLayout(){ copyText(LAYOUT_SNIPPETS[currentLayout], `Layout "${currentLayout}" code copied`); }
+$("#copyLayoutBtn").addEventListener("click", copyCurrentLayout);
+$("#copyHeroBtn").addEventListener("click", () => copyText(heroSnippet(), "Hero grid code copied"));
+$("#copyCodeBtn").addEventListener("click", () => copyText($("#codeBlock").textContent, "Code block copied"));
+$$("[data-action]").forEach(b => b.addEventListener("click", () => {
+  const a = b.dataset.action;
+  if(a === "support") toast("Support chat opens in the full kit — demo only, no message sent");
+  if(a === "goto-playground") goTo("#playground");
+  if(a === "copy-minimal"){ setLayout("minimal"); copyText(LAYOUT_SNIPPETS.minimal, "Minimal 4 code copied"); }
+}));
+
+/* ================= playground ================= */
+const ACCENTS = { coral:"Coral #FF5C47", butter:"Butter #FFC53D", mint:"Mint #3DDC97", sky:"Sky #4CC9F0", violet:"Violet #A78BFA" };
+$$("[data-accent-btn]").forEach(b => b.addEventListener("click", () => {
+  document.documentElement.dataset.accent = b.dataset.accentBtn;
+  $$("[data-accent-btn]").forEach(x => x.classList.toggle("active", x === b));
+  $("#accentName").textContent = ACCENTS[b.dataset.accentBtn];
+  toast("Accent switched to " + ACCENTS[b.dataset.accentBtn]);
+}));
+$$("[data-density]").forEach(b => b.addEventListener("click", () => {
+  $$("[data-density]").forEach(x => x.classList.toggle("active", x === b));
+  const d = b.dataset.density, root = document.documentElement.style;
+  if(d === "compact"){ root.setProperty("--gap","9px"); $("#gapVal").textContent = "9 px"; $("#gapRange").value = 9; }
+  if(d === "cozy"){ root.setProperty("--gap","14px"); $("#gapVal").textContent = "14 px"; $("#gapRange").value = 14; }
+  if(d === "airy"){ root.setProperty("--gap","24px"); $("#gapVal").textContent = "24 px"; $("#gapRange").value = 24; }
+  toast("Density: " + d);
+}));
+$("#radiusRange").addEventListener("input", e => { document.documentElement.style.setProperty("--radius", e.target.value + "px"); $("#radiusVal").textContent = e.target.value + " px"; });
+$("#gapRange").addEventListener("input", e => { document.documentElement.style.setProperty("--gap", e.target.value + "px"); $("#gapVal").textContent = e.target.value + " px"; });
+function resetPlayground(){
+  document.documentElement.dataset.accent = "coral";
+  $$("[data-accent-btn]").forEach(x => x.classList.toggle("active", x.dataset.accentBtn === "coral"));
+  $("#accentName").textContent = ACCENTS.coral;
+  $$("[data-density]").forEach(x => x.classList.toggle("active", x.dataset.density === "cozy"));
+  const root = document.documentElement.style;
+  root.setProperty("--radius","18px"); root.setProperty("--gap","14px");
+  $("#radiusRange").value = 18; $("#gapRange").value = 14;
+  $("#radiusVal").textContent = "18 px"; $("#gapVal").textContent = "14 px";
+  toast("Playground reset");
+}
+$("#resetPlayground").addEventListener("click", resetPlayground);
+$("#copyTokensBtn").addEventListener("click", () => {
+  const cs = getComputedStyle(document.documentElement);
+  copyText(`:root{\n  --accent:${cs.getPropertyValue("--accent").trim()};\n  --radius:${cs.getPropertyValue("--radius").trim()};\n  --gap:${cs.getPropertyValue("--gap").trim()};\n  --ink:${cs.getPropertyValue("--ink").trim()};\n  --surface:${cs.getPropertyValue("--surface").trim()};\n}`, "Your tokens copied");
+});
+
+/* ================= cell library ================= */
+(function buildCells(){
+  const grid = $("#cellGrid");
+  CELLS.forEach(c => {
+    const art = document.createElement("article");
+    art.className = "cell span-4 card-hover cell-item"; art.dataset.job = c.job;
+    art.innerHTML = `<span class="cell-tag">${c.job === "prove" ? "Prove it" : c.job === "guide" ? "Guide" : "Convert"}</span><h3>${c.name}</h3><p>${c.desc}</p>`;
+    grid.appendChild(art);
+  });
+})();
+$$("[data-filter]").forEach(b => b.addEventListener("click", () => {
+  $$("[data-filter]").forEach(x => x.classList.toggle("active", x === b));
+  const f = b.dataset.filter;
+  $$(".cell-item").forEach(c => { c.style.display = (f === "all" || c.dataset.job === f) ? "" : "none"; });
+}));
+
+/* ================= marquee ================= */
+(function buildMarquee(){
+  const names = ["Northwind","Aurora Labs","Helios","Vantage","Kite & Co","Meridian","Solstice","Fieldnote"];
+  const track = $("#marqueeTrack");
+  const html = names.map(n => `<span class="chip" style="font-size:14px;padding:10px 18px;font-family:var(--font-display);font-weight:600;color:var(--muted)">✦ ${n}</span>`).join("");
+  track.innerHTML = html + html;
+})();
+
+/* ================= theme ================= */
+function toggleTheme(){
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+  toast(html.dataset.theme === "dark" ? "Dark theme — the default" : "Light theme");
+}
+$("#themeToggle").addEventListener("click", toggleTheme);
+
+/* ================= CTAs ================= */
+$("#ctaTop").addEventListener("click", () => goTo("#faq"));
+$("#ctaHero").addEventListener("click", () => goTo("#layouts"));
+$("#ctaBottom").addEventListener("click", () => toast("Checkout lives on 21st.dev — this demo has no cart"));
+$("#ctaBrowse").addEventListener("click", () => goTo("#layouts"));
+$("#downloadBtn").addEventListener("click", () => toast("The .zip ships with the template on 21st.dev"));
+
+/* ================= nav / mobile ================= */
+$$(".navlink").forEach(a => a.addEventListener("click", () => {
+  $$(".navlink").forEach(x => x.classList.remove("active")); a.classList.add("active");
+  $("#mobileMenu").style.display = "none";
+}));
+$("#hamburger").addEventListener("click", () => {
+  const m = $("#mobileMenu"); m.style.display = m.style.display === "none" ? "block" : "none";
+});
+$$(".tabbar button").forEach(b => b.addEventListener("click", () => {
+  $$(".tabbar button").forEach(x => x.classList.toggle("active", x === b));
+  goTo("#" + b.dataset.tab);
+}));
+
+/* ================= command palette ================= */
+const palette = $("#palette"), paletteInput = $("#paletteInput"), paletteList = $("#paletteList");
+let selIdx = 0, currentResults = COMMANDS;
+function renderPalette(q){
+  const query = (q || "").toLowerCase();
+  currentResults = COMMANDS.filter(c => c.label.toLowerCase().includes(query) || c.hint.toLowerCase().includes(query));
+  selIdx = 0;
+  paletteList.innerHTML = currentResults.length ? "" : `<div style="padding:18px 16px;color:var(--muted);font-size:14px">No command matches “${q}”.</div>`;
+  currentResults.forEach((c, i) => {
+    const b = document.createElement("button");
+    b.className = "palette-item" + (i === 0 ? " sel" : "");
+    b.innerHTML = `<span style="flex:1">${c.label}</span><span class="kbd">${c.hint}</span>`;
+    b.addEventListener("click", () => { closePalette(); c.run(); });
+    paletteList.appendChild(b);
+  });
+}
+function openPalette(){ palette.classList.add("open"); renderPalette(""); paletteInput.value = ""; setTimeout(()=>paletteInput.focus(), 30); }
+function closePalette(){ palette.classList.remove("open"); }
+$("#paletteBtn").addEventListener("click", openPalette);
+palette.addEventListener("click", e => { if(e.target === palette) closePalette(); });
+paletteInput.addEventListener("input", e => renderPalette(e.target.value));
+paletteInput.addEventListener("keydown", e => {
+  const items = $$(".palette-item", paletteList);
+  if(e.key === "ArrowDown"){ e.preventDefault(); selIdx = Math.min(selIdx + 1, items.length - 1); }
+  else if(e.key === "ArrowUp"){ e.preventDefault(); selIdx = Math.max(selIdx - 1, 0); }
+  else if(e.key === "Enter"){ e.preventDefault(); const c = currentResults[selIdx]; if(c){ closePalette(); c.run(); } return; }
+  else if(e.key === "Escape"){ closePalette(); return; }
+  else return;
+  items.forEach((it, i) => it.classList.toggle("sel", i === selIdx));
+});
+document.addEventListener("keydown", e => {
+  if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k"){ e.preventDefault(); palette.classList.contains("open") ? closePalette() : openPalette(); }
+  if(e.key === "Escape") closePalette();
+});
+</script>
+</body>
+</html>
