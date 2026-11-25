@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Docsite — Northwind API Documentation</title>
 <meta name="description" content="Docsite — the documentation template for the Northwind API. A beautifully typeset reference for payments developers.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23E8B04B'/%3E%3Cpath d='M22 16h20v32H22z' fill='none' stroke='%230A0C10' stroke-width='4'/%3E%3Cpath d='M32 16v32' stroke='%230A0C10' stroke-width='4'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Docsite — Northwind API Documentation">
+<meta property="og:description" content="Docsite — the documentation template for the Northwind API. A beautifully typeset reference for payments developers.">
+<meta property="og:image" content="https://julius-nov.github.io/templates/docsite-docs-template/preview.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -2049,6 +2054,26 @@ def webhook():
   updateRailFill();
   runCountUp();
 })();
+</script>
+
+<style>
+.fbk{margin-top:46px;padding:20px 22px;border:1px solid rgba(232,230,223,.14);border-radius:16px;background:rgba(232,176,75,.05);display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.fbk p{font-weight:600;color:var(--paper);margin:0;font-size:15px}
+.fbk .fbk-btns{display:flex;gap:8px}
+.fbk button{font:inherit;font-size:13.5px;font-weight:600;padding:8px 16px;border-radius:999px;border:1px solid rgba(232,230,223,.22);background:transparent;color:var(--paper);cursor:pointer;transition:border-color .25s,background .25s,color .25s}
+.fbk button:hover{border-color:var(--amber);color:var(--amber)}
+.fbk button.on{background:var(--amber);border-color:var(--amber);color:#0A0C10}
+.fbk .fbk-thx{font-size:13.5px;color:var(--muted)}
+.fbk .fbk-thx[hidden]{display:none}
+</style>
+<script>
+(function(){document.querySelectorAll('article.chapter').forEach(function(a){if(a.querySelector('.fbk'))return;
+var d=document.createElement('div');d.className='fbk';
+d.innerHTML='<p>Was this chapter helpful?</p><div class="fbk-btns"><button type="button" data-v="yes">Yes</button><button type="button" data-v="no">Not really</button></div><span class="fbk-thx" role="status" hidden>Thanks — your feedback helps improve these docs.</span>';
+a.appendChild(d);
+d.addEventListener('click',function(e){var b=e.target.closest('button[data-v]');if(!b)return;
+d.querySelectorAll('button[data-v]').forEach(function(x){x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b?'true':'false');});
+d.querySelector('.fbk-thx').hidden=false;});});})();
 </script>
 </body>
 </html>
