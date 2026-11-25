@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ZENKAI – The future awakens</title>
 <meta name="description" content="ZENKAI: creative intelligence platform. Immersive 3D landing page with an anime character, a cyberpunk city and a holographic interface.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2304050E'/%3E%3Ctext x='35' y='45' font-family='Arial' font-size='36' font-weight='900' fill='%23FF2E9A' text-anchor='middle'%3EZ%3C/text%3E%3Ctext x='32' y='45' font-family='Arial' font-size='36' font-weight='900' fill='%2322E6FF' text-anchor='middle'%3EZ%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ZENKAI – The future awakens">
+<meta property="og:description" content="ZENKAI: creative intelligence platform. Immersive 3D landing page with an anime character, a cyberpunk city and a holographic interface.">
+<meta property="og:image" content="https://julius-nov.github.io/templates/zenkai-anime-landing/preview.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600&display=swap" rel="stylesheet">
@@ -42,7 +47,7 @@ header{position:fixed;z-index:80;top:0;left:0;right:0;padding:calc(env(safe-area
 .cta::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);transition:left .8s var(--ex)}.cta:hover{filter:drop-shadow(0 0 14px var(--cy))}.cta:hover::after{left:130%}
 .cta.sm{padding:11px 20px;font-size:12px}
 .gh{display:inline-flex;align-items:center;padding:16px 28px;border:1.5px solid var(--bd);font:700 14px Orbitron,sans-serif;letter-spacing:.12em;text-transform:uppercase;background:rgba(16,22,56,.4);backdrop-filter:blur(10px);transition:border-color .3s,box-shadow .3s,transform .5s cubic-bezier(.34,1.56,.64,1)}.gh:hover{border-color:var(--mg);box-shadow:0 0 24px rgba(255,46,154,.5),inset 0 0 18px rgba(255,46,154,.2)}
-.hero{min-height:100svh;display:flex;align-items:flex-end;padding:120px 0 64px}.hero .w{width:100%}
+.hero{min-height:100svh;display:flex;align-items:flex-end;padding:120px 0 64px;position:relative}.shint{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:3;transition:opacity .5s;pointer-events:none}.shint i{display:block;width:20px;height:20px;border-right:2px solid var(--cy);border-bottom:2px solid var(--cy);transform:rotate(45deg);animation:shb 1.8s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(34,230,255,.8))}@keyframes shb{0%,100%{transform:rotate(45deg) translate(0,0);opacity:.45}50%{transform:rotate(45deg) translate(6px,6px);opacity:1}}@media(max-width:900px){.shint{display:none}.slg,.sub{text-shadow:0 2px 18px rgba(4,5,14,.95),0 0 6px rgba(4,5,14,.9)}}.hero .w{width:100%}
 .tag{font:600 13px Orbitron,sans-serif;letter-spacing:.2em;color:var(--cy);margin-bottom:14px;display:flex;gap:10px;align-items:center}.tag i{width:9px;height:9px;background:var(--cy);box-shadow:0 0 14px var(--cy);animation:bl 1.4s infinite}@keyframes bl{50%{opacity:.2}}
 h1{font-weight:900;font-size:clamp(44px,11.5vw,188px);line-height:.95;letter-spacing:.02em;text-shadow:3px 0 var(--mg),-3px 0 var(--cy);filter:drop-shadow(0 0 34px rgba(139,92,255,.65));animation:gz 6s infinite}
 @keyframes gz{0%,92%,100%{text-shadow:3px 0 var(--mg),-3px 0 var(--cy)}94%{text-shadow:-8px 0 var(--mg),8px 0 var(--cy)}96%{text-shadow:6px 2px var(--mg),-6px -2px var(--cy)}}
@@ -119,7 +124,7 @@ footer{position:relative;z-index:2;padding:30px 0 40px;border-top:1px solid var(
 <p class="jp rv" lang="ja">未来が目覚める</p>
 <p class="slg rv">The future awakens.</p>
 <p class="sub rv">A creative intelligence platform that turns your ideas into living worlds, in real time.</p>
-<div class="row rv"><a class="cta mag" href="#join">Enter the experience</a><a class="gh mag" href="#showcase">Watch the demo</a></div>
+<div class="row rv"><a class="cta mag" href="#join">Enter the experience</a><a class="gh mag" href="#showcase">Watch the demo</a></div><div class="shint" aria-hidden="true"><i></i></div>
 </div></section>
 
 <section id="about"><div class="w ab">
@@ -261,7 +266,7 @@ var NP=mob?600:1400;PS=new Float32Array(NP*3);SPD=new Float32Array(NP);var pc2=n
 var pg=new T.BufferGeometry();pg.setAttribute('position',new T.BufferAttribute(PS,3));pg.setAttribute('color',new T.BufferAttribute(pc2,3));PT=new T.Points(pg,new T.PointsMaterial({size:.16,vertexColors:true,transparent:true,opacity:.8,blending:T.AdditiveBlending,depthWrite:false}));sc.add(PT);
 }catch(er){ren=null}}
 if(!ren)B.classList.add('nogl');
-function rs(){mob=innerWidth<=820;if(!ren)return;ren.setPixelRatio(Math.min(devicePixelRatio,mob?1.25:1.75));ren.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();base=mob?{x:0,y:.55,s:.66}:{x:2.2,y:.15,s:1}}
+function rs(){mob=innerWidth<=820;if(!ren)return;ren.setPixelRatio(Math.min(devicePixelRatio,mob?1.25:1.75));ren.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();base=mob?{x:.8,y:1.5,s:.5}:{x:2.2,y:.15,s:1}}
 if(ren)rs();addEventListener('resize',rs);
 /* boucle */
 var vh=innerHeight,H=1,ly=scrollY,vel=0,sm=0,ep=0,lt=performance.now(),ex2=$('#exp'),fws=$$('.fw'),ebi=$('#ebi'),kj=$('#kj'),OX=[],OY=[];
@@ -279,7 +284,7 @@ for(var k=0;k<SPD.length;k++){PS[k*3+1]+=SPD[k]*dt*(1+Math.abs(vel)*.002);if(PS[
 ren.render(sc,cam)}
 /* expérience : traversée des mots */
 var r=ex2.getBoundingClientRect(),pt=cl(-r.top/(ex2.offsetHeight-vh),0,1);ep+=(pt-ep)*ex(dt,6);
-fws.forEach(function(w,i){var q=cl(ep*3-i,0,1),b=Math.sin(q*Math.PI);w.style.opacity=Math.pow(b,.6);w.style.transform='scale('+(.4+q*1.6)+')';w.style.filter=b<.99?'blur('+((1-b)*14)+'px)':''});ebi.style.transform='scaleX('+ep+')';
+fws.forEach(function(w,i){var q=cl(ep*3-i,0,1),b=Math.sin(q*Math.PI);w.style.opacity=Math.pow(b,.6);w.style.transform='scale('+(.4+q*1.6)+')';w.style.filter=b<.99?'blur('+((1-b)*14)+'px)':''});ebi.style.transform='scaleX('+ep+')';var shx=$('.shint');if(shx)shx.style.opacity=y>30?0:1;
 if(kj){var kr=kj.getBoundingClientRect();kj.style.setProperty('--py',((kr.top+kr.height/2-vh/2)*-.12)+'px')}
 if(vis2)draw(t);
 if(fine){rx+=(px-rx)*ex(dt,14);ry+=(py-ry)*ex(dt,14);crg.style.transform='translate('+rx+'px,'+ry+'px)'}
