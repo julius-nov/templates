@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Feature Bento — Bento Feature Grids for SaaS</title>
 <meta name="description" content="Feature Bento — a bento-grid kit for SaaS feature pages. Four live layouts, twenty-six working cells, charts with real hover data, a live playground and copyable code. Dark by default.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23FF5C47'/%3E%3Crect x='14' y='14' width='15' height='36' rx='4' fill='%23FFFFFF'/%3E%3Crect x='35' y='14' width='15' height='15' rx='4' fill='%23FFFFFF'/%3E%3Crect x='35' y='35' width='15' height='15' rx='4' fill='%23FFFFFF'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Feature Bento — Bento Feature Grids for SaaS">
+<meta property="og:description" content="Feature Bento — a bento-grid kit for SaaS feature pages. Four live layouts, twenty-six working cells, charts with real hover data, a live playground and copyable code. Dark by default.">
+<meta property="og:image" content="https://julius-nov.github.io/templates/feature-bento/preview.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -488,6 +493,7 @@ details.faq p{ color:var(--muted); font-size:14px; line-height:1.6; margin:10px 
       <label style="display:block;font-size:13px;color:var(--muted);margin-top:14px">Grid gap — <span id="gapVal" style="color:var(--paper);font-weight:600">14 px</span></label>
       <input type="range" id="gapRange" min="6" max="28" value="14" aria-label="Grid gap">
       <button class="btn" id="resetPlayground" style="margin-top:16px">Reset playground</button>
+       <button class="btn" id="shufflePlayground" style="margin-top:16px;margin-left:8px">Surprise me</button>
     </article>
     <article class="cell span-12" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
       <span class="cell-tag">Live preview</span>
@@ -909,6 +915,15 @@ document.addEventListener("keydown", e => {
   if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k"){ e.preventDefault(); palette.classList.contains("open") ? closePalette() : openPalette(); }
   if(e.key === "Escape") closePalette();
 });
+</script>
+<script>
+(function(){var sh=document.getElementById('shufflePlayground');if(!sh)return;function rnd(n){return Math.floor(Math.random()*n)}
+sh.addEventListener('click',function(){var sw=document.querySelectorAll('[data-accent-btn]');if(sw.length)sw[rnd(sw.length)].click();
+var dn=document.querySelectorAll('button[data-density]');if(dn.length)dn[rnd(dn.length)].click();
+var r=document.getElementById('radiusRange'),g=document.getElementById('gapRange');
+if(r){r.value=4+rnd(25);r.dispatchEvent(new Event('input',{bubbles:true}));r.dispatchEvent(new Event('change',{bubbles:true}));}
+if(g){g.value=6+rnd(23);g.dispatchEvent(new Event('input',{bubbles:true}));g.dispatchEvent(new Event('change',{bubbles:true}));}
+if(typeof toast==='function')toast('Playground shuffled');});})();
 </script>
 </body>
 </html>
