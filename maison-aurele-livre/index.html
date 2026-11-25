@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Maison Aurèle — The Interactive Book</title>
+<meta name="description" content="Maison Aurèle — The Interactive Book: a fine-dining restaurant menu presented as a page-turning book. Seasonal cooking, signature dishes, gallery, bookings and WhatsApp ordering.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2a1c15;--paper:#f4ecdc;--paper2:#ebe0c8;--gold:#b08d4c;--bg:#150e0a;--h:min(84vh,calc(44vw/.72));--w:calc(var(--h)*.72);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(max-width:760px){:root{--w:min(94vw,calc(78vh*.72))}}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:radial-gradient(ellipse at 50% 40%,#3a2518 0,var(--bg) 70%);color:var(--ink);font-family:Jost,sans-serif;overflow:hidden;touch-action:pan-y}
+#bar{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;display:flex;justify-content:space-between;padding:.8rem 1rem;z-index:500;color:#e9dcc0;font-size:14px}
+#bar button{background:none;border:1px solid #b08d4c88;color:#e9dcc0;padding:.45rem .9rem;border-radius:2px;font:inherit;cursor:pointer}
+#bar button:hover{background:#b08d4c33}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#shift{transition:transform .9s cubic-bezier(.6,0,.2,1)}
+#book{position:relative;width:calc(var(--w)*2);height:calc(var(--w)/.72);perspective:2600px}
+@media(max-width:760px){#book{width:var(--w)}}
+#book::before{content:"";position:absolute;left:2%;right:2%;bottom:-3%;height:6%;background:radial-gradient(ellipse,#000a,#0000 70%);filter:blur(6px)}
+.idle #book{animation:fl 7s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-8px) rotateX(2deg) rotateY(-2deg)}}
+.lf{position:absolute;top:0;left:50%;width:var(--w);height:100%;transform-style:preserve-3d;transform-origin:left center}
+@media(max-width:760px){.lf{left:0}}
+.f{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:linear-gradient(135deg,var(--paper),var(--paper2));overflow:hidden}
+.f.b{transform:rotateY(180deg);border-radius:3px 0 0 3px;box-shadow:inset -14px 0 18px -14px #0007}
+.f.a{border-radius:0 3px 3px 0;box-shadow:inset 14px 0 18px -14px #0007,3px 0 0 #e6dcc4,5px 0 0 #cbbf9f,7px 1px 6px #0006}
+.sh{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(90deg,#0000,#0008)}
+.b .sh{background:linear-gradient(270deg,#0000,#0008)}
+.pg{position:absolute;inset:0;overflow:auto;padding:2.4em 2.1em;font-size:clamp(12px,calc(var(--w)/27),16px);line-height:1.5;scrollbar-width:thin}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:600;margin:0;line-height:1.05}
+h2{font-size:2.3em;margin-bottom:.4em}h3{font-size:1.25em}
+p{margin:.5em 0}.sm{font-size:.82em;opacity:.75}.gold{color:var(--gold)}
+.rule{height:1px;background:var(--gold);margin:.8em 0;opacity:.7}
+.btn{display:inline-block;font:inherit;background:var(--ink);color:#f4ecdc;border:0;padding:.55em 1.1em;border-radius:2px;cursor:pointer;text-decoration:none;transition:background .25s,transform .2s}
+.btn:hover{background:#5a3a22;transform:translateY(-1px)}.btn.o{background:none;color:var(--ink);border:1px solid var(--ink)}.btn.o:hover{background:#2a1c1511}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.sq{padding:.15em .6em}
+.cover{background:radial-gradient(circle at 30% 20%,#4a2c1a,#1e120b);color:#e9d9b4;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7em}
+.cover h1{font-size:3em;letter-spacing:.04em}.cover .btn{background:none;border:1px solid var(--gold);color:#e9d9b4}
+.cover .btn:hover{background:#b08d4c33}
+.frame{position:absolute;inset:1em;border:1px solid #b08d4c99;pointer-events:none}
+.dot{display:inline-block;width:.6em;height:.6em;border-radius:50%;margin-right:.4em}
+.tabs{display:flex;flex-wrap:wrap;gap:.3em;margin:.5em 0}.tabs button{font:inherit;font-size:.85em;background:none;border:1px solid #2a1c1555;padding:.25em .7em;border-radius:2em;cursor:pointer;color:var(--ink)}
+.tabs button.on{background:var(--ink);color:#f4ecdc}
+.row{display:grid;grid-template-columns:3.4em 1fr auto;gap:.8em;align-items:center;padding:.6em 0;border-bottom:1px solid #2a1c1522;cursor:pointer}
+.row{transition:background .25s}
+.row:hover{background:#2a1c1508}
+.row:hover h3{color:#7a4f27}
+.pg .gold{color:#86642c}
+.row svg{width:3.4em;height:3.4em}
+.price{font-family:'Cormorant Garamond',serif;font-size:1.25em;font-weight:600}
+.card{display:grid;grid-template-columns:5em 1fr;gap:.8em;padding:.7em;border:1px solid #b08d4c88;margin:.6em 0;align-items:center}
+.card svg{width:5em;height:5em}
+.card img.ph{width:5em;height:5em;object-fit:cover;border:1px solid var(--gold);display:block}
+img.hero-ph{width:100%;max-height:11em;object-fit:cover;border:1px solid var(--gold);display:block}
+.lbimg{width:100%;max-height:62vh;object-fit:cover;border:1px solid var(--gold);display:block}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:.6em}.g button{padding:0;border:1px solid #b08d4c88;background:#fff4;cursor:pointer;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font:inherit;font-size:.8em;color:var(--ink);transition:transform .3s}
+.g button:hover{transform:scale(1.04)}
+.g button img{width:100%;height:100%;object-fit:cover;display:block}
+.g button span{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,#150e0acc 45%);color:#f4ecdc;padding:1.2em .5em .45em;font-size:.92em}
+.g button{position:relative;overflow:hidden}.g svg{width:70%}
+label{display:block;font-size:.85em;margin-top:.55em}
+input,select,textarea{width:100%;font:inherit;padding:.45em .5em;border:1px solid #2a1c1566;background:#fffdf6;color:var(--ink);border-radius:2px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:.6em}
+.err{color:#9b2c1c;font-size:.8em;min-height:1em}
+.box{border:1px solid var(--gold);padding:.8em;margin-top:.8em;background:#fffaf0}
+.ln{display:grid;grid-template-columns:1fr auto auto;gap:.5em;align-items:center;padding:.35em 0;border-bottom:1px solid #2a1c1522}
+.q{display:flex;gap:.3em;align-items:center}.q button{font:inherit;width:1.7em;height:1.7em;border:1px solid var(--ink);background:none;cursor:pointer;color:var(--ink)}
+.dark{background:radial-gradient(circle at 70% 80%,#4a2c1a,#1e120b);color:#e9d9b4;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6em}
+.dark a{color:#e9d9b4}
+.corner{position:absolute;bottom:0;width:4.5%;min-width:34px;aspect-ratio:1;border:0;cursor:pointer;z-index:300;opacity:.0;transition:opacity .3s}
+.corner:hover,.corner:focus-visible{opacity:1}
+#cR{right:0;background:linear-gradient(315deg,#0000 50%,#b08d4c 50%,#e8d8a8)}#cL{left:0;background:linear-gradient(45deg,#0000 50%,#b08d4c 50%,#e8d8a8)}
+#nav{position:fixed;bottom:calc(.7rem + env(safe-area-inset-bottom,0px));left:0;right:0;display:flex;gap:1rem;justify-content:center;align-items:center;color:#e9dcc0;font-size:14px;z-index:500}
+#nav button{background:none;border:1px solid #b08d4c88;color:#e9dcc0;width:2.4rem;height:2.4rem;border-radius:50%;cursor:pointer;font-size:18px}
+#nav button:disabled{opacity:.3}
+#nav button:hover:not(:disabled){background:#b08d4c33}
+.tabs button:hover{border-color:var(--ink)}
+.toc button{transition:color .2s,padding-left .2s}.toc button:hover{padding-left:.3rem}
+#ov{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:900;padding:1rem}
+#ov.on{display:flex}
+#mod{background:var(--paper);max-width:520px;width:100%;max-height:90vh;overflow:auto;padding:1.5rem;border:1px solid var(--gold);position:relative;font-size:16px;line-height:1.5}
+#mod .x{position:absolute;right:.6rem;top:.4rem;border:0;background:none;font-size:26px;cursor:pointer;color:var(--ink)}
+#mod.lb{background:#0000;border:0;color:#f4ecdc;text-align:center;max-width:760px}#mod.lb .x{color:#fff}
+.toc button{display:flex;justify-content:space-between;width:100%;font:inherit;background:none;border:0;border-bottom:1px solid #2a1c1522;padding:.6rem 0;cursor:pointer;color:var(--ink)}
+.toc button:hover{color:#7a4f27}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body class="idle">
+<div id="bar"><button data-act="toc" aria-label="Contents">Contents</button><button data-act="cartgo" id="cartb">Cart (0)</button></div>
+<div id="stage"><div id="shift"><div id="book"><button class="corner" id="cL" data-act="prev" aria-label="Previous page"></button><button class="corner" id="cR" data-act="next" aria-label="Next page"></button></div></div></div>
+<div id="nav"><button data-act="prev" id="pv" aria-label="Previous page">‹</button><span id="pn"></span><button data-act="next" id="nx" aria-label="Next page">›</button></div>
+<div id="ov" role="dialog" aria-modal="true"><div id="mod"></div></div>
+<script>
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const $=s=>document.querySelector(s);
+const NAME='Maison Aurèle',WA='221000000000',MAIL='contact@maison-aurele.example',ADDR='12 Rue des Almadies, Dakar';
+const D=[
+{id:'a1',c:'Starters',n:'Red kuri squash velouté',d:'Cream of red kuri squash, toasted hazelnuts, sesame oil.',i:'Red kuri squash, cream, hazelnut, sesame',p:9,x:'#d9822b',y:'#f2c27a'},
+{id:'a2',c:'Starters',n:'Tuna tartare',d:'Lightly seared tuna, mango, lime, coriander.',i:'Tuna, mango, lime, coriander',p:14,x:'#b5423a',y:'#e8a06a'},
+{id:'p1',c:'Mains',n:'Saffron sea bass fillet',d:'Roasted sea bass, saffron beurre blanc, crisp vegetables.',i:'Sea bass, saffron, butter, fennel',p:28,x:'#e8d3a0',y:'#c58b3c'},
+{id:'p2',c:'Mains',n:'Honey-glazed duck magret',d:'Lacquered magret, honey and sweet-spice jus.',i:'Duck, honey, four-spice, sweet potato',p:27,x:'#7a3324',y:'#c9803a'},
+{id:'p3',c:'Mains',n:'Mushroom risotto',d:'Carnaroli rice, sautéed mushrooms, parmesan.',i:'Rice, mushrooms, parmesan, parsley',p:22,x:'#cbb68a',y:'#8c6a3a'},
+{id:'d1',c:'Desserts',n:'Warm chocolate soufflé',d:'70% dark chocolate, vanilla ice cream.',i:'Chocolate, eggs, vanilla',p:12,x:'#4a2a1a',y:'#d9a85a'},
+{id:'d2',c:'Desserts',n:'Fine fruit tart',d:'Puff pastry, seasonal fruit, honey.',i:'Seasonal fruit, puff pastry, honey',p:11,x:'#d36a4a',y:'#f0c46a'},
+{id:'b1',c:'Drinks',n:'House bissap',d:'Hibiscus infusion, mint, lightly sweetened.',i:'Hibiscus, mint, cane sugar',p:5,x:'#8e1f3a',y:'#e06a7a'},
+{id:'b2',c:'Drinks',n:'Ginger juice',d:'Fresh-pressed ginger, lemon, pineapple.',i:'Ginger, lemon, pineapple',p:5,x:'#e0b030',y:'#f5e08a'},
+{id:'s1',c:'Specialties',n:'Thiéboudienne, revisited',d:'Marinated fish, fragrant rice, confit vegetables.',i:'Fish, rice, tomato, cassava, carrot',p:24,x:'#c4502a',y:'#e8a050'},
+{id:'s2',c:'Specialties',n:'Smoked chicken yassa',d:'Smoked chicken, caramelized onions, lemon.',i:'Chicken, onion, lemon, mustard',p:21,x:'#d9a030',y:'#f0d070'}];
+const CATS=['Starters','Mains','Desserts','Drinks','Specialties'];
+const byId=id=>D.find(d=>d.id===id);
+const eur=n=>'€'+n.toFixed(2);
+const S={cat:'Starters',cart:{},mode:'emporter',cust:{name:'',phone:'',addr:''},note:'',lb:0,resa:null};
+const plate=(d,s)=>`<svg viewBox="0 0 100 100" ${s?`style="width:${s}"`:''}><circle cx="50" cy="52" r="47" fill="#0002"/><circle cx="50" cy="50" r="46" fill="#faf5e8" stroke="#b08d4c"/><circle cx="50" cy="50" r="33" fill="${d.x}"/><circle cx="44" cy="46" r="17" fill="${d.y}" opacity=".85"/><circle cx="60" cy="58" r="6" fill="${d.y}"/><circle cx="36" cy="62" r="3.5" fill="#2f5a34"/><circle cx="63" cy="40" r="3" fill="#2f5a34"/></svg>`;
+const scene=(a,b)=>`<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="${a}"/><circle cx="50" cy="55" r="30" fill="${b}"/><circle cx="50" cy="55" r="18" fill="${a}" opacity=".5"/></svg>`;
+const U=id=>`https://images.unsplash.com/photo-${id}?q=80&w=1200&auto=format&fit=crop`;
+const IMG={hero:U('1414235077428-338989a2e8c0'),chef:U('1577219491135-ce391730fb2c'),p1:U('1467003909585-2f8a72700288'),p2:U('1432139555190-58524dae6a55'),d1:U('1551024506-0bccd828d307')};
+const GAL=[['The signature dish','Plating',U('1414235077428-338989a2e8c0')],['The dining room','Interior',U('1517248135467-4c7edcad34c4')],['The chef','Kitchen',U('1600565193348-f74bd3c7ccdf')],['The desserts','Plating',U('1488477181946-6428a0291777')],['The bar','Interior',U('1514933651103-005eec06c04b')],['The chef’s table','Interior',U('1552566626-52f8b828add9')]];
+const open=()=>{const t=new Date(),h=t.getHours()+t.getMinutes()/60;return h>=12&&h<23};
+const cnt=()=>Object.values(S.cart).reduce((a,b)=>a+b,0);
+const total=()=>Object.entries(S.cart).reduce((a,[k,v])=>a+byId(k).p*v,0);
+const fee=()=>S.mode==='livraison'?3:0;
+const R={
+cover:()=>`<div class="cover" style="position:absolute;inset:0"><div class="frame"></div><svg width="70" viewBox="0 0 60 60"><circle cx="30" cy="30" r="27" fill="none" stroke="#b08d4c" stroke-width="1.5"/><path d="M18 44 30 14 42 44M23 34h14" fill="none" stroke="#e9d9b4" stroke-width="2"/></svg><h1>${NAME}</h1><div class="sm" style="font-style:italic;font-family:'Cormorant Garamond',serif;font-size:1.2em;opacity:.9">Seasonal cooking, a table with character</div><div class="sm"><i class="dot" style="background:${open()?'#6ab36a':'#c0623a'}"></i>${open()?'Open now · until 11 PM':'Closed · opens at 12 PM'}</div><button class="btn" data-act="next">Open the book</button></div>`,
+welcome:()=>`<h2>Welcome</h2><div class="rule"></div><p>At Maison Aurèle, the menu reads like a book: seasonal cooking, produce sourced from nearby growers, and plates that let the ingredient speak.</p><p>Turn the pages to discover our story, compose your meal and book your table.</p><div style="margin:1em 0"><img class="hero-ph" src="${IMG.hero}" alt="A signature dish served at a set table"></div><button class="btn" data-act="go" data-p="3">Explore the menu</button>`,
+story:()=>`<h2>Our story</h2><div class="rule"></div><p>Opened in 2014 by chef Amadou Diallo, the house was born of a simple idea: cook what the season offers, without detours.</p><div class="card"><img class="ph" src="${IMG.chef}" alt="The chef finishing a plate in the kitchen"><div><h3>The chef</h3><p class="sm">Trained between Dakar and Lyon, he blends classical technique with the flavours of West Africa.</p></div></div><h3>Our philosophy</h3><p>Few ingredients, cooked well. A short menu that changes with the markets. <span class="sm">(Sample text — replace with the restaurant’s real story.)</span></p>`,
+menu:()=>`<h2>The menu</h2><div class="tabs">${CATS.map(c=>`<button class="${c===S.cat?'on':''}" data-act="cat" data-c="${c}">${c}</button>`).join('')}</div>${D.filter(d=>d.c===S.cat).map(d=>`<div class="row" data-act="dish" data-id="${d.id}" tabindex="0">${plate(d)}<div><h3>${d.n}</h3><div class="sm">${d.d}</div></div><div style="text-align:right"><div class="price">${eur(d.p)}</div><button class="btn sq" data-act="add" data-id="${d.id}" aria-label="Add ${d.n}">+</button></div></div>`).join('')}<p class="sm">Tap a dish to see the details.</p>`,
+sig:()=>`<h2>Our signatures</h2><div class="rule"></div>${['p1','p2','d1'].map(id=>{const d=byId(id);return `<div class="card"><img class="ph" src="${IMG[id]}" alt="${d.n}"><div><h3>${d.n}</h3><div class="sm">${d.d}</div><div style="margin-top:.4em"><span class="price">${eur(d.p)}</span> <button class="btn sq" data-act="add" data-id="${id}">Add</button> <button class="btn o sq" data-act="dish" data-id="${id}">Details</button></div></div></div>`}).join('')}<p class="sm">Three dishes that built the house’s reputation.</p>`,
+gal:()=>`<h2>Gallery</h2><div class="g">${GAL.map((g,i)=>`<button data-act="lb" data-i="${i}" aria-label="Enlarge: ${g[0]}"><img src="${g[2]}" alt="${g[0]}" loading="lazy"><span>${g[0]}</span></button>`).join('')}</div>`,
+resa:()=>{const t=new Date().toISOString().slice(0,10),ts=[];for(let h=12;h<=22;h++){ts.push(h+':00');if(h<22)ts.push(h+':30')}
+return `<h2>Book a table</h2><form id="rf" novalidate><div class="two"><div><label for="rd">Date</label><input id="rd" type="date" min="${t}" value="${t}"></div><div><label for="rt">Time</label><select id="rt">${ts.map(x=>`<option>${x}</option>`).join('')}</select></div></div><div class="two"><div><label for="rg">Guests</label><input id="rg" type="number" min="1" max="12" value="2"></div><div><label for="rn">Name</label><input id="rn" autocomplete="name"></div></div><div class="two"><div><label for="rp">Phone</label><input id="rp" type="tel" autocomplete="tel"></div><div><label for="re">Email</label><input id="re" type="email" autocomplete="email"></div></div><label for="ro">Note (optional)</label><textarea id="ro" rows="2">${S.note}</textarea><div class="err" id="rerr"></div><button class="btn" type="submit">Prepare the request</button></form><div id="rout"></div>`},
+order:()=>{const e=Object.entries(S.cart);return `<h2>Order</h2>${e.length?e.map(([k,v])=>{const d=byId(k);return `<div class="ln"><div>${d.n}<div class="sm">${eur(d.p)}</div></div><div class="q"><button data-act="q" data-id="${k}" data-d="-1" aria-label="Less">−</button>${v}<button data-act="q" data-id="${k}" data-d="1" aria-label="More">+</button></div><button class="q" style="all:unset;cursor:pointer;padding:0 .4em" data-act="rm" data-id="${k}" aria-label="Remove">✕</button></div>`}).join(''):`<p class="sm">Your cart is empty. <a href="#" data-act="go" data-p="3">See the menu</a>.</p>`}
+<div class="tabs" role="radiogroup"><button class="${S.mode==='emporter'?'on':''}" data-act="mode" data-m="emporter">Pickup</button><button class="${S.mode==='livraison'?'on':''}" data-act="mode" data-m="livraison">Delivery (+€3)</button></div>
+<div class="two"><div><label for="on">Name</label><input id="on" value="${S.cust.name}" data-k="name"></div><div><label for="op">Phone</label><input id="op" type="tel" value="${S.cust.phone}" data-k="phone"></div></div>${S.mode==='livraison'?`<label for="oa">Delivery address</label><input id="oa" value="${S.cust.addr}" data-k="addr">`:''}
+<div class="box"><div class="ln" style="grid-template-columns:1fr auto"><span>Subtotal</span><span>${eur(total())}</span></div><div class="ln" style="grid-template-columns:1fr auto"><span>Delivery</span><span>${eur(fee())}</span></div><div class="ln" style="grid-template-columns:1fr auto;border:0"><b>Total</b><b class="price">${eur(total()+fee())}</b></div></div><div class="err" id="oerr"></div><button class="btn" data-act="send" ${e.length?'':'disabled'}>Send via WhatsApp</button> <button class="btn o" disabled title="Requires a payment provider">Pay online</button><p class="sm">Online payment is not connected: it requires a provider (Stripe, Wave, Orange Money…). Your order is only sent when WhatsApp opens.</p>`},
+events:()=>`<h2>Events</h2><div class="rule"></div>${[['Seasonal tasting menu','Five courses, house drink pairing.','€65'],['Jazz evening','Last Friday of the month, live music.','Free entry'],['Private salon','Up to 20 guests, bespoke menu.','On request']].map(x=>`<div class="card" style="grid-template-columns:1fr"><div><h3>${x[0]}</h3><div class="sm">${x[1]}</div><div style="margin-top:.4em"><span class="price">${x[2]}</span> <button class="btn sq" data-act="resaev" data-n="${x[0]}">Book</button></div></div></div>`).join('')}<p class="sm">Sample offers — adapt to your programme.</p>`,
+contact:()=>`<h2>Contact</h2><svg viewBox="0 0 200 110" style="width:100%;background:#e3d7b8;border:1px solid var(--gold)"><path d="M0 70 200 40M60 0l30 110M130 0l-20 110" stroke="#fff9" stroke-width="7" fill="none"/><path d="M0 95C60 80 140 100 200 85" stroke="#9bb9b5" stroke-width="10" fill="none"/><path d="M100 28c-9 0-14 7-14 13 0 9 14 22 14 22s14-13 14-22c0-6-5-13-14-13z" fill="#9b2c1c"/><circle cx="100" cy="41" r="4" fill="#fff"/></svg><p>${ADDR}<br><span class="sm">Sample address</span></p><p class="sm">Open daily, 12 PM – 11 PM</p><p><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(ADDR)}">Directions</a> <a class="btn o" target="_blank" rel="noopener" href="https://wa.me/${WA}">WhatsApp</a></p><p><a href="tel:+${WA}">+221 00 000 00 00</a><br><a href="mailto:${MAIL}">${MAIL}</a></p><p><a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a> · <a href="https://facebook.com" target="_blank" rel="noopener">Facebook</a> · <a href="https://tiktok.com" target="_blank" rel="noopener">TikTok</a></p>`,
+info:()=>`<h2>Good to know</h2><div class="rule"></div><p>Allergens: please mention them when booking or ordering. Our dishes may contain traces of gluten, nuts, fish, eggs and milk.</p><p>Prices in euros, service included. Children’s menu on request.</p><p>Groups of 8 or more: booking by phone is recommended.</p>`,
+back:()=>`<div class="dark" style="position:absolute;inset:0"><div class="frame"></div><svg width="56" viewBox="0 0 60 60"><circle cx="30" cy="30" r="27" fill="none" stroke="#b08d4c" stroke-width="1.5"/><path d="M18 44 30 14 42 44M23 34h14" fill="none" stroke="#e9d9b4" stroke-width="2"/></svg><h2 style="font-size:2em">See you soon</h2><p class="sm">Thank you for leafing through the house.</p><p class="sm"><a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a> · <a href="https://facebook.com" target="_blank" rel="noopener">Facebook</a> · <a href="https://wa.me/${WA}" target="_blank" rel="noopener">WhatsApp</a></p><p class="sm">${ADDR}</p><button class="btn" style="background:none;border:1px solid var(--gold)" data-act="go" data-p="0">Back to the cover</button></div>`};
+const PG=[['cover','Cover'],['welcome','Welcome'],['story','Our story'],['menu','The menu'],['sig','Our signatures'],['gal','Gallery'],['resa','Bookings'],['order','Order'],['events','Events'],['contact','Contact'],['info','Good to know'],['back','Last page']];
+let desk,N,cur=0,L=[];
+const face=(i,cls)=>{const[k]=PG[i];return `<div class="f ${cls}"><div class="pg" data-pg="${k}">${R[k]()}</div><i class="sh"></i></div>`};
+function build(){desk=innerWidth>760;L.forEach(l=>l.el.remove());L=[];const n=desk?6:12;N=desk?6:11;
+for(let i=0;i<n;i++){const el=document.createElement('div');el.className='lf';el.innerHTML=desk?face(2*i,'a')+face(2*i+1,'b'):face(i,'a')+'<div class="f b"></div>';$('#book').insertBefore(el,$('#cL'));L.push({el,a:0,tk:0,fa:el.querySelectorAll('.f'),sh:el.querySelectorAll('.sh')});}
+L.forEach((l,i)=>set(i,i<cur?180:0,0));ui();}
+function set(i,a,v){const l=L[i];l.a=a;l.el.style.transform=`rotateY(${-a}deg)`;l.el.style.zIndex=a<90?100-i:i;const s=Math.sin(a*Math.PI/180);l.sh.forEach(x=>x.style.opacity=(s*.55).toFixed(3));const b=RM?0:Math.min(1.8,v*.5);l.fa.forEach(f=>f.style.filter=b>.15?`blur(${b.toFixed(2)}px)`:'');}
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+function anim(i,to,delay){const l=L[i],from=l.a,tk=++l.tk;if(from===to)return;const dur=RM?1:1150*Math.max(.35,Math.abs(to-from)/180),t0=performance.now()+delay;let prev=from;
+(function st(now){if(l.tk!==tk)return;if(now<t0)return requestAnimationFrame(st);const k=Math.min(1,(now-t0)/dur),a=from+(to-from)*ease(k);set(i,a,Math.abs(a-prev));prev=a;if(k<1)requestAnimationFrame(st);else set(i,to,0)})(performance.now())}
+function jump(c){c=Math.max(0,Math.min(N,c));const dir=c>cur?1:-1;let j=0;L.forEach((l,i)=>{const to=i<c?180:0;if(to!==l.a||l.tk){anim(i,to,j*(RM?0:110));if(Math.abs(to-l.a)>1)j++}});cur=c;ui()}
+function curPages(){return desk?(cur===0?[0]:cur===N?[11]:[2*cur-1,2*cur]):[cur]}
+function ui(){const w=$('#book').firstElementChild?getComputedStyle($('#book')).getPropertyValue('--w'):0;const W=L[0]?L[0].el.offsetWidth:0;$('#shift').style.transform=desk?`translateX(${cur===0?-W/2:cur===N?W/2:0}px)`:'none';document.body.classList.toggle('idle',cur===0);const p=curPages();$('#pn').textContent=cur===0?'Cover':'Page '+p.map(x=>x+1).join('–')+' / 12';$('#pv').disabled=$('#cL').disabled=cur===0;$('#nx').disabled=$('#cR').disabled=cur===N;$('#cartb').textContent='Cart ('+cnt()+')';}
+const pageCur=p=>desk?Math.ceil(p/2):p;
+function refresh(k){document.querySelectorAll(`.pg[data-pg="${k}"]`).forEach(e=>{const st=e.scrollTop;e.innerHTML=R[k]();e.scrollTop=st});ui()}
+function toast(m){const t=document.createElement('div');t.textContent=m;t.style.cssText='position:fixed;left:50%;bottom:4.5rem;transform:translateX(-50%);background:#2a1c15;color:#f4ecdc;padding:.6rem 1rem;border:1px solid #b08d4c;z-index:1000;font-size:14px';document.body.append(t);setTimeout(()=>t.remove(),1800)}
+function modal(h,lb){$('#mod').className=lb?'lb':'';$('#mod').innerHTML='<button class="x" data-act="close" aria-label="Close">×</button>'+h;$('#ov').classList.add('on');$('#mod .x').focus()}
+function lbox(){const g=GAL[S.lb];modal(`<img class="lbimg" src="${g[2]}" alt="${g[0]}"><h3 style="font-size:1.6rem">${g[0]}</h3><p style="opacity:.7">${g[1]} · ${S.lb+1}/${GAL.length}</p><button class="btn" data-act="lbp">‹</button> <button class="btn" data-act="lbn">›</button>`,1)}
+function add(id,n=1){S.cart[id]=(S.cart[id]||0)+n;if(S.cart[id]<=0)delete S.cart[id];refresh('order');toast(byId(id).n+' added')}
+function wa(txt){window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(txt),'_blank','noopener')}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act,id=t.dataset.id;
+if(a!=='dish'||!e.target.closest('[data-act="add"]'))e.preventDefault();
+({next:()=>jump(cur+1),prev:()=>jump(cur-1),go:()=>{$('#ov').classList.remove('on');jump(pageCur(+t.dataset.p))},cat:()=>{S.cat=t.dataset.c;refresh('menu')},
+add:()=>add(id),dish:()=>{if(e.target.closest('[data-act="add"]'))return;const d=byId(id);modal(`<div style="width:160px;margin:0 auto">${plate(d)}</div><h2 style="font:600 2rem 'Cormorant Garamond'">${d.n}</h2><p>${d.d}</p><p class="sm">Ingredients: ${d.i}</p><p class="price">${eur(d.p)}</p><button class="btn" data-act="addc" data-id="${id}">Add to order</button>`)},
+addc:()=>{add(id);$('#ov').classList.remove('on')},close:()=>$('#ov').classList.remove('on'),
+q:()=>{S.cart[id]+=+t.dataset.d;if(S.cart[id]<=0)delete S.cart[id];refresh('order')},rm:()=>{delete S.cart[id];refresh('order')},mode:()=>{S.mode=t.dataset.m;refresh('order')},
+cartgo:()=>jump(pageCur(7)),toc:()=>modal('<h2 style="font:600 2rem \'Cormorant Garamond\'">Contents</h2><div class="toc">'+PG.map((p,i)=>`<button data-act="go" data-p="${i}"><span>${p[1]}</span><span class="gold">${i+1}</span></button>`).join('')+'</div>'),
+lb:()=>{S.lb=+t.dataset.i;lbox()},lbn:()=>{S.lb=(S.lb+1)%GAL.length;lbox()},lbp:()=>{S.lb=(S.lb+GAL.length-1)%GAL.length;lbox()},
+resaev:()=>{S.note='Event: '+t.dataset.n;refresh('resa');jump(pageCur(6))},
+send:()=>{const c=S.cust,er=$('.pg[data-pg=order] #oerr')||document.querySelector('#oerr');if(!c.name.trim()||c.phone.replace(/\D/g,'').length<8||(S.mode==='livraison'&&!c.addr.trim())){document.querySelectorAll('#oerr').forEach(x=>x.textContent='Please enter your name and phone number'+(S.mode==='livraison'?' and your address.':'.'));return}
+wa(`Order ${NAME} (${S.mode==='livraison'?'delivery':'pickup'})\n`+Object.entries(S.cart).map(([k,v])=>`${v} × ${byId(k).n}`).join('\n')+`\nTotal: ${eur(total()+fee())}\nName: ${c.name}\nPhone: ${c.phone}`+(S.mode==='livraison'?`\nAddress: ${c.addr}`:''))}})[a]?.()});
+document.addEventListener('input',e=>{if(e.target.dataset.k)S.cust[e.target.dataset.k]=e.target.value});
+document.addEventListener('submit',e=>{e.preventDefault();if(e.target.id!=='rf')return;const g=x=>document.getElementById(x).value.trim(),d=g('rd'),n=g('rn'),p=g('rp'),m=g('re'),gu=+g('rg');let er='';
+if(!d||d<new Date().toISOString().slice(0,10))er='Please choose a future date.';else if(!(gu>=1&&gu<=12))er='Between 1 and 12 guests.';else if(n.length<2)er='Please enter your name.';else if(p.replace(/\D/g,'').length<8)er='Invalid phone number.';else if(!/^\S+@\S+\.\S+$/.test(m))er='Invalid email address.';
+document.getElementById('rerr').textContent=er;if(er)return;const txt=`Booking request — ${NAME}\n${d} at ${g('rt')}, ${gu} guests.\nName: ${n}\nPhone: ${p}\nEmail: ${m}\n${g('ro')}`;
+document.getElementById('rout').innerHTML=`<div class="box"><b>Request ready — not sent yet.</b><p class="sm">${d} at ${g('rt')} · ${gu} guests. The table is only booked once the restaurant confirms.</p><button class="btn" id="rw">WhatsApp</button> <a class="btn o" href="mailto:${MAIL}?subject=${encodeURIComponent('Booking')}&body=${encodeURIComponent(txt)}">Email</a></div>`;document.getElementById('rw').onclick=()=>wa(txt)});
+document.addEventListener('keydown',e=>{if(e.target.matches('input,select,textarea'))return;if(e.key==='Escape')$('#ov').classList.remove('on');else if(e.key==='ArrowRight')jump(cur+1);else if(e.key==='ArrowLeft')jump(cur-1);else if(e.key==='Home')jump(0);else if(e.key==='End')jump(N);else if(e.key==='Enter'&&e.target.dataset.act==='dish')e.target.click()});
+$('#ov').addEventListener('click',e=>{if(e.target.id==='ov')$('#ov').classList.remove('on')});
+// glisser pour tourner
+let dr=null;const bk=$('#book');
+bk.addEventListener('pointerdown',e=>{if(e.target.closest('input,select,textarea,.corner'))return;dr={x:e.clientX,i:null,t:performance.now(),id:e.pointerId}});
+addEventListener('pointermove',e=>{if(!dr)return;const dx=e.clientX-dr.x,W=L[0].el.offsetWidth;
+if(dr.i===null){if(Math.abs(dx)<10)return;if(dx<0&&cur<N)dr.i=cur,dr.n=1;else if(dx>0&&cur>0)dr.i=cur-1,dr.n=0;else return;L.forEach(l=>l.tk++);bk.setPointerCapture?.(dr.id)}
+const pr=Math.min(1,Math.abs(dx)/(W*1.1));dr.pr=pr;const a=dr.n?pr*180:180-pr*180;set(dr.i,a,Math.abs(dx-(dr.lx??dx))*.15);dr.lx=dx});
+addEventListener('pointerup',()=>{if(!dr)return;const d=dr;dr=null;if(d.i===null)return;const fast=performance.now()-d.t<300&&d.pr>.08;const commit=d.pr>.3||fast;
+if(d.n){commit?jump(cur+1):anim(d.i,0,0)}else{commit?jump(cur-1):anim(d.i,180,0)}});
+let was=innerWidth>760;addEventListener('resize',()=>{const dk=innerWidth>760;if(dk!==was){was=dk;const p=curPages()[0];desk=dk;cur=dk?Math.ceil(p/2):p;build()}else ui()});
+document.fonts?.ready.then(()=>ui());build();
+</script></body></html>
