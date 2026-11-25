@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Footer &amp; Nav Kit — Navigation &amp; Footer Kit for SaaS</title>
+<meta name="description" content="6 navigation systems × 6 footers = 36 real combinations for SaaS sites. Live preview, copyable code, playground and analytics in one file.">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    fontFamily: { display: ['Sora','sans-serif'], sans: ['Inter','sans-serif'], mono: ['"JetBrains Mono"','monospace'] },
+    colors: { ink: '#070A12', paper: '#F2EFE6' }
+  }}
+};
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html { overflow-x: clip; }
+  body { overflow-x: clip; }
+  :root, [data-theme="dark"] {
+    --bg: #070A12; --bg2: #0A0F1B; --surface: #0D1420; --surface2: #111A2C;
+    --text: #F2EFE6; --muted: #9AA7B8; --faint: #6B7A8F;
+    --border: rgba(242,239,230,.11); --border-strong: rgba(242,239,230,.20);
+    --accent: #38BDF8; --accent-ink: #06202E; --amber: #F59E0B; --mint: #34D399; --violet: #A78BFA; --rose: #FB7185;
+    --shadow: 0 24px 60px rgba(0,0,0,.45);
+  }
+  [data-theme="light"] {
+    --bg: #F4F1EA; --bg2: #FFFFFF; --surface: #FFFFFF; --surface2: #F8F6EF;
+    --text: #0B1220; --muted: #55677E; --faint: #7C8CA1;
+    --border: rgba(11,18,32,.13); --border-strong: rgba(11,18,32,.24);
+    --accent: #0284C7; --accent-ink: #E0F2FE;
+    --shadow: 0 24px 50px rgba(11,18,32,.12);
+  }
+  body { background: var(--bg); color: var(--text); font-family: Inter, sans-serif; }
+  .panel { background: var(--surface); border: 1px solid var(--border); }
+  .panel2 { background: var(--surface2); border: 1px solid var(--border); }
+  .muted { color: var(--muted); }
+  .faint { color: var(--faint); }
+  .hairline { border-color: var(--border); }
+  .accent-text { color: var(--accent); }
+  .accent-bg { background: var(--accent); color: var(--accent-ink); }
+  .accent-border { border-color: var(--accent); }
+  .accent-soft { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .chip { border: 1px solid var(--border); color: var(--muted); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-ghost { border: 1px solid var(--border-strong); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .navlink { color: var(--muted); }
+  .navlink:hover, .navlink.active { color: var(--text); }
+  .navlink.active { border-bottom: 2px solid var(--accent); }
+  .tab-btn { border: 1px solid var(--border); color: var(--muted); }
+  .tab-btn.active { background: var(--accent); color: var(--accent-ink); border-color: transparent; font-weight: 600; }
+  .card-hover { transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+  .card-hover:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow); }
+  .fade-up { animation: fadeUp .45s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  .pulse-dot { animation: pulseDot 1.8s ease-in-out infinite; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .marquee-track { animation: marquee 28s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  /* preview frame */
+  .pv-frame { border: 1px solid var(--border-strong); border-radius: 18px; overflow: hidden; background: var(--bg2); box-shadow: var(--shadow); }
+  .pv-body { display: flex; flex-direction: column; min-height: 560px; }
+  .pv-body.sidebar { flex-direction: row; }
+  .pv-rail { display: flex; flex-direction: column; width: 208px; flex-shrink: 0; border-right: 1px solid var(--border); background: var(--surface); }
+  .pv-tabbar { display: flex; border-top: 1px solid var(--border); background: var(--surface); }
+  .pv-sticky { position: sticky; top: 0; z-index: 20; }
+  .pv-compact .pv-content-pad { padding: 1.25rem !important; }
+  .pv-compact .pv-hero-h { font-size: 1.6rem !important; }
+  @media (max-width: 767px) {
+    .pv-body.sidebar { flex-direction: column; }
+    .pv-rail { width: 100%; flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--border); }
+    .pv-body { min-height: 480px; }
+  }
+  /* charts */
+  .bar { transition: filter .15s ease, transform .15s ease; cursor: pointer; }
+  .bar:hover, .bar.hl { filter: brightness(1.35); transform: scaleY(1.03); }
+  .donut-seg { cursor: pointer; transition: opacity .15s ease, stroke-width .15s ease; }
+  .donut-seg.dim { opacity: .25; }
+  #tip { position: fixed; z-index: 90; pointer-events: none; opacity: 0; transition: opacity .12s ease;
+    background: var(--surface2); color: var(--text); border: 1px solid var(--border-strong);
+    border-radius: 10px; padding: 8px 11px; font-size: 12px; line-height: 1.45; box-shadow: var(--shadow); max-width: 260px; }
+  #tip.show { opacity: 1; }
+  #toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 80px); z-index: 100; visibility: hidden;
+    background: var(--text); color: var(--bg); border-radius: 999px; padding: 10px 18px; font-size: 13px; font-weight: 600;
+    transition: transform .3s ease, visibility .3s ease; box-shadow: var(--shadow); }
+  #toast.show { transform: translate(-50%, 0); visibility: visible; }
+  #palette { position: fixed; inset: 0; z-index: 80; background: rgba(0,0,0,.55); backdrop-filter: blur(3px); display: none; }
+  #palette.open { display: flex; }
+  .palette-item { cursor: pointer; }
+  .palette-item.sel, .palette-item:hover { background: var(--surface2); }
+  .faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+  .faq-item.open .faq-a { grid-template-rows: 1fr; }
+  .faq-item.open .faq-chev { transform: rotate(180deg); }
+  .faq-chev { transition: transform .3s ease; }
+  input.field, select.field { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 10px; }
+  input.field:focus, select.field:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  input.field::placeholder { color: var(--faint); }
+  .mega-drop { display: none; }
+  .mega-open .mega-drop { display: grid; }
+  kbd { font-family: "JetBrains Mono", monospace; font-size: 11px; border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 6px; padding: 2px 6px; color: var(--muted); background: var(--surface2); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- ============ KIT TOPBAR ============ -->
+<header class="sticky top-0 z-50 backdrop-blur-md" style="background:color-mix(in srgb, var(--bg) 82%, transparent); border-bottom:1px solid var(--border)">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-3">
+    <a href="#top" class="flex items-center gap-2.5 shrink-0">
+      <span class="w-9 h-9 rounded-xl grid place-items-center font-display font-800 text-lg accent-bg" style="font-weight:800">W</span>
+      <span class="font-display font-bold text-[17px] tracking-tight">Waymark <span class="muted font-medium">/ Footer &amp; Nav Kit</span></span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-1 ml-6 text-sm font-medium whitespace-nowrap">
+      <a href="#preview" class="navlink px-3 py-2">Live preview</a>
+      <a href="#navs" class="navlink px-3 py-2">Navigations</a>
+      <a href="#footers" class="navlink px-3 py-2">Footers</a>
+      <a href="#playground" class="navlink px-3 py-2">Playground</a>
+      <a href="#analytics" class="navlink px-3 py-2">Analytics</a>
+      <a href="#system" class="navlink px-3 py-2">System</a>
+    </nav>
+    <div class="flex-1"></div>
+    <button id="paletteBtn" class="hidden md:flex items-center gap-2 text-sm muted panel rounded-full px-3.5 py-2 hover:border-[var(--accent)] transition-colors" aria-label="Open command palette">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <span>Search</span><kbd>⌘K</kbd>
+    </button>
+    <button id="themeToggle" class="w-9 h-9 grid place-items-center rounded-full panel hover:border-[var(--accent)] transition-colors" aria-label="Toggle light / dark theme" title="Toggle theme">
+      <svg id="themeIconMoon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      <svg id="themeIconSun" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+    <a href="#preview" class="hidden sm:inline-flex btn-primary rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap">Get the kit — $39</a>
+    <button id="hamburger" class="lg:hidden w-9 h-9 grid place-items-center rounded-full panel" aria-label="Open menu">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+  <div id="mobileMenu" class="hidden lg:hidden px-4 pb-4 pt-1 flex flex-col gap-1 text-sm font-medium" style="background:var(--bg)">
+    <a href="#preview" class="navlink px-3 py-2.5 rounded-lg">Live preview</a>
+    <a href="#navs" class="navlink px-3 py-2.5 rounded-lg">Navigations</a>
+    <a href="#footers" class="navlink px-3 py-2.5 rounded-lg">Footers</a>
+    <a href="#playground" class="navlink px-3 py-2.5 rounded-lg">Playground</a>
+    <a href="#analytics" class="navlink px-3 py-2.5 rounded-lg">Analytics</a>
+    <a href="#system" class="navlink px-3 py-2.5 rounded-lg">System</a>
+  </div>
+</header>
+
+<main id="top">
+<!-- ============ HERO ============ -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 pb-10">
+  <div class="flex flex-wrap items-center gap-2 mb-6">
+    <span class="chip rounded-full px-3 py-1 text-xs font-semibold tracking-wide">NAVIGATION × FOOTER KIT</span>
+    <span class="chip rounded-full px-3 py-1 text-xs">6 navs · 6 footers · 1 file</span>
+    <span class="chip rounded-full px-3 py-1 text-xs accent-text" style="border-color:var(--accent)">v1.0 — for SaaS &amp; marketing sites</span>
+  </div>
+  <h1 class="font-display font-extrabold tracking-tight leading-[1.02] text-[42px] sm:text-[64px] lg:text-[76px] max-w-4xl">
+    Every way in.<br><span class="accent-text">Every way out.</span>
+  </h1>
+  <p class="muted text-base sm:text-lg leading-relaxed max-w-2xl mt-5">
+    A complete kit of navigation systems and footers for SaaS sites — demonstrated live on
+    <strong class="text-[var(--text)] font-semibold">Northloop</strong>, a fictional project-analytics product.
+    Pick any nav, pick any footer, watch the site rebuild itself. Copy the code, ship it.
+  </p>
+  <div class="flex flex-wrap gap-3 mt-7">
+    <a href="#preview" class="btn-primary rounded-full px-5 py-3 text-sm font-semibold">Try the live preview ↓</a>
+    <button id="shuffleBtn" class="btn-ghost rounded-full px-5 py-3 text-sm font-semibold">Shuffle a combination ⟳</button>
+  </div>
+  <!-- stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-12">
+    <div class="panel rounded-2xl p-5 stat" data-tip="6 navigation systems: Classic, Mega menu, Floating pill, Sidebar, Command bar, Bottom tabs.">
+      <div class="font-display font-extrabold text-3xl sm:text-4xl"><span class="count" data-target="6">0</span></div>
+      <div class="muted text-sm mt-1">navigation systems</div>
+    </div>
+    <div class="panel rounded-2xl p-5 stat" data-tip="6 footer systems: Mega, Minimal, Newsletter, Sitemap, Status, Social.">
+      <div class="font-display font-extrabold text-3xl sm:text-4xl"><span class="count" data-target="6">0</span></div>
+      <div class="muted text-sm mt-1">footer systems</div>
+    </div>
+    <div class="panel rounded-2xl p-5 stat" data-tip="36 combinations — every nav works with every footer. 6 × 6 = 36.">
+      <div class="font-display font-extrabold text-3xl sm:text-4xl accent-text"><span class="count" data-target="36">0</span></div>
+      <div class="muted text-sm mt-1">real combinations</div>
+    </div>
+    <div class="panel rounded-2xl p-5 stat" data-tip="One self-contained HTML file. No build step, no framework, no backend.">
+      <div class="font-display font-extrabold text-3xl sm:text-4xl"><span class="count" data-target="1">0</span></div>
+      <div class="muted text-sm mt-1">self-contained file</div>
+    </div>
+  </div>
+  <!-- logo marquee -->
+  <div class="marquee mt-10 overflow-hidden hairline border-y py-4" aria-hidden="true">
+    <div class="marquee-track flex gap-12 whitespace-nowrap w-max font-display font-bold text-lg faint">
+      <span>NORTHLOOP</span><span>HELIOS</span><span>ATLAS&nbsp;CO</span><span>MERIDIAN</span><span>PULSEBOARD</span><span>VAULT</span><span>ORBIT</span><span>LEDGERLINE</span>
+      <span>NORTHLOOP</span><span>HELIOS</span><span>ATLAS&nbsp;CO</span><span>MERIDIAN</span><span>PULSEBOARD</span><span>VAULT</span><span>ORBIT</span><span>LEDGERLINE</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIVE PREVIEW ============ -->
+<section id="preview" class="max-w-7xl mx-auto px-4 sm:px-6 py-8 scroll-mt-24">
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-5">
+    <div>
+      <p class="text-xs font-mono tracking-widest accent-text font-semibold">01 — LIVE PREVIEW</p>
+      <h2 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-2">One site, thirty-six faces</h2>
+      <p class="muted mt-2 max-w-xl text-[15px]">Choose a navigation and a footer below — the Northloop demo site rebuilds itself in place. Everything inside the frame works: menus, search, newsletter, links.</p>
+    </div>
+    <div class="panel rounded-2xl px-4 py-3 text-sm">
+      <span class="faint">Now showing</span>
+      <div class="font-semibold mt-0.5"><span id="comboLabel">Classic topbar × Mega footer</span></div>
+      <div class="muted text-xs mt-0.5">Combination <span id="comboNum" class="accent-text font-semibold">1</span> of 36</div>
+    </div>
+  </div>
+
+  <!-- nav picker -->
+  <div class="flex flex-wrap gap-2 mb-3" id="navPicker" role="tablist" aria-label="Navigation variant"></div>
+  <!-- footer picker -->
+  <div class="flex flex-wrap gap-2 mb-5" id="footerPicker" role="tablist" aria-label="Footer variant"></div>
+
+  <!-- the frame -->
+  <div class="pv-frame" id="previewFrame">
+    <div class="flex items-center gap-2 px-4 py-2.5" style="background:var(--surface); border-bottom:1px solid var(--border)">
+      <span class="w-3 h-3 rounded-full" style="background:#FF5F57"></span>
+      <span class="w-3 h-3 rounded-full" style="background:#FEBC2E"></span>
+      <span class="w-3 h-3 rounded-full" style="background:#28C840"></span>
+      <span class="ml-2 flex-1 max-w-md mx-auto flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs muted" style="background:var(--surface2); border:1px solid var(--border)">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        northloop.app
+      </span>
+      <span class="hidden sm:flex items-center gap-1.5 text-xs muted"><span class="w-2 h-2 rounded-full pulse-dot" style="background:var(--mint)"></span>Live preview</span>
+    </div>
+    <div class="pv-body" id="previewBody">
+      <div id="pvRailSlot" class="contents"></div>
+      <div class="flex-1 flex flex-col min-w-0">
+        <div id="pvNavSlot"></div>
+        <div id="pvContent" class="pv-content-pad px-5 sm:px-10 py-10 sm:py-14">
+          <p class="text-xs font-mono tracking-widest accent-text font-semibold">NORTHLOOP — PROJECT ANALYTICS</p>
+          <h3 class="pv-hero-h font-display font-extrabold tracking-tight text-3xl sm:text-5xl leading-[1.05] mt-3 max-w-xl">Ship faster with<br>every number in sight.</h3>
+          <p class="muted mt-4 max-w-lg text-[15px] leading-relaxed">Northloop turns delivery data into decisions — cycle time, throughput and risk, live for every team. This is the sample page the kit dresses up.</p>
+          <div class="flex flex-wrap gap-3 mt-6">
+            <button class="btn-primary rounded-full px-5 py-2.5 text-sm font-semibold" data-pv-action="cta">Start free trial</button>
+            <button class="btn-ghost rounded-full px-5 py-2.5 text-sm font-semibold" data-pv-action="tour">Watch the tour ▶</button>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-3 mt-10">
+            <div class="panel2 rounded-2xl p-4">
+              <div class="font-display font-bold text-2xl">4.2 days</div>
+              <div class="muted text-sm mt-1">Median cycle time <span class="accent-text font-semibold">↓ 18%</span></div>
+            </div>
+            <div class="panel2 rounded-2xl p-4">
+              <div class="font-display font-bold text-2xl">98.4%</div>
+              <div class="muted text-sm mt-1">On-time delivery <span style="color:var(--mint)" class="font-semibold">↑ 2.1 pts</span></div>
+            </div>
+            <div class="panel2 rounded-2xl p-4">
+              <div class="font-display font-bold text-2xl">312</div>
+              <div class="muted text-sm mt-1">Active projects <span class="accent-text font-semibold">+24 this week</span></div>
+            </div>
+          </div>
+        </div>
+        <div id="pvFooterSlot" class="mt-auto"></div>
+      </div>
+      <div id="pvTabSlot" class="contents"></div>
+    </div>
+  </div>
+  <p class="faint text-xs mt-3">Tip: press <kbd>⌘K</kbd> and type “mega” or “newsletter” to apply a variant from the keyboard. The frame is a real page — try the menus and the newsletter form.</p>
+</section>
+
+<!-- ============ NAV GALLERY ============ -->
+<section id="navs" class="max-w-7xl mx-auto px-4 sm:px-6 py-10 scroll-mt-24">
+  <p class="text-xs font-mono tracking-widest accent-text font-semibold">02 — NAVIGATION SYSTEMS</p>
+  <h2 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-2">Six ways to get around</h2>
+  <p class="muted mt-2 max-w-xl text-[15px]">From the classic SaaS topbar to a bottom tab bar. Every variant is responsive, keyboard-friendly and copy-ready.</p>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-7" id="navGallery">
+    <article class="panel rounded-2xl p-5 card-hover flex flex-col" data-nav="classic">
+      <div class="flex items-center justify-between"><span class="font-mono text-xs faint">N-01</span><span class="chip rounded-full px-2.5 py-0.5 text-[11px]">TOPBAR</span></div>
+      <div class="mt-4 h-16 rounded-xl panel2 flex items-center gap-3 px-4 overflow-hidden">
+        <span class="w-6 h-6 rounded-md accent-bg grid place-items-center text-xs font-bold">N</span>
+        <span class="text-sm font-semibold">Product</span><span class="text-sm muted">Pricing</span><span class="text-sm muted">Docs</span>
+        <span class="ml-auto text-xs font-semibold px-3 py-1.5 rounded-full accent-bg">Sign in</span>
+      </div>
+      <h3 class="font-display font-bold text-lg mt-4">Classic Topbar</h3>
+      <p class="muted text-sm leading-relaxed mt-1 flex-1">The SaaS standard: logo, links, search and one clear CTA. Sticky, with a mobile hamburger below 768 px.</p>
+      <div class="flex gap-2 mt-4">
+        <button class="btn-primary rounded-full px-4 py-2 text-xs font-semibold flex-1 apply-nav" data-nav="classic">Preview</button>
+        <button class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold copy-code" data-kind="nav" data-key="classic">Copy code</button>
+      </div>
+    </article>
+    <article class="panel rounded-2xl p-5 card-hover flex flex-col" data-nav="mega">
+      <div class="flex items-center justify-between"><span class="font-mono text-xs faint">N-02</span><span class="chip rounded-full px-2.5 py-0.5 text-[11px]">DROPDOWN</span></div>
+      <div class="mt-4 h-16 rounded-xl panel2 flex items-center gap-3 px-4 overflow-hidden">
+        <span class="w-6 h-6 rounded-md accent-bg grid place-items-center text-xs font-bold">N</span>
+        <span class="text-sm font-semibold accent-text">Product ⌄</span><span class="text-sm muted">Solutions</span><span class="text-sm muted">Company</span>
+        <span class="ml-auto text-xs muted">⌘K</span>
+      </div>
+      <h3 class="font-display font-bold text-lg mt-4">Mega Menu</h3>
+      <p class="muted text-sm leading-relaxed mt-1 flex-1">A full-width panel with three columns — features, use cases and a highlighted story. Opens on click, closes on Escape.</p>
+      <div class="flex gap-2 mt-4">
+        <button class="btn-primary rounded-full px-4 py-2 text-xs font-semibold flex-1 apply-nav" data-nav="mega">Preview</button>
+        <button class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold copy-code" data-kind="nav" data-key="mega">Copy code</button>
+      </div>
+    </article>
+    <article class="panel rounded-2xl p-5 card-hover flex flex-col" data-nav="pill">
+      <div class="flex items-center justify-between"><span class="font-mono text-xs faint">N-03</span><span class="chip rounded-full px-2.5 py-0.5 text-[11px]">FLOATING</span></div>
+      <div class="mt-4 h-16 rounded-xl panel2 grid place-items-center overflow-hidden">
+        <div class="flex items-center gap-3 px-4 py-2 rounded-full" style="background:var(--surface); border:1px solid var(--border-strong); box-shadow:var(--shadow)">
+          <span class="w-5 h-5 rounded-md accent-bg grid place-items-center text-[10px] font-bold">N</span>
+          <span class="text-xs font-semibold">Product</span><span class="text-xs muted">Pricing</span><span class="text-xs muted">Docs</span>
+          <span class="w-5 h-5 rounded-full grid place-items-center text-[10px]" style="background:var(--surface2)">⌘K</span>
+        </div>
+      </div>
+      <h3 class="font-display font-bold text-lg mt-4">Floating Pill</h3>
+      <p class="muted text-sm leading-relaxed mt-1 flex-1">A centred glass pill that floats over the hero. The modern landing-page look — light, fast, unmistakable.</p>
+      <div class="flex gap-2 mt-4">
+        <button class="btn-primary rounded-full px-4 py-2 text-xs font-semibold flex-1 apply-nav" data-nav="pill">Preview</button>
+        <button class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold copy-code" data-kind="nav" data-key="pill">Copy code</button>
+      </div>
+    </article>
+    <article class="panel rounded-2xl p-5 card-hover flex flex-col" data-nav="sidebar">
+      <div class="flex items-center justify-between"><span class="font-mono text-xs faint">N-04</span><span class="chip rounded-full px-2.5 py-0.5 text-[11px]">APP SHELL</span></div>
+      <div class="mt-4 h-16 rounded-xl panel2 flex overflow-hidden">
+        <div class="w-20 flex flex-col justify-center gap-1 px-2.5" style="border-right:1px solid var(--border)">
+          <span class="text-[10px] font-semibold accent-text">● Overview</span><span class="text-[10px] muted">Projects</span><span class="text-[10px] muted">Reports</span>
+        </div>
+        <div class="flex-1 grid place-items-center text-xs muted">App shell preview →</div>
+      </div>
+      <h3 class="font-display font-bold text-lg mt-4">Sidebar</h3>
+      <p class="muted text-sm leading-relaxed mt-1 flex-1">The dashboard shell: a left rail with grouped links, search and a pinned user card. Collapses to a topbar on mobile.</p>
+      <div class="flex gap-2 mt-4">
+        <button class="btn-primary rounded-full px-4 py-2 text-xs font-semibold flex-1 apply-nav" data-nav="sidebar">Preview</button>
+        <button class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold copy-code" data-kind="nav" data-key="sidebar">Copy code</button>
+      </div>
+    </article>
+    <article class="panel rounded-2xl p-5 card-hover flex flex-col" data-nav="command">
+      <div class="flex items-center justify-between"><span class="font-mono text-xs faint">N-05</span><span class="chip rounded-full px-2.5 py-0.5 text-[11px]">KEYBOARD-FIRST</span></div>
+      <div class="mt-4 h-16 rounded-xl panel2 flex items-center px-4 overflow-hidden">
+        <div class="flex-1 flex items-center gap-2 rounded-lg px-3 py-2 text-xs muted" style="background:var(--surface); border:1px solid var(--border-strong)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          Search anything…
+          <span class="ml-auto"><kbd>⌘K</kbd></span>
+        </div>
+      </div>
+      <h3 class="font-display font-bold text-lg mt-4">Command Bar</h3>
+      <p class="muted text-sm leading-relaxed mt-1 flex-1">Search is the navigation. A wide command input up top that opens the palette — for power users and dense products.</p>
+      <div class="flex gap-2 mt-4">
+        <button class="btn-primary rounded-full px-4 py-2 text-xs font-semibold flex-1 apply-nav" data-nav="command">Preview</button>
+        <button class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold copy-code" data-kind="nav" data-key="command">Copy code</button>
+      </div>
+    </article>
+    <article class="panel rounded-2xl p-5 card-hover flex flex-col" data-nav="tabs">
+      <div class="flex items-center justify-between"><span class="font-mono text-xs faint">N-06</span><span class="chip rounded-full px-2.5 py-0.5 text-[11px]">MOBILE-FIRST</span></div>
+      <div class="mt-4 h-16 rounded-xl panel2 flex flex-col overflow-hidden">
+        <div class="flex-1 grid place-items-center text-xs muted">Slim top row — logo + avatar</div>
+        <div class="flex justify-around py-1.5 text-[10px] font-semibold" style="border-top:1px solid var(--border)">
+          <span class="accent-text">⌂ Home</span><span class="muted">▦ Projects</span><span class="muted">＋ New</span><span class="muted">◷ Activity</span><span class="muted">⚙ Settings</span>
+        </div>
+      </div>
+      <h3 class="font-display font-bold text-lg mt-4">Bottom Tab Bar</h3>
+      <p class="muted text-sm leading-relaxed mt-1 flex-1">Thumb-first navigation pinned to the bottom of the screen. Five tabs, badges, and a raised “New” action in the middle.</p>
+      <div class="flex gap-2 mt-4">
+        <button class="btn-primary rounded-full px-4 py-2 text-xs font-semibold flex-1 apply-nav" data-nav="tabs">Preview</button>
+        <button class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold copy-code" data-kind="nav" data-key="tabs">Copy code</button>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ FOOTER GALLERY ============ -->
+<section id="footers" class="max-w-7xl mx-auto px-4 sm:px-6 py-10 scroll-mt-24">
+  <p class="text-xs font-mono tracking-widest accent-text font-semibold">03 — FOOTER SYSTEMS</p>
+  <h2 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-2">Six ways to sign off</h2>
+  <p class="muted mt-2 max-w-xl text-[15px]">The footer is where trust is built: sitemap, newsletter, status, social proof. Pick the ending your site deserves.</p>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-7" id="footerGallery">
+    <article class="panel rounded-2xl p-5 card-hover flex flex-col" data-footer="mega">
+      <div class="flex items-center justify-between"><span class="font-mono text-xs faint">F-01</span><span class="chip rounded-full px-2.5 py-0.5 text-[11px]">FULL SITEMAP</span></div>
+      <div class="mt-4 h-16 rounded-xl panel2 p-3 grid grid-cols-4 gap-2 text-[10px] overflow-hidden">
+        <div><div class="font-bold text-xs mb-1">Product</div><div class="muted leading-relaxed">Overview<br>Pricing<br>Changelog</div></div>
+        <div><div class="font-bold text-xs mb-1">Company</div><div class="muted leading-relaxed">About<br>Careers<br>Press</div></div>
+        <div><div class="font-bold text-xs mb-1">Resources</div><div class="muted leading-relaxed">Docs<br>Blog<br>Community</div></div>
+        <div><div class="font-bold text-xs mb-1">Legal</div><div class="muted leading-relaxed">Privacy<br>Terms<br>Security</div></div>
+      </div>
+      <h3 class="font-display font-bold text-lg mt-4">Mega Footer</h3>
+      <p class="muted text-sm leading-relaxed mt-1 flex-1">Four link columns, a newsletter row and a legal strip. The complete ending for content-rich SaaS sites.</p>
+      <div class="flex gap-2 mt-4">
+        <button class="btn-primary rounded-full px-4 py-2 text-xs font-semibold flex-1 apply-footer" data-footer="mega">Preview</button>
+        <button class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold copy-code" data-kind="footer" data-key="mega">Copy code</button>
+      </div>
+    </article>
+    <article class="panel rounded-2xl p-5 card-hover flex flex-col" data-footer="minimal">
+      <div class="flex items-center justify-between"><span class="font-mono text-xs faint">F-02</span><span class="chip rounded-full px-2.5 py-0.5 text-[11px]">ONE LINE</span></div>
+      <div class="mt-4 h-16 rounded-xl panel2 flex items-center justify-between px-4 overflow-hidden">
+        <span class="font-display font-bold text-sm">Northloop</span>
+        <span class="text-xs muted">© 2026 · Privacy · Terms</span>
+      </div>
+      <h3 class="font-display font-bold text-lg mt-4">Minimal Footer</h3>
+      <p class="muted text-sm leading-relaxed mt-1 flex-1">One quiet line: wordmark, three links, copyright. For products that let the work speak — and end cleanly.</p>
+      <div class="flex gap-2 mt-4">
+        <button class="btn-primary rounded-full px-4 py-2 text-xs font-semibold flex-1 apply-footer" data-footer="minimal">Preview</button>
+        <button class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold copy-code" data-kind="footer" data-key="minimal">Copy code</button>
+      </div>
+    </article>
+    <article class="panel rounded-2xl p-5 card-hover flex flex-col" data-footer="newsletter">
+      <div class="flex items-center justify-between"><span class="font-mono text-xs faint">F-03</span><span class="chip rounded-full px-2.5 py-0.5 text-[11px]">CAPTURE</span></div>
+      <div class="mt-4 h-16 rounded-xl panel2 flex flex-col justify-center px-4 gap-2 overflow-hidden">
+        <span class="text-xs font-semibold">Get one useful e-mail a week.</span>
+        <div class="flex gap-2"><span class="flex-1 rounded-lg px-2.5 py-1.5 text-[11px] muted" style="background:var(--surface); border:1px solid var(--border)">you@company.com</span><span class="rounded-lg px-2.5 py-1.5 text-[11px] font-semibold accent-bg">Join</span></div>
+      </div>
+      <h3 class="font-display font-bold text-lg mt-4">Newsletter Footer</h3>
+      <p class="muted text-sm leading-relaxed mt-1 flex-1">A big capture block first, links second. Validates inline and confirms in place — the footer that grows your list.</p>
+      <div class="flex gap-2 mt-4">
+        <button class="btn-primary rounded-full px-4 py-2 text-xs font-semibold flex-1 apply-footer" data-footer="newsletter">Preview</button>
+        <button class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold copy-code" data-kind="footer" data-key="newsletter">Copy code</button>
+      </div>
+    </article>
+    <article class="panel rounded-2xl p-5 card-hover flex flex-col" data-footer="sitemap">
+      <div class="flex items-center justify-between"><span class="font-mono text-xs faint">F-04</span><span class="chip rounded-full px-2.5 py-0.5 text-[11px]">DENSE</span></div>
+      <div class="mt-4 h-16 rounded-xl panel2 p-3 grid grid-cols-3 gap-x-3 gap-y-1 text-[10px] overflow-hidden">
+        <span class="muted">Analytics</span><span class="muted">Integrations</span><span class="muted">API reference</span>
+        <span class="muted">Templates</span><span class="muted">Status</span><span class="muted">Roadmap</span>
+        <span class="muted">Careers</span><span class="muted">Contact</span><span class="muted">Press kit</span>
+      </div>
+      <h3 class="font-display font-bold text-lg mt-4">Sitemap Footer</h3>
+      <p class="muted text-sm leading-relaxed mt-1 flex-1">A dense, scannable link grid for large sites — every page reachable from the bottom, grouped by intent.</p>
+      <div class="flex gap-2 mt-4">
+        <button class="btn-primary rounded-full px-4 py-2 text-xs font-semibold flex-1 apply-footer" data-footer="sitemap">Preview</button>
+        <button class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold copy-code" data-kind="footer" data-key="sitemap">Copy code</button>
+      </div>
+    </article>
+    <article class="panel rounded-2xl p-5 card-hover flex flex-col" data-footer="status">
+      <div class="flex items-center justify-between"><span class="font-mono text-xs faint">F-05</span><span class="chip rounded-full px-2.5 py-0.5 text-[11px]">OPS</span></div>
+      <div class="mt-4 h-16 rounded-xl panel2 flex flex-col justify-center px-4 gap-1.5 overflow-hidden">
+        <span class="flex items-center gap-2 text-xs font-semibold"><span class="w-2 h-2 rounded-full pulse-dot" style="background:var(--mint)"></span>All systems operational</span>
+        <span class="text-[11px] muted">Uptime 99.99% · v3.2.1 · Status page →</span>
+      </div>
+      <h3 class="font-display font-bold text-lg mt-4">Status Footer</h3>
+      <p class="muted text-sm leading-relaxed mt-1 flex-1">For apps that must prove reliability: live status, uptime, version and a link to the status page, right in the footer.</p>
+      <div class="flex gap-2 mt-4">
+        <button class="btn-primary rounded-full px-4 py-2 text-xs font-semibold flex-1 apply-footer" data-footer="status">Preview</button>
+        <button class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold copy-code" data-kind="footer" data-key="status">Copy code</button>
+      </div>
+    </article>
+    <article class="panel rounded-2xl p-5 card-hover flex flex-col" data-footer="social">
+      <div class="flex items-center justify-between"><span class="font-mono text-xs faint">F-06</span><span class="chip rounded-full px-2.5 py-0.5 text-[11px]">COMMUNITY</span></div>
+      <div class="mt-4 h-16 rounded-xl panel2 flex flex-col items-center justify-center gap-1.5 overflow-hidden">
+        <span class="font-display font-extrabold text-lg tracking-tight">NORTHLOOP</span>
+        <span class="flex gap-2">
+          <span class="w-6 h-6 rounded-full panel2 grid place-items-center text-[10px] font-bold">X</span>
+          <span class="w-6 h-6 rounded-full panel2 grid place-items-center text-[10px] font-bold">in</span>
+          <span class="w-6 h-6 rounded-full panel2 grid place-items-center text-[10px] font-bold">▶</span>
+          <span class="w-6 h-6 rounded-full panel2 grid place-items-center text-[10px] font-bold">⌘</span>
+        </span>
+      </div>
+      <h3 class="font-display font-bold text-lg mt-4">Social Footer</h3>
+      <p class="muted text-sm leading-relaxed mt-1 flex-1">A giant wordmark and social icons — the community-first ending for brands that live on every platform.</p>
+      <div class="flex gap-2 mt-4">
+        <button class="btn-primary rounded-full px-4 py-2 text-xs font-semibold flex-1 apply-footer" data-footer="social">Preview</button>
+        <button class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold copy-code" data-kind="footer" data-key="social">Copy code</button>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ PLAYGROUND ============ -->
+<section id="playground" class="max-w-7xl mx-auto px-4 sm:px-6 py-10 scroll-mt-24">
+  <p class="text-xs font-mono tracking-widest accent-text font-semibold">04 — PLAYGROUND</p>
+  <h2 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-2">Restyle the preview, live</h2>
+  <p class="muted mt-2 max-w-xl text-[15px]">Accent, corner radius, density and sticky behaviour — applied to the live preview above, instantly. Your picks stay in this session.</p>
+  <div class="panel rounded-2xl p-5 sm:p-6 mt-7 grid md:grid-cols-4 gap-6">
+    <div>
+      <div class="text-xs font-mono tracking-widest faint mb-3">ACCENT</div>
+      <div class="flex gap-2" id="accentRow">
+        <button class="accent-dot w-9 h-9 rounded-full border-2" data-accent="#38BDF8" data-accent-ink="#06202E" style="background:#38BDF8; border-color:var(--accent)" aria-label="Sky accent"></button>
+        <button class="accent-dot w-9 h-9 rounded-full border-2 border-transparent" data-accent="#F59E0B" data-accent-ink="#2A1A00" style="background:#F59E0B" aria-label="Amber accent"></button>
+        <button class="accent-dot w-9 h-9 rounded-full border-2 border-transparent" data-accent="#34D399" data-accent-ink="#052E1F" style="background:#34D399" aria-label="Mint accent"></button>
+        <button class="accent-dot w-9 h-9 rounded-full border-2 border-transparent" data-accent="#A78BFA" data-accent-ink="#1E1445" style="background:#A78BFA" aria-label="Violet accent"></button>
+        <button class="accent-dot w-9 h-9 rounded-full border-2 border-transparent" data-accent="#FB7185" data-accent-ink="#2E0710" style="background:#FB7185" aria-label="Rose accent"></button>
+      </div>
+      <div class="text-sm mt-3">Current accent: <span id="accentName" class="font-semibold accent-text">Sky #38BDF8</span></div>
+    </div>
+    <div>
+      <div class="text-xs font-mono tracking-widest faint mb-3">CORNER RADIUS</div>
+      <input id="radiusRange" type="range" min="0" max="24" value="12" class="w-full accent-[#38BDF8]" aria-label="Corner radius">
+      <div class="text-sm mt-2"><span id="radiusVal" class="font-semibold">12</span> px — <span class="muted">buttons, cards, inputs</span></div>
+    </div>
+    <div>
+      <div class="text-xs font-mono tracking-widest faint mb-3">DENSITY</div>
+      <div class="flex gap-2">
+        <button id="densityComfort" class="tab-btn active rounded-full px-4 py-2 text-xs font-semibold">Comfortable</button>
+        <button id="densityCompact" class="tab-btn rounded-full px-4 py-2 text-xs font-semibold">Compact</button>
+      </div>
+      <div class="text-sm mt-3 muted">Compact tightens the preview's spacing.</div>
+    </div>
+    <div>
+      <div class="text-xs font-mono tracking-widest faint mb-3">STICKY NAV</div>
+      <div class="flex gap-2">
+        <button id="stickyOn" class="tab-btn rounded-full px-4 py-2 text-xs font-semibold">Sticky</button>
+        <button id="stickyOff" class="tab-btn active rounded-full px-4 py-2 text-xs font-semibold">Static</button>
+      </div>
+      <div class="text-sm mt-3 muted">Sticky pins the preview nav while the page scrolls.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ANALYTICS ============ -->
+<section id="analytics" class="max-w-7xl mx-auto px-4 sm:px-6 py-10 scroll-mt-24">
+  <p class="text-xs font-mono tracking-widest accent-text font-semibold">05 — NAVIGATION ANALYTICS</p>
+  <h2 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-2">Which nav earns the click?</h2>
+  <p class="muted mt-2 max-w-xl text-[15px]">Fictional benchmark from 12,400 sessions across demo sites. Hover any bar or segment for the exact value.</p>
+  <div class="grid lg:grid-cols-5 gap-4 mt-7">
+    <div class="panel rounded-2xl p-5 sm:p-6 lg:col-span-3">
+      <div class="flex items-baseline justify-between">
+        <h3 class="font-display font-bold text-lg">Click-through by nav type</h3>
+        <span class="text-xs muted font-mono">12,400 sessions</span>
+      </div>
+      <div id="ctrChart" class="flex items-end gap-3 sm:gap-4 h-52 mt-6 px-1"></div>
+      <div class="flex gap-3 sm:gap-4 px-1 mt-2 text-[11px] muted text-center" id="ctrLabels"></div>
+      <p class="text-xs muted mt-5">Classic topbars still win on conversion — but the floating pill wins on first impressions. Hover a bar for the exact rate.</p>
+    </div>
+    <div class="panel rounded-2xl p-5 sm:p-6 lg:col-span-2">
+      <div class="flex items-baseline justify-between">
+        <h3 class="font-display font-bold text-lg">Footer link clicks</h3>
+        <span class="text-xs muted font-mono">8,913 clicks</span>
+      </div>
+      <div class="flex items-center gap-5 mt-4">
+        <svg id="footerDonut" width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="Donut chart of footer link clicks"></svg>
+        <ul class="text-sm space-y-2.5" id="donutLegend"></ul>
+      </div>
+      <p class="text-xs muted mt-5">The newsletter block takes the largest share of footer clicks — the footer is a capture surface, not an afterthought.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DESIGN SYSTEM ============ -->
+<section id="system" class="max-w-7xl mx-auto px-4 sm:px-6 py-10 scroll-mt-24">
+  <p class="text-xs font-mono tracking-widest accent-text font-semibold">06 — DESIGN SYSTEM</p>
+  <h2 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-2">Waymark tokens</h2>
+  <p class="muted mt-2 max-w-xl text-[15px]">Everything in the kit is built from these tokens. Change them once, every nav and footer follows.</p>
+  <div class="grid md:grid-cols-3 gap-4 mt-7">
+    <div class="panel rounded-2xl p-5">
+      <div class="text-xs font-mono tracking-widest faint mb-4">COLOUR</div>
+      <div class="space-y-2.5 text-sm">
+        <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-lg border hairline" style="background:#070A12"></span><span class="font-mono text-xs">Ink #070A12</span><span class="muted text-xs ml-auto">background</span></div>
+        <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-lg border hairline" style="background:#0D1420"></span><span class="font-mono text-xs">Surface #0D1420</span><span class="muted text-xs ml-auto">panels</span></div>
+        <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-lg border hairline" style="background:#F2EFE6"></span><span class="font-mono text-xs">Paper #F2EFE6</span><span class="muted text-xs ml-auto">text</span></div>
+        <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-lg" style="background:#38BDF8"></span><span class="font-mono text-xs">Sky #38BDF8</span><span class="muted text-xs ml-auto">accent</span></div>
+        <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-lg" style="background:#F59E0B"></span><span class="font-mono text-xs">Amber #F59E0B</span><span class="muted text-xs ml-auto">signal</span></div>
+        <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-lg" style="background:#34D399"></span><span class="font-mono text-xs">Mint #34D399</span><span class="muted text-xs ml-auto">success</span></div>
+      </div>
+    </div>
+    <div class="panel rounded-2xl p-5">
+      <div class="text-xs font-mono tracking-widest faint mb-4">TYPE</div>
+      <div class="space-y-3">
+        <div><div class="font-display font-extrabold text-2xl leading-none">Sora ExtraBold</div><div class="muted text-xs mt-1">Display — hero, wordmarks</div></div>
+        <div><div class="font-sans font-semibold text-lg leading-none">Inter SemiBold</div><div class="muted text-xs mt-1">UI — links, labels, body</div></div>
+        <div><div class="font-mono text-sm">JetBrains Mono</div><div class="muted text-xs mt-1">Code — eyebrows, numbers, code</div></div>
+      </div>
+      <div class="text-xs font-mono tracking-widest faint mt-6 mb-3">SPACING</div>
+      <div class="flex items-end gap-2 text-[11px] muted">
+        <span class="panel2 rounded px-2 py-1">4</span><span class="panel2 rounded px-2 py-1">8</span><span class="panel2 rounded px-2 py-1">16</span><span class="panel2 rounded px-2 py-1">24</span><span class="panel2 rounded px-2 py-1">40</span><span class="panel2 rounded px-2 py-1">64</span>
+      </div>
+    </div>
+    <div class="panel rounded-2xl p-5">
+      <div class="text-xs font-mono tracking-widest faint mb-4">ANATOMY</div>
+      <ul class="space-y-2.5 text-sm leading-relaxed">
+        <li><strong>Nav</strong> — <span class="muted">64 px bar, 16 px logo, links 14 px / 500, one primary CTA, ⌘K search.</span></li>
+        <li><strong>Mega menu</strong> — <span class="muted">3 columns, 560 px wide, closes on Escape and outside click.</span></li>
+        <li><strong>Footer</strong> — <span class="muted">48 px top padding, 4 columns max, 12 px legal strip, hairline separators.</span></li>
+        <li><strong>Motion</strong> — <span class="muted">transform + opacity only, 250 ms ease, respects reduced motion.</span></li>
+        <li><strong>Responsive</strong> — <span class="muted">nav collapses at 768 px; footers stack to one column at 640 px.</span></li>
+      </ul>
+      <button id="copyTokens" class="btn-ghost rounded-full px-4 py-2 text-xs font-semibold mt-5">Copy tokens as CSS</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="max-w-7xl mx-auto px-4 sm:px-6 py-10 scroll-mt-24">
+  <div class="max-w-3xl">
+    <p class="text-xs font-mono tracking-widest accent-text font-semibold">07 — QUESTIONS</p>
+    <h2 class="font-display font-bold text-3xl sm:text-4xl tracking-tight mt-2">Before you buy</h2>
+    <div class="mt-6 space-y-3" id="faqList">
+      <div class="faq-item panel rounded-2xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-[15px]">What exactly do I get?<span class="faq-chev muted">⌄</span></button>
+        <div class="faq-a"><div class="overflow-hidden"><p class="px-5 pb-5 muted text-sm leading-relaxed">One self-contained HTML file with all 6 navigation systems, all 6 footers, the playground, the analytics charts and the command palette — plus copyable snippets for every variant. No build step, no dependencies beyond Tailwind CDN and Google Fonts.</p></div></div>
+      </div>
+      <div class="faq-item panel rounded-2xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-[15px]">Can I use it on a client project?<span class="faq-chev muted">⌄</span></button>
+        <div class="faq-a"><div class="overflow-hidden"><p class="px-5 pb-5 muted text-sm leading-relaxed">Yes. One purchase covers unlimited projects for one team, including client work. You may not resell the kit itself as a template.</p></div></div>
+      </div>
+      <div class="faq-item panel rounded-2xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-[15px]">Does it work without JavaScript?<span class="faq-chev muted">⌄</span></button>
+        <div class="faq-a"><div class="overflow-hidden"><p class="px-5 pb-5 muted text-sm leading-relaxed">The nav and footer markup renders fully without JavaScript — links, layout and styling are plain HTML and CSS. JavaScript only powers the interactive extras: mega menu, palette, playground and form validation.</p></div></div>
+      </div>
+      <div class="faq-item panel rounded-2xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-[15px]">Is there a light theme?<span class="faq-chev muted">⌄</span></button>
+        <div class="faq-a"><div class="overflow-hidden"><p class="px-5 pb-5 muted text-sm leading-relaxed">Yes — every variant ships in dark (default) and light. Toggle the theme at the top of this page: the whole kit, including the live preview, follows.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KIT FOOTER (Mega Footer variant, live) ============ -->
+<footer class="mt-6" style="border-top:1px solid var(--border); background:var(--bg2)">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-6">
+    <div class="grid md:grid-cols-5 gap-8">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-2.5">
+          <span class="w-9 h-9 rounded-xl grid place-items-center font-display text-lg accent-bg" style="font-weight:800">W</span>
+          <span class="font-display font-bold text-lg">Waymark</span>
+        </div>
+        <p class="muted text-sm leading-relaxed mt-3 max-w-xs">Navigation and footer systems for SaaS sites. Designed by JULIUS VIBE STUDIO — one file, thirty-six combinations.</p>
+        <form class="nl-form flex gap-2 mt-5 max-w-sm" data-form="kit-footer" novalidate>
+          <input type="email" class="field flex-1 min-w-0 px-3.5 py-2.5 text-sm" placeholder="you@company.com" aria-label="Email for updates" required>
+          <button type="submit" class="btn-primary rounded-[10px] px-4 py-2.5 text-sm font-semibold shrink-0">Join</button>
+        </form>
+        <p class="nl-error hidden text-sm mt-2" style="color:var(--rose)">Please enter a valid e-mail address.</p>
+        <p class="nl-success hidden text-sm mt-2 font-semibold" style="color:var(--mint)">✓ You are on the list — welcome to Waymark.</p>
+      </div>
+      <div>
+        <div class="font-semibold text-sm mb-3">Product</div>
+        <ul class="space-y-2 text-sm muted"><li><a href="#preview" class="hover:text-[var(--text)]">Live preview</a></li><li><a href="#navs" class="hover:text-[var(--text)]">Navigations</a></li><li><a href="#footers" class="hover:text-[var(--text)]">Footers</a></li><li><a href="#playground" class="hover:text-[var(--text)]">Playground</a></li></ul>
+      </div>
+      <div>
+        <div class="font-semibold text-sm mb-3">Resources</div>
+        <ul class="space-y-2 text-sm muted"><li><a href="#system" class="hover:text-[var(--text)]">Design system</a></li><li><a href="#analytics" class="hover:text-[var(--text)]">Analytics</a></li><li><a href="#faq" class="hover:text-[var(--text)]">FAQ</a></li><li><a href="#top" class="hover:text-[var(--text)]">Back to top ↑</a></li></ul>
+      </div>
+      <div>
+        <div class="font-semibold text-sm mb-3">Studio</div>
+        <ul class="space-y-2 text-sm muted"><li><a href="https://21st.dev" target="_blank" rel="noopener" class="hover:text-[var(--text)]">21st.dev ↗</a></li><li><a href="#top" class="hover:text-[var(--text)]">JULIUS VIBE STUDIO</a></li></ul>
+        <div class="flex items-center gap-1.5 text-xs muted mt-5"><span class="w-2 h-2 rounded-full pulse-dot" style="background:var(--mint)"></span>All systems operational</div>
+      </div>
+    </div>
+    <div class="flex flex-wrap items-center justify-between gap-3 pt-8 mt-10 text-xs muted" style="border-top:1px solid var(--border)">
+      <span>© 2026 JULIUS VIBE STUDIO — Footer &amp; Nav Kit v1.0</span>
+      <span class="flex gap-4"><a href="#top" class="hover:text-[var(--text)]">Privacy</a><a href="#top" class="hover:text-[var(--text)]">Terms</a><a href="#top" class="hover:text-[var(--text)]">License</a></span>
+    </div>
+  </div>
+</footer>
+
+<!-- mobile bottom tab bar (page-level, <md only) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-around py-2 text-[10px] font-semibold" style="background:color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter:blur(8px); border-top:1px solid var(--border)">
+  <a href="#preview" class="accent-text flex flex-col items-center gap-0.5 px-2">▦<span>Preview</span></a>
+  <a href="#navs" class="muted flex flex-col items-center gap-0.5 px-2">☰<span>Navs</span></a>
+  <a href="#footers" class="muted flex flex-col items-center gap-0.5 px-2">▤<span>Footers</span></a>
+  <a href="#playground" class="muted flex flex-col items-center gap-0.5 px-2">◐<span>Play</span></a>
+</nav>
+<div class="md:hidden h-14"></div>
+
+</main>
+
+<!-- overlays -->
+<div id="tip" role="status"></div>
+<div id="toast" role="status">Copied to clipboard</div>
+<div id="palette" class="items-start justify-center pt-[12vh] px-4">
+  <div class="panel rounded-2xl w-full max-w-lg overflow-hidden" style="box-shadow:var(--shadow)">
+    <div class="flex items-center gap-3 px-4 py-3.5" style="border-bottom:1px solid var(--border)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="muted"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="paletteInput" type="text" placeholder="Search sections, navs, footers…" class="flex-1 bg-transparent outline-none text-[15px] placeholder:text-[var(--faint)]" autocomplete="off">
+      <kbd>ESC</kbd>
+    </div>
+    <div id="paletteList" class="max-h-80 overflow-y-auto p-2"></div>
+    <div class="px-4 py-2.5 text-[11px] faint flex gap-4" style="border-top:1px solid var(--border)">
+      <span>↑↓ navigate</span><span>↵ apply / jump</span><span>esc close</span>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  "use strict";
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- toast ---------- */
+  var toastEl = $("#toast"), toastTimer = null;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 2600);
+  }
+
+  /* ---------- tooltip ---------- */
+  var tipEl = $("#tip");
+  function showTip(html, x, y) {
+    tipEl.innerHTML = html;
+    tipEl.classList.add("show");
+    var r = tipEl.getBoundingClientRect();
+    var left = Math.min(Math.max(8, x + 14), window.innerWidth - r.width - 12);
+    var top = y + 16;
+    if (top + r.height > window.innerHeight - 8) top = Math.max(8, y - r.height - 12);
+    tipEl.style.left = left + "px";
+    tipEl.style.top = top + "px";
+  }
+  function hideTip() { tipEl.classList.remove("show"); }
+  function bindTip(el, htmlFn) {
+    el.addEventListener("mouseenter", function (e) { showTip(htmlFn(), e.clientX, e.clientY); });
+    el.addEventListener("mousemove", function (e) { showTip(htmlFn(), e.clientX, e.clientY); });
+    el.addEventListener("mouseleave", hideTip);
+  }
+  $$(".stat").forEach(function (el) {
+    bindTip(el, function () { return el.getAttribute("data-tip"); });
+  });
+
+  /* ---------- count-up ---------- */
+  $$(".count").forEach(function (el) {
+    var target = parseInt(el.getAttribute("data-target"), 10);
+    if (reduceMotion) { el.textContent = target; return; }
+    var start = null, dur = 900;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min(1, (ts - start) / dur);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+
+  /* ---------- NAV + FOOTER VARIANTS ---------- */
+  var NL = "Northloop";
+  var navLink = function (href, label, active) {
+    return '<a href="' + href + '" class="text-sm ' + (active ? 'font-semibold text-[var(--text)]' : 'muted hover:text-[var(--text)]') + '">' + label + '</a>';
+  };
+  var NAVS = {
+    classic: { name: "Classic Topbar", slot: "top", render: function () {
+      return '<div class="flex items-center gap-6 px-5 sm:px-8 h-16" style="background:var(--surface); border-bottom:1px solid var(--border)">'
+        + '<span class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg grid place-items-center text-xs font-bold accent-bg">N</span><span class="font-display font-bold">Northloop</span></span>'
+        + '<nav class="hidden md:flex items-center gap-5">' + navLink("#preview", "Product", true) + navLink("#navs", "Pricing") + navLink("#system", "Docs") + navLink("#faq", "Changelog") + '</nav>'
+        + '<span class="flex-1"></span>'
+        + '<button class="hidden sm:flex items-center gap-2 text-xs muted rounded-full px-3 py-1.5 panel2" data-pv-action="palette">Search <kbd>⌘K</kbd></button>'
+        + '<button class="rounded-full px-4 py-2 text-xs font-semibold accent-bg" data-pv-action="signin">Sign in</button></div>';
+    } },
+    mega: { name: "Mega Menu", slot: "top", render: function () {
+      return '<div class="mega-wrap relative" style="background:var(--surface); border-bottom:1px solid var(--border)">'
+        + '<div class="flex items-center gap-6 px-5 sm:px-8 h-16">'
+        + '<span class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg grid place-items-center text-xs font-bold accent-bg">N</span><span class="font-display font-bold">Northloop</span></span>'
+        + '<nav class="hidden md:flex items-center gap-5">'
+        + '<button class="text-sm font-semibold accent-text" data-mega-btn aria-expanded="false">Product ⌄</button>'
+        + navLink("#navs", "Solutions") + navLink("#system", "Docs") + navLink("#faq", "Company") + '</nav>'
+        + '<span class="flex-1"></span>'
+        + '<button class="rounded-full px-4 py-2 text-xs font-semibold accent-bg" data-pv-action="signin">Start free</button></div>'
+        + '<div class="mega-drop absolute left-1/2 -translate-x-1/2 top-[68px] w-[min(560px,92%)] grid-cols-3 gap-5 rounded-2xl p-5 z-30" style="background:var(--surface2); border:1px solid var(--border-strong); box-shadow:var(--shadow)">'
+        + '<div><div class="text-xs font-mono tracking-widest faint mb-2">FEATURES</div><div class="space-y-1.5 text-sm"><a href="#preview" class="block hover:text-[var(--accent)]">Cycle time</a><a href="#preview" class="block hover:text-[var(--accent)]">Throughput</a><a href="#preview" class="block hover:text-[var(--accent)]">Risk radar</a></div></div>'
+        + '<div><div class="text-xs font-mono tracking-widest faint mb-2">USE CASES</div><div class="space-y-1.5 text-sm"><a href="#preview" class="block hover:text-[var(--accent)]">Engineering</a><a href="#preview" class="block hover:text-[var(--accent)]">Product ops</a><a href="#preview" class="block hover:text-[var(--accent)]">Agencies</a></div></div>'
+        + '<div><div class="text-xs font-mono tracking-widest faint mb-2">HIGHLIGHT</div><div class="rounded-xl p-3 text-sm accent-soft"><strong>New: Risk radar</strong><br><span class="muted">See slippage 2 weeks early.</span></div></div>'
+        + '</div></div>';
+    } },
+    pill: { name: "Floating Pill", slot: "top", render: function () {
+      return '<div class="px-5 sm:px-8 pt-4 pb-1" style="background:transparent">'
+        + '<div class="mx-auto flex w-fit items-center gap-4 sm:gap-5 rounded-full px-4 sm:px-5 py-2.5" style="background:color-mix(in srgb, var(--surface) 88%, transparent); border:1px solid var(--border-strong); box-shadow:var(--shadow); backdrop-filter:blur(8px)">'
+        + '<span class="flex items-center gap-2"><span class="w-6 h-6 rounded-md grid place-items-center text-[10px] font-bold accent-bg">N</span><span class="font-display font-bold text-sm">Northloop</span></span>'
+        + '<nav class="hidden md:flex items-center gap-4">' + navLink("#preview", "Product", true) + navLink("#navs", "Pricing") + navLink("#system", "Docs") + '</nav>'
+        + '<button class="w-7 h-7 rounded-full grid place-items-center text-xs panel2" data-pv-action="palette" aria-label="Search">⌘K</button>'
+        + '<button class="rounded-full px-3.5 py-1.5 text-xs font-semibold accent-bg" data-pv-action="signin">Sign in</button></div></div>';
+    } },
+    sidebar: { name: "Sidebar", slot: "rail", render: function () {
+      return '<div class="pv-rail py-5 px-3">'
+        + '<span class="flex items-center gap-2 px-2 mb-6"><span class="w-7 h-7 rounded-lg grid place-items-center text-xs font-bold accent-bg">N</span><span class="font-display font-bold">Northloop</span></span>'
+        + '<div class="text-[10px] font-mono tracking-widest faint px-2 mb-2">WORKSPACE</div>'
+        + '<a href="#preview" class="rounded-lg px-2.5 py-2 text-sm font-semibold accent-soft accent-text">▦ Overview</a>'
+        + '<a href="#navs" class="rounded-lg px-2.5 py-2 text-sm muted hover:text-[var(--text)]">▤ Projects</a>'
+        + '<a href="#analytics" class="rounded-lg px-2.5 py-2 text-sm muted hover:text-[var(--text)]">◧ Reports</a>'
+        + '<a href="#system" class="rounded-lg px-2.5 py-2 text-sm muted hover:text-[var(--text)]">⚙ Settings</a>'
+        + '<div class="flex-1"></div>'
+        + '<div class="rounded-xl p-3 panel2 flex items-center gap-2.5"><span class="w-8 h-8 rounded-full grid place-items-center text-xs font-bold accent-bg">AM</span><span class="min-w-0"><span class="block text-xs font-semibold truncate">Alex Morgan</span><span class="block text-[11px] muted">Admin</span></span></div>'
+        + '</div>';
+    } },
+    command: { name: "Command Bar", slot: "top", render: function () {
+      return '<div class="px-5 sm:px-8 py-4" style="background:var(--surface); border-bottom:1px solid var(--border)">'
+        + '<div class="flex items-center gap-3 max-w-xl mx-auto">'
+        + '<span class="flex items-center gap-2 shrink-0"><span class="w-7 h-7 rounded-lg grid place-items-center text-xs font-bold accent-bg">N</span><span class="font-display font-bold hidden sm:block">Northloop</span></span>'
+        + '<button class="flex-1 flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm muted text-left" style="background:var(--surface2); border:1px solid var(--border-strong)" data-pv-action="palette">'
+        + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>'
+        + 'Search projects, docs, people… <span class="ml-auto"><kbd>⌘K</kbd></span></button>'
+        + '<button class="rounded-full px-4 py-2 text-xs font-semibold accent-bg shrink-0" data-pv-action="signin">Sign in</button></div></div>';
+    } },
+    tabs: { name: "Bottom Tab Bar", slot: "tabs", render: function () {
+      return '<div class="flex items-center gap-3 px-5 sm:px-8 h-14" style="background:var(--surface); border-bottom:1px solid var(--border)">'
+        + '<span class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg grid place-items-center text-xs font-bold accent-bg">N</span><span class="font-display font-bold">Northloop</span></span>'
+        + '<span class="flex-1"></span>'
+        + '<span class="w-8 h-8 rounded-full grid place-items-center text-xs font-bold accent-bg">AM</span></div>';
+    } }
+  };
+  var TABS_BAR = '<div class="pv-tabbar justify-around py-2.5 text-[11px] font-semibold">'
+    + '<a href="#preview" class="accent-text flex flex-col items-center gap-0.5 px-2">⌂<span>Home</span></a>'
+    + '<a href="#navs" class="muted flex flex-col items-center gap-0.5 px-2">▤<span>Projects</span></a>'
+    + '<button class="flex flex-col items-center gap-0.5 px-2 -mt-5" data-pv-action="new"><span class="w-10 h-10 rounded-full grid place-items-center text-lg accent-bg" style="box-shadow:var(--shadow)">＋</span><span class="muted">New</span></button>'
+    + '<a href="#analytics" class="muted flex flex-col items-center gap-0.5 px-2">◷<span>Activity</span></a>'
+    + '<a href="#system" class="muted flex flex-col items-center gap-0.5 px-2">⚙<span>Settings</span></a></div>';
+
+  var FOOTERS = {
+    mega: { name: "Mega Footer", render: function () {
+      return '<footer class="px-5 sm:px-8 pt-8 pb-5" style="background:var(--surface); border-top:1px solid var(--border)">'
+        + '<div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">'
+        + '<div><div class="font-semibold mb-2.5">Product</div><div class="space-y-1.5 muted"><a href="#preview" class="block hover:text-[var(--text)]">Overview</a><a href="#playground" class="block hover:text-[var(--text)]">Pricing</a><a href="#faq" class="block hover:text-[var(--text)]">Changelog</a></div></div>'
+        + '<div><div class="font-semibold mb-2.5">Company</div><div class="space-y-1.5 muted"><a href="#top" class="block hover:text-[var(--text)]">About</a><a href="#top" class="block hover:text-[var(--text)]">Careers</a><a href="#top" class="block hover:text-[var(--text)]">Press</a></div></div>'
+        + '<div><div class="font-semibold mb-2.5">Resources</div><div class="space-y-1.5 muted"><a href="#system" class="block hover:text-[var(--text)]">Docs</a><a href="#analytics" class="block hover:text-[var(--text)]">Analytics</a><a href="#faq" class="block hover:text-[var(--text)]">FAQ</a></div></div>'
+        + '<div><div class="font-semibold mb-2.5">Legal</div><div class="space-y-1.5 muted"><a href="#top" class="block hover:text-[var(--text)]">Privacy</a><a href="#top" class="block hover:text-[var(--text)]">Terms</a><a href="#top" class="block hover:text-[var(--text)]">Security</a></div></div>'
+        + '</div>'
+        + '<div class="flex flex-wrap items-center justify-between gap-3 pt-6 mt-7 text-xs muted" style="border-top:1px solid var(--border)"><span>© 2026 Northloop — demo site dressed by the Footer &amp; Nav Kit.</span><span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full pulse-dot" style="background:var(--mint)"></span>All systems operational</span></div></footer>';
+    } },
+    minimal: { name: "Minimal Footer", render: function () {
+      return '<footer class="px-5 sm:px-8 py-5 flex flex-wrap items-center justify-between gap-3 text-sm" style="background:var(--surface); border-top:1px solid var(--border)">'
+        + '<span class="font-display font-bold">Northloop</span>'
+        + '<span class="muted text-xs">© 2026 · <a href="#top" class="hover:text-[var(--text)]">Privacy</a> · <a href="#top" class="hover:text-[var(--text)]">Terms</a> · <a href="#top" class="hover:text-[var(--text)]">Contact</a></span></footer>';
+    } },
+    newsletter: { name: "Newsletter Footer", render: function () {
+      return '<footer class="px-5 sm:px-8 py-8" style="background:var(--surface); border-top:1px solid var(--border)">'
+        + '<div class="max-w-lg"><div class="font-display font-bold text-xl">Get one useful e-mail a week.</div>'
+        + '<p class="muted text-sm mt-1.5">Delivery metrics, teardowns and templates. No spam, unsubscribe anytime.</p>'
+        + '<form class="nl-form flex gap-2 mt-4" data-form="preview-newsletter" novalidate><input type="email" class="field flex-1 min-w-0 px-3.5 py-2.5 text-sm" placeholder="you@company.com" aria-label="Email" required><button type="submit" class="btn-primary rounded-[10px] px-4 py-2.5 text-sm font-semibold shrink-0">Join</button></form>'
+        + '<p class="nl-error hidden text-sm mt-2" style="color:var(--rose)">Please enter a valid e-mail address.</p>'
+        + '<p class="nl-success hidden text-sm mt-2 font-semibold" style="color:var(--mint)">✓ You are in — first e-mail lands Friday.</p></div>'
+        + '<div class="flex flex-wrap gap-x-5 gap-y-2 pt-5 mt-6 text-xs muted" style="border-top:1px solid var(--border)"><a href="#preview" class="hover:text-[var(--text)]">Product</a><a href="#navs" class="hover:text-[var(--text)]">Pricing</a><a href="#system" class="hover:text-[var(--text)]">Docs</a><a href="#faq" class="hover:text-[var(--text)]">FAQ</a><span class="ml-auto">© 2026 Northloop</span></div></footer>';
+    } },
+    sitemap: { name: "Sitemap Footer", render: function () {
+      return '<footer class="px-5 sm:px-8 py-8" style="background:var(--surface); border-top:1px solid var(--border)">'
+        + '<div class="grid grid-cols-3 md:grid-cols-6 gap-x-4 gap-y-2 text-xs muted">'
+        + '<a href="#preview" class="hover:text-[var(--text)]">Analytics</a><a href="#preview" class="hover:text-[var(--text)]">Integrations</a><a href="#system" class="hover:text-[var(--text)]">API reference</a><a href="#navs" class="hover:text-[var(--text)]">Templates</a><a href="#top" class="hover:text-[var(--text)]">Status</a><a href="#faq" class="hover:text-[var(--text)]">Roadmap</a>'
+        + '<a href="#top" class="hover:text-[var(--text)]">Careers</a><a href="#top" class="hover:text-[var(--text)]">Contact</a><a href="#top" class="hover:text-[var(--text)]">Press kit</a><a href="#top" class="hover:text-[var(--text)]">Security</a><a href="#top" class="hover:text-[var(--text)]">Privacy</a><a href="#top" class="hover:text-[var(--text)]">Terms</a>'
+        + '</div>'
+        + '<div class="flex items-center justify-between pt-5 mt-6 text-xs muted" style="border-top:1px solid var(--border)"><span class="font-display font-bold text-sm text-[var(--text)]">Northloop</span><span>© 2026 · Every page, one click away.</span></div></footer>';
+    } },
+    status: { name: "Status Footer", render: function () {
+      return '<footer class="px-5 sm:px-8 py-6" style="background:var(--surface); border-top:1px solid var(--border)">'
+        + '<div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">'
+        + '<span class="flex items-center gap-2 font-semibold"><span class="w-2.5 h-2.5 rounded-full pulse-dot" style="background:var(--mint)"></span>All systems operational</span>'
+        + '<span class="muted text-xs">Uptime 99.99% (90 days)</span><span class="muted text-xs">v3.2.1</span>'
+        + '<a href="#top" class="text-xs accent-text font-semibold ml-auto">Status page →</a></div>'
+        + '<div class="flex flex-wrap gap-x-5 gap-y-2 pt-4 mt-4 text-xs muted" style="border-top:1px solid var(--border)"><a href="#preview" class="hover:text-[var(--text)]">Product</a><a href="#navs" class="hover:text-[var(--text)]">Pricing</a><a href="#system" class="hover:text-[var(--text)]">Docs</a><span class="ml-auto">© 2026 Northloop</span></div></footer>';
+    } },
+    social: { name: "Social Footer", render: function () {
+      return '<footer class="px-5 sm:px-8 py-8 text-center" style="background:var(--surface); border-top:1px solid var(--border)">'
+        + '<div class="font-display font-extrabold tracking-tight text-3xl sm:text-4xl">NORTHLOOP</div>'
+        + '<div class="flex justify-center gap-2.5 mt-4">'
+        + '<a href="#top" aria-label="X" class="w-9 h-9 rounded-full panel2 grid place-items-center text-xs font-bold hover:border-[var(--accent)]">X</a>'
+        + '<a href="#top" aria-label="LinkedIn" class="w-9 h-9 rounded-full panel2 grid place-items-center text-xs font-bold hover:border-[var(--accent)]">in</a>'
+        + '<a href="#top" aria-label="YouTube" class="w-9 h-9 rounded-full panel2 grid place-items-center text-xs hover:border-[var(--accent)]">▶</a>'
+        + '<a href="#top" aria-label="GitHub" class="w-9 h-9 rounded-full panel2 grid place-items-center text-xs font-bold hover:border-[var(--accent)]">⌘</a></div>'
+        + '<div class="flex flex-wrap justify-center gap-x-5 gap-y-2 mt-5 text-xs muted"><a href="#preview" class="hover:text-[var(--text)]">Product</a><a href="#navs" class="hover:text-[var(--text)]">Pricing</a><a href="#system" class="hover:text-[var(--text)]">Docs</a><a href="#faq" class="hover:text-[var(--text)]">FAQ</a></div>'
+        + '<div class="text-xs faint mt-4">© 2026 Northloop — find us everywhere.</div></footer>';
+    } }
+  };
+
+  var NAV_ORDER = ["classic", "mega", "pill", "sidebar", "command", "tabs"];
+  var FOOTER_ORDER = ["mega", "minimal", "newsletter", "sitemap", "status", "social"];
+  var state = { nav: "classic", footer: "mega" };
+
+  var previewBody = $("#previewBody"), pvNavSlot = $("#pvNavSlot"), pvRailSlot = $("#pvRailSlot"),
+      pvTabSlot = $("#pvTabSlot"), pvFooterSlot = $("#pvFooterSlot");
+
+  function renderPreview() {
+    var nav = NAVS[state.nav], footer = FOOTERS[state.footer];
+    pvNavSlot.innerHTML = ""; pvRailSlot.innerHTML = ""; pvTabSlot.innerHTML = "";
+    previewBody.classList.remove("sidebar");
+    if (nav.slot === "rail") {
+      previewBody.classList.add("sidebar");
+      pvRailSlot.innerHTML = nav.render();
+    } else if (nav.slot === "tabs") {
+      pvNavSlot.innerHTML = nav.render();
+      pvTabSlot.innerHTML = TABS_BAR;
+    } else {
+      pvNavSlot.innerHTML = nav.render();
+    }
+    pvFooterSlot.innerHTML = footer.render();
+    var n = NAV_ORDER.indexOf(state.nav), f = FOOTER_ORDER.indexOf(state.footer);
+    $("#comboLabel").textContent = nav.name + " × " + footer.name;
+    $("#comboNum").textContent = String(n * 6 + f + 1);
+    $$("#navPicker .tab-btn").forEach(function (b) { b.classList.toggle("active", b.getAttribute("data-nav") === state.nav); });
+    $$("#footerPicker .tab-btn").forEach(function (b) { b.classList.toggle("active", b.getAttribute("data-footer") === state.footer); });
+    $$("#navGallery article").forEach(function (a) { a.style.outline = a.getAttribute("data-nav") === state.nav ? "2px solid var(--accent)" : ""; a.style.outlineOffset = "2px"; });
+    $$("#footerGallery article").forEach(function (a) { a.style.outline = a.getAttribute("data-footer") === state.footer ? "2px solid var(--accent)" : ""; a.style.outlineOffset = "2px"; });
+    var content = $("#pvContent");
+    content.classList.remove("fade-up"); void content.offsetWidth; content.classList.add("fade-up");
+    applySticky();
+  }
+  function applyNav(key, silent) {
+    if (!NAVS[key]) return;
+    state.nav = key; renderPreview();
+    if (!silent) toast("Navigation applied: " + NAVS[key].name);
+  }
+  function applyFooter(key, silent) {
+    if (!FOOTERS[key]) return;
+    state.footer = key; renderPreview();
+    if (!silent) toast("Footer applied: " + FOOTERS[key].name);
+  }
+
+  /* pickers */
+  var navPicker = $("#navPicker");
+  NAV_ORDER.forEach(function (key, i) {
+    var b = document.createElement("button");
+    b.className = "tab-btn rounded-full px-4 py-2 text-xs font-semibold";
+    b.setAttribute("data-nav", key);
+    b.textContent = (i + 1) + " · " + NAVS[key].name;
+    b.addEventListener("click", function () { applyNav(key); });
+    navPicker.appendChild(b);
+  });
+  var footerPicker = $("#footerPicker");
+  FOOTER_ORDER.forEach(function (key, i) {
+    var b = document.createElement("button");
+    b.className = "tab-btn rounded-full px-4 py-2 text-xs font-semibold";
+    b.setAttribute("data-footer", key);
+    b.textContent = String.fromCharCode(65 + i) + " · " + FOOTERS[key].name;
+    b.addEventListener("click", function () { applyFooter(key); });
+    footerPicker.appendChild(b);
+  });
+
+  /* gallery buttons (delegated) */
+  document.addEventListener("click", function (e) {
+    var an = e.target.closest(".apply-nav");
+    if (an) { applyNav(an.getAttribute("data-nav")); document.getElementById("preview").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); return; }
+    var af = e.target.closest(".apply-footer");
+    if (af) { applyFooter(af.getAttribute("data-footer")); document.getElementById("preview").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); return; }
+    var mb = e.target.closest("[data-mega-btn]");
+    if (mb) {
+      var wrap = mb.closest(".mega-wrap");
+      var open = wrap.classList.toggle("mega-open");
+      mb.setAttribute("aria-expanded", open ? "true" : "false");
+      return;
+    }
+    if (!e.target.closest(".mega-wrap")) {
+      $$(".mega-wrap.mega-open").forEach(function (w) { w.classList.remove("mega-open"); });
+    }
+    var pa = e.target.closest("[data-pv-action]");
+    if (pa) {
+      var act = pa.getAttribute("data-pv-action");
+      if (act === "palette") openPalette();
+      else if (act === "signin") toast("Sign-in is a demo — the kit ships the form, you wire the auth.");
+      else if (act === "cta") { var f = $(".nl-form", document); if (f) { f.scrollIntoView({ behavior: "smooth", block: "center" }); var inp = $("input", f); if (inp) inp.focus(); } }
+      else if (act === "tour") toast("Tour video is a placeholder in the demo — replace with your own.");
+      else if (act === "new") toast("“New project” is a demo action — the kit ships the button, you wire the flow.");
+    }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") $$(".mega-wrap.mega-open").forEach(function (w) { w.classList.remove("mega-open"); });
+  });
+
+  /* newsletter forms (delegated submit) */
+  document.addEventListener("submit", function (e) {
+    var form = e.target.closest(".nl-form");
+    if (!form) return;
+    e.preventDefault();
+    var input = $("input[type=email]", form);
+    var ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((input.value || "").trim());
+    var err = form.parentElement.querySelector(".nl-error");
+    var suc = form.parentElement.querySelector(".nl-success");
+    if (err) err.classList.toggle("hidden", ok);
+    if (suc) suc.classList.toggle("hidden", !ok);
+    if (ok) { form.style.display = "none"; toast("Subscribed — welcome to Waymark."); }
+    else input.focus();
+  });
+
+  /* shuffle */
+  $("#shuffleBtn").addEventListener("click", function () {
+    var n = NAV_ORDER[Math.floor(Math.random() * NAV_ORDER.length)];
+    var f = FOOTER_ORDER[Math.floor(Math.random() * FOOTER_ORDER.length)];
+    state.nav = n; state.footer = f; renderPreview();
+    document.getElementById("preview").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+    toast("Combination " + $("#comboNum").textContent + " of 36: " + NAVS[n].name + " × " + FOOTERS[f].name);
+  });
+
+  /* ---------- playground ---------- */
+  var ACCENTS = { "#38BDF8": "Sky #38BDF8", "#F59E0B": "Amber #F59E0B", "#34D399": "Mint #34D399", "#A78BFA": "Violet #A78BFA", "#FB7185": "Rose #FB7185" };
+  $$(".accent-dot").forEach(function (dot) {
+    dot.addEventListener("click", function () {
+      var c = dot.getAttribute("data-accent"), ink = dot.getAttribute("data-accent-ink");
+      document.documentElement.style.setProperty("--accent", c);
+      document.documentElement.style.setProperty("--accent-ink", ink);
+      $("#accentName").textContent = ACCENTS[c] || c;
+      $$(".accent-dot").forEach(function (d) { d.style.borderColor = d === dot ? "var(--accent)" : "transparent"; });
+      toast("Accent set to " + (ACCENTS[c] || c));
+    });
+  });
+  var radiusRange = $("#radiusRange");
+  radiusRange.addEventListener("input", function () {
+    $("#radiusVal").textContent = radiusRange.value;
+    document.documentElement.style.setProperty("--kit-radius", radiusRange.value + "px");
+  });
+  document.documentElement.style.setProperty("--kit-radius", "12px");
+  var styleEl = document.createElement("style");
+  styleEl.textContent = "#previewFrame [class*=\"rounded\"] { border-radius: var(--kit-radius, 12px) !important; }";
+  document.head.appendChild(styleEl);
+  function setDensity(compact) {
+    $("#previewFrame").classList.toggle("pv-compact", compact);
+    $("#densityComfort").classList.toggle("active", !compact);
+    $("#densityCompact").classList.toggle("active", compact);
+  }
+  $("#densityComfort").addEventListener("click", function () { setDensity(false); });
+  $("#densityCompact").addEventListener("click", function () { setDensity(true); });
+  var sticky = false;
+  function applySticky() {
+    var navEl = pvNavSlot.firstElementChild;
+    if (navEl) navEl.classList.toggle("pv-sticky", sticky && NAVS[state.nav].slot === "top");
+  }
+  $("#stickyOn").addEventListener("click", function () { sticky = true; $("#stickyOn").classList.add("active"); $("#stickyOff").classList.remove("active"); applySticky(); toast("Preview nav is now sticky."); });
+  $("#stickyOff").addEventListener("click", function () { sticky = false; $("#stickyOff").classList.add("active"); $("#stickyOn").classList.remove("active"); applySticky(); });
+
+  /* ---------- analytics charts ---------- */
+  var CTR = [
+    { label: "Classic", v: 34.2 }, { label: "Mega", v: 27.8 }, { label: "Pill", v: 18.4 },
+    { label: "Sidebar", v: 9.1 }, { label: "Command", v: 6.3 }, { label: "Tabs", v: 4.2 }
+  ];
+  var ctrChart = $("#ctrChart"), ctrLabels = $("#ctrLabels");
+  CTR.forEach(function (d) {
+    var col = document.createElement("div");
+    col.className = "flex-1 flex flex-col items-center justify-end h-full";
+    col.innerHTML = '<div class="bar w-full max-w-[52px] rounded-t-lg" style="height:' + (d.v * 2.4) + '%; background:linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 35%, var(--surface)));"></div>';
+    var bar = col.firstElementChild;
+    bindTip(bar, function () {
+      var sessions = Math.round(12400 * d.v / 100).toLocaleString("en-US");
+      return "<strong>" + d.label + " nav</strong><br>Click-through <strong>" + d.v.toFixed(1) + "%</strong><br>" + sessions + " sessions of 12,400";
+    });
+    ctrChart.appendChild(col);
+    var lab = document.createElement("div");
+    lab.className = "flex-1 text-center";
+    lab.textContent = d.label;
+    ctrLabels.appendChild(lab);
+  });
+  var DONUT = [
+    { label: "Newsletter", v: 38.5, color: "#38BDF8" },
+    { label: "Product links", v: 27.2, color: "#F59E0B" },
+    { label: "Company", v: 19.8, color: "#34D399" },
+    { label: "Legal & status", v: 14.5, color: "#A78BFA" }
+  ];
+  var donutSvg = $("#footerDonut"), C = 2 * Math.PI * 60, NS = "http://www.w3.org/2000/svg";
+  var hole = document.createElementNS(NS, "circle");
+  hole.setAttribute("cx", "75"); hole.setAttribute("cy", "75"); hole.setAttribute("r", "60");
+  hole.setAttribute("fill", "none"); hole.setAttribute("stroke", "var(--surface2)"); hole.setAttribute("stroke-width", "22");
+  donutSvg.appendChild(hole);
+  var offset = 0;
+  DONUT.forEach(function (d) {
+    var seg = document.createElementNS(NS, "circle");
+    seg.setAttribute("cx", "75"); seg.setAttribute("cy", "75"); seg.setAttribute("r", "60");
+    seg.setAttribute("fill", "none"); seg.setAttribute("stroke", d.color); seg.setAttribute("stroke-width", "22");
+    seg.setAttribute("stroke-dasharray", (C * d.v / 100 - 2) + " " + (C - C * d.v / 100 + 2));
+    seg.setAttribute("stroke-dashoffset", String(-offset));
+    seg.setAttribute("transform", "rotate(-90 75 75)");
+    seg.setAttribute("class", "donut-seg");
+    donutSvg.appendChild(seg);
+    bindTip(seg, function () {
+      var clicks = Math.round(8913 * d.v / 100).toLocaleString("en-US");
+      return "<strong>" + d.label + "</strong><br><strong>" + d.v.toFixed(1) + "%</strong> of footer clicks<br>" + clicks + " clicks of 8,913";
+    });
+    seg.addEventListener("mouseenter", function () { $$(".donut-seg", donutSvg).forEach(function (s) { if (s !== seg) s.classList.add("dim"); }); });
+    seg.addEventListener("mouseleave", function () { $$(".donut-seg", donutSvg).forEach(function (s) { s.classList.remove("dim"); }); });
+    offset += C * d.v / 100;
+  });
+  var center = document.createElementNS(NS, "text");
+  center.setAttribute("x", "75"); center.setAttribute("y", "71"); center.setAttribute("text-anchor", "middle");
+  center.setAttribute("fill", "var(--text)"); center.setAttribute("font-size", "22"); center.setAttribute("font-weight", "800");
+  center.setAttribute("font-family", "Sora, sans-serif"); center.setAttribute("pointer-events", "none");
+  center.textContent = "8,913";
+  donutSvg.appendChild(center);
+  var center2 = document.createElementNS(NS, "text");
+  center2.setAttribute("x", "75"); center2.setAttribute("y", "90"); center2.setAttribute("text-anchor", "middle");
+  center2.setAttribute("fill", "var(--muted)"); center2.setAttribute("font-size", "10");
+  center2.setAttribute("font-family", "Inter, sans-serif"); center2.setAttribute("pointer-events", "none");
+  center2.textContent = "footer clicks";
+  donutSvg.appendChild(center2);
+  var legend = $("#donutLegend");
+  DONUT.forEach(function (d) {
+    var li = document.createElement("li");
+    li.className = "flex items-center gap-2.5";
+    li.innerHTML = '<span class="w-3 h-3 rounded-sm shrink-0" style="background:' + d.color + '"></span><span>' + d.label + '</span><span class="ml-auto font-semibold">' + d.v.toFixed(1) + '%</span>';
+    legend.appendChild(li);
+  });
+
+  /* ---------- copy code ---------- */
+  var CODE = {
+    nav: {
+      classic: '<header class="nav nav--classic">\n  <a class="nav__logo" href="/">Northloop</a>\n  <nav><a href="/product">Product</a><a href="/pricing">Pricing</a><a href="/docs">Docs</a></nav>\n  <button class="btn btn--primary">Sign in</button>\n</header>',
+      mega: '<header class="nav nav--mega">\n  <a class="nav__logo" href="/">Northloop</a>\n  <button data-mega aria-expanded="false">Product</button>\n  <div class="mega-menu"><!-- 3 columns: Features / Use cases / Highlight --></div>\n</header>',
+      pill: '<header class="nav nav--pill">\n  <div class="pill">\n    <a class="nav__logo" href="/">Northloop</a>\n    <nav><a href="/product">Product</a><a href="/pricing">Pricing</a></nav>\n    <button class="btn btn--primary">Sign in</button>\n  </div>\n</header>',
+      sidebar: '<div class="shell">\n  <aside class="sidebar">\n    <a class="nav__logo" href="/">Northloop</a>\n    <a href="/overview" class="active">Overview</a>\n    <a href="/projects">Projects</a><a href="/reports">Reports</a>\n  </aside>\n  <main><!-- page --></main>\n</div>',
+      command: '<header class="nav nav--command">\n  <a class="nav__logo" href="/">Northloop</a>\n  <button class="command-input" data-palette>Search projects, docs, people… <kbd>⌘K</kbd></button>\n</header>',
+      tabs: '<header class="nav nav--slim"><a class="nav__logo" href="/">Northloop</a></header>\n<nav class="tabbar">\n  <a href="/" class="active">Home</a><a href="/projects">Projects</a>\n  <button class="tabbar__new">+</button>\n  <a href="/activity">Activity</a><a href="/settings">Settings</a>\n</nav>'
+    },
+    footer: {
+      mega: '<footer class="footer footer--mega">\n  <div class="footer__cols"><!-- Product / Company / Resources / Legal --></div>\n  <div class="footer__legal">© 2026 Northloop · All systems operational</div>\n</footer>',
+      minimal: '<footer class="footer footer--minimal">\n  <span>Northloop</span>\n  <span>© 2026 · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></span>\n</footer>',
+      newsletter: '<footer class="footer footer--newsletter">\n  <h3>Get one useful e-mail a week.</h3>\n  <form class="newsletter"><input type="email" placeholder="you@company.com"><button>Join</button></form>\n</footer>',
+      sitemap: '<footer class="footer footer--sitemap">\n  <!-- dense 12-link grid, grouped by intent -->\n  <span>© 2026 Northloop</span>\n</footer>',
+      status: '<footer class="footer footer--status">\n  <span class="status-dot"></span> All systems operational · Uptime 99.99% · v3.2.1\n  <a href="/status">Status page →</a>\n</footer>',
+      social: '<footer class="footer footer--social">\n  <div class="wordmark">NORTHLOOP</div>\n  <!-- X / LinkedIn / YouTube / GitHub -->\n</footer>'
+    }
+  };
+  var TOKENS_CSS = ":root {\n  --ink: #070A12; --surface: #0D1420; --paper: #F2EFE6;\n  --accent: #38BDF8; --amber: #F59E0B; --mint: #34D399; --violet: #A78BFA;\n  --radius: 12px; --nav-height: 64px;\n  --font-display: 'Sora', sans-serif; --font-ui: 'Inter', sans-serif;\n}";
+  function copyText(text, msg) {
+    function done() { toast(msg); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+    } else { fallbackCopy(text); done(); }
+  }
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch (e) { /* noop */ }
+    document.body.removeChild(ta);
+  }
+  document.addEventListener("click", function (e) {
+    var c = e.target.closest(".copy-code");
+    if (!c) return;
+    var kind = c.getAttribute("data-kind"), key = c.getAttribute("data-key");
+    var label = kind === "nav" ? NAVS[key].name : FOOTERS[key].name;
+    copyText(CODE[kind][key], "Copied: " + label + " — paste it into your site.");
+  });
+  $("#copyTokens").addEventListener("click", function () { copyText(TOKENS_CSS, "Copied: Waymark tokens as CSS."); });
+
+  /* ---------- FAQ ---------- */
+  $$(".faq-q").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var item = btn.closest(".faq-item");
+      var wasOpen = item.classList.contains("open");
+      $$(".faq-item.open").forEach(function (i) { i.classList.remove("open"); });
+      if (!wasOpen) item.classList.add("open");
+    });
+  });
+
+  /* ---------- theme ---------- */
+  var themeBtn = $("#themeToggle");
+  function setTheme(t) {
+    document.documentElement.setAttribute("data-theme", t);
+    $("#themeIconMoon").classList.toggle("hidden", t === "light");
+    $("#themeIconSun").classList.toggle("hidden", t !== "light");
+  }
+  themeBtn.addEventListener("click", function () {
+    var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    setTheme(next);
+    toast(next === "dark" ? "Dark theme — the kit default." : "Light theme — every variant ships in both.");
+  });
+
+  /* ---------- mobile menu ---------- */
+  var hamburger = $("#hamburger"), mobileMenu = $("#mobileMenu");
+  hamburger.addEventListener("click", function () { mobileMenu.classList.toggle("hidden"); });
+  $$("#mobileMenu a").forEach(function (a) { a.addEventListener("click", function () { mobileMenu.classList.add("hidden"); }); });
+
+  /* ---------- command palette ---------- */
+  var palette = $("#palette"), paletteInput = $("#paletteInput"), paletteList = $("#paletteList");
+  var paletteItems = [];
+  [
+    ["Live preview", "#preview"], ["Navigations", "#navs"], ["Footers", "#footers"],
+    ["Playground", "#playground"], ["Analytics", "#analytics"], ["Design system", "#system"], ["FAQ", "#faq"]
+  ].forEach(function (s) { paletteItems.push({ label: s[0], hint: "Jump to section", run: function () { $(s[1]).scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); } }); });
+  NAV_ORDER.forEach(function (k) { paletteItems.push({ label: "Apply nav: " + NAVS[k].name, hint: "Navigation", run: function () { applyNav(k); document.getElementById("preview").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); } }); });
+  FOOTER_ORDER.forEach(function (k) { paletteItems.push({ label: "Apply footer: " + FOOTERS[k].name, hint: "Footer", run: function () { applyFooter(k); document.getElementById("preview").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); } }); });
+  var selIdx = 0, filtered = paletteItems;
+  function renderPalette() {
+    var q = paletteInput.value.trim().toLowerCase();
+    filtered = paletteItems.filter(function (it) { return it.label.toLowerCase().indexOf(q) !== -1; });
+    if (selIdx >= filtered.length) selIdx = 0;
+    paletteList.innerHTML = filtered.length ? "" : '<div class="px-3 py-4 text-sm muted">No match — try “mega”, “newsletter” or “analytics”.</div>';
+    filtered.forEach(function (it, i) {
+      var row = document.createElement("div");
+      row.className = "palette-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" + (i === selIdx ? " sel" : "");
+      row.innerHTML = '<span class="font-medium">' + it.label + '</span><span class="ml-auto text-xs faint">' + it.hint + '</span>';
+      row.addEventListener("click", function () { closePalette(); it.run(); });
+      row.addEventListener("mouseenter", function () { selIdx = i; $$(".palette-item", paletteList).forEach(function (r, j) { r.classList.toggle("sel", j === selIdx); }); });
+      paletteList.appendChild(row);
+    });
+  }
+  function openPalette() {
+    palette.classList.add("open");
+    paletteInput.value = ""; selIdx = 0; renderPalette();
+    setTimeout(function () { paletteInput.focus(); }, 30);
+  }
+  function closePalette() { palette.classList.remove("open"); paletteInput.blur(); }
+  $("#paletteBtn").addEventListener("click", openPalette);
+  palette.addEventListener("click", function (e) { if (e.target === palette) closePalette(); });
+  paletteInput.addEventListener("input", function () { selIdx = 0; renderPalette(); });
+  paletteInput.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowDown") { e.preventDefault(); selIdx = Math.min(filtered.length - 1, selIdx + 1); renderPalette(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); selIdx = Math.max(0, selIdx - 1); renderPalette(); }
+    else if (e.key === "Enter") { e.preventDefault(); var it = filtered[selIdx]; if (it) { closePalette(); it.run(); } }
+    else if (e.key === "Escape") { closePalette(); }
+  });
+  document.addEventListener("keydown", function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); palette.classList.contains("open") ? closePalette() : openPalette(); }
+    else if (e.key === "Escape" && palette.classList.contains("open")) closePalette();
+  });
+
+  /* ---------- init ---------- */
+  renderPreview();
+  renderPalette();
+})();
+</script>
+</body>
+</html>
