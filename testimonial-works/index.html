@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Testimonial Works — a complete testimonials showcase kit: dual-direction marquee wall, featured carousel, rating distribution, filterable grid, Wall of Love, live playground and submission form. Dark editorial theme, Fraunces serif quotes.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23F5B544'/%3E%3Crect x='19' y='18' width='10' height='18' rx='5' fill='%230A0C10'/%3E%3Crect x='35' y='18' width='10' height='18' rx='5' fill='%230A0C10'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Testimonial Works — Testimonials, Marquee &amp; Carousel Kit">
+<meta property="og:description" content="Testimonial Works — a complete testimonials showcase kit: dual-direction marquee wall, featured carousel, rating distribution, filterable grid, Wall of Love, live playground and submission form. Dark editorial theme, Fraunces serif quotes.">
+<meta property="og:image" content="https://julius-nov.github.io/templates/testimonial-works/preview.jpg">
 <title>Testimonial Works — Testimonials, Marquee &amp; Carousel Kit</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -552,7 +557,7 @@ function distBar(d, compact){
     <span class="tip">${d.stars}★ · ${d.count.toLocaleString("en-US")} reviews · ${d.pct.toFixed(1)}% of ${TOTAL.toLocaleString("en-US")}</span>
   </div>`;
 }
-$("#hero-dist-mini").innerHTML = DIST.slice(0,3).map(d=>distBar(d,true)).join("");
+$("#hero-dist-mini").innerHTML = DIST.map(d=>distBar(d,true)).join("");
 $("#dist-bars").innerHTML = DIST.map(d=>distBar(d)).join("");
 
 /* ── Marquee ── */
