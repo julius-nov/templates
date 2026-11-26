@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAISON — Curated Design Objects for the Home</title>
+<meta name="description" content="MAISON — a complete e-commerce store template. Editorial dark storefront, 12 curated design objects, filters, product detail with variants, live cart with promo code, 3-step checkout and order history. Dark by default, one self-contained HTML file.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B0D0A'/%3E%3Cpath d='M14 34 L32 16 L50 34 L50 50 L14 50 Z' fill='none' stroke='%23C9A227' stroke-width='4'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MAISON — Curated Design Objects for the Home">
+<meta property="og:description" content="A complete e-commerce store in one HTML file: catalogue, variants, live cart, promo code, 3-step checkout and order history. Dark by default.">
+<meta property="og:image" content="https://julius-nov.github.io/templates/maison-ecommerce/preview.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+/* ============ MAISON — « Maison Nocturne » tokens ============ */
+:root{
+  --ink:#0B0D0A; --surface:#12140F; --surface-2:#181B14; --surface-3:#20241B;
+  --paper:#F3EFE3; --muted:#A8AFA0; --faint:#6E7568;
+  --brass:#C9A227; --brass-soft:rgba(201,162,39,.13); --brass-ink:#E3C766;
+  --sage:#9DB89A; --cream:#F3EFE3; --coral:#E07856; --teal:#7FB5A3;
+  --border:rgba(243,239,227,.09); --border-strong:rgba(243,239,227,.24);
+  --shadow:0 18px 50px rgba(0,0,0,.45);
+  --radius:18px; --gap:14px;
+  --font-display:"Fraunces",serif; --font-ui:"Inter",sans-serif; --font-mono:"JetBrains Mono",monospace;
+}
+html[data-theme="light"]{
+  --ink:#F4F1E8; --surface:#FFFFFF; --surface-2:#F0EDE3; --surface-3:#E7E2D1;
+  --paper:#171A10; --muted:#5A6053; --faint:#8A8F80;
+  --brass:#8A6D1B; --brass-soft:rgba(138,109,27,.10); --brass-ink:#8A6D1B;
+  --sage:#4F7A52; --coral:#C2522F; --teal:#3E7A66;
+  --border:rgba(23,26,16,.10); --border-strong:rgba(23,26,16,.24);
+  --shadow:0 18px 44px rgba(23,26,16,.12);
+}
+*{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+html{ scroll-behavior:smooth; }
+html,body{ overflow-x:clip; }
+body{ margin:0; background:var(--ink); color:var(--paper); font-family:var(--font-ui); -webkit-font-smoothing:antialiased; }
+::selection{ background:var(--brass); color:#0B0D0A; }
+h1,h2,h3,.display{ font-family:var(--font-display); letter-spacing:-.01em; }
+.mono{ font-family:var(--font-mono); }
+a{ color:inherit; }
+button{ font-family:inherit; cursor:pointer; }
+input,select,textarea{ font-family:inherit; }
+:focus-visible{ outline:2px solid var(--brass); outline-offset:2px; border-radius:6px; }
+.wrap{ max-width:1200px; margin:0 auto; padding:0 24px; }
+.eyebrow{ font-family:var(--font-mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--brass-ink); }
+.card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); }
+.card-hover{ transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+.card-hover:hover{ transform:translateY(-3px); border-color:var(--border-strong); box-shadow:var(--shadow); }
+.chip{ display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:4px 10px; border-radius:999px; border:1px solid var(--border); color:var(--muted); background:var(--surface-2); white-space:nowrap; }
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; font-weight:600; font-size:14px; padding:11px 18px; border-radius:12px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--paper); transition:transform .18s ease, background .18s ease, border-color .18s ease; }
+.btn:hover{ transform:translateY(-1px); border-color:var(--brass); }
+.btn-primary{ background:var(--brass); border-color:var(--brass); color:#0B0D0A; }
+.btn-primary:hover{ background:var(--brass-ink); }
+.btn-ghost{ background:transparent; }
+.btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
+.kbd{ font-family:var(--font-mono); font-size:11px; border:1px solid var(--border-strong); border-bottom-width:2px; border-radius:6px; padding:2px 6px; color:var(--muted); background:var(--surface); }
+.field{ width:100%; background:var(--surface); border:1px solid var(--border-strong); border-radius:12px; color:var(--paper); font-size:15px; padding:12px 14px; outline:none; transition:border-color .15s; }
+.field:focus{ border-color:var(--brass); }
+.field[aria-invalid="true"]{ border-color:var(--coral); }
+.field::placeholder{ color:var(--faint); }
+select.field{ appearance:none; }
+label.flabel{ display:block; font-size:13px; font-weight:600; margin-bottom:7px; }
+.ferr{ color:var(--coral); font-size:13px; margin:6px 0 0; }
+section{ scroll-margin-top:90px; }
+.view{ display:none; }
+.view.active{ display:block; animation:fadeUp .4s ease both; }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:none;} }
+.reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+.reveal.in{ opacity:1; transform:none; }
+
+/* ---------- announcement + topbar ---------- */
+.announce{ background:var(--brass); color:#0B0D0A; font-size:12.5px; font-weight:600; text-align:center; padding:8px 16px; letter-spacing:.02em; }
+.topbar{ position:sticky; top:0; z-index:50; backdrop-filter:blur(14px); background:color-mix(in srgb, var(--ink) 84%, transparent); border-bottom:1px solid var(--border); }
+.topbar-inner{ display:flex; align-items:center; gap:14px; height:64px; }
+.logo-mark{ width:36px; height:36px; border-radius:10px; background:var(--brass); display:grid; place-items:center; flex:none; }
+.nav-desktop{ display:flex; gap:2px; margin-left:8px; }
+.navlink{ font-size:14px; font-weight:500; color:var(--muted); padding:8px 11px; border-radius:8px; text-decoration:none; transition:color .15s; background:none; border:0; }
+.navlink:hover{ color:var(--paper); }
+.navlink.active{ color:var(--paper); background:var(--surface-2); }
+.icon-btn{ position:relative; display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:11px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--paper); transition:border-color .15s, transform .15s; }
+.icon-btn:hover{ border-color:var(--brass); transform:translateY(-1px); }
+.badge{ position:absolute; top:-6px; right:-6px; min-width:19px; height:19px; padding:0 5px; border-radius:999px; background:var(--brass); color:#0B0D0A; font-size:11px; font-weight:700; display:grid; place-items:center; font-family:var(--font-mono); }
+.header-search{ display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border-strong); border-radius:11px; padding:0 10px; height:40px; flex:1; max-width:300px; min-width:0; }
+.header-search input{ flex:1; min-width:0; background:none; border:0; outline:none; color:var(--paper); font-size:14px; }
+.header-search input::placeholder{ color:var(--faint); }
+
+/* ---------- hero / product art ---------- */
+.hero-glow{ position:absolute; inset:-100px -40px auto; height:400px; background:radial-gradient(closest-side, rgba(201,162,39,.17), rgba(157,184,154,.07) 55%, transparent 75%); pointer-events:none; }
+.art-frame{ background:linear-gradient(160deg, var(--surface-3), var(--surface-2)); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; position:relative; }
+.art-frame svg{ display:block; width:100%; height:auto; }
+.prod-card .art-frame{ transition:transform .3s ease; }
+.prod-card:hover .art-frame{ transform:scale(1.015); }
+.wish-btn{ position:absolute; top:10px; right:10px; z-index:2; width:36px; height:36px; border-radius:50%; border:1px solid var(--border-strong); background:color-mix(in srgb, var(--ink) 72%, transparent); color:var(--paper); display:grid; place-items:center; transition:transform .15s, color .15s, background .15s; }
+.wish-btn:hover{ transform:scale(1.1); }
+.wish-btn.on{ color:var(--coral); border-color:var(--coral); }
+.wish-btn.on svg{ fill:var(--coral); }
+.stars{ color:var(--brass); letter-spacing:2px; font-size:13px; }
+.price-was{ color:var(--faint); text-decoration:line-through; font-size:13px; }
+.cat-chip{ font-size:13.5px; font-weight:600; padding:9px 15px; border-radius:999px; border:1px solid var(--border-strong); background:var(--surface); color:var(--muted); transition:all .15s; }
+.cat-chip:hover{ color:var(--paper); border-color:var(--brass); }
+.cat-chip.active{ background:var(--brass); border-color:var(--brass); color:#0B0D0A; }
+.swatch{ width:30px; height:30px; border-radius:50%; border:2px solid var(--border-strong); cursor:pointer; transition:transform .15s, border-color .15s; padding:0; }
+.swatch:hover{ transform:scale(1.12); }
+.swatch.active{ border-color:var(--brass); box-shadow:0 0 0 2px var(--ink), 0 0 0 4px var(--brass); }
+.size-btn{ font-size:13.5px; font-weight:600; padding:9px 14px; border-radius:10px; border:1px solid var(--border-strong); background:var(--surface); color:var(--muted); transition:all .15s; }
+.size-btn:hover{ color:var(--paper); }
+.size-btn.active{ background:var(--brass); border-color:var(--brass); color:#0B0D0A; }
+.size-btn:disabled{ opacity:.4; cursor:not-allowed; text-decoration:line-through; }
+.qty-btn{ width:38px; height:42px; border:1px solid var(--border-strong); background:var(--surface); color:var(--paper); font-size:17px; font-weight:600; }
+.qty-btn:first-child{ border-radius:11px 0 0 11px; }
+.qty-btn:last-child{ border-radius:0 11px 11px 0; }
+.qty-btn:hover{ border-color:var(--brass); }
+.thumb{ border:2px solid var(--border); border-radius:12px; overflow:hidden; cursor:pointer; padding:0; background:none; transition:border-color .15s; }
+.thumb.active{ border-color:var(--brass); }
+.thumb svg{ display:block; width:100%; height:auto; }
+
+/* ---------- charts & tooltips ---------- */
+.bar{ cursor:pointer; transition:opacity .15s; }
+.bar:hover{ opacity:1 !important; }
+#tip{ position:fixed; z-index:120; pointer-events:none; background:var(--surface-3); border:1px solid var(--border-strong); color:var(--paper); font-size:12px; font-weight:600; padding:7px 10px; border-radius:9px; box-shadow:var(--shadow); opacity:0; transform:translate(-50%,-8px); transition:opacity .15s ease, transform .15s ease; white-space:nowrap; }
+#tip.show{ opacity:1; transform:translate(-50%,0); }
+#tip .mono{ color:var(--brass-ink); }
+#toast{ position:fixed; bottom:88px; left:50%; transform:translate(-50%,16px); z-index:130; background:var(--surface-3); border:1px solid var(--border-strong); color:var(--paper); font-size:13.5px; font-weight:600; padding:11px 18px; border-radius:12px; box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; max-width:92vw; text-align:center; }
+#toast.show{ opacity:1; transform:translate(-50%,0); }
+
+/* ---------- drawer / palette / modal ---------- */
+.overlay{ position:fixed; inset:0; z-index:80; background:rgba(0,0,0,.55); backdrop-filter:blur(3px); opacity:0; pointer-events:none; transition:opacity .25s; }
+.overlay.open{ opacity:1; pointer-events:auto; }
+#cartDrawer{ position:fixed; top:0; right:0; bottom:0; z-index:90; width:min(430px,94vw); background:var(--surface); border-left:1px solid var(--border-strong); transform:translateX(102%); transition:transform .3s ease; display:flex; flex-direction:column; }
+#cartDrawer.open{ transform:translateX(0); }
+#palette{ position:fixed; inset:0; z-index:110; background:rgba(0,0,0,.55); backdrop-filter:blur(4px); display:none; align-items:flex-start; justify-content:center; padding-top:13vh; }
+#palette.open{ display:flex; }
+.palette-box{ width:min(560px,92vw); background:var(--surface); border:1px solid var(--border-strong); border-radius:16px; box-shadow:var(--shadow); overflow:hidden; }
+.palette-item{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:12px 16px; background:none; border:0; color:var(--paper); font-size:14px; }
+.palette-item.sel, .palette-item:hover{ background:var(--surface-3); }
+.progress-track{ height:10px; border-radius:5px; background:var(--surface-3); overflow:hidden; }
+.progress-fill{ height:100%; border-radius:5px; background:linear-gradient(90deg, var(--sage), var(--brass)); transition:width .5s ease; }
+.step-dot{ width:34px; height:34px; border-radius:50%; flex:none; display:grid; place-items:center; font-weight:700; font-size:14px; border:2px solid var(--border-strong); background:var(--surface-2); color:var(--muted); font-family:var(--font-mono); }
+.step-item.done .step-dot{ background:var(--sage); border-color:var(--sage); color:#0B0D0A; }
+.step-item.now .step-dot{ background:var(--brass); border-color:var(--brass); color:#0B0D0A; }
+.step-line{ flex:1; height:2px; background:var(--border-strong); margin:0 6px; }
+.step-item.done + .step-line{ background:var(--sage); }
+.best-grid > *, .cat-grid > *{ min-width:0; }
+.footer-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:32px; }
+
+/* ---------- mobile tab bar ---------- */
+#tabbar{ display:none; position:fixed; left:0; right:0; bottom:0; z-index:60; background:color-mix(in srgb, var(--ink) 92%, transparent); backdrop-filter:blur(14px); border-top:1px solid var(--border); padding:6px 8px calc(6px + env(safe-area-inset-bottom)); }
+#tabbar button{ flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:0; color:var(--muted); font-size:11px; font-weight:600; padding:6px 0; border-radius:10px; position:relative; }
+#tabbar button.active{ color:var(--brass-ink); }
+#tabbar .tb-badge{ position:absolute; top:0; right:calc(50% - 20px); min-width:17px; height:17px; padding:0 4px; border-radius:999px; background:var(--brass); color:#0B0D0A; font-size:10px; font-weight:700; display:grid; place-items:center; font-family:var(--font-mono); }
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+  .reveal{ opacity:1; transform:none; }
+}
+@media (max-width:900px){
+  .nav-desktop{ display:none; }
+  .header-search{ display:none; }
+  #paletteBtn{ display:none; }
+  .theme-label{ display:none; }
+  #themeToggle{ padding:9px 10px !important; }
+  .topbar-inner{ gap:8px; }
+  .shop-layout aside, #view-checkout aside{ position:static !important; }
+  #tabbar{ display:flex; }
+  body{ padding-bottom:64px; }
+  #toast{ bottom:84px; }
+  .hero-grid{ grid-template-columns:1fr !important; }
+  .cat-grid{ grid-template-columns:repeat(2,1fr) !important; }
+  .best-grid{ grid-template-columns:repeat(2,1fr) !important; }
+  .shop-layout{ grid-template-columns:1fr !important; }
+  .pd-grid{ grid-template-columns:1fr !important; }
+  .co-grid{ grid-template-columns:1fr !important; }
+  .story-grid{ grid-template-columns:1fr !important; }
+  .testi-grid{ grid-template-columns:1fr !important; }
+  .footer-grid{ grid-template-columns:1fr 1fr !important; }
+  h1{ font-size:42px !important; }
+}
+@media (max-width:480px){
+  .best-grid{ grid-template-columns:1fr 1fr !important; gap:10px !important; }
+  .footer-grid{ grid-template-columns:1fr !important; }
+  .prod-card .pc-name{ font-size:15px !important; }
+  .wrap{ padding:0 16px; }
+}
+</style>
+</head>
+<body>
+<div id="tip" role="status"></div>
+<div id="toast" role="status"></div>
+<div class="overlay" id="overlay"></div>
+
+<!-- ================= ANNOUNCEMENT ================= -->
+<div class="announce">Free shipping over $150 &nbsp;·&nbsp; 10% off your first order with code <span class="mono">MAISON10</span> &nbsp;·&nbsp; 30-day returns</div>
+
+<!-- ================= TOPBAR ================= -->
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="#" data-nav="home" style="display:flex;align-items:center;gap:10px;text-decoration:none">
+      <span class="logo-mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 12 L12 4 L21 12 V21 H3 Z" stroke="#0B0D0A" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 21 V14 H15 V21" stroke="#0B0D0A" stroke-width="2.2" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="display" style="font-size:21px;font-weight:700;letter-spacing:.14em">MAISON</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Main">
+      <button class="navlink active" data-nav="home">Home</button>
+      <button class="navlink" data-nav="shop">Shop</button>
+      <button class="navlink" data-nav="orders">Orders</button>
+      <button class="navlink" data-nav="story">Our story</button>
+    </nav>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <label class="header-search" aria-label="Search products">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21 L16.5 16.5"/></svg>
+        <input id="headerSearch" type="search" placeholder="Search objects…" autocomplete="off">
+        <span class="kbd">⌘K</span>
+      </label>
+      <button class="btn btn-ghost" id="paletteBtn" style="padding:9px 12px" aria-label="Open command palette">⌘K</button>
+      <button class="btn btn-ghost" id="themeToggle" style="padding:9px 12px" aria-label="Toggle light and dark theme" aria-pressed="false">◐ <span class="theme-label">Theme</span></button>
+      <button class="icon-btn" id="wishBtn" aria-label="Wishlist">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21 C7 16.5 3 13.3 3 9.3 C3 6.4 5.2 4.5 7.7 4.5 C9.4 4.5 11 5.6 12 7.1 C13 5.6 14.6 4.5 16.3 4.5 C18.8 4.5 21 6.4 21 9.3 C21 13.3 17 16.5 12 21 Z"/></svg>
+        <span class="badge" id="wishCount" hidden>0</span>
+      </button>
+      <button class="icon-btn" id="cartBtn" aria-label="Open cart">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 4 H5 L7.5 15.5 A2 2 0 0 0 9.5 17 H18 A2 2 0 0 0 20 15.5 L21.5 8 H6"/><circle cx="10" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/></svg>
+        <span class="badge" id="cartCount" hidden>0</span>
+      </button>
+    </div>
+  </div>
+</header>
+<main id="top">
+<!-- ================= VIEW: HOME ================= -->
+<div class="view active" id="view-home">
+  <section class="wrap" style="padding:56px 24px 24px;position:relative">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-grid reveal in" style="display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center;position:relative">
+      <div>
+        <p class="eyebrow">Nº 04 — The Autumn Collection · 12 objects</p>
+        <h1 class="display" style="font-size:clamp(46px,6vw,74px);line-height:1.02;font-weight:600;margin:16px 0 18px">
+          Objects that make<br>a house <em style="color:var(--brass-ink);font-style:italic">a home.</em>
+        </h1>
+        <p style="color:var(--muted);font-size:17px;line-height:1.65;max-width:520px;margin:0 0 26px">
+          Twelve pieces, chosen slowly. Solid oak, stoneware, brass and linen —
+          made to be used every day and kept for decades. No trends, no noise.
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" data-nav="shop" style="padding:13px 22px">Shop the collection →</button>
+          <button class="btn" data-open-product="aurelia" style="padding:13px 22px">Featured: Aurelia Lamp</button>
+        </div>
+        <div style="display:flex;gap:28px;flex-wrap:wrap;margin-top:30px;font-size:13.5px;color:var(--muted)">
+          <span><strong class="display" style="color:var(--paper);font-size:19px">4.9 / 5</strong><br>2,140 verified reviews</span>
+          <span><strong class="display" style="color:var(--paper);font-size:19px">12</strong><br>objects, one collection</span>
+          <span><strong class="display" style="color:var(--paper);font-size:19px">48 h</strong><br>dispatch, tracked</span>
+        </div>
+      </div>
+      <div>
+        <div class="art-frame card-hover" id="heroArt" style="cursor:pointer" data-open-product="aurelia" role="button" tabindex="0" aria-label="View the Aurelia floor lamp"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap">
+          <div>
+            <p style="margin:0;font-weight:700;font-size:16px">Aurelia Floor Lamp</p>
+            <p class="mono" style="margin:2px 0 0;font-size:12px;color:var(--faint)">SKU MSN-001 · Lighting · Brass / Sage / Ink</p>
+          </div>
+          <div style="text-align:right">
+            <span class="mono" style="font-size:19px;font-weight:600">$289</span>
+            <span class="price-was">$349</span>
+            <p style="margin:2px 0 0"><span class="stars">★★★★★</span> <span style="font-size:12.5px;color:var(--muted)">4.9 (214)</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- categories -->
+  <section class="wrap" style="padding:36px 24px 12px">
+    <div class="reveal">
+      <p class="eyebrow">01 — Browse by room</p>
+      <h2 class="display" style="font-size:clamp(28px,3.6vw,40px);font-weight:600;margin:10px 0 22px">Five rooms, one language.</h2>
+    </div>
+    <div class="cat-grid reveal" style="display:grid;grid-template-columns:repeat(5,1fr);gap:var(--gap)" id="catTiles"></div>
+  </section>
+
+  <!-- best sellers -->
+  <section class="wrap" style="padding:36px 24px 12px">
+    <div class="reveal" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div>
+        <p class="eyebrow">02 — Best sellers</p>
+        <h2 class="display" style="font-size:clamp(28px,3.6vw,40px);font-weight:600;margin:10px 0 4px">The pieces people keep.</h2>
+      </div>
+      <button class="btn" data-nav="shop">View all 12 →</button>
+    </div>
+    <div class="best-grid reveal" id="bestGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-top:22px"></div>
+  </section>
+
+  <!-- story -->
+  <section class="wrap" id="story" style="padding:48px 24px 12px">
+    <div class="story-grid reveal card" style="display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;padding:0">
+      <div class="art-frame" id="storyArt" style="border:0;border-radius:0"></div>
+      <div style="padding:clamp(26px,4vw,48px)">
+        <p class="eyebrow">03 — Our story</p>
+        <h2 class="display" style="font-size:clamp(28px,3.4vw,38px);font-weight:600;line-height:1.15;margin:12px 0 14px">Chosen slowly.<br>Built to stay.</h2>
+        <p style="color:var(--muted);font-size:15.5px;line-height:1.7;margin:0 0 12px">MAISON began in a small workshop with a simple rule: if an object does not earn its place in a room, it does not earn a place in the catalogue. Every piece is made in small batches, from materials that age gracefully — oak that deepens, brass that patinas, linen that softens.</p>
+        <p style="color:var(--muted);font-size:15.5px;line-height:1.7;margin:0 0 20px">We publish the workshop, the maker and the materials for every object. Nothing is hidden behind a brand story — the objects are the story.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <div><strong class="display" style="font-size:22px">2019</strong><p style="margin:2px 0 0;font-size:12.5px;color:var(--muted)">Founded, one workshop</p></div>
+          <div><strong class="display" style="font-size:22px">14</strong><p style="margin:2px 0 0;font-size:12.5px;color:var(--muted)">Artisan workshops</p></div>
+          <div><strong class="display" style="font-size:22px">0</strong><p style="margin:2px 0 0;font-size:12.5px;color:var(--muted)">Plastic in packaging</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- sales chart -->
+  <section class="wrap" style="padding:48px 24px 12px">
+    <div class="reveal card card-hover" style="padding:26px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+        <div>
+          <p class="eyebrow">04 — The collection, in numbers</p>
+          <h2 class="display" style="font-size:clamp(24px,3vw,32px);font-weight:600;margin:10px 0 4px">Twelve weeks of quiet growth.</h2>
+          <p style="color:var(--muted);font-size:14px;margin:0">Weekly revenue · hover any bar for the exact figure.</p>
+        </div>
+        <span class="chip" style="color:var(--sage);border-color:rgba(157,184,154,.4)">● Live demo data</span>
+      </div>
+      <svg id="salesChart" viewBox="0 0 720 200" style="width:100%;height:200px;margin-top:18px" role="img" aria-label="Bar chart of weekly revenue over 12 weeks"></svg>
+      <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--faint)"><span>Week 1</span><span>Week 6</span><span>Week 12</span></div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:14px;font-size:13.5px;color:var(--muted)">
+        <span>12-week total: <strong class="mono" style="color:var(--paper)" id="salesTotal">—</strong></span>
+        <span>Best week: <strong class="mono" style="color:var(--paper)" id="salesBest">—</strong></span>
+        <span>Average order: <strong class="mono" style="color:var(--paper)">$214</strong></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- testimonials -->
+  <section class="wrap" style="padding:48px 24px 12px">
+    <div class="reveal">
+      <p class="eyebrow">05 — Word of mouth</p>
+      <h2 class="display" style="font-size:clamp(28px,3.6vw,40px);font-weight:600;margin:10px 0 22px">Lived with, not just looked at.</h2>
+    </div>
+    <div class="testi-grid reveal" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)" id="testiGrid"></div>
+  </section>
+
+  <!-- newsletter -->
+  <section class="wrap" style="padding:48px 24px 56px">
+    <div class="reveal card" style="padding:clamp(26px,4vw,44px);text-align:center;position:relative;overflow:hidden">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <p class="eyebrow" style="position:relative">06 — The Sunday Letter</p>
+      <h2 class="display" style="font-size:clamp(28px,3.6vw,40px);font-weight:600;margin:12px 0 10px;position:relative">One letter a week. Objects, workshops, nothing else.</h2>
+      <p style="color:var(--muted);font-size:15.5px;max-width:520px;margin:0 auto 22px;position:relative">New pieces first, workshop stories, and 10% off your first order. No daily noise — Sundays only.</p>
+      <form id="nlForm" style="max-width:480px;margin:0 auto;position:relative" novalidate>
+        <div style="display:flex;gap:10px">
+          <input class="field" id="nlEmail" type="email" placeholder="you@home.com" aria-label="Email address" autocomplete="email" required style="flex:1;min-width:0">
+          <button class="btn btn-primary" type="submit">Subscribe</button>
+        </div>
+        <p class="ferr" id="nlError" hidden>Enter a valid email address to subscribe.</p>
+      </form>
+      <div id="nlSuccess" hidden style="max-width:480px;margin:0 auto;position:relative;text-align:left">
+        <p style="margin:0;font-weight:700;font-size:16px">Welcome to the Sunday Letter ✦</p>
+        <p style="margin:6px 0 0;font-size:14px;color:var(--muted)">Your code <span class="mono" style="color:var(--brass-ink)">MAISON10</span> is already applied to your cart — 10% off your first order.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= VIEW: SHOP ================= -->
+<div class="view" id="view-shop">
+  <section class="wrap" style="padding:48px 24px 56px">
+    <p class="eyebrow">The collection</p>
+    <h1 class="display" style="font-size:clamp(38px,5vw,56px);font-weight:600;margin:12px 0 8px">Shop all objects.</h1>
+    <p style="color:var(--muted);font-size:16px;margin:0 0 26px;max-width:600px">Twelve pieces, five rooms. Filter, sort and search — every change is live, and every card opens a full product page.</p>
+    <div class="shop-layout" style="display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:start">
+      <aside class="card" style="padding:20px;position:sticky;top:88px" aria-label="Filters">
+        <p class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 12px">Search</p>
+        <input class="field" id="shopSearch" type="search" placeholder="Search objects…" autocomplete="off">
+        <p class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:22px 0 12px">Category</p>
+        <div id="catChips" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+        <p class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:22px 0 12px">Max price · <span id="priceLabel" style="color:var(--brass-ink)">$900</span></p>
+        <input type="range" id="priceRange" min="50" max="900" step="10" value="900" style="width:100%;accent-color:var(--brass)" aria-label="Maximum price">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--faint)"><span>$50</span><span>$900</span></div>
+        <p class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:22px 0 12px">Minimum rating</p>
+        <select class="field" id="ratingSel">
+          <option value="0">Any rating</option>
+          <option value="4.5">4.5 ★ &amp; up</option>
+          <option value="4.8">4.8 ★ &amp; up</option>
+          <option value="4.9">4.9 ★ &amp; up</option>
+        </select>
+        <label style="display:flex;align-items:center;gap:9px;margin-top:18px;font-size:14px;font-weight:500;cursor:pointer">
+          <input type="checkbox" id="inStockChk" style="width:17px;height:17px;accent-color:var(--brass)"> In stock only
+        </label>
+        <button class="btn btn-ghost" id="clearFilters" style="width:100%;margin-top:20px">Clear all filters</button>
+      </aside>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px">
+          <p style="margin:0;font-size:14px;color:var(--muted)"><span id="shopCount" class="mono" style="color:var(--paper)">12</span> objects</p>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--muted)">Sort
+            <select class="field" id="sortSel" style="width:auto;padding:9px 12px">
+              <option value="featured">Featured</option>
+              <option value="price-asc">Price: low to high</option>
+              <option value="price-desc">Price: high to low</option>
+              <option value="rating">Top rated</option>
+              <option value="name">Name A–Z</option>
+            </select>
+          </label>
+        </div>
+        <div class="best-grid" id="shopGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)"></div>
+        <div id="shopEmpty" hidden class="card" style="padding:44px;text-align:center">
+          <p class="display" style="font-size:24px;margin:0 0 8px">Nothing matches — yet.</p>
+          <p style="color:var(--muted);margin:0 0 18px">Try widening the price, clearing a filter, or searching another word.</p>
+          <button class="btn" id="emptyClear">Clear all filters</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= VIEW: PRODUCT ================= -->
+<div class="view" id="view-product">
+  <section class="wrap" style="padding:40px 24px 56px" id="pdWrap"></section>
+</div>
+
+<!-- ================= VIEW: CHECKOUT ================= -->
+<div class="view" id="view-checkout">
+  <section class="wrap" style="padding:48px 24px 56px">
+    <p class="eyebrow">Checkout</p>
+    <h1 class="display" style="font-size:clamp(36px,5vw,52px);font-weight:600;margin:12px 0 24px">Three steps to your door.</h1>
+    <div style="display:flex;align-items:center;max-width:640px;margin-bottom:30px" id="coSteps">
+      <div class="step-item now" data-step="1" style="display:flex;align-items:center;gap:9px"><span class="step-dot">1</span><span style="font-size:13.5px;font-weight:600">Shipping</span></div>
+      <div class="step-line"></div>
+      <div class="step-item" data-step="2" style="display:flex;align-items:center;gap:9px"><span class="step-dot">2</span><span style="font-size:13.5px;font-weight:600">Payment</span></div>
+      <div class="step-line"></div>
+      <div class="step-item" data-step="3" style="display:flex;align-items:center;gap:9px"><span class="step-dot">3</span><span style="font-size:13.5px;font-weight:600">Review</span></div>
+    </div>
+    <div class="co-grid" style="display:grid;grid-template-columns:1.5fr 1fr;gap:28px;align-items:start">
+      <div>
+        <form id="coForm1" class="card" style="padding:26px" novalidate>
+          <h2 class="display" style="font-size:24px;margin:0 0 18px">Where should it go?</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" class="hero-grid">
+            <div><label class="flabel" for="coFirst">First name</label><input class="field" id="coFirst" autocomplete="given-name"><p class="ferr" hidden>Required.</p></div>
+            <div><label class="flabel" for="coLast">Last name</label><input class="field" id="coLast" autocomplete="family-name"><p class="ferr" hidden>Required.</p></div>
+          </div>
+          <div style="margin-top:14px"><label class="flabel" for="coEmail">Email</label><input class="field" id="coEmail" type="email" autocomplete="email" placeholder="you@home.com"><p class="ferr" hidden>Enter a valid email address.</p></div>
+          <div style="margin-top:14px"><label class="flabel" for="coAddr">Street address</label><input class="field" id="coAddr" autocomplete="street-address" placeholder="12 Rue des Ateliers"><p class="ferr" hidden>Required.</p></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px" class="hero-grid">
+            <div><label class="flabel" for="coCity">City</label><input class="field" id="coCity" autocomplete="address-level2"><p class="ferr" hidden>Required.</p></div>
+            <div><label class="flabel" for="coZip">ZIP / Postcode</label><input class="field" id="coZip" autocomplete="postal-code"><p class="ferr" hidden>Required.</p></div>
+          </div>
+          <div style="margin-top:14px"><label class="flabel" for="coCountry">Country</label>
+            <select class="field" id="coCountry"><option>France</option><option>Senegal</option><option>Belgium</option><option>Canada</option><option>United States</option><option>United Kingdom</option><option>Germany</option><option>Netherlands</option></select>
+          </div>
+          <div style="margin-top:14px"><label class="flabel">Delivery</label>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <label style="display:flex;gap:10px;align-items:center;border:1px solid var(--border-strong);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:14px"><input type="radio" name="coShip" value="standard" checked style="accent-color:var(--brass)"> Standard · 3–5 days · <strong class="mono">$12</strong> <span style="color:var(--faint)">(free over $150)</span></label>
+              <label style="display:flex;gap:10px;align-items:center;border:1px solid var(--border-strong);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:14px"><input type="radio" name="coShip" value="express" style="accent-color:var(--brass)"> Express · 1–2 days · <strong class="mono">$24</strong></label>
+            </div>
+          </div>
+          <button class="btn btn-primary" type="submit" style="margin-top:22px;width:100%;padding:13px">Continue to payment →</button>
+        </form>
+        <form id="coForm2" class="card" style="padding:26px;display:none" novalidate>
+          <h2 class="display" style="font-size:24px;margin:0 0 6px">Payment</h2>
+          <p style="color:var(--muted);font-size:13.5px;margin:0 0 18px">Demo checkout — no real payment is processed. Any 16-digit test number works, e.g. 4242 4242 4242 4242.</p>
+          <div><label class="flabel" for="coCardName">Name on card</label><input class="field" id="coCardName" autocomplete="cc-name"><p class="ferr" hidden>Required.</p></div>
+          <div style="margin-top:14px"><label class="flabel" for="coCardNum">Card number</label><input class="field mono" id="coCardNum" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" maxlength="19"><p class="ferr" hidden>Enter a valid 16-digit card number.</p></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px" class="hero-grid">
+            <div><label class="flabel" for="coExp">Expiry (MM/YY)</label><input class="field mono" id="coExp" inputmode="numeric" placeholder="12/28" maxlength="5"><p class="ferr" hidden>Use MM/YY, in the future.</p></div>
+            <div><label class="flabel" for="coCvc">CVC</label><input class="field mono" id="coCvc" inputmode="numeric" placeholder="123" maxlength="4"><p class="ferr" hidden>Enter the 3–4 digit CVC.</p></div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:22px">
+            <button class="btn" type="button" id="coBack1" style="flex:1">← Back</button>
+            <button class="btn btn-primary" type="submit" style="flex:2;padding:13px">Review order →</button>
+          </div>
+        </form>
+        <div id="coForm3" class="card" style="padding:26px;display:none">
+          <h2 class="display" style="font-size:24px;margin:0 0 18px">Review your order</h2>
+          <div id="coReview"></div>
+          <div style="display:flex;gap:10px;margin-top:22px">
+            <button class="btn" type="button" id="coBack2" style="flex:1">← Back</button>
+            <button class="btn btn-primary" type="button" id="coPlace" style="flex:2;padding:13px">Place order</button>
+          </div>
+          <p style="font-size:12.5px;color:var(--faint);margin:14px 0 0">By placing this order you agree to the demo terms. Nothing is charged — this is a template demonstration.</p>
+        </div>
+      </div>
+      <aside class="card" style="padding:22px;position:sticky;top:88px" aria-label="Order summary">
+        <h3 style="font-size:18px;margin:0 0 4px">Order summary</h3>
+        <p class="mono" style="font-size:12px;color:var(--faint);margin:0 0 16px" id="coSummaryCount">0 items</p>
+        <div id="coSummaryItems" style="display:flex;flex-direction:column;gap:12px"></div>
+        <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px;display:flex;flex-direction:column;gap:8px;font-size:14px" id="coSummaryTotals"></div>
+      </aside>
+    </div>
+  </section>
+</div>
+
+<!-- ================= VIEW: CONFIRMATION ================= -->
+<div class="view" id="view-confirm">
+  <section class="wrap" style="padding:64px 24px 64px;max-width:760px;text-align:center">
+    <span style="display:inline-grid;place-items:center;width:72px;height:72px;border-radius:50%;background:var(--sage);color:#0B0D0A" aria-hidden="true">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 L9.5 18 L20 6.5"/></svg>
+    </span>
+    <h1 class="display" style="font-size:clamp(36px,5vw,52px);font-weight:600;margin:20px 0 10px">Thank you — it's on its way.</h1>
+    <p style="color:var(--muted);font-size:16px;line-height:1.6;margin:0 auto 8px;max-width:520px">Your order is confirmed. A confirmation email is on its way, and your order now lives in <strong style="color:var(--paper)">Orders</strong>.</p>
+    <p class="mono" style="font-size:15px;color:var(--brass-ink)" id="confirmNum">Order MSN-2026-0000</p>
+    <div class="card" style="padding:22px;text-align:left;margin-top:26px" id="confirmDetail"></div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px">
+      <button class="btn btn-primary" data-nav="orders">View my orders</button>
+      <button class="btn" data-nav="shop">Continue shopping</button>
+    </div>
+  </section>
+</div>
+
+<!-- ================= VIEW: ORDERS ================= -->
+<div class="view" id="view-orders">
+  <section class="wrap" style="padding:48px 24px 56px">
+    <p class="eyebrow">Your account</p>
+    <h1 class="display" style="font-size:clamp(36px,5vw,52px);font-weight:600;margin:12px 0 8px">Orders.</h1>
+    <p style="color:var(--muted);font-size:16px;margin:0 0 26px;max-width:560px">Every order you place in this demo is saved here, with its items, totals and status.</p>
+    <div id="ordersList" style="display:flex;flex-direction:column;gap:var(--gap)"></div>
+    <div id="ordersEmpty" class="card" style="padding:44px;text-align:center">
+      <p class="display" style="font-size:24px;margin:0 0 8px">No orders yet.</p>
+      <p style="color:var(--muted);margin:0 0 18px">Your orders will appear here once you check out. Start with the best sellers.</p>
+      <button class="btn btn-primary" data-nav="shop">Shop the collection →</button>
+    </div>
+  </section>
+</div>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer style="border-top:1px solid var(--border);margin-top:24px">
+  <div class="wrap footer-grid" style="padding:44px 24px 28px" id="footerGrid">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="logo-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 12 L12 4 L21 12 V21 H3 Z" stroke="#0B0D0A" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 21 V14 H15 V21" stroke="#0B0D0A" stroke-width="2.2" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="display" style="font-size:19px;font-weight:700;letter-spacing:.14em">MAISON</span>
+      </div>
+      <p style="color:var(--muted);font-size:13.5px;max-width:320px;line-height:1.6;margin:14px 0 0">Curated design objects for the home. A fictional brand — all products, prices and reviews on this page are for demonstration.</p>
+      <p style="font-size:13px;color:var(--faint);margin:16px 0 0">A template by JULIUS VIBE STUDIO · Maison v1.0</p>
+    </div>
+    <div>
+      <p style="font-weight:600;font-size:14px;margin:0 0 12px">Shop</p>
+      <div style="display:flex;flex-direction:column;gap:9px;font-size:14px;color:var(--muted)">
+        <a href="#" data-nav="shop" style="text-decoration:none">All objects</a>
+        <a href="#" data-cat-link="Lighting" style="text-decoration:none">Lighting</a>
+        <a href="#" data-cat-link="Seating" style="text-decoration:none">Seating</a>
+        <a href="#" data-cat-link="Tableware" style="text-decoration:none">Tableware</a>
+        <a href="#" data-cat-link="Decor" style="text-decoration:none">Decor</a>
+        <a href="#" data-cat-link="Textiles" style="text-decoration:none">Textiles</a>
+      </div>
+    </div>
+    <div>
+      <p style="font-weight:600;font-size:14px;margin:0 0 12px">Help</p>
+      <div style="display:flex;flex-direction:column;gap:9px;font-size:14px;color:var(--muted)">
+        <a href="#" data-nav="orders" style="text-decoration:none">Track my order</a>
+        <a href="#" data-faq="ship" style="text-decoration:none">Shipping &amp; returns</a>
+        <a href="#" data-faq="care" style="text-decoration:none">Care guides</a>
+        <a href="#" data-faq="contact" style="text-decoration:none">Contact us</a>
+      </div>
+    </div>
+    <div>
+      <p style="font-weight:600;font-size:14px;margin:0 0 12px">The Sunday Letter</p>
+      <p style="font-size:13.5px;color:var(--muted);line-height:1.6;margin:0 0 12px">One letter a week. New pieces first, 10% off your first order.</p>
+      <button class="btn" data-nav="home" data-scroll-nl="1">Subscribe →</button>
+    </div>
+  </div>
+  <div class="wrap" style="padding:0 24px 28px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--faint)">
+    <span>© 2026 JULIUS VIBE STUDIO — Maison v1.0 · Fictional demo store</span>
+    <span>Dark by default · Light theme included · <span class="mono">data-theme</span></span>
+  </div>
+</footer>
+
+<!-- ================= CART DRAWER ================= -->
+<aside id="cartDrawer" aria-label="Shopping cart" role="dialog" aria-modal="true">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--border)">
+    <h2 class="display" style="font-size:22px;margin:0">Your cart <span class="mono" style="font-size:13px;color:var(--faint)" id="drawerCount"></span></h2>
+    <button class="icon-btn" id="cartClose" aria-label="Close cart">✕</button>
+  </div>
+  <div id="shipProgress" style="padding:16px 20px;border-bottom:1px solid var(--border)">
+    <p style="margin:0 0 8px;font-size:13.5px" id="shipMsg">You're <strong>$150</strong> away from free shipping</p>
+    <div class="progress-track"><div class="progress-fill" id="shipBar" style="width:0%"></div></div>
+  </div>
+  <div id="cartItems" style="flex:1;overflow:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px"></div>
+  <div id="cartEmpty" style="flex:1;display:none;align-items:center;justify-content:center;text-align:center;padding:32px">
+    <div>
+      <p class="display" style="font-size:22px;margin:0 0 8px">Your cart is empty.</p>
+      <p style="color:var(--muted);font-size:14px;margin:0 0 18px">Beautiful objects are waiting — start with the best sellers.</p>
+      <button class="btn btn-primary" id="emptyCartShop" data-nav="shop">Shop the collection →</button>
+    </div>
+  </div>
+  <div id="cartFooter" style="border-top:1px solid var(--border);padding:18px 20px">
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <input class="field mono" id="promoInput" placeholder="Promo code" style="flex:1;min-width:0;text-transform:uppercase" aria-label="Promo code">
+      <button class="btn" id="promoApply" type="button">Apply</button>
+    </div>
+    <p style="margin:0 0 12px;font-size:13px" id="promoMsg" aria-live="polite">Try <button type="button" id="promoHint" style="background:none;border:0;padding:0;color:var(--brass-ink);font-family:var(--font-mono);font-size:13px;text-decoration:underline;cursor:pointer">MAISON10</button> for 10% off your first order.</p>
+    <div style="display:flex;flex-direction:column;gap:7px;font-size:14px">
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Subtotal</span><span class="mono" id="cartSubtotal">$0.00</span></div>
+      <div style="display:flex;justify-content:space-between" id="cartDiscountRow" hidden><span style="color:var(--sage)">Discount · MAISON10 (−10%)</span><span class="mono" style="color:var(--sage)" id="cartDiscount">−$0.00</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Shipping</span><span class="mono" id="cartShipping">$12.00</span></div>
+      <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px;font-size:16px;font-weight:700"><span>Total</span><span class="mono" id="cartTotal">$0.00</span></div>
+    </div>
+    <button class="btn btn-primary" id="checkoutBtn" style="width:100%;padding:13px;margin-top:16px">Checkout →</button>
+    <p style="font-size:12px;color:var(--faint);text-align:center;margin:10px 0 0">Secure demo checkout · 30-day returns · No real payment</p>
+  </div>
+</aside>
+
+<!-- ================= COMMAND PALETTE ================= -->
+<div id="palette" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div class="palette-box">
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border)">
+      <span aria-hidden="true">⌘</span>
+      <input id="paletteInput" type="text" placeholder="Search products, go to a view, toggle theme…" style="flex:1;background:none;border:0;outline:none;color:var(--paper);font-size:15px;font-family:inherit" autocomplete="off">
+      <span class="kbd">ESC</span>
+    </div>
+    <div id="paletteList" style="max-height:340px;overflow:auto;padding:6px"></div>
+  </div>
+</div>
+
+<!-- ================= MOBILE TAB BAR ================= -->
+<nav id="tabbar" aria-label="Mobile navigation">
+  <button data-nav="home" class="active"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12 L12 4 L21 12 V21 H3 Z"/></svg>Home</button>
+  <button data-nav="shop"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Shop</button>
+  <button id="tabCart"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 4 H5 L7.5 15.5 A2 2 0 0 0 9.5 17 H18 A2 2 0 0 0 20 15.5 L21.5 8 H6"/><circle cx="10" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/></svg>Cart<span class="tb-badge" id="tabCartCount" hidden>0</span></button>
+  <button data-nav="orders"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10 H21 M8 5 V3 M16 5 V3"/></svg>Orders</button>
+</nav>
+<script>
+/* ================= data — all fictional ================= */
+const PRODUCTS = [
+  { id:"aurelia", name:"Aurelia Floor Lamp", cat:"Lighting", price:289, was:349, rating:4.9, reviews:214, tag:"Best seller", art:"lamp",
+    blurb:"A brass stem, a linen shade, and a glow that makes 7 pm feel like golden hour. Dimmable, warm 2700 K, made to be switched on every evening.",
+    colors:[{n:"Brass",hex:"#C9A227",d:0},{n:"Sage",hex:"#9DB89A",d:0},{n:"Ink",hex:"#2A2E26",d:-20}],
+    sizes:[{n:"Tall · 165 cm",d:0,stock:14},{n:"Short · 140 cm",d:-40,stock:8}] },
+  { id:"halcyon", name:"Halcyon Lounge Chair", cat:"Seating", price:849, was:0, rating:4.8, reviews:167, tag:"Icon", art:"chair",
+    blurb:"A low oak frame and a deep wool seat that holds you like a good armchair should. The chair guests refuse to get up from.",
+    colors:[{n:"Oat",hex:"#D8CDB4",d:0},{n:"Sage",hex:"#9DB89A",d:0},{n:"Terracotta",hex:"#C97B57",d:30}],
+    sizes:[{n:"Standard",d:0,stock:6},{n:"Wide · +8 cm",d:90,stock:3}] },
+  { id:"terra", name:"Terra Stoneware Set", cat:"Tableware", price:128, was:158, rating:4.9, reviews:342, tag:"Best seller", art:"bowls",
+    blurb:"Four plates, four bowls, one glaze — speckled clay fired twice, so every piece carries its own quiet fingerprint.",
+    colors:[{n:"Sand",hex:"#D8CDB4",d:0},{n:"Sage",hex:"#9DB89A",d:0},{n:"Ink",hex:"#2A2E26",d:0}],
+    sizes:[{n:"Set of 8",d:0,stock:32},{n:"Set of 16",d:110,stock:12}] },
+  { id:"solstice", name:"Solstice Pendant", cat:"Lighting", price:214, was:0, rating:4.7, reviews:98, tag:"New", art:"pendant",
+    blurb:"A spun-brass dome that throws a pool of warm light over the table — and a soft halo on the ceiling above it.",
+    colors:[{n:"Brass",hex:"#C9A227",d:0},{n:"Ink",hex:"#2A2E26",d:-15}],
+    sizes:[{n:"Ø 32 cm",d:0,stock:18},{n:"Ø 45 cm",d:60,stock:9}] },
+  { id:"brume", name:"Brume Linen Throw", cat:"Textiles", price:96, was:120, rating:4.8, reviews:221, tag:"", art:"throw",
+    blurb:"Stonewashed Belgian linen, woven loose so it drapes instead of sitting. Softer every single wash.",
+    colors:[{n:"Cream",hex:"#F3EFE3",d:0},{n:"Sage",hex:"#9DB89A",d:0},{n:"Clay",hex:"#C97B57",d:0}],
+    sizes:[{n:"130 × 180 cm",d:0,stock:40},{n:"150 × 200 cm",d:34,stock:17}] },
+  { id:"atlas", name:"Atlas Oak Side Table", cat:"Decor", price:342, was:0, rating:4.9, reviews:76, tag:"Small batch", art:"table",
+    blurb:"Solid white oak, three legs, one perfect circle. Holds a book, a cup, a lamp — and nothing you do not need.",
+    colors:[{n:"Natural oak",hex:"#C8A06A",d:0},{n:"Smoked oak",hex:"#6B4E2E",d:25}],
+    sizes:[{n:"Ø 45 cm",d:0,stock:11},{n:"Ø 55 cm",d:48,stock:5}] },
+  { id:"nocturne", name:"Nocturne Ceramic Vase", cat:"Decor", price:74, was:92, rating:4.9, reviews:188, tag:"Best seller", art:"vase",
+    blurb:"A matte, moonlit glaze over a hand-thrown form. Holds one stem beautifully — or stands alone, which is the point.",
+    colors:[{n:"Moon",hex:"#E8E2D2",d:0},{n:"Sage",hex:"#9DB89A",d:0},{n:"Ink",hex:"#2A2E26",d:0}],
+    sizes:[{n:"24 cm",d:0,stock:26},{n:"32 cm",d:22,stock:14}] },
+  { id:"cinder", name:"Cinder Wool Rug", cat:"Textiles", price:459, was:549, rating:4.8, reviews:143, tag:"", art:"rug",
+    blurb:"Hand-knotted New Zealand wool in a quiet geometric field. Thick underfoot, calm under the eye.",
+    colors:[{n:"Oat",hex:"#D8CDB4",d:0},{n:"Sage",hex:"#9DB89A",d:0}],
+    sizes:[{n:"160 × 230 cm",d:0,stock:9},{n:"200 × 290 cm",d:140,stock:4}] },
+  { id:"ember", name:"Ember Candle Trio", cat:"Decor", price:58, was:0, rating:4.7, reviews:264, tag:"Gift pick", art:"candle",
+    blurb:"Three poured-soy candles — cedar, fig, amber — in reusable stoneware cups. About 45 hours of light per candle.",
+    colors:[{n:"Cedar · Fig · Amber",hex:"#C9A227",d:0}],
+    sizes:[{n:"Trio · 3 × 190 g",d:0,stock:58},{n:"Duo · 2 × 190 g",d:-18,stock:31}] },
+  { id:"marlowe", name:"Marlowe Dining Chair", cat:"Seating", price:389, was:459, rating:4.8, reviews:129, tag:"", art:"dining",
+    blurb:"A curved oak back and a woven seat, shaped for long dinners. Stacks two high when the evening ends.",
+    colors:[{n:"Natural oak",hex:"#C8A06A",d:0},{n:"Ink",hex:"#2A2E26",d:0}],
+    sizes:[{n:"Single",d:0,stock:16},{n:"Pair · save $40",d:738,stock:7}] },
+  { id:"fable", name:"Fable Serving Board", cat:"Tableware", price:86, was:0, rating:4.9, reviews:97, tag:"New", art:"board",
+    blurb:"One slab of olive wood, oiled by hand, with a brass handle. Bread, cheese, or the whole Sunday table.",
+    colors:[{n:"Olive",hex:"#8A7B4F",d:0}],
+    sizes:[{n:"45 cm",d:0,stock:22},{n:"60 cm",d:26,stock:10}] },
+  { id:"haven", name:"Haven Bed Linen Set", cat:"Textiles", price:219, was:269, rating:4.9, reviews:203, tag:"Best seller", art:"linen",
+    blurb:"Washed linen that breathes in summer and holds warmth in winter. Duvet cover plus two pillowcases, pre-softened.",
+    colors:[{n:"Cream",hex:"#F3EFE3",d:0},{n:"Sage",hex:"#9DB89A",d:0},{n:"Clay",hex:"#C97B57",d:0}],
+    sizes:[{n:"Double",d:0,stock:19},{n:"King",d:40,stock:8}] },
+];
+const CATS = [
+  { name:"Lighting", note:"Warm pools of light", art:"pendant" },
+  { name:"Seating", note:"Chairs worth sitting in", art:"chair" },
+  { name:"Tableware", note:"For slow meals", art:"bowls" },
+  { name:"Decor", note:"Quiet statements", art:"vase" },
+  { name:"Textiles", note:"Soft under hand", art:"throw" },
+];
+const WEEKS = [12400,14800,13200,17100,18900,21400,19800,23600,25100,22900,26800,29400];
+const WEEK_ORDERS = [58,71,62,79,88,101,94,112,119,108,127,139];
+const TESTIMONIALS = [
+  { name:"Clara Bennett", place:"Lyon, France", stars:5, text:"The Aurelia lamp changed the whole room. It arrived in paper packaging, no plastic anywhere, and the brass is even warmer in person." },
+  { name:"Jonas Meyer", place:"Berlin, Germany", stars:5, text:"I bought the Halcyon chair expecting good. It is the first chair I have owned that guests ask about before they ask about anything else." },
+  { name:"Aïcha Ndiaye", place:"Dakar, Senegal", stars:5, text:"Terra set, third order from Maison. Every piece feels made by a person, not a line — and the glaze only gets better with use." },
+];
+const REVIEW_POOL = [
+  { name:"Emma R.", stars:5, text:"Exactly as photographed — the colour, the weight, the finish. It feels far more expensive than it is." },
+  { name:"Lucas M.", stars:5, text:"Bought one, came back for two more. Packaging was all paper and the object was flawless." },
+  { name:"Sofia K.", stars:4, text:"Beautiful piece, very well made. Delivery took a day longer than estimated, but worth the wait." },
+];
+const FREE_SHIP = 150, SHIP_STD = 12, SHIP_EXP = 24, PROMO = "MAISON10", PROMO_RATE = 0.10;
+const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ================= helpers ================= */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const money = n => "$" + n.toFixed(2);
+const money0 = n => "$" + Math.round(n).toLocaleString();
+const tip = $("#tip");
+function showTip(html, x, y){ tip.innerHTML = html; tip.style.left = Math.min(Math.max(x, 110), innerWidth-110) + "px"; tip.style.top = (y - 12) + "px"; tip.classList.add("show"); }
+function hideTip(){ tip.classList.remove("show"); }
+function bindTip(el, html){
+  el.addEventListener("mousemove", e => { e.stopPropagation(); showTip(html, e.clientX, e.clientY); });
+  el.addEventListener("mouseleave", hideTip);
+  el.addEventListener("focus", ()=>{ const r = el.getBoundingClientRect(); showTip(html, r.left + r.width/2, r.top); });
+  el.addEventListener("blur", hideTip);
+}
+let toastTimer;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove("show"), 2800); }
+function stars(n){ return "★".repeat(Math.round(n)) + "☆".repeat(5 - Math.round(n)); }
+function prod(id){ return PRODUCTS.find(p => p.id === id); }
+function variantPrice(p, ci, si){ return p.price + (p.colors[ci]?.d || 0) + (p.sizes[si]?.d || 0); }
+function variantStock(p, si){ return p.sizes[si]?.stock ?? 0; }
+function variantKey(id, ci, si){ return id + "|" + ci + "|" + si; }
+
+/* ================= product SVG art (inline, no external images) ================= */
+function artSVG(p, view){
+  const c = p.colors[0].hex, c2 = p.colors[1] ? p.colors[1].hex : "#9DB89A";
+  const bg = view === 2 ? "#1B1E16" : "#181B14";
+  const wrap = inner => `<svg viewBox="0 0 600 450" role="img" aria-label="${p.name} illustration"><rect width="600" height="450" fill="${bg}"/>${inner}</svg>`;
+  const floor = `<ellipse cx="300" cy="392" rx="190" ry="16" fill="#0B0D0A" opacity=".55"/>`;
+  const sun = `<circle cx="470" cy="90" r="46" fill="#C9A227" opacity=".22"/><circle cx="470" cy="90" r="26" fill="#C9A227" opacity=".35"/>`;
+  switch(p.art){
+    case "lamp": return wrap(`${sun}${floor}
+      <rect x="292" y="180" width="16" height="212" fill="#C9A227"/>
+      <rect x="252" y="384" width="96" height="10" rx="5" fill="#C9A227"/>
+      <path d="M300 66 L368 180 L232 180 Z" fill="${view===1?c2:"#F3EFE3"}" opacity=".94"/>
+      <path d="M300 66 L368 180 L232 180 Z" fill="#C9A227" opacity=".14"/>
+      <circle cx="300" cy="196" r="26" fill="#E3C766" opacity=".9"/>
+      <path d="M300 222 L300 250" stroke="#E3C766" stroke-width="4"/>`);
+    case "chair": return wrap(`${sun}${floor}
+      <path d="M210 150 L200 330 L218 330 L226 190 L374 190 L382 330 L400 330 L390 150 Z" fill="${c}"/>
+      <rect x="196" y="330" width="14" height="58" fill="#C8A06A"/><rect x="390" y="330" width="14" height="58" fill="#C8A06A"/>
+      <rect x="216" y="196" width="168" height="16" rx="8" fill="#C9A227" opacity=".8"/>
+      <rect x="206" y="140" width="188" height="26" rx="12" fill="${c2}"/>`);
+    case "bowls": return wrap(`${sun}${floor}
+      <ellipse cx="300" cy="330" rx="170" ry="18" fill="#C9A227" opacity=".18"/>
+      <path d="M180 220 h240 v10 a120 60 0 0 1 -240 0 Z" fill="${c}"/>
+      <path d="M180 220 h240 v14 h-240 Z" fill="${c2}"/>
+      <ellipse cx="300" cy="300" rx="46" ry="10" fill="#C9A227" opacity=".5"/>
+      <circle cx="420" cy="270" r="52" fill="${c2}"/><circle cx="420" cy="262" r="38" fill="#0B0D0A" opacity=".25"/>
+      <circle cx="180" cy="280" r="34" fill="${c}"/>`);
+    case "pendant": return wrap(`${sun}
+      <line x1="300" y1="0" x2="300" y2="120" stroke="#C9A227" stroke-width="3"/>
+      <path d="M300 120 C 220 150 200 230 210 260 L390 260 C 400 230 380 150 300 120 Z" fill="${view===1?c2:"#C9A227"}"/>
+      <ellipse cx="300" cy="262" rx="90" ry="10" fill="#E3C766" opacity=".85"/>
+      <path d="M300 270 L300 392" stroke="#E3C766" stroke-width="3" opacity=".5"/>
+      <ellipse cx="300" cy="392" rx="120" ry="12" fill="#E3C766" opacity=".18"/>`);
+    case "throw": return wrap(`${sun}${floor}
+      <path d="M150 110 h300 v40 q-40 26 -75 0 q-35 26 -75 0 q-35 26 -75 0 q-40 26 -75 0 Z" fill="${c}"/>
+      <rect x="150" y="176" width="300" height="180" fill="${c2}"/>
+      <path d="M150 176 h300 v18 h-300 Z M150 230 h300 v10 h-300 Z M150 300 h300 v10 h-300 Z" fill="#0B0D0A" opacity=".18"/>
+      <path d="M150 356 q75 22 150 0 q75 22 150 0 v30 h-300 Z" fill="${c}"/>`);
+    case "table": return wrap(`${sun}${floor}
+      <ellipse cx="300" cy="170" rx="150" ry="22" fill="${c}"/>
+      <ellipse cx="300" cy="166" rx="150" ry="22" fill="#C9A227" opacity=".25"/>
+      <rect x="288" y="180" width="24" height="200" fill="#6B4E2E"/>
+      <path d="M300 380 L240 392 M300 380 L360 392" stroke="#6B4E2E" stroke-width="12" stroke-linecap="round"/>
+      <circle cx="300" cy="150" r="14" fill="${c2}"/><rect x="292" y="120" width="16" height="22" fill="${c2}"/>`);
+    case "vase": return wrap(`${sun}${floor}
+      <path d="M300 96 C 340 130 360 190 356 250 C 352 320 330 380 300 392 C 270 380 248 320 244 250 C 240 190 260 130 300 96 Z" fill="${c}"/>
+      <path d="M300 96 C 340 130 360 190 356 250 C 352 320 330 380 300 392 L300 96 Z" fill="#0B0D0A" opacity=".18"/>
+      <path d="M292 96 q-14 -34 4 -52 q10 26 22 40" stroke="#9DB89A" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <circle cx="318" cy="58" r="12" fill="#C9A227"/>`);
+    case "rug": return wrap(`${sun}
+      <rect x="110" y="110" width="380" height="240" rx="8" fill="${c}"/>
+      <rect x="130" y="130" width="340" height="200" rx="6" fill="none" stroke="#0B0D0A" stroke-width="3" opacity=".35"/>
+      <path d="M130 230 h340 M300 130 v200" stroke="#0B0D0A" stroke-width="3" opacity=".35"/>
+      <circle cx="215" cy="180" r="34" fill="${c2}"/><circle cx="385" cy="280" r="34" fill="#C9A227" opacity=".8"/>
+      <path d="M110 350 h380 M110 362 h380" stroke="#C9A227" stroke-width="4"/>`);
+    case "candle": return wrap(`${sun}${floor}
+      <rect x="180" y="230" width="80" height="130" rx="10" fill="${c}"/><rect x="330" y="210" width="80" height="150" rx="10" fill="${c2}"/>
+      <rect x="255" y="250" width="80" height="110" rx="10" fill="#E8E2D2"/>
+      <path d="M220 230 q-6 -26 0 -40 M370 210 q-6 -26 0 -40 M295 250 q-6 -22 0 -34" stroke="#E3C766" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="220" cy="192" rx="10" ry="16" fill="#E3C766"/><ellipse cx="370" cy="172" rx="10" ry="16" fill="#E3C766"/><ellipse cx="295" cy="218" rx="9" ry="14" fill="#E3C766"/>`);
+    case "dining": return wrap(`${sun}${floor}
+      <path d="M215 120 q85 -22 170 0 v60 q-85 22 -170 0 Z" fill="${c}"/>
+      <rect x="222" y="186" width="156" height="16" rx="8" fill="${c2}"/>
+      <rect x="228" y="202" width="12" height="186" fill="#C8A06A"/><rect x="360" y="202" width="12" height="186" fill="#C8A06A"/>
+      <rect x="228" y="300" width="144" height="10" fill="#C8A06A" opacity=".7"/>`);
+    case "board": return wrap(`${sun}${floor}
+      <path d="M140 250 h300 a40 40 0 0 0 0 -80 h-300 a40 40 0 0 0 0 80 Z" fill="${c}"/>
+      <circle cx="452" cy="210" r="12" fill="#0B0D0A" opacity=".4"/>
+      <circle cx="300" cy="210" r="34" fill="#C9A227" opacity=".55"/><circle cx="230" cy="210" r="22" fill="#F3EFE3" opacity=".5"/>
+      <path d="M180 250 q60 60 120 0" stroke="#0B0D0A" stroke-width="3" fill="none" opacity=".3"/>`);
+    case "linen": return wrap(`${sun}${floor}
+      <rect x="140" y="120" width="320" height="220" rx="14" fill="${c}"/>
+      <rect x="140" y="120" width="320" height="60" rx="14" fill="${c2}"/>
+      <path d="M140 300 h320 M140 260 h320" stroke="#0B0D0A" stroke-width="2" opacity=".15"/>
+      <rect x="180" y="150" width="110" height="70" rx="10" fill="#F3EFE3" opacity=".85"/>
+      <rect x="310" y="150" width="110" height="70" rx="10" fill="#F3EFE3" opacity=".6"/>
+      <path d="M140 340 q90 26 160 0 q80 26 160 0" stroke="#C9A227" stroke-width="4" fill="none"/>`);
+    default: return wrap(`${floor}<circle cx="300" cy="220" r="90" fill="${c}"/>`);
+  }
+}
+
+/* ================= state ================= */
+let cart = {};            // key -> {id, ci, si, qty}
+let wishlist = new Set();
+let orders = [];
+let promoOn = false;
+let orderSeq = 1042;
+let currentProduct = null, pdCi = 0, pdSi = 0, pdQty = 1;
+let shopFilter = { cat:"All", q:"", max:900, minRating:0, inStock:false, sort:"featured" };
+let coData = { ship:{}, pay:{} };
+let lastView = "home";
+
+function cartCount(){ return Object.values(cart).reduce((a, l) => a + l.qty, 0); }
+function cartSubtotal(){
+  return Object.values(cart).reduce((a, l) => a + variantPrice(prod(l.id), l.ci, l.si) * l.qty, 0);
+}
+function cartTotals(){
+  const sub = cartSubtotal();
+  const disc = promoOn ? sub * PROMO_RATE : 0;
+  const after = sub - disc;
+  const shipMethod = (document.querySelector('input[name="coShip"]:checked') || {}).value || "standard";
+  let ship = 0;
+  if(sub > 0){
+    ship = after >= FREE_SHIP ? 0 : (shipMethod === "express" ? SHIP_EXP : SHIP_STD);
+  }
+  return { sub, disc, after, ship, total: after + ship };
+}
+function refreshBadges(){
+  const n = cartCount();
+  $("#cartCount").hidden = n === 0; $("#cartCount").textContent = n;
+  $("#tabCartCount").hidden = n === 0; $("#tabCartCount").textContent = n;
+  const w = wishlist.size;
+  $("#wishCount").hidden = w === 0; $("#wishCount").textContent = w;
+}
+
+/* ================= rendering: cards, home, shop ================= */
+function cardHTML(p){
+  const wished = wishlist.has(p.id);
+  return `<article class="card card-hover prod-card" style="padding:14px;display:flex;flex-direction:column">
+    <div class="art-frame" style="cursor:pointer" data-open-product="${p.id}" role="button" tabindex="0" aria-label="View ${p.name}">
+      ${artSVG(p, 0)}
+      ${p.tag ? `<span class="chip" style="position:absolute;top:10px;left:10px;background:color-mix(in srgb, var(--ink) 78%, transparent);color:var(--brass-ink);border-color:var(--border-strong)">${p.tag}</span>` : ""}
+      <button class="wish-btn ${wished ? "on" : ""}" data-wish="${p.id}" aria-label="${wished ? "Remove from" : "Add to"} wishlist: ${p.name}" aria-pressed="${wished}">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="${wished ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21 C7 16.5 3 13.3 3 9.3 C3 6.4 5.2 4.5 7.7 4.5 C9.4 4.5 11 5.6 12 7.1 C13 5.6 14.6 4.5 16.3 4.5 C18.8 4.5 21 6.4 21 9.3 C21 13.3 17 16.5 12 21 Z"/></svg>
+      </button>
+    </div>
+    <div style="padding:12px 4px 0;flex:1;display:flex;flex-direction:column">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline">
+        <span class="mono" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)">${p.cat}</span>
+        <span style="font-size:12.5px;color:var(--muted)"><span class="stars">${stars(p.rating)}</span> ${p.rating} (${p.reviews})</span>
+      </div>
+      <h3 class="pc-name" style="font-size:18px;font-weight:600;margin:7px 0 4px;cursor:pointer" data-open-product="${p.id}">${p.name}</h3>
+      <p style="margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.5;flex:1">${p.blurb.split(".")[0]}.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <span><strong class="mono" style="font-size:17px">${money(p.price)}</strong> ${p.was ? `<span class="price-was">${money(p.was)}</span>` : ""}</span>
+        <button class="btn btn-primary" data-add="${p.id}" style="padding:9px 14px">Add to cart</button>
+      </div>
+    </div>
+  </article>`;
+}
+function renderHome(){
+  $("#heroArt").innerHTML = artSVG(prod("aurelia"), 0);
+  $("#storyArt").innerHTML = artSVG(prod("atlas"), 2);
+  $("#catTiles").innerHTML = CATS.map(c => {
+    const n = PRODUCTS.filter(p => p.cat === c.name).length;
+    return `<button class="card card-hover" data-cat-link="${c.name}" style="padding:0;overflow:hidden;text-align:left;color:var(--paper)">
+      <div style="height:120px;overflow:hidden">${artSVG({ ...prod("solstice"), art:c.art, colors:[{hex:"#C9A227"},{hex:"#9DB89A"}] }, 0).replace('viewBox="0 0 600 450"','viewBox="150 60 300 225"')}</div>
+      <div style="padding:14px 16px">
+        <p style="margin:0;font-weight:700;font-size:16px">${c.name}</p>
+        <p style="margin:3px 0 0;font-size:13px;color:var(--muted)">${c.note} · ${n} object${n > 1 ? "s" : ""}</p>
+      </div>
+    </button>`;
+  }).join("");
+  const best = [...PRODUCTS].sort((a, b) => b.rating * b.reviews - a.rating * a.reviews).slice(0, 8);
+  $("#bestGrid").innerHTML = best.map(cardHTML).join("");
+  $("#testiGrid").innerHTML = TESTIMONIALS.map(t => `<article class="card card-hover" style="padding:22px">
+    <span class="stars" style="font-size:15px">${stars(t.stars)}</span>
+    <p style="font-size:15px;line-height:1.65;margin:12px 0 16px">“${t.text}”</p>
+    <p style="margin:0;font-weight:700;font-size:14px">${t.name}</p>
+    <p class="mono" style="margin:2px 0 0;font-size:12px;color:var(--faint)">${t.place} · Verified buyer</p>
+  </article>`).join("");
+}
+function filteredShop(){
+  let list = PRODUCTS.filter(p => {
+    if(shopFilter.cat !== "All" && p.cat !== shopFilter.cat) return false;
+    if(p.price > shopFilter.max) return false;
+    if(p.rating < shopFilter.minRating) return false;
+    if(shopFilter.inStock && Math.max(...p.sizes.map(s => s.stock)) <= 0) return false;
+    if(shopFilter.q){
+      const q = shopFilter.q.toLowerCase();
+      if(!(p.name + " " + p.cat + " " + p.blurb).toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+  switch(shopFilter.sort){
+    case "price-asc": list.sort((a, b) => a.price - b.price); break;
+    case "price-desc": list.sort((a, b) => b.price - a.price); break;
+    case "rating": list.sort((a, b) => b.rating - a.rating); break;
+    case "name": list.sort((a, b) => a.name.localeCompare(b.name)); break;
+    default: list.sort((a, b) => b.rating * b.reviews - a.rating * a.reviews);
+  }
+  return list;
+}
+function renderShop(){
+  const list = filteredShop();
+  $("#shopCount").textContent = list.length;
+  $("#shopGrid").innerHTML = list.map(cardHTML).join("");
+  $("#shopEmpty").hidden = list.length !== 0;
+  $("#catChips").innerHTML = ["All", ...CATS.map(c => c.name)].map(c =>
+    `<button class="cat-chip ${shopFilter.cat === c ? "active" : ""}" data-cat="${c}">${c}</button>`).join("");
+  $("#priceLabel").textContent = "$" + shopFilter.max;
+}
+
+/* ================= rendering: product detail ================= */
+function openProduct(id){
+  currentProduct = prod(id); pdCi = 0; pdSi = 0; pdQty = 1;
+  renderProduct();
+  showView("product");
+  window.scrollTo({ top: 0, behavior: REDUCED ? "auto" : "smooth" });
+}
+function renderProduct(){
+  const p = currentProduct;
+  const price = variantPrice(p, pdCi, pdSi);
+  const stock = variantStock(p, pdSi);
+  const wished = wishlist.has(p.id);
+  const revs = [0, 1, 2].map(i => REVIEW_POOL[(p.reviews + i) % REVIEW_POOL.length]);
+  $("#pdWrap").innerHTML = `
+  <button class="btn btn-ghost" data-nav="shop" style="margin-bottom:18px">← Back to shop</button>
+  <div class="pd-grid" style="display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:start">
+    <div>
+      <div class="art-frame" id="pdArt">${artSVG(p, 0)}</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px">
+        ${[0, 1, 2].map(v => `<button class="thumb ${v === 0 ? "active" : ""}" data-pd-view="${v}" aria-label="Product view ${v + 1}">${artSVG(p, v)}</button>`).join("")}
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow">${p.cat} · SKU MSN-${String(PRODUCTS.indexOf(p) + 1).padStart(3, "0")}</p>
+      <h1 class="display" style="font-size:clamp(32px,4vw,46px);font-weight:600;line-height:1.08;margin:12px 0 8px">${p.name}</h1>
+      <p style="margin:0 0 6px"><span class="stars" style="font-size:15px">${stars(p.rating)}</span> <strong>${p.rating}</strong> <span style="color:var(--muted)">· ${p.reviews} verified reviews</span></p>
+      <p style="color:var(--muted);font-size:15.5px;line-height:1.65;margin:14px 0 20px">${p.blurb}</p>
+      <p style="margin:0 0 20px"><strong class="mono" id="pdPrice" style="font-size:28px">${money(price)}</strong> ${p.was ? `<span class="price-was" style="font-size:16px">${money(p.was + (p.colors[pdCi].d || 0) + (p.sizes[pdSi].d || 0))}</span>` : ""}
+        <span class="chip" id="pdStock" style="margin-left:8px;color:${stock <= 5 ? "var(--coral)" : "var(--sage)"}">${stock <= 5 ? "Only " + stock + " left" : stock + " in stock"}</span></p>
+      <p class="flabel">Colour — <span id="pdColorName" style="color:var(--muted);font-weight:500">${p.colors[pdCi].n}</span></p>
+      <div style="display:flex;gap:10px;margin-bottom:18px" id="pdColors">
+        ${p.colors.map((c, i) => `<button class="swatch ${i === pdCi ? "active" : ""}" data-pd-color="${i}" style="background:${c.hex}" aria-label="Colour ${c.n}${c.d ? " (" + (c.d > 0 ? "+" : "") + money(c.d) + ")" : ""}" title="${c.n}${c.d ? " · " + (c.d > 0 ? "+" : "") + money(c.d) : ""}"></button>`).join("")}
+      </div>
+      <p class="flabel">Size — <span id="pdSizeName" style="color:var(--muted);font-weight:500">${p.sizes[pdSi].n}</span></p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px" id="pdSizes">
+        ${p.sizes.map((s, i) => `<button class="size-btn ${i === pdSi ? "active" : ""}" data-pd-size="${i}" ${s.stock === 0 ? "disabled" : ""}>${s.n}${s.d ? " · " + (s.d > 0 ? "+" : "") + money(s.d) : ""} <span class="mono" style="font-size:11px;opacity:.75">(${s.stock})</span></button>`).join("")}
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <div style="display:flex;align-items:center">
+          <button class="qty-btn" id="pdMinus" aria-label="Decrease quantity">−</button>
+          <span id="pdQty" class="mono" style="min-width:44px;text-align:center;font-size:16px;font-weight:600;border-top:1px solid var(--border-strong);border-bottom:1px solid var(--border-strong);height:42px;display:inline-flex;align-items:center;justify-content:center">1</span>
+          <button class="qty-btn" id="pdPlus" aria-label="Increase quantity">+</button>
+        </div>
+        <button class="btn btn-primary" id="pdAdd" style="flex:1;padding:13px;min-width:200px">Add to cart — <span id="pdAddTotal">${money(price)}</span></button>
+        <button class="icon-btn wish-btn ${wished ? "on" : ""}" data-wish="${p.id}" aria-label="${wished ? "Remove from" : "Add to"} wishlist" aria-pressed="${wished}" style="position:static;width:48px;height:48px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="${wished ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21 C7 16.5 3 13.3 3 9.3 C3 6.4 5.2 4.5 7.7 4.5 C9.4 4.5 11 5.6 12 7.1 C13 5.6 14.6 4.5 16.3 4.5 C18.8 4.5 21 6.4 21 9.3 C21 13.3 17 16.5 12 21 Z"/></svg>
+        </button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px">
+        <div class="card" style="padding:13px 14px;font-size:13px"><strong>Free shipping</strong><br><span style="color:var(--muted)">over $150</span></div>
+        <div class="card" style="padding:13px 14px;font-size:13px"><strong>30-day returns</strong><br><span style="color:var(--muted)">no questions asked</span></div>
+        <div class="card" style="padding:13px 14px;font-size:13px"><strong>2-year warranty</strong><br><span style="color:var(--muted)">craftsmanship covered</span></div>
+      </div>
+      <div style="margin-top:26px">
+        <h2 class="display" style="font-size:22px;margin:0 0 14px">What owners say</h2>
+        ${revs.map(r => `<div class="card" style="padding:16px 18px;margin-bottom:10px">
+          <p style="margin:0 0 4px"><span class="stars">${stars(r.stars)}</span> <strong style="font-size:14px">${r.name}</strong> <span class="mono" style="font-size:11.5px;color:var(--faint)">Verified buyer</span></p>
+          <p style="margin:0;font-size:14px;color:var(--muted);line-height:1.6">${r.text}</p>
+        </div>`).join("")}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ================= rendering: cart ================= */
+function renderCart(){
+  const items = Object.values(cart);
+  const t = cartTotals();
+  const n = cartCount();
+  $("#drawerCount").textContent = n ? `(${n} item${n > 1 ? "s" : ""})` : "";
+  $("#cartEmpty").style.display = items.length ? "none" : "flex";
+  $("#cartItems").style.display = items.length ? "flex" : "none";
+  $("#cartFooter").style.display = items.length ? "block" : "none";
+  $("#shipProgress").style.display = items.length ? "block" : "none";
+  $("#cartItems").innerHTML = items.map(l => {
+    const p = prod(l.id);
+    const price = variantPrice(p, l.ci, l.si);
+    const stock = variantStock(p, l.si);
+    return `<div style="display:flex;gap:12px">
+      <div style="width:76px;flex:none;border-radius:12px;overflow:hidden;border:1px solid var(--border);cursor:pointer" data-open-product="${p.id}">${artSVG(p, 0)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;gap:8px">
+          <p style="margin:0;font-weight:600;font-size:14px;cursor:pointer" data-open-product="${p.id}">${p.name}</p>
+          <button data-cart-remove="${l.key}" aria-label="Remove ${p.name} from cart" style="background:none;border:0;color:var(--faint);font-size:16px;line-height:1;padding:2px">✕</button>
+        </div>
+        <p class="mono" style="margin:3px 0 8px;font-size:11.5px;color:var(--faint)">${p.colors[l.ci].n} · ${p.sizes[l.si].n}</p>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;align-items:center">
+            <button class="qty-btn" data-cart-dec="${l.key}" aria-label="Decrease quantity" style="width:30px;height:32px;font-size:15px">−</button>
+            <span class="mono" style="min-width:32px;text-align:center;font-size:14px;font-weight:600">${l.qty}</span>
+            <button class="qty-btn" data-cart-inc="${l.key}" aria-label="Increase quantity" style="width:30px;height:32px;font-size:15px" ${l.qty >= stock ? "disabled" : ""}>+</button>
+          </div>
+          <strong class="mono" style="font-size:14.5px">${money(price * l.qty)}</strong>
+        </div>
+        ${l.qty >= stock ? `<p style="margin:6px 0 0;font-size:12px;color:var(--coral)">Max stock reached (${stock})</p>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+  const pct = Math.min(100, t.after / FREE_SHIP * 100);
+  $("#shipBar").style.width = pct + "%";
+  $("#shipMsg").innerHTML = t.after >= FREE_SHIP
+    ? `<strong style="color:var(--sage)">Free shipping unlocked ✦</strong> — nicely done.`
+    : `You're <strong>${money(FREE_SHIP - t.after)}</strong> away from free shipping`;
+  $("#cartSubtotal").textContent = money(t.sub);
+  $("#cartDiscountRow").hidden = !promoOn;
+  $("#cartDiscount").textContent = "−" + money(t.disc);
+  $("#cartShipping").textContent = t.sub === 0 ? "—" : (t.ship === 0 ? "Free" : money(t.ship));
+  $("#cartTotal").textContent = money(t.total);
+  refreshBadges();
+}
+function addToCart(id, ci, si, qty){
+  const key = variantKey(id, ci, si);
+  const p = prod(id);
+  const stock = variantStock(p, si);
+  const cur = cart[key] ? cart[key].qty : 0;
+  if(cur + qty > stock){ toast(`Only ${stock} in stock for this variant`); return false; }
+  cart[key] = { key, id, ci, si, qty: cur + qty };
+  renderCart();
+  return true;
+}
+function openCart(){ renderCart(); $("#cartDrawer").classList.add("open"); $("#overlay").classList.add("open"); }
+function closeCart(){ $("#cartDrawer").classList.remove("open"); $("#overlay").classList.remove("open"); }
+
+/* ================= rendering: sales chart ================= */
+function renderChart(){
+  const svg = $("#salesChart");
+  const max = Math.max(...WEEKS);
+  const W = 720, H = 200, pad = 8, bw = 44, gap = (W - pad * 2 - bw * 12) / 11;
+  let bars = "";
+  WEEKS.forEach((v, i) => {
+    const h = Math.max(10, v / max * (H - 46));
+    const x = pad + i * (bw + gap), y = H - 26 - h;
+    const hot = i === WEEKS.indexOf(max);
+    bars += `<rect class="bar" data-week="${i}" x="${x}" y="${y}" width="${bw}" height="${h}" rx="6" fill="${hot ? "#C9A227" : "#9DB89A"}" opacity="${hot ? 1 : .55}" tabindex="0" role="img" aria-label="Week ${i + 1}: ${money0(v)} revenue, ${WEEK_ORDERS[i]} orders"/>`;
+  });
+  svg.innerHTML = bars;
+  $$(".bar", svg).forEach(b => {
+    const i = +b.dataset.week;
+    bindTip(b, `Week ${i + 1} · <span class="mono">${money0(WEEKS[i])}</span> · ${WEEK_ORDERS[i]} orders`);
+    b.addEventListener("mouseenter", () => { $$(".bar", svg).forEach(o => o.style.opacity = o === b ? 1 : .3); });
+    b.addEventListener("mouseleave", () => { $$(".bar", svg).forEach(o => o.style.opacity = o.dataset.week == WEEKS.indexOf(max) ? 1 : .55); });
+  });
+  const total = WEEKS.reduce((a, b) => a + b, 0);
+  $("#salesTotal").textContent = money0(total);
+  $("#salesBest").textContent = "Week 12 · " + money0(max);
+}
+
+/* ================= navigation ================= */
+function showView(name){
+  lastView = name;
+  $$(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + name));
+  $$("[data-nav]").forEach(b => { if(b.classList.contains("navlink") || b.closest("#tabbar")) b.classList.toggle("active", b.dataset.nav === name); });
+  if(name === "shop") renderShop();
+  if(name === "orders") renderOrders();
+  window.scrollTo({ top: 0, behavior: REDUCED ? "auto" : "instant" });
+}
+document.addEventListener("click", e => {
+  const nav = e.target.closest("[data-nav]");
+  if(nav){ e.preventDefault(); closeCart(); showView(nav.dataset.nav); if(nav.dataset.scrollNl) setTimeout(() => $("#nlEmail")?.focus(), 350); return; }
+  const cat = e.target.closest("[data-cat-link]");
+  if(cat){ e.preventDefault(); shopFilter.cat = cat.dataset.catLink; syncFilterUI(); showView("shop"); return; }
+  const open = e.target.closest("[data-open-product]");
+  if(open && !e.target.closest("[data-wish]") && !e.target.closest("[data-add]")){ openProduct(open.dataset.openProduct); return; }
+  const add = e.target.closest("[data-add]");
+  if(add){ if(addToCart(add.dataset.add, 0, 0, 1)){ toast(prod(add.dataset.add).name + " added to cart"); openCart(); } return; }
+  const wish = e.target.closest("[data-wish]");
+  if(wish){
+    const id = wish.dataset.wish;
+    if(wishlist.has(id)){ wishlist.delete(id); toast(prod(id).name + " removed from wishlist"); }
+    else { wishlist.add(id); toast(prod(id).name + " saved to wishlist"); }
+    refreshBadges(); renderHome(); renderShop(); if(currentProduct && $("#view-product").classList.contains("active")) renderProduct();
+    return;
+  }
+  const faq = e.target.closest("[data-faq]");
+  if(faq){ e.preventDefault(); toast(faq.dataset.faq === "ship" ? "Shipping: free over $150 · 30-day returns, no questions asked." : faq.dataset.faq === "care" ? "Care guides ship with every object — and live on each product page." : "Write to hello@maison.example — we answer within one working day."); return; }
+  const thumb = e.target.closest("[data-pd-view]");
+  if(thumb){ $$(".thumb").forEach(t => t.classList.remove("active")); thumb.classList.add("active"); $("#pdArt").innerHTML = artSVG(currentProduct, +thumb.dataset.pdView); return; }
+  const col = e.target.closest("[data-pd-color]");
+  if(col){ pdCi = +col.dataset.pdColor; renderProduct(); return; }
+  const sz = e.target.closest("[data-pd-size]");
+  if(sz){ pdSi = +sz.dataset.pdSize; renderProduct(); return; }
+  const dec = e.target.closest("[data-cart-dec]");
+  if(dec){ const l = cart[dec.dataset.cartDec]; if(l){ l.qty--; if(l.qty <= 0) delete cart[dec.dataset.cartDec]; renderCart(); renderCheckoutSummary(); } return; }
+  const inc = e.target.closest("[data-cart-inc]");
+  if(inc){ const l = cart[inc.dataset.cartInc]; if(l){ const p = prod(l.id); if(l.qty < variantStock(p, l.si)){ l.qty++; renderCart(); renderCheckoutSummary(); } else toast("Max stock reached for this variant"); } return; }
+  const rem = e.target.closest("[data-cart-remove]");
+  if(rem){ delete cart[rem.dataset.cartRemove]; renderCart(); renderCheckoutSummary(); toast("Removed from cart"); return; }
+  const chip = e.target.closest("[data-cat]");
+  if(chip){ shopFilter.cat = chip.dataset.cat; renderShop(); return; }
+});
+$("#pdWrap").addEventListener("click", e => {
+  if(e.target.closest("#pdMinus")){ pdQty = Math.max(1, pdQty - 1); $("#pdQty").textContent = pdQty; $("#pdAddTotal").textContent = money(variantPrice(currentProduct, pdCi, pdSi) * pdQty); }
+  if(e.target.closest("#pdPlus")){ const s = variantStock(currentProduct, pdSi); if(pdQty < s){ pdQty++; $("#pdQty").textContent = pdQty; $("#pdAddTotal").textContent = money(variantPrice(currentProduct, pdCi, pdSi) * pdQty); } else toast("Only " + s + " in stock for this variant"); }
+  if(e.target.closest("#pdAdd")){ if(addToCart(currentProduct.id, pdCi, pdSi, pdQty)){ toast(currentProduct.name + " × " + pdQty + " added to cart"); openCart(); } }
+});
+$("#cartBtn").addEventListener("click", openCart);
+$("#tabCart").addEventListener("click", openCart);
+$("#cartClose").addEventListener("click", closeCart);
+$("#overlay").addEventListener("click", closeCart);
+$("#emptyCartShop").addEventListener("click", () => { closeCart(); showView("shop"); });
+$("#wishBtn").addEventListener("click", () => {
+  if(wishlist.size === 0){ toast("Your wishlist is empty — tap the heart on any object to save it."); return; }
+  const names = [...wishlist].map(id => prod(id).name).join(", ");
+  toast("Wishlist (" + wishlist.size + "): " + names);
+});
+document.addEventListener("keydown", e => { if(e.key === "Escape"){ closeCart(); closePalette(); } });
+
+/* ================= shop filters ================= */
+function syncFilterUI(){
+  $("#shopSearch").value = shopFilter.q;
+  $("#priceRange").value = shopFilter.max;
+  $("#ratingSel").value = String(shopFilter.minRating);
+  $("#inStockChk").checked = shopFilter.inStock;
+}
+$("#shopSearch").addEventListener("input", e => { shopFilter.q = e.target.value.trim(); renderShop(); });
+$("#headerSearch").addEventListener("input", e => { shopFilter.q = e.target.value.trim(); syncFilterUI(); showView("shop"); });
+$("#priceRange").addEventListener("input", e => { shopFilter.max = +e.target.value; renderShop(); });
+$("#ratingSel").addEventListener("change", e => { shopFilter.minRating = +e.target.value; renderShop(); });
+$("#inStockChk").addEventListener("change", e => { shopFilter.inStock = e.target.checked; renderShop(); });
+$("#sortSel").addEventListener("change", e => { shopFilter.sort = e.target.value; renderShop(); });
+function clearFilters(){ shopFilter = { cat:"All", q:"", max:900, minRating:0, inStock:false, sort:"featured" }; $("#sortSel").value = "featured"; syncFilterUI(); renderShop(); }
+$("#clearFilters").addEventListener("click", clearFilters);
+$("#emptyClear").addEventListener("click", clearFilters);
+
+/* ================= promo ================= */
+function applyPromo(){
+  const v = $("#promoInput").value.trim().toUpperCase();
+  if(!v) return;
+  if(v === PROMO){
+    if(promoOn){ $("#promoMsg").textContent = "MAISON10 is already applied — 10% off your order."; return; }
+    promoOn = true; renderCart(); renderCheckoutSummary();
+    $("#promoMsg").innerHTML = "<strong style=\"color:var(--sage)\">MAISON10 applied — 10% off your order. ✓</strong>";
+    toast("Promo code MAISON10 applied — 10% off");
+  } else {
+    $("#promoMsg").innerHTML = "<span style=\"color:var(--coral)\">“" + v + "” is not a valid code. Try MAISON10.</span>";
+  }
+}
+$("#promoApply").addEventListener("click", applyPromo);
+$("#promoInput").addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); applyPromo(); } });
+$("#promoHint").addEventListener("click", () => { $("#promoInput").value = PROMO; applyPromo(); });
+
+/* ================= checkout ================= */
+function setCoStep(n){
+  $("#coForm1").style.display = n === 1 ? "block" : "none";
+  $("#coForm2").style.display = n === 2 ? "block" : "none";
+  $("#coForm3").style.display = n === 3 ? "block" : "none";
+  $$("#coSteps .step-item").forEach(it => {
+    const s = +it.dataset.step;
+    it.classList.toggle("done", s < n);
+    it.classList.toggle("now", s === n);
+  });
+}
+function fieldOK(input, errEl, ok){
+  input.setAttribute("aria-invalid", String(!ok));
+  if(errEl) errEl.hidden = ok;
+  return ok;
+}
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function renderCheckoutSummary(){
+  const items = Object.values(cart);
+  const t = cartTotals();
+  const n = cartCount();
+  $("#coSummaryCount").textContent = n + (n === 1 ? " item" : " items");
+  $("#coSummaryItems").innerHTML = items.map(l => {
+    const p = prod(l.id);
+    return `<div style="display:flex;gap:10px;align-items:center">
+      <div style="width:48px;flex:none;border-radius:9px;overflow:hidden;border:1px solid var(--border)">${artSVG(p, 0)}</div>
+      <div style="flex:1;min-width:0"><p style="margin:0;font-size:13.5px;font-weight:600">${p.name} <span style="color:var(--faint);font-weight:400">× ${l.qty}</span></p>
+      <p class="mono" style="margin:1px 0 0;font-size:11.5px;color:var(--faint)">${p.colors[l.ci].n} · ${p.sizes[l.si].n}</p></div>
+      <strong class="mono" style="font-size:13.5px">${money(variantPrice(p, l.ci, l.si) * l.qty)}</strong>
+    </div>`;
+  }).join("") || `<p style="color:var(--muted);font-size:14px">Your cart is empty.</p>`;
+  $("#coSummaryTotals").innerHTML = `
+    <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Subtotal</span><span class="mono">${money(t.sub)}</span></div>
+    ${promoOn ? `<div style="display:flex;justify-content:space-between"><span style="color:var(--sage)">Discount · MAISON10</span><span class="mono" style="color:var(--sage)">−${money(t.disc)}</span></div>` : ""}
+    <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Shipping</span><span class="mono">${t.sub === 0 ? "—" : (t.ship === 0 ? "Free" : money(t.ship))}</span></div>
+    <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px;font-size:16px;font-weight:700"><span>Total</span><span class="mono">${money(t.total)}</span></div>`;
+}
+$("#checkoutBtn").addEventListener("click", () => {
+  if(cartCount() === 0){ toast("Your cart is empty."); return; }
+  closeCart(); setCoStep(1); renderCheckoutSummary(); showView("checkout");
+});
+$$('input[name="coShip"]').forEach(r => r.addEventListener("change", renderCheckoutSummary));
+$("#coForm1").addEventListener("submit", e => {
+  e.preventDefault();
+  const f = $("#coForm1");
+  const ok = [
+    fieldOK($("#coFirst"), $("#coFirst").nextElementSibling, $("#coFirst").value.trim().length > 0),
+    fieldOK($("#coLast"), $("#coLast").nextElementSibling, $("#coLast").value.trim().length > 0),
+    fieldOK($("#coEmail"), $("#coEmail").nextElementSibling, EMAIL_RE.test($("#coEmail").value.trim())),
+    fieldOK($("#coAddr"), $("#coAddr").nextElementSibling, $("#coAddr").value.trim().length > 3),
+    fieldOK($("#coCity"), $("#coCity").nextElementSibling, $("#coCity").value.trim().length > 0),
+    fieldOK($("#coZip"), $("#coZip").nextElementSibling, $("#coZip").value.trim().length > 2),
+  ].every(Boolean);
+  if(!ok){ f.querySelector("[aria-invalid='true']")?.focus(); return; }
+  coData.ship = { first: $("#coFirst").value.trim(), last: $("#coLast").value.trim(), email: $("#coEmail").value.trim(), addr: $("#coAddr").value.trim(), city: $("#coCity").value.trim(), zip: $("#coZip").value.trim(), country: $("#coCountry").value, method: document.querySelector('input[name="coShip"]:checked').value };
+  setCoStep(2);
+});
+$("#coCardNum").addEventListener("input", e => {
+  const d = e.target.value.replace(/\D/g, "").slice(0, 16);
+  e.target.value = d.replace(/(\d{4})(?=\d)/g, "$1 ");
+});
+$("#coExp").addEventListener("input", e => {
+  let d = e.target.value.replace(/\D/g, "").slice(0, 4);
+  if(d.length > 2) d = d.slice(0, 2) + "/" + d.slice(2);
+  e.target.value = d;
+});
+$("#coForm2").addEventListener("submit", e => {
+  e.preventDefault();
+  const num = $("#coCardNum").value.replace(/\D/g, "");
+  const exp = $("#coExp").value.trim();
+  const m = exp.match(/^(\d{2})\/(\d{2})$/);
+  let expOK = false;
+  if(m){
+    const mm = +m[1], yy = 2000 + +m[2];
+    const now = new Date();
+    expOK = mm >= 1 && mm <= 12 && (yy > now.getFullYear() || (yy === now.getFullYear() && mm >= now.getMonth() + 1));
+  }
+  const ok = [
+    fieldOK($("#coCardName"), $("#coCardName").nextElementSibling, $("#coCardName").value.trim().length > 1),
+    fieldOK($("#coCardNum"), $("#coCardNum").nextElementSibling, /^\d{16}$/.test(num)),
+    fieldOK($("#coExp"), $("#coExp").nextElementSibling, expOK),
+    fieldOK($("#coCvc"), $("#coCvc").nextElementSibling, /^\d{3,4}$/.test($("#coCvc").value.trim())),
+  ].every(Boolean);
+  if(!ok){ $("#coForm2").querySelector("[aria-invalid='true']")?.focus(); return; }
+  coData.pay = { name: $("#coCardName").value.trim(), last4: num.slice(-4) };
+  renderReview();
+  setCoStep(3);
+});
+$("#coBack1").addEventListener("click", () => setCoStep(1));
+$("#coBack2").addEventListener("click", () => setCoStep(2));
+function renderReview(){
+  const t = cartTotals();
+  const s = coData.ship;
+  $("#coReview").innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px;font-size:14.5px">
+      <div><p class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 4px">Ship to</p>
+        <p style="margin:0">${s.first} ${s.last} · ${s.addr}, ${s.city} ${s.zip}, ${s.country}</p>
+        <p style="margin:2px 0 0;color:var(--muted)">${s.email} · ${s.method === "express" ? "Express · 1–2 days" : "Standard · 3–5 days"}</p></div>
+      <div><p class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 4px">Payment</p>
+        <p style="margin:0">Card ending in <span class="mono">•••• ${coData.pay.last4}</span> · ${coData.pay.name}</p></div>
+      <div style="border-top:1px solid var(--border);padding-top:12px;display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Subtotal</span><span class="mono">${money(t.sub)}</span></div>
+        ${promoOn ? `<div style="display:flex;justify-content:space-between"><span style="color:var(--sage)">Discount · MAISON10</span><span class="mono" style="color:var(--sage)">−${money(t.disc)}</span></div>` : ""}
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Shipping</span><span class="mono">${t.ship === 0 ? "Free" : money(t.ship)}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:17px;font-weight:700"><span>Total charged</span><span class="mono">${money(t.total)}</span></div>
+      </div>
+    </div>`;
+}
+$("#coPlace").addEventListener("click", () => {
+  const t = cartTotals();
+  orderSeq += 1;
+  const num = "MSN-2026-" + String(orderSeq).padStart(4, "0");
+  const order = {
+    num, date: new Date().toLocaleDateString("en-US", { year:"numeric", month:"long", day:"numeric" }),
+    items: Object.values(cart).map(l => ({ ...l })),
+    total: t.total, sub: t.sub, disc: t.disc, ship: t.ship,
+    name: coData.ship.first + " " + coData.ship.last,
+    addr: coData.ship.addr + ", " + coData.ship.city + " " + coData.ship.zip + ", " + coData.ship.country,
+    method: coData.ship.method, status: "Confirmed"
+  };
+  orders.unshift(order);
+  $("#confirmNum").textContent = "Order " + num;
+  $("#confirmDetail").innerHTML = `
+    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px">
+      <span><strong>${order.name}</strong><br><span style="color:var(--muted)">${order.addr}</span></span>
+      <span style="text-align:right"><span class="chip" style="color:var(--sage)">● ${order.status}</span><br><span style="color:var(--muted)">${order.method === "express" ? "Express · 1–2 days" : "Standard · 3–5 days"}</span></span>
+    </div>
+    <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px;display:flex;flex-direction:column;gap:10px">
+      ${order.items.map(l => { const p = prod(l.id); return `<div style="display:flex;gap:10px;align-items:center">
+        <div style="width:44px;flex:none;border-radius:8px;overflow:hidden;border:1px solid var(--border)">${artSVG(p, 0)}</div>
+        <span style="flex:1;font-size:14px">${p.name} <span style="color:var(--faint)">× ${l.qty}</span></span>
+        <strong class="mono" style="font-size:14px">${money(variantPrice(p, l.ci, l.si) * l.qty)}</strong></div>`; }).join("")}
+      <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px;font-size:16px;font-weight:700"><span>Total paid</span><span class="mono">${money(order.total)}</span></div>
+    </div>`;
+  cart = {}; promoOn = false; $("#promoInput").value = ""; $("#promoMsg").textContent = "";
+  renderCart(); renderCheckoutSummary();
+  showView("confirm");
+  toast("Order " + num + " confirmed — thank you!");
+});
+
+/* ================= orders ================= */
+function renderOrders(){
+  const list = $("#ordersList");
+  $("#ordersEmpty").style.display = orders.length ? "none" : "block";
+  list.innerHTML = orders.map(o => `<article class="card" style="padding:22px">
+    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline">
+      <div><h3 style="font-size:18px;margin:0">Order <span class="mono">${o.num}</span></h3>
+      <p class="mono" style="margin:4px 0 0;font-size:12.5px;color:var(--faint)">${o.date} · ${o.name}</p></div>
+      <span class="chip" style="color:var(--sage)">● ${o.status}</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+      ${o.items.map(l => { const p = prod(l.id); return `<div style="display:flex;gap:10px;align-items:center">
+        <div style="width:48px;flex:none;border-radius:9px;overflow:hidden;border:1px solid var(--border);cursor:pointer" data-open-product="${p.id}">${artSVG(p, 0)}</div>
+        <span style="flex:1;font-size:14px">${p.name} <span style="color:var(--faint)">· ${p.colors[l.ci].n} · ${p.sizes[l.si].n} × ${l.qty}</span></span>
+        <strong class="mono" style="font-size:14px">${money(variantPrice(p, l.ci, l.si) * l.qty)}</strong></div>`; }).join("")}
+    </div>
+    <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);margin-top:16px;padding-top:12px;font-size:14px;flex-wrap:wrap;gap:8px">
+      <span style="color:var(--muted)">${o.addr} · ${o.method === "express" ? "Express" : "Standard"} shipping ${o.ship === 0 ? "(free)" : money(o.ship)}</span>
+      <strong>Total <span class="mono">${money(o.total)}</span></strong>
+    </div>
+  </article>`).join("");
+}
+
+/* ================= newsletter ================= */
+$("#nlForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const em = $("#nlEmail");
+  if(!EMAIL_RE.test(em.value.trim())){ em.setAttribute("aria-invalid", "true"); $("#nlError").hidden = false; em.focus(); return; }
+  em.removeAttribute("aria-invalid"); $("#nlError").hidden = true;
+  $("#nlForm").style.display = "none";
+  $("#nlSuccess").hidden = false;
+  if(!promoOn){ promoOn = true; renderCart(); renderCheckoutSummary(); }
+  toast("Welcome to the Sunday Letter — MAISON10 applied to your cart");
+});
+
+/* ================= theme ================= */
+function setTheme(t){
+  document.documentElement.dataset.theme = t;
+  $("#themeToggle").setAttribute("aria-pressed", String(t === "light"));
+}
+$("#themeToggle").addEventListener("click", () => {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  setTheme(next);
+  toast(next === "light" ? "Light theme on" : "Dark theme on");
+});
+
+/* ================= command palette ================= */
+const PALETTE_ACTIONS = [
+  { label:"Go to Home", hint:"View", run: () => showView("home") },
+  { label:"Go to Shop", hint:"View", run: () => showView("shop") },
+  { label:"Go to Orders", hint:"View", run: () => showView("orders") },
+  { label:"Go to Checkout", hint:"View", run: () => { if(cartCount()){ setCoStep(1); renderCheckoutSummary(); showView("checkout"); } else toast("Your cart is empty — add something first."); } },
+  { label:"Open cart", hint:"Action", run: openCart },
+  { label:"Toggle light / dark theme", hint:"Action", run: () => $("#themeToggle").click() },
+  { label:"Apply promo code MAISON10", hint:"Action", run: () => { $("#promoInput").value = PROMO; applyPromo(); openCart(); } },
+];
+function openPalette(){ $("#palette").classList.add("open"); $("#paletteInput").value = ""; renderPalette(""); setTimeout(() => $("#paletteInput").focus(), 30); }
+function closePalette(){ $("#palette").classList.remove("open"); }
+function renderPalette(q){
+  const query = q.trim().toLowerCase();
+  const prods = PRODUCTS.filter(p => !query || (p.name + " " + p.cat).toLowerCase().includes(query)).slice(0, 6)
+    .map(p => ({ label: p.name + " — " + money(p.price), hint: p.cat, run: () => openProduct(p.id) }));
+  const acts = PALETTE_ACTIONS.filter(a => !query || a.label.toLowerCase().includes(query));
+  const all = [...prods, ...acts];
+  $("#paletteList").innerHTML = all.length ? all.map((it, i) => `<button class="palette-item ${i === 0 ? "sel" : ""}" data-pal="${i}"><span style="flex:1">${it.label}</span><span class="mono" style="font-size:11.5px;color:var(--faint)">${it.hint}</span></button>`).join("")
+    : `<p style="padding:16px;font-size:14px;color:var(--muted);margin:0">No matches for “${q}”.</p>`;
+  $$("#paletteList .palette-item").forEach((b, i) => b.addEventListener("click", () => { closePalette(); all[i].run(); }));
+  $("#paletteList").dataset.items = JSON.stringify(all.map(a => a.label));
+  window._palItems = all;
+}
+$("#paletteBtn").addEventListener("click", openPalette);
+$("#paletteInput").addEventListener("input", e => renderPalette(e.target.value));
+$("#paletteInput").addEventListener("keydown", e => {
+  if(e.key === "Enter" && window._palItems && window._palItems[0]){ closePalette(); window._palItems[0].run(); }
+});
+$("#palette").addEventListener("click", e => { if(e.target === $("#palette")) closePalette(); });
+document.addEventListener("keydown", e => {
+  if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k"){ e.preventDefault(); $("#palette").classList.contains("open") ? closePalette() : openPalette(); }
+});
+
+/* ================= reveal on scroll ================= */
+const io = new IntersectionObserver(es => es.forEach(en => { if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } }), { threshold: .12 });
+$$(".reveal").forEach(el => io.observe(el));
+
+/* ================= init ================= */
+renderHome();
+renderShop();
+renderCart();
+renderChart();
+renderOrders();
+setTheme("dark");
+</script>
+</body>
+</html>
