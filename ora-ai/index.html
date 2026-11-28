@@ -1,13 +1,1108 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="utf-8">
-<title>Ora AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ora AI — AI Chat Interface Template</title>
+<meta name="description" content="Ora AI — a complete AI chat workspace template: multi-conversation sidebar, streaming assistant with thinking steps, model picker, prompt library, token usage analytics and working settings. One self-contained HTML file, no backend.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2322D3EE'/%3E%3Cstop offset='.55' stop-color='%238B5CF6'/%3E%3Cstop offset='1' stop-color='%23F59E0B'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%23070A12'/%3E%3Ccircle cx='32' cy='32' r='15' fill='none' stroke='url(%23g)' stroke-width='5'/%3E%3Ccircle cx='32' cy='32' r='5' fill='url(%23g)'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ora AI — AI Chat Interface Template">
+<meta property="og:description" content="A complete AI chat workspace: streaming answers, model picker, prompt library, token usage analytics. One self-contained HTML file.">
+<meta property="og:image" content="https://julius-nov.github.io/templates/ora-ai/preview.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#070A12; --ink2:#0A0F1A; --panel:#0D1420; --panel2:#111A29; --line:rgba(148,163,184,.16);
+  --line2:rgba(148,163,184,.28); --txt:#E8ECF3; --mut:#94A3B8; --mut2:#64748B;
+  --cyan:#22D3EE; --violet:#8B5CF6; --amber:#F59E0B; --mint:#34D399; --rose:#FB7185;
+  --grad:linear-gradient(135deg,#22D3EE 0%,#8B5CF6 55%,#F59E0B 100%);
+  --r:16px; --shadow:0 18px 50px rgba(0,0,0,.45);
+}
+[data-theme="light"]{
+  --ink:#F4F6FA; --ink2:#EDF1F7; --panel:#FFFFFF; --panel2:#F1F4F9; --line:rgba(15,23,42,.12);
+  --line2:rgba(15,23,42,.22); --txt:#0F172A; --mut:#475569; --mut2:#64748B; --shadow:0 18px 44px rgba(15,23,42,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scrollbar-color:#334155 transparent}
+body{background:var(--ink);color:var(--txt);font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip}
+h1,h2,h3,.disp{font-family:"Space Grotesk",Inter,sans-serif;letter-spacing:-.02em}
+.mono{font-family:"JetBrains Mono",monospace}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(139,92,246,.4)}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:6px}
+svg{display:block}
+.ic{width:18px;height:18px;flex:none}
+.app{display:flex;height:100dvh;overflow:hidden}
+/* ---------- Sidebar ---------- */
+.sidebar{width:300px;flex:none;background:var(--ink2);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0;z-index:40}
+.brand{display:flex;align-items:center;gap:10px;padding:18px 16px 12px}
+.orb{width:34px;height:34px;border-radius:50%;background:conic-gradient(from 210deg,#22D3EE,#8B5CF6,#F59E0B,#22D3EE);position:relative;flex:none;animation:spin 14s linear infinite}
+.orb::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--ink2)}
+.orb i{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-family:"Space Grotesk";font-weight:700;font-size:15px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.brand b{font-family:"Space Grotesk";font-size:19px;letter-spacing:-.02em}
+.brand span{font-size:11px;color:var(--mut);display:block;line-height:1.2}
+.side-actions{padding:4px 14px 10px;display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:10px 14px;font-weight:600;font-size:14px;border:1px solid var(--line2);transition:transform .15s ease,background .15s ease,border-color .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-grad{background:var(--grad);color:#fff;border-color:transparent;flex:1}
+.btn-ghost{background:var(--panel);color:var(--txt)}
+.btn-ghost:hover{border-color:var(--cyan)}
+.side-search{margin:0 14px 8px;position:relative}
+.side-search input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px 9px 34px;font-size:13.5px;color:var(--txt)}
+.side-search input::placeholder{color:var(--mut2)}
+.side-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--mut2)}
+.side-nav{display:flex;gap:2px;padding:0 14px 6px}
+.side-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--mut);padding:8px 2px;border-radius:10px;border:1px solid transparent}
+.side-nav-item:hover{background:var(--panel);color:var(--txt)}
+.side-nav-item.on{background:var(--panel);color:var(--cyan);border-color:var(--line)}
+.side-nav-item .ic{width:17px;height:17px}
+.convo-list{flex:1;overflow-y:auto;padding:2px 10px 10px;min-height:0}
+.convo-group{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut2);padding:12px 8px 6px}
+.convo-item{width:100%;text-align:left;display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-radius:11px;border:1px solid transparent;transition:background .15s ease}
+.convo-item:hover{background:var(--panel)}
+.convo-item.active{background:var(--panel);border-color:var(--line)}
+.convo-item .dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:none;background:var(--cyan)}
+.convo-item:nth-child(3n) .dot{background:var(--violet)}
+.convo-item:nth-child(4n) .dot{background:var(--amber)}
+.convo-item b{display:block;font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.convo-item small{color:var(--mut);font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.convo-item .pin{margin-left:auto;color:var(--amber);font-size:12px;flex:none}
+.side-foot{border-top:1px solid var(--line);padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.usage-meter{font-size:12px;color:var(--mut)}
+.usage-meter .bar{height:6px;border-radius:99px;background:var(--panel2);overflow:hidden;margin-top:6px;border:1px solid var(--line)}
+.usage-meter .bar i{display:block;height:100%;width:64%;background:var(--grad);border-radius:99px}
+.user-card{display:flex;align-items:center;gap:10px}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-weight:700;font-size:13px;color:#fff;flex:none}
+.user-card b{font-size:13.5px;display:block}
+.user-card small{color:var(--mut);font-size:12px}
+/* ---------- Main ---------- */
+.main{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--ink)}
+.topbar{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--ink) 82%,transparent);backdrop-filter:blur(8px);z-index:20}
+.menu-btn{display:none;width:38px;height:38px;border-radius:10px;border:1px solid var(--line2);place-items:center}
+.view-title{font-size:16px;font-weight:700;min-width:0}
+.view-title span,.view-title small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.view-title small{font-size:12px;color:var(--mut);font-weight:400}
+.topbar .spacer{flex:1}
+.kbd-hint{font-size:12px;color:var(--mut);border:1px solid var(--line2);border-radius:8px;padding:6px 10px;background:var(--panel)}
+.icon-btn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line2);display:grid;place-items:center;background:var(--panel);transition:border-color .15s ease,transform .15s ease}
+.icon-btn:hover{border-color:var(--cyan);transform:translateY(-1px)}
+.model-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--panel);border-radius:99px;padding:7px 12px;font-size:13px;font-weight:600;white-space:nowrap;flex:none}
+.model-pill .mdot{width:8px;height:8px;border-radius:50%;background:var(--mint)}
+.model-pill small{color:var(--mut);font-weight:400}
+.view{flex:1;min-height:0;display:none;flex-direction:column}
+.view.active{display:flex}
+/* ---------- Chat ---------- */
+.chat-scroll{flex:1;overflow-y:auto;min-height:0}
+.chat-inner{max-width:780px;margin:0 auto;padding:28px 20px 16px;width:100%}
+.empty-hero{text-align:center;padding:52px 0 8px}
+.empty-hero .big-orb{width:84px;height:84px;margin:0 auto 20px;border-radius:50%;background:conic-gradient(from 210deg,#22D3EE,#8B5CF6,#F59E0B,#22D3EE);display:grid;place-items:center;animation:spin 16s linear infinite;position:relative}
+.empty-hero .big-orb::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--ink)}
+.empty-hero .big-orb span{position:relative;z-index:1;font-family:"Space Grotesk";font-weight:700;font-size:34px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.empty-hero h1{font-size:clamp(28px,4.4vw,42px);line-height:1.08;margin-bottom:10px}
+.empty-hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.empty-hero p{color:var(--mut);max-width:520px;margin:0 auto 22px}
+.sugg-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.sugg-chip{border:1px solid var(--line2);background:var(--panel);border-radius:99px;padding:8px 14px;font-size:13px;font-weight:500;transition:border-color .15s ease,transform .15s ease}
+.sugg-chip:hover{border-color:var(--cyan);transform:translateY(-1px)}
+.msg{display:flex;gap:12px;margin-bottom:22px;animation:rise .35s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg .avatar{width:32px;height:32px;font-size:12px}
+.msg.user .avatar{background:var(--panel2);color:var(--txt);border:1px solid var(--line2)}
+.msg-body{flex:1;min-width:0}
+.msg-head{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.msg-head b{font-size:13.5px}
+.msg-head time{font-size:11.5px;color:var(--mut2)}
+.msg-text{font-size:15px;line-height:1.65;overflow-wrap:break-word}
+.msg-text p{margin-bottom:10px}
+.msg-text p:last-child{margin-bottom:0}
+.msg-text ul{margin:0 0 10px 20px}
+.msg-text li{margin-bottom:4px}
+.msg-text h4{font-family:"Space Grotesk";font-size:15.5px;margin:12px 0 6px}
+.msg-text table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0 12px}
+.msg-text th,.msg-text td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+.msg-text th{background:var(--panel2);font-weight:600}
+.code-block{position:relative;background:#0A0F1A;border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden}
+[data-theme="light"] .code-block{background:#0F172A}
+.code-block pre{padding:14px 16px;overflow-x:auto;font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.6;color:#C7D2FE;white-space:pre}
+.code-block .copy-code{position:absolute;top:8px;right:8px;font-size:12px;border:1px solid var(--line2);border-radius:8px;padding:5px 9px;background:rgba(13,20,32,.85);color:#E8ECF3}
+.code-block .copy-code:hover{border-color:var(--cyan)}
+.msg-actions{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.msg-actions button{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--mut);transition:background .15s ease,color .15s ease}
+.msg-actions button:hover{background:var(--panel2);color:var(--txt)}
+.msg-actions button.on{color:var(--amber)}
+.msg-actions .tok{font-size:11.5px;color:var(--mut2);align-self:center;margin-left:6px;font-family:"JetBrains Mono",monospace}
+.thinking{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13.5px}
+.thinking .t-head{display:flex;align-items:center;gap:8px;font-weight:600}
+.pulse-dots{display:inline-flex;gap:3px}
+.pulse-dots i{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pd 1s ease-in-out infinite}
+.pulse-dots i:nth-child(2){animation-delay:.15s;background:var(--violet)}
+.pulse-dots i:nth-child(3){animation-delay:.3s;background:var(--amber)}
+@keyframes pd{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+.tool-steps{margin-top:10px;border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+.tool-step{display:flex;gap:8px;align-items:center;color:var(--mut);font-size:13px}
+.tool-step .ok{color:var(--mint)}
+.tool-step .spin{width:14px;height:14px;border:2px solid var(--line2);border-top-color:var(--cyan);border-radius:50%;animation:rot .7s linear infinite;flex:none}
+@keyframes rot{to{transform:rotate(360deg)}}
+.cursor{display:inline-block;width:8px;height:16px;background:var(--cyan);vertical-align:-2px;animation:blink 1s steps(1) infinite;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+/* composer */
+.composer-wrap{border-top:1px solid var(--line);padding:14px 20px calc(14px + env(safe-area-inset-bottom));background:var(--ink)}
+.composer{max-width:780px;margin:0 auto}
+.attach-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.attach-chip{display:inline-flex;align-items:center;gap:7px;background:var(--panel2);border:1px solid var(--line2);border-radius:9px;padding:6px 10px;font-size:12.5px}
+.attach-chip button{color:var(--mut);font-size:14px;line-height:1}
+.attach-chip button:hover{color:var(--rose)}
+.composer-box{border:1px solid var(--line2);border-radius:16px;background:var(--panel);padding:10px 12px;transition:border-color .15s ease,box-shadow .15s ease}
+.composer-box:focus-within{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+.composer-box textarea{width:100%;border:0;background:none;resize:none;outline:none;font-size:15px;line-height:1.55;max-height:180px;display:block;color:var(--txt)}
+.composer-box textarea::placeholder{color:var(--mut2)}
+.composer-bar{display:flex;align-items:center;gap:6px;margin-top:8px}
+.composer-bar .icon-btn,.composer-bar .send-btn,.composer-bar .stop-btn{flex:none}
+.composer-bar .spacer{flex:1}
+.send-btn{width:36px;height:36px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;transition:transform .15s ease,opacity .15s ease}
+.send-btn:hover{transform:scale(1.06)}
+.send-btn:disabled{opacity:.45;cursor:default;transform:none}
+.stop-btn{display:none;align-items:center;gap:6px;border:1px solid var(--rose);color:var(--rose);border-radius:99px;padding:7px 13px;font-size:13px;font-weight:600}
+.stop-btn.show{display:inline-flex}
+.composer-note{text-align:center;font-size:11.5px;color:var(--mut2);margin-top:8px}
+/* ---------- Generic page views ---------- */
+.page-scroll{flex:1;overflow-y:auto;min-height:0}
+.page-inner{max-width:920px;margin:0 auto;padding:28px 20px 40px;width:100%}
+.page-inner h1{font-size:28px;margin-bottom:6px}
+.page-inner .lede{color:var(--mut);margin-bottom:22px;max-width:640px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.toolbar input[type="search"]{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;min-width:220px;color:var(--txt)}
+.toolbar input[type="search"]::placeholder{color:var(--mut2)}
+.chip{border:1px solid var(--line2);border-radius:99px;padding:7px 13px;font-size:13px;font-weight:500;background:var(--panel);transition:border-color .15s ease}
+.chip:hover{border-color:var(--cyan)}
+.chip.on{background:var(--grad);color:#fff;border-color:transparent}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.prompt-card{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:8px;transition:transform .18s ease,border-color .18s ease}
+.prompt-card:hover{transform:translateY(-3px);border-color:var(--cyan)}
+.prompt-card .cat{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--cyan)}
+.prompt-card h3{font-size:16.5px}
+.prompt-card p{color:var(--mut);font-size:13.5px;flex:1}
+.prompt-card .meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--mut2)}
+.prompt-card .use{align-self:flex-start;border:1px solid var(--line2);border-radius:9px;padding:7px 12px;font-size:13px;font-weight:600;background:var(--panel2)}
+.prompt-card .use:hover{border-color:var(--cyan)}
+.empty-note{border:1px dashed var(--line2);border-radius:var(--r);padding:34px;text-align:center;color:var(--mut)}
+/* stats + charts */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.stat{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:16px;cursor:default;transition:border-color .15s ease}
+.stat:hover{border-color:var(--cyan)}
+.stat small{color:var(--mut);font-size:12px;display:block;margin-bottom:4px}
+.stat b{font-family:"Space Grotesk";font-size:26px;display:block}
+.stat span{font-size:12px;color:var(--mint)}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:20px;margin-bottom:18px}
+.card h2{font-size:17px;margin-bottom:4px}
+.card .sub{font-size:13px;color:var(--mut);margin-bottom:16px}
+.chart-bars{display:flex;align-items:flex-end;gap:6px;height:190px;padding-top:8px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end;cursor:pointer;min-width:0}
+.bar-col .bar{width:100%;max-width:34px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,var(--cyan),var(--violet));transition:filter .15s ease,transform .15s ease}
+.bar-col:hover .bar{filter:brightness(1.25);transform:scaleY(1.02)}
+.bar-col .lbl{font-size:10.5px;color:var(--mut2);font-family:"JetBrains Mono",monospace;white-space:nowrap}
+.chart-tip{position:fixed;z-index:80;pointer-events:none;background:#0F172A;color:#F1F5F9;border:1px solid rgba(148,163,184,.35);border-radius:10px;padding:8px 11px;font-size:12.5px;box-shadow:var(--shadow);opacity:0;transform:translate(-50%,-8px);transition:opacity .12s ease;white-space:nowrap}
+[data-theme="light"] .chart-tip{background:#0F172A;color:#F1F5F9}
+.chart-tip.show{opacity:1}
+.chart-tip b{font-family:"JetBrains Mono",monospace}
+.donut-wrap{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.donut{width:180px;height:180px;flex:none}
+.donut-seg{cursor:pointer;transition:opacity .15s ease}
+.donut-seg:hover{opacity:.75}
+.legend{display:flex;flex-direction:column;gap:10px;font-size:13.5px}
+.legend .row{display:flex;align-items:center;gap:9px}
+.legend .sw{width:11px;height:11px;border-radius:3px;flex:none}
+.legend b{margin-left:auto;font-family:"JetBrains Mono",monospace;font-weight:500;padding-left:18px}
+table.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+table.tbl th,table.tbl td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left}
+table.tbl th{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+table.tbl td.num,table.tbl th.num{text-align:right;font-family:"JetBrains Mono",monospace}
+/* settings */
+.set-row{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.set-row:last-child{border-bottom:0}
+.set-row .txt{flex:1;min-width:0}
+.set-row .txt b{font-size:14.5px;display:block}
+.set-row .txt small{color:var(--mut);font-size:13px}
+.switch{width:48px;height:28px;border-radius:99px;background:var(--panel2);border:1px solid var(--line2);position:relative;flex:none;transition:background .2s ease}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#94A3B8;transition:transform .2s ease,background .2s ease}
+.switch[aria-checked="true"]{background:var(--grad);border-color:transparent}
+.switch[aria-checked="true"]::after{transform:translateX(20px);background:#fff}
+select.sel{background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:9px 12px;font-size:13.5px;color:var(--txt)}
+.danger{border:1px solid rgba(251,113,133,.4);background:rgba(251,113,133,.06)}
+.btn-danger{border:1px solid var(--rose);color:var(--rose)}
+.btn-danger:hover{background:rgba(251,113,133,.1)}
+/* palette / toast / menu */
+.palette{position:fixed;inset:0;z-index:90;display:none;align-items:flex-start;justify-content:center;padding:14vh 16px 16px;background:rgba(2,6,17,.6);backdrop-filter:blur(3px)}
+.palette.open{display:flex}
+.palette-box{width:100%;max-width:560px;background:var(--panel);border:1px solid var(--line2);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;animation:rise .18s ease}
+.palette-box input{width:100%;border:0;border-bottom:1px solid var(--line);background:none;padding:15px 18px;font-size:15px;outline:none;color:var(--txt)}
+.palette-list{max-height:320px;overflow-y:auto;padding:8px}
+.palette-item{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:10px 12px;border-radius:10px;font-size:14px}
+.palette-item:hover,.palette-item.sel{background:var(--panel2)}
+.palette-item small{margin-left:auto;color:var(--mut2);font-size:12px}
+.palette-item .ic{color:var(--cyan)}
+.toast-wrap{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:#0F172A;color:#F1F5F9;border:1px solid rgba(148,163,184,.35);border-radius:99px;padding:9px 16px;font-size:13.5px;box-shadow:var(--shadow);animation:rise .2s ease}
+.menu-pop{position:fixed;z-index:85;background:var(--panel);border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow);padding:6px;min-width:260px;display:none}
+.menu-pop.open{display:block}
+.menu-pop button{display:flex;width:100%;text-align:left;gap:10px;padding:10px 12px;border-radius:9px;font-size:13.5px;align-items:flex-start}
+.menu-pop button:hover{background:var(--panel2)}
+.menu-pop button b{display:block;font-size:13.5px}
+.menu-pop button small{color:var(--mut);font-size:12px;display:block}
+.menu-pop button .price{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--mut);white-space:nowrap}
+/* tabbar mobile */
+.tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;background:color-mix(in srgb,var(--ink2) 92%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom));justify-content:space-around}
+.tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--mut);padding:6px 12px;border-radius:10px}
+.tabbar button.on{color:var(--cyan)}
+.scrim{position:fixed;inset:0;background:rgba(2,6,17,.55);z-index:35;display:none}
+.scrim.show{display:block}
+.reveal{animation:rise .4s ease both}
+@media (max-width:1100px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:820px){
+  .sidebar{position:fixed;top:0;bottom:0;left:0;transform:translateX(-102%);transition:transform .25s ease;box-shadow:var(--shadow)}
+  .sidebar.open{transform:none}
+  .menu-btn{display:grid}
+  .kbd-hint{display:none}
+  #composerHint{display:none}
+  .view-title{min-width:0}
+  .view-title span,.view-title small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .view-title span{font-size:14.5px}
+  .tabbar{display:flex}
+  .composer-wrap{padding-bottom:calc(14px + 64px + env(safe-area-inset-bottom))}
+  .page-inner{padding-bottom:110px}
+  .chat-inner{padding-bottom:90px}
+  .topbar{padding:10px 14px}
+  .model-pill small{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s !important;transition-duration:.001s !important}
+}
+</style>
 </head>
 <body>
-<h1>Ora AI</h1>
-<p>Placeholder — full template coming soon.</p>
-</body>
-</html>html>
-</p></h1></body></title></head>
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar" aria-label="Conversations">
+    <div class="brand">
+      <div class="orb" aria-hidden="true"><i>O</i></div>
+      <div><b>Ora AI</b><span>Chat workspace · v1.0</span></div>
+    </div>
+    <div class="side-actions">
+      <button class="btn btn-grad" id="newChatBtn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>New chat</button>
+      <button class="btn btn-ghost" id="paletteBtn" title="Command palette (Ctrl+K)" aria-label="Open command palette"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+    </div>
+    <div class="side-search">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="convoSearch" placeholder="Search conversations…" aria-label="Search conversations">
+    </div>
+    <nav class="side-nav" aria-label="Workspace">
+      <button class="side-nav-item on" data-view="chat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>Chat</button>
+      <button class="side-nav-item" data-view="library"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>Library</button>
+      <button class="side-nav-item" data-view="usage"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M7 15v-4M12 17V7M17 13v-2"/></svg>Usage</button>
+      <button class="side-nav-item" data-view="settings"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M16.9 16.9l2.1 2.1M2 12h3M19 12h3M4.9 19.1l2.1-2.1M16.9 7.1l2.1-2.1"/></svg>Settings</button>
+    </nav>
+    <nav class="convo-list" id="convoList" aria-label="Conversation history"></nav>
+    <div class="side-foot">
+      <div class="usage-meter">
+        <div style="display:flex;justify-content:space-between"><span>Monthly tokens</span><b class="mono" id="usageMeterTxt" style="color:var(--txt)">822k / 1.28M</b></div>
+        <div class="bar"><i></i></div>
+      </div>
+      <div class="user-card">
+        <div class="avatar">AL</div>
+        <div style="flex:1;min-width:0"><b>Alex Laurent</b><small>Pro plan · Ora-1 Pro</small></div>
+        <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Settings"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></button>
+      </div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
 
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <header class="topbar">
+      <button class="menu-btn" id="menuBtn" aria-label="Open sidebar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div class="view-title"><span id="viewTitle">Chat</span><small id="viewSub">Ora-1 Pro · streaming on</small></div>
+      <div class="spacer"></div>
+      <span class="kbd-hint">⌘K to search</span>
+      <button class="model-pill" id="modelBtn" aria-haspopup="true"><span class="mdot"></span><span id="modelName">Ora-1 Pro</span><small id="modelPrice">$3.00 / 1M tok</small><svg class="ic" style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>
+      <button class="icon-btn" id="themeToggle" title="Toggle light / dark theme" aria-label="Toggle theme"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+    </header>
+
+    <!-- ===== VIEW: CHAT ===== -->
+    <section class="view active" id="view-chat">
+      <div class="chat-scroll" id="chatScroll">
+        <div class="chat-inner" id="chatInner"></div>
+      </div>
+      <div class="composer-wrap">
+        <div class="composer">
+          <div class="attach-chips" id="attachChips"></div>
+          <div class="composer-box">
+            <textarea id="composer" rows="1" placeholder="Message Ora…  (Enter to send, Shift+Enter for a new line)" aria-label="Message Ora"></textarea>
+            <div class="composer-bar">
+              <button class="icon-btn" id="attachBtn" title="Attach a file" aria-label="Attach a file"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+              <button class="icon-btn" id="suggBtn" title="Insert a suggestion" aria-label="Insert a suggestion"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></button>
+              <span style="font-size:12px;color:var(--mut2)" id="composerHint">Ora answers from this demo’s built-in knowledge — no real API call.</span>
+              <span class="spacer"></span>
+              <button class="stop-btn" id="stopBtn">■ Stop</button>
+              <button class="send-btn" id="sendBtn" title="Send" aria-label="Send message"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
+            </div>
+          </div>
+          <p class="composer-note">Ora can make mistakes. Demo data only — nothing you type leaves this page.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== VIEW: LIBRARY ===== -->
+    <section class="view" id="view-library">
+      <div class="page-scroll"><div class="page-inner">
+        <h1>Prompt library</h1>
+        <p class="lede">Twelve ready-made prompts, tuned for Ora-1. Pick one, drop it in the composer and keep writing — the prompt becomes your first message.</p>
+        <div class="toolbar">
+          <input type="search" id="libSearch" placeholder="Search prompts…" aria-label="Search prompts">
+          <button class="chip on" data-libcat="All">All</button>
+          <button class="chip" data-libcat="Writing">Writing</button>
+          <button class="chip" data-libcat="Code">Code</button>
+          <button class="chip" data-libcat="Marketing">Marketing</button>
+          <button class="chip" data-libcat="Productivity">Productivity</button>
+          <button class="chip" data-libcat="Data">Data</button>
+          <button class="chip" data-libcat="Fun">Fun</button>
+        </div>
+        <div class="lib-grid" id="libGrid"></div>
+        <div class="empty-note" id="libEmpty" hidden>No prompt matches “<span id="libEmptyQ"></span>”. Try another word or category.</div>
+      </div></div>
+    </section>
+
+    <!-- ===== VIEW: USAGE ===== -->
+    <section class="view" id="view-usage">
+      <div class="page-scroll"><div class="page-inner">
+        <h1>Usage &amp; tokens</h1>
+        <p class="lede">Fourteen days of token consumption across the three Ora-1 models. Hover any bar or donut segment for the exact figure.</p>
+        <div class="stat-grid">
+          <div class="stat" data-tip="All tokens sent and received in the last 14 days."><small>Total tokens · 14 days</small><b class="count-up" data-target="1284390" data-fmt="num">0</b><span>▲ 18.2% vs prior 14 days</span></div>
+          <div class="stat" data-tip="Estimated spend at list prices: Pro $3.00, Flash $0.35, Nano $0.10 per 1M input tokens."><small>Estimated spend</small><b class="count-up" data-target="18.42" data-fmt="money">$0.00</b><span>▲ $2.31 vs prior period</span></div>
+          <div class="stat" data-tip="Median time to first token across all chats in the last 14 days."><small>Avg. time to first token</small><b class="count-up" data-target="1.8" data-fmt="sec">0 s</b><span>▼ 0.3 s faster</span></div>
+          <div class="stat" data-tip="Conversations with at least one message in the last 14 days."><small>Active chats</small><b class="count-up" data-target="7" data-fmt="num">0</b><span>2 pinned · 5 recent</span></div>
+        </div>
+        <div class="card">
+          <h2>Daily tokens</h2>
+          <p class="sub">Input + output tokens per day · hover a bar for the exact split.</p>
+          <div class="chart-bars" id="usageBars"></div>
+        </div>
+        <div class="card">
+          <h2>Model mix</h2>
+          <p class="sub">Share of tokens by model · hover a segment for the exact share.</p>
+          <div class="donut-wrap">
+            <svg class="donut" viewBox="0 0 200 200" id="modelDonut" role="img" aria-label="Token share by model"></svg>
+            <div class="legend" id="donutLegend"></div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Cost by model</h2>
+          <p class="sub">List prices, November 2026. Output tokens cost more than input tokens.</p>
+          <table class="tbl">
+            <thead><tr><th>Model</th><th class="num">Input / 1M</th><th class="num">Output / 1M</th><th class="num">Tokens · 14 d</th><th class="num">Est. cost</th></tr></thead>
+            <tbody>
+              <tr><td><b>Ora-1 Pro</b><br><small style="color:var(--mut)">Reasoning &amp; long context</small></td><td class="num">$3.00</td><td class="num">$15.00</td><td class="num">590,820</td><td class="num">$9.84</td></tr>
+              <tr><td><b>Ora-1 Flash</b><br><small style="color:var(--mut)">Everyday speed</small></td><td class="num">$0.35</td><td class="num">$1.05</td><td class="num">487,968</td><td class="num">$6.12</td></tr>
+              <tr><td><b>Ora-1 Nano</b><br><small style="color:var(--mut)">Lightweight &amp; cheap</small></td><td class="num">$0.10</td><td class="num">$0.40</td><td class="num">205,602</td><td class="num">$2.46</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- ===== VIEW: SETTINGS ===== -->
+    <section class="view" id="view-settings">
+      <div class="page-scroll"><div class="page-inner">
+        <h1>Settings</h1>
+        <p class="lede">Everything here works — toggles change the chat behaviour immediately and your choices persist in this browser.</p>
+        <div class="card">
+          <h2>Appearance</h2>
+          <div class="set-row"><div class="txt"><b>Theme</b><small>Dark is the default. Light is a full theme, not an inversion.</small></div>
+            <button class="btn btn-ghost" id="themeBtn2" style="padding:8px 14px">Switch to light</button></div>
+          <div class="set-row"><div class="txt"><b>Reduce motion</b><small>Honours your system setting; the switch below forces it on.</small></div>
+            <button class="switch" id="setMotion" role="switch" aria-checked="false" aria-label="Reduce motion"></button></div>
+        </div>
+        <div class="card">
+          <h2>Chat behaviour</h2>
+          <div class="set-row"><div class="txt"><b>Stream responses</b><small>Answers type out word by word. Off = the full answer appears at once.</small></div>
+            <button class="switch" id="setStreaming" role="switch" aria-checked="true" aria-label="Stream responses"></button></div>
+          <div class="set-row"><div class="txt"><b>Memory</b><small>Ora remembers the thread of each conversation. Off = every message stands alone.</small></div>
+            <button class="switch" id="setMemory" role="switch" aria-checked="true" aria-label="Memory"></button></div>
+          <div class="set-row"><div class="txt"><b>Default model</b><small>Used for every new conversation.</small></div>
+            <select class="sel" id="setModel" aria-label="Default model">
+              <option value="pro">Ora-1 Pro — $3.00 / 1M</option>
+              <option value="flash">Ora-1 Flash — $0.35 / 1M</option>
+              <option value="nano">Ora-1 Nano — $0.10 / 1M</option>
+            </select></div>
+        </div>
+        <div class="card danger">
+          <h2>Danger zone</h2>
+          <div class="set-row"><div class="txt"><b>Clear all conversations</b><small>Deletes the 7 seeded conversations and every message you added. This cannot be undone.</small></div>
+            <button class="btn btn-danger" id="clearHistory">Clear history</button></div>
+        </div>
+      </div></div>
+    </section>
+  </main>
+</div>
+
+<!-- tab bar mobile -->
+<nav class="tabbar" id="tabbar" aria-label="Primary">
+  <button data-tab="chat" class="on"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>Chat</button>
+  <button data-tab="library"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>Library</button>
+  <button data-tab="usage"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M7 15v-4M12 17V7M17 13v-2"/></svg>Usage</button>
+  <button data-tab="settings"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M16.9 16.9l2.1 2.1M2 12h3M19 12h3M4.9 19.1l2.1-2.1M16.9 7.1l2.1-2.1"/></svg>Settings</button>
+</nav>
+
+<!-- palette -->
+<div class="palette" id="palette" role="dialog" aria-label="Command palette">
+  <div class="palette-box">
+    <input id="paletteInput" type="text" placeholder="Type a command or search conversations…" aria-label="Command palette search">
+    <div class="palette-list" id="paletteList"></div>
+  </div>
+</div>
+
+<!-- model menu -->
+<div class="menu-pop" id="modelMenu" role="menu" aria-label="Choose model"></div>
+
+<div class="chart-tip" id="chartTip" role="status"></div>
+<div class="toast-wrap" id="toastWrap"></div>
+<script>
+"use strict";
+/* ================= Data ================= */
+const MODELS = {
+  pro:   { name: "Ora-1 Pro",   price: "$3.00 / 1M tok",  inP: 3.00, outP: 15.00, desc: "Reasoning & long context — best answers, slower" },
+  flash: { name: "Ora-1 Flash", price: "$0.35 / 1M tok",  inP: 0.35, outP: 1.05, desc: "Everyday speed — the balanced default" },
+  nano:  { name: "Ora-1 Nano",  price: "$0.10 / 1M tok",  inP: 0.10, outP: 0.40, desc: "Lightweight & cheap — quick drafts" }
+};
+let model = "pro";
+const prefs = { streaming: true, memory: true, reduceMotion: false };
+
+const CONVOS = [
+  { id: "c1", group: "Today", title: "Launch plan for Ora 2.0", pin: true, msgs: [
+    { who: "user", text: "Help me plan the launch of Ora 2.0. We have 3 weeks.", time: "09:12" },
+    { who: "ai", text: "<h4>Ora 2.0 — 3-week launch plan</h4><p>Three weeks is tight but workable if the scope stays frozen after week 1. Here is the shape I would hold you to:</p><ul><li><b>Week 1 — Freeze &amp; prove:</b> lock the feature list, ship the beta to 40 testers, fix only crashes.</li><li><b>Week 2 — Prepare:</b> landing page, changelog, demo video, support macros, pricing page.</li><li><b>Week 3 — Launch:</b> Monday announcement, Tuesday live demo, Thursday press + community posts.</li></ul><p>The single biggest risk is a scope change in week 2 — say no to everything that is not a launch blocker.</p>", time: "09:12", tok: 412 }
+  ]},
+  { id: "c2", group: "Today", title: "Explain token pricing simply", pin: false, msgs: [
+    { who: "user", text: "Explain token pricing to a non-technical founder in two sentences.", time: "08:47" },
+    { who: "ai", text: "<p>Think of a token as roughly three quarters of a word. You pay a tiny amount per thousand words the model reads and writes — so a short chat costs fractions of a cent, and a long report costs a few cents.</p>", time: "08:47", tok: 96 }
+  ]},
+  { id: "c3", group: "Today", title: "Python function for retry logic", pin: false, msgs: [
+    { who: "user", text: "Write a Python retry decorator with exponential backoff.", time: "08:20" },
+    { who: "ai", text: "<p>Here is a compact, dependency-free version:</p><div class=\"code-block\"><button class=\"copy-code\" data-copy=\"import time, functools\n\ndef retry(tries=3, delay=1.0, backoff=2.0):\n    def deco(fn):\n        @functools.wraps(fn)\n        def wrapper(*a, **kw):\n            d = delay\n            for i in range(tries):\n                try:\n                    return fn(*a, **kw)\n                except Exception:\n                    if i == tries - 1:\n                        raise\n                    time.sleep(d)\n                    d *= backoff\n        return wrapper\n    return deco\">Copy</button><pre>import time, functools\n\ndef retry(tries=3, delay=1.0, backoff=2.0):\n    def deco(fn):\n        @functools.wraps(fn)\n        def wrapper(*a, **kw):\n            d = delay\n            for i in range(tries):\n                try:\n                    return fn(*a, **kw)\n                except Exception:\n                    if i == tries - 1:\n                        raise\n                    time.sleep(d)\n                    d *= backoff\n        return wrapper\n    return deco</pre></div><p>It retries 3 times by default, waiting 1 s, then 2 s, then 4 s. Pass <span class=\"mono\">tries=5</span> for flaky networks.</p>", time: "08:20", tok: 318 }
+  ]},
+  { id: "c4", group: "Yesterday", title: "Q4 budget summary for the board", pin: false, msgs: [
+    { who: "user", text: "Summarise our Q4 numbers for the board: revenue $184k, costs $121k, churn 2.1%, NPS 61.", time: "17:02" },
+    { who: "ai", text: "<h4>Q4 at a glance</h4><p><b>Revenue $184k</b> against <b>costs $121k</b> leaves a <b>$63k gross margin (34%)</b>. Churn at <b>2.1%</b> is inside target, and NPS <b>61</b> is the best quarter this year.</p><p>The honest board line: growth is steady, not spectacular — the story to tell is retention, not top-line.</p>", time: "17:02", tok: 154 }
+  ]},
+  { id: "c5", group: "Yesterday", title: "Name ideas for a sleep app", pin: false, msgs: [
+    { who: "user", text: "Give me 5 calm, original names for a sleep app. No clichés like Dream or Sleep.", time: "15:40" },
+    { who: "ai", text: "<ul><li><b>Driftline</b> — the line between waking and sleep.</li><li><b>Lowtide</b> — the day pulling back.</li><li><b>Hushfield</b> — quiet, open, safe.</li><li><b>Ninth Hour</b> — the hour the world slows down.</li><li><b>Softland</b> — where the day lands gently.</li></ul><p>My pick: <b>Lowtide</b>. Short, ownable, and it works as a verb — “lowtide tonight”.</p>", time: "15:40", tok: 178 }
+  ]},
+  { id: "c6", group: "Previous 7 days", title: "Translate our tagline to French", pin: false, msgs: [
+    { who: "user", text: "Translate “Ship calm software, faster.” to French, keeping the punch.", time: "Nov 25" },
+    { who: "ai", text: "<p>Literal: « Livrez des logiciels sereins, plus vite. » — correct but flat.</p><p>Better: <b>« Du logiciel serein, livré plus vite. »</b> It keeps the rhythm, drops the corporate “livrez”, and reads like a slogan, not a manual.</p>", time: "Nov 25", tok: 121 }
+  ]},
+  { id: "c7", group: "Previous 7 days", title: "Pricing table for three tiers", pin: false, msgs: [
+    { who: "user", text: "Draft a 3-tier pricing table for a SaaS: Starter, Growth, Scale.", time: "Nov 24" },
+    { who: "ai", text: "<table><tr><th></th><th>Starter</th><th>Growth</th><th>Scale</th></tr><tr><td><b>Price</b></td><td>$19 / mo</td><td>$49 / mo</td><td>$99 / mo</td></tr><tr><td><b>Seats</b></td><td>3</td><td>10</td><td>Unlimited</td></tr><tr><td><b>History</b></td><td>30 days</td><td>1 year</td><td>Unlimited</td></tr><tr><td><b>Support</b></td><td>Community</td><td>Email · 24 h</td><td>Slack · 1 h</td></tr></table><p>Anchor on Growth: it should look like the obvious choice, with Scale there to make it feel reasonable.</p>", time: "Nov 24", tok: 264 }
+  ]}
+];
+let activeConvo = "c1";
+
+const PROMPTS = [
+  { cat: "Writing", title: "Rewrite for clarity", uses: 1284, text: "Rewrite the text below so a 12-year-old understands it. Keep every fact, cut every filler word, and keep the tone warm." },
+  { cat: "Writing", title: "Five headline options", uses: 976, text: "Write 5 headlines for the article below. Each under 8 words, each a different angle: bold, curious, practical, contrarian, emotional." },
+  { cat: "Code", title: "Explain this code", uses: 2140, text: "Explain the code below line by line, in plain language. Then name the one thing most likely to break in production and how to fix it." },
+  { cat: "Code", title: "Write a unit test", uses: 1533, text: "Write unit tests for the function below: happy path, edge cases, and one failure case. Use the project’s existing test style." },
+  { cat: "Marketing", title: "Launch announcement", uses: 864, text: "Write a launch announcement for the product below: one strong hook, three benefits in plain language, one call to action. Under 120 words." },
+  { cat: "Marketing", title: "Landing page hero", uses: 721, text: "Write a landing page hero for the product below: headline under 10 words, one supporting sentence, one button label. No buzzwords." },
+  { cat: "Productivity", title: "Meeting notes to actions", uses: 1987, text: "Turn these meeting notes into a table: action, owner, deadline. Flag anything with no owner as ‘Unassigned’." },
+  { cat: "Productivity", title: "Plan my week", uses: 1102, text: "I have these 6 tasks and 3 free afternoons this week. Build a realistic plan: what to do each afternoon, and what to deliberately drop." },
+  { cat: "Data", title: "Summarise the numbers", uses: 940, text: "Summarise these numbers in 3 bullets: the headline, the surprise, and the risk. Then one sentence a board member would remember." },
+  { cat: "Data", title: "Spot the anomaly", uses: 655, text: "Look at this table and find the anomaly. Explain what changed, when, and the three most likely causes, ranked." },
+  { cat: "Fun", title: "Name my project", uses: 1430, text: "Give me 7 names for the project below. Short, original, pronounceable in English and French, no clichés. Tell me your favourite and why." },
+  { cat: "Fun", title: "Explain it like a story", uses: 512, text: "Explain the concept below as a short story with two characters and one twist. Under 150 words, no jargon." }
+];
+
+const USAGE_DAYS = [
+  { d: "Nov 15", in: 41200, out: 18800 }, { d: "Nov 16", in: 46800, out: 21400 },
+  { d: "Nov 17", in: 52100, out: 23900 }, { d: "Nov 18", in: 48900, out: 22100 },
+  { d: "Nov 19", in: 57400, out: 26800 }, { d: "Nov 20", in: 61200, out: 29100 },
+  { d: "Nov 21", in: 55300, out: 25400 }, { d: "Nov 22", in: 59800, out: 27600 },
+  { d: "Nov 23", in: 66400, out: 31200 }, { d: "Nov 24", in: 63100, out: 29400 },
+  { d: "Nov 25", in: 70200, out: 33800 }, { d: "Nov 26", in: 74800, out: 36100 },
+  { d: "Nov 27", in: 81900, out: 39400 }, { d: "Nov 28", in: 88400, out: 42100 }
+];
+const MIX = [
+  { name: "Ora-1 Pro", share: 46, tok: 590820, color: "#22D3EE" },
+  { name: "Ora-1 Flash", share: 38, tok: 487968, color: "#8B5CF6" },
+  { name: "Ora-1 Nano", share: 16, tok: 205602, color: "#F59E0B" }
+];
+
+const SUGGESTIONS = [
+  "Plan a product launch in 3 weeks",
+  "Explain token pricing simply",
+  "Write a Python retry decorator",
+  "Give me 5 names for a sleep app"
+];
+
+/* ================= Helpers ================= */
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const fmtNum = (n) => n.toLocaleString("en-US");
+const fmtMoney = (n) => "$" + n.toFixed(2);
+function toast(msg) {
+  const t = document.createElement("div");
+  t.className = "toast"; t.textContent = msg;
+  $("#toastWrap").appendChild(t);
+  setTimeout(() => t.remove(), 2600);
+}
+function copyText(t, msg) {
+  const done = () => toast(msg);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(t).then(done).catch(() => fallbackCopy(t, done));
+  } else fallbackCopy(t, done);
+}
+function fallbackCopy(t, done) {
+  const ta = document.createElement("textarea");
+  ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); } catch (e) {}
+  ta.remove(); done();
+}
+function tokensFor(text) { return Math.max(8, Math.round(text.split(/\s+/).length * 1.3)); }
+
+/* ================= Sidebar / conversations ================= */
+function renderConvos() {
+  const q = ($("#convoSearch").value || "").toLowerCase();
+  const list = $("#convoList");
+  list.innerHTML = "";
+  const groups = ["Today", "Yesterday", "Previous 7 days"];
+  let shown = 0;
+  groups.forEach((g) => {
+    const items = CONVOS.filter((c) => c.group === g && (!q || c.title.toLowerCase().includes(q) || c.msgs.some((m) => m.text.toLowerCase().includes(q))));
+    if (!items.length) return;
+    const gh = document.createElement("div");
+    gh.className = "convo-group"; gh.textContent = g;
+    list.appendChild(gh);
+    items.forEach((c) => {
+      shown++;
+      const b = document.createElement("button");
+      b.className = "convo-item" + (c.id === activeConvo ? " active" : "");
+      b.dataset.convo = c.id;
+      const last = c.msgs[c.msgs.length - 1];
+      b.innerHTML = "<span class=\"dot\"></span><span style=\"min-width:0;flex:1\"><b>" + esc(c.title) + "</b><small>" + esc(last.text.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 52)) + "</small></span>" + (c.pin ? "<span class=\"pin\" title=\"Pinned\">★</span>" : "");
+      b.addEventListener("click", () => { openConvo(c.id); closeSidebar(); });
+      list.appendChild(b);
+    });
+  });
+  if (!shown) list.innerHTML = "<div class=\"empty-note\" style=\"margin:10px\">No conversation matches your search.</div>";
+  $("#usageMeterTxt").textContent = CONVOS.length ? "822k / 1.28M" : "0 / 1.28M";
+}
+function openConvo(id) {
+  activeConvo = id;
+  renderConvos();
+  renderChat();
+  switchView("chat");
+}
+
+/* ================= Chat rendering ================= */
+function msgHtml(m) {
+  const who = m.who === "user" ? "You" : "Ora";
+  const av = m.who === "user" ? "AL" : "O";
+  const time = m.time || "now";
+  let actions = "";
+  if (m.who === "ai") {
+    actions = "<div class=\"msg-actions\">" +
+      "<button data-act=\"copy\" title=\"Copy answer\" aria-label=\"Copy answer\"><svg class=\"ic\" style=\"width:15px;height:15px\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"9\" y=\"9\" width=\"13\" height=\"13\" rx=\"2\"/><path d=\"M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1\"/></svg></button>" +
+      "<button data-act=\"regen\" title=\"Regenerate\" aria-label=\"Regenerate answer\"><svg class=\"ic\" style=\"width:15px;height:15px\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12a9 9 0 1 1-2.64-6.36\"/><path d=\"M21 3v6h-6\"/></svg></button>" +
+      "<button data-act=\"like\" title=\"Good answer\" aria-label=\"Good answer\"><svg class=\"ic\" style=\"width:15px;height:15px\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 10v12M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z\"/></svg></button>" +
+      "<button data-act=\"dislike\" title=\"Bad answer\" aria-label=\"Bad answer\"><svg class=\"ic\" style=\"width:15px;height:15px\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17 14V2M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z\"/></svg></button>" +
+      "<span class=\"tok\">" + fmtNum(m.tok || 0) + " tokens · " + MODELS[model].name + "</span></div>";
+  }
+  return "<article class=\"msg " + m.who + "\"><div class=\"avatar\">" + av + "</div><div class=\"msg-body\"><div class=\"msg-head\"><b>" + who + "</b><time>" + time + "</time></div><div class=\"msg-text\">" + (m.who === "user" ? esc(m.text) : m.text) + "</div>" + actions + "</div></article>";
+}
+function renderChat() {
+  const inner = $("#chatInner");
+  const convo = CONVOS.find((c) => c.id === activeConvo);
+  if (!convo) {
+    inner.innerHTML = emptyHeroHtml();
+    bindSuggChips();
+    return;
+  }
+  inner.innerHTML = convo.msgs.map(msgHtml).join("");
+  bindMsgActions();
+  const sc = $("#chatScroll");
+  sc.scrollTop = sc.scrollHeight;
+  $("#viewTitle").textContent = convo.title;
+  $("#viewSub").textContent = MODELS[model].name + " · streaming " + (prefs.streaming ? "on" : "off");
+}
+function emptyHeroHtml() {
+  return "<div class=\"empty-hero reveal\"><div class=\"big-orb\"><span>O</span></div>" +
+    "<h1>What should we<br><em>figure out</em> today?</h1>" +
+    "<p>Ora is a full chat workspace. Ask anything, pick a model, attach a file — or start from a prompt in the library.</p>" +
+    "<div class=\"sugg-row\">" + SUGGESTIONS.map((s) => "<button class=\"sugg-chip\" data-sugg=\"" + esc(s) + "\">" + esc(s) + "</button>").join("") + "</div></div>";
+}
+function bindSuggChips() {
+  $$(".sugg-chip").forEach((ch) => ch.addEventListener("click", () => {
+    $("#composer").value = ch.dataset.sugg;
+    autoGrow();
+    $("#composer").focus();
+  }));
+}
+function bindMsgActions() {
+  $$("#chatInner [data-act]").forEach((btn) => btn.addEventListener("click", () => {
+    const act = btn.dataset.act;
+    const article = btn.closest(".msg");
+    if (act === "copy") {
+      const txt = article.querySelector(".msg-text").innerText;
+      copyText(txt, "Answer copied to clipboard");
+    } else if (act === "like" || act === "dislike") {
+      btn.classList.toggle("on");
+      toast(act === "like" ? "Thanks — feedback saved" : "Noted — we will do better");
+    } else if (act === "regen") {
+      const convo = CONVOS.find((c) => c.id === activeConvo);
+      const idx = convo.msgs.findIndex((m) => m.who === "ai");
+      if (idx > 0) {
+        const q = convo.msgs[idx - 1].text;
+        convo.msgs.splice(idx, 1);
+        renderChat();
+        setTimeout(() => streamAnswer(q, true), 150);
+      }
+    }
+  }));
+  $$("#chatInner .copy-code").forEach((b) => b.addEventListener("click", () => {
+    copyText(b.dataset.copy, "Code copied to clipboard");
+    b.textContent = "Copied ✓"; setTimeout(() => { b.textContent = "Copy"; }, 1600);
+  }));
+}
+
+/* ================= Brain (simulated answers) ================= */
+function brainAnswer(q) {
+  const s = q.toLowerCase();
+  if (/(pric|price|cost|tarif|combien)/.test(s)) return "<h4>Pricing, in plain terms</h4><p>Ora charges per token — roughly ¾ of a word. Short chats cost fractions of a cent; long reports cost a few cents.</p><table><tr><th>Model</th><th>Input / 1M</th><th>Output / 1M</th><th>Best for</th></tr><tr><td><b>Ora-1 Pro</b></td><td>$3.00</td><td>$15.00</td><td>Reasoning, long docs</td></tr><tr><td><b>Ora-1 Flash</b></td><td>$0.35</td><td>$1.05</td><td>Everyday work</td></tr><tr><td><b>Ora-1 Nano</b></td><td>$0.10</td><td>$0.40</td><td>Quick drafts</td></tr></table><p>Rule of thumb: start on Flash, switch to Pro only when the answer matters enough to pay 8× more.</p>";
+  if (/(code|python|javascript|function|decorator|retry|bug)/.test(s)) return "<p>Here is a clean, dependency-free Python retry decorator with exponential backoff:</p><div class=\"code-block\"><button class=\"copy-code\" data-copy=\"import time, functools\n\ndef retry(tries=3, delay=1.0, backoff=2.0):\n    def deco(fn):\n        @functools.wraps(fn)\n        def wrapper(*a, **kw):\n            d = delay\n            for i in range(tries):\n                try:\n                    return fn(*a, **kw)\n                except Exception:\n                    if i == tries - 1:\n                        raise\n                    time.sleep(d)\n                    d *= backoff\n        return wrapper\n    return deco\">Copy</button><pre>import time, functools\n\ndef retry(tries=3, delay=1.0, backoff=2.0):\n    def deco(fn):\n        @functools.wraps(fn)\n        def wrapper(*a, **kw):\n            d = delay\n            for i in range(tries):\n                try:\n                    return fn(*a, **kw)\n                except Exception:\n                    if i == tries - 1:\n                        raise\n                    time.sleep(d)\n                    d *= backoff\n        return wrapper\n    return deco</pre></div><p>It retries 3 times by default, waiting 1 s, then 2 s, then 4 s. Pass <span class=\"mono\">tries=5</span> for flaky networks, and log inside the <span class=\"mono\">except</span> if you need to see what failed.</p>";
+  if (/(summar|summarize|résum|resume)/.test(s)) return "<h4>Summary</h4><ul><li><b>Headline:</b> the core point is that the plan works, but only if scope freezes after week 1.</li><li><b>Surprise:</b> the cheapest risk to remove is not technical — it is a late change request.</li><li><b>Risk:</b> without a freeze date, week 2 quietly becomes week 1 again.</li></ul><p>One line to remember: <b>freeze early, launch on time.</b></p>";
+  if (/(name|brainstorm|idea|idée)/.test(s)) return "<p>Five names, each with a different flavour:</p><ul><li><b>Driftline</b> — calm, directional, easy to say.</li><li><b>Lowtide</b> — the day pulling back; works as a verb.</li><li><b>Hushfield</b> — quiet, open, safe.</li><li><b>Ninth Hour</b> — the hour the world slows down.</li><li><b>Softland</b> — where the day lands gently.</li></ul><p>My pick: <b>Lowtide</b>. Short, ownable, and it still sounds good said out loud.</p>";
+  if (/(translat|french|français)/.test(s)) return "<p>“Ship calm software, faster.” → <b>« Du logiciel serein, livré plus vite. »</b></p><p>The literal version — « Livrez des logiciels sereins, plus vite » — is correct but flat. The shorter one keeps the rhythm and reads like a slogan, not a manual.</p>";
+  if (/^(hi|hello|hey|bonjour|salut)\b/.test(s.trim())) return "<p>Hello — good to see you. I can plan, write, explain code, summarise numbers or brainstorm names. Try one of the suggestions below the composer, or just type what is on your mind.</p>";
+  if (/(launch|plan|roadmap)/.test(s)) return "<h4>A plan you can actually hold</h4><ul><li><b>Week 1 — Freeze &amp; prove:</b> lock the feature list, ship the beta to 40 testers, fix only crashes.</li><li><b>Week 2 — Prepare:</b> landing page, changelog, demo video, support macros.</li><li><b>Week 3 — Launch:</b> Monday announcement, Tuesday live demo, Thursday community posts.</li></ul><p>Guardrail: any request that arrives in week 2 goes on the “after launch” list — no exceptions, or the launch slips.</p>";
+  return "<p>Good question — here is how I would think about it.</p><ul><li><b>Start with the outcome:</b> what does “done” look like in one sentence?</li><li><b>Cut the scope in half:</b> the first version only needs the one thing that proves the idea.</li><li><b>Ship, then measure:</b> a small real result beats a perfect plan every time.</li></ul><p>If you give me one more detail — a number, a deadline, a constraint — I can turn this into a concrete plan instead of general advice.</p>";
+}
+
+/* ================= Sending / streaming ================= */
+let streaming = null;
+function sendMessage() {
+  const ta = $("#composer");
+  const text = ta.value.trim();
+  if (!text || streaming) return;
+  let convo = CONVOS.find((c) => c.id === activeConvo);
+  if (!convo) {
+    convo = { id: "c" + Date.now(), group: "Today", title: text.slice(0, 42), pin: false, msgs: [] };
+    CONVOS.unshift(convo);
+    activeConvo = convo.id;
+  }
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
+  convo.msgs.push({ who: "user", text, time: hh });
+  const files = $$("#attachChips .attach-chip").map((c) => c.dataset.file);
+  if (files.length) {
+    convo.msgs[convo.msgs.length - 1].text += "  [Attached: " + files.join(", ") + "]";
+    $("#attachChips").innerHTML = "";
+  }
+  ta.value = ""; autoGrow();
+  renderConvos(); renderChat();
+  streamAnswer(text, false);
+}
+function streamAnswer(q, isRegen) {
+  const convo = CONVOS.find((c) => c.id === activeConvo);
+  const inner = $("#chatInner");
+  const think = document.createElement("div");
+  think.className = "thinking";
+  think.id = "thinkingBox";
+  think.innerHTML = "<div class=\"t-head\"><span class=\"pulse-dots\"><i></i><i></i><i></i></span> Thinking…</div>" +
+    "<div class=\"tool-steps\">" +
+    "<div class=\"tool-step\"><span class=\"spin\"></span> Reading the conversation context</div>" +
+    "<div class=\"tool-step\" data-step=\"2\" style=\"opacity:.45\"><span class=\"ok\">✓</span> Checking the prompt library for a matching pattern</div>" +
+    "<div class=\"tool-step\" data-step=\"3\" style=\"opacity:.45\"><span class=\"ok\">✓</span> Drafting the answer with " + MODELS[model].name + "</div></div>";
+  inner.appendChild(think);
+  $("#chatScroll").scrollTop = $("#chatScroll").scrollHeight;
+  $("#stopBtn").classList.add("show");
+  $("#sendBtn").disabled = true;
+  const full = brainAnswer(q);
+  const finish = (html) => {
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
+    convo.msgs.push({ who: "ai", text: html, time: hh, tok: tokensFor(html.replace(/<[^>]+>/g, " ")) + 120 });
+    const tb = $("#thinkingBox"); if (tb) tb.remove();
+    streaming = null;
+    $("#stopBtn").classList.remove("show");
+    $("#sendBtn").disabled = false;
+    renderChat();
+  };
+  const thinkMs = prefs.reduceMotion ? 60 : 1100;
+  const t1 = setTimeout(() => {
+    const s2 = think.querySelector("[data-step='2']"); if (s2) s2.style.opacity = "1";
+    const s3 = think.querySelector("[data-step='3']"); if (s3) s3.style.opacity = "1";
+  }, thinkMs * 0.55);
+  const t2 = setTimeout(() => {
+    if (!prefs.streaming) { finish(full); return; }
+    const tb = $("#thinkingBox"); if (tb) tb.remove();
+    const article = document.createElement("article");
+    article.className = "msg ai";
+    article.innerHTML = "<div class=\"avatar\">O</div><div class=\"msg-body\"><div class=\"msg-head\"><b>Ora</b><time>now</time></div><div class=\"msg-text\"></div></div>";
+    inner.appendChild(article);
+    const body = article.querySelector(".msg-text");
+    const words = full.split(/(<[^>]+>)/g).filter(Boolean);
+    let i = 0, out = "";
+    const step = () => {
+      if (i >= words.length) { clearInterval(streaming); finish(full); return; }
+      out += words[i++];
+      body.innerHTML = out + "<span class=\"cursor\"></span>";
+      $("#chatScroll").scrollTop = $("#chatScroll").scrollHeight;
+    };
+    streaming = setInterval(step, prefs.reduceMotion ? 1 : 34);
+  }, thinkMs);
+  streaming = { stop: () => { clearTimeout(t1); clearTimeout(t2); if (streaming && streaming !== null && typeof streaming === "object" && streaming.stop) {} } };
+  $("#stopBtn").onclick = () => {
+    clearTimeout(t1); clearTimeout(t2);
+    if (streaming && streaming !== null && typeof streaming === "number") clearInterval(streaming);
+    const tb = $("#thinkingBox"); if (tb) tb.remove();
+    streaming = null;
+    $("#stopBtn").classList.remove("show");
+    $("#sendBtn").disabled = false;
+    const partial = inner.querySelector(".msg.ai:last-child .msg-text");
+    if (partial && partial.textContent.trim()) {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
+      convo.msgs.push({ who: "ai", text: partial.innerHTML.replace(/<span class="cursor"><\/span>/g, ""), time: hh, tok: tokensFor(partial.textContent) });
+    }
+    renderChat();
+    toast("Generation stopped");
+  };
+}
+function autoGrow() {
+  const ta = $("#composer");
+  ta.style.height = "auto";
+  ta.style.height = Math.min(ta.scrollHeight, 180) + "px";
+  $("#sendBtn").disabled = !ta.value.trim();
+}
+
+/* ================= Library ================= */
+let libCat = "All";
+function renderLibrary() {
+  const q = ($("#libSearch").value || "").toLowerCase();
+  const grid = $("#libGrid");
+  const items = PROMPTS.filter((p) => (libCat === "All" || p.cat === libCat) && (!q || p.title.toLowerCase().includes(q) || p.text.toLowerCase().includes(q)));
+  grid.innerHTML = items.map((p) => "<article class=\"prompt-card reveal\"><span class=\"cat\">" + p.cat + "</span><h3>" + esc(p.title) + "</h3><p>" + esc(p.text) + "</p><div class=\"meta\"><span>" + fmtNum(p.uses) + " uses</span><span>·</span><span>" + MODELS[model].name + "</span></div><button class=\"use\" data-use=\"" + esc(p.text) + "\">Use prompt →</button></article>").join("");
+  $("#libEmpty").hidden = items.length > 0;
+  $("#libEmptyQ").textContent = $("#libSearch").value || "";
+  $$("#libGrid [data-use]").forEach((b) => b.addEventListener("click", () => {
+    switchView("chat");
+    $("#composer").value = b.dataset.use;
+    autoGrow();
+    $("#composer").focus();
+    toast("Prompt added to the composer");
+  }));
+}
+
+/* ================= Usage charts ================= */
+function renderUsage() {
+  const max = Math.max(...USAGE_DAYS.map((d) => d.in + d.out));
+  $("#usageBars").innerHTML = USAGE_DAYS.map((d, i) => {
+    const tot = d.in + d.out;
+    const h = Math.round((tot / max) * 100);
+    return "<div class=\"bar-col\" data-i=\"" + i + "\" tabindex=\"0\"><div class=\"bar\" style=\"height:" + h + "%\"></div><span class=\"lbl\">" + d.d.replace("Nov ", "") + "</span></div>";
+  }).join("");
+  $$("#usageBars .bar-col").forEach((col) => {
+    const show = (e) => {
+      const d = USAGE_DAYS[+col.dataset.i];
+      const tip = $("#chartTip");
+      tip.innerHTML = "<b>" + d.d + "</b> · " + fmtNum(d.in + d.out) + " tokens<br><span style=\"color:#94A3B8\">Input " + fmtNum(d.in) + " · Output " + fmtNum(d.out) + "</span>";
+      const r = col.getBoundingClientRect();
+      tip.style.left = Math.min(Math.max(r.left + r.width / 2, 90), window.innerWidth - 90) + "px";
+      tip.style.top = (r.top - 10) + "px";
+      tip.classList.add("show");
+    };
+    const hide = () => $("#chartTip").classList.remove("show");
+    col.addEventListener("mouseenter", show);
+    col.addEventListener("mousemove", show);
+    col.addEventListener("mouseleave", hide);
+    col.addEventListener("focus", show);
+    col.addEventListener("blur", hide);
+  });
+  // donut
+  const R = 80, C = 2 * Math.PI * R;
+  let off = 0;
+  const segs = MIX.map((m, i) => {
+    const len = (m.share / 100) * C;
+    const s = "<circle class=\"donut-seg\" data-i=\"" + i + "\" cx=\"100\" cy=\"100\" r=\"" + R + "\" fill=\"none\" stroke=\"" + m.color + "\" stroke-width=\"26\" stroke-dasharray=\"" + (len - 2) + " " + (C - len + 2) + "\" stroke-dashoffset=\"" + (-off) + "\" transform=\"rotate(-90 100 100)\"/>";
+    off += len;
+    return s;
+  }).join("");
+  $("#modelDonut").innerHTML = segs + "<text x=\"100\" y=\"96\" text-anchor=\"middle\" fill=\"var(--txt)\" font-size=\"24\" font-weight=\"700\" font-family=\"Space Grotesk\">1.28M</text><text x=\"100\" y=\"118\" text-anchor=\"middle\" fill=\"var(--mut)\" font-size=\"11\">tokens · 14 d</text>";
+  $("#donutLegend").innerHTML = MIX.map((m) => "<div class=\"row\"><span class=\"sw\" style=\"background:" + m.color + "\"></span>" + m.name + "<b>" + m.share + "% · " + fmtNum(m.tok) + "</b></div>").join("");
+  $$("#modelDonut .donut-seg").forEach((seg) => {
+    const show = (e) => {
+      const m = MIX[+seg.dataset.i];
+      const tip = $("#chartTip");
+      tip.innerHTML = "<b>" + m.name + "</b> · " + m.share + "%<br><span style=\"color:#94A3B8\">" + fmtNum(m.tok) + " tokens in 14 days</span>";
+      const r = seg.getBoundingClientRect();
+      tip.style.left = Math.min(Math.max(r.left + r.width / 2, 110), window.innerWidth - 110) + "px";
+      tip.style.top = (r.top + 20) + "px";
+      tip.classList.add("show");
+    };
+    const hide = () => $("#chartTip").classList.remove("show");
+    seg.addEventListener("mouseenter", show);
+    seg.addEventListener("mousemove", show);
+    seg.addEventListener("mouseleave", hide);
+  });
+  // count-ups
+  $$(".count-up").forEach((el) => {
+    const target = +el.dataset.target;
+    const fmt = el.dataset.fmt;
+    const t0 = performance.now();
+    const dur = prefs.reduceMotion ? 1 : 1100;
+    const tick = (t) => {
+      const p = Math.min((t - t0) / dur, 1);
+      const v = target * (1 - Math.pow(1 - p, 3));
+      el.textContent = fmt === "money" ? fmtMoney(v) : fmt === "sec" ? v.toFixed(1) + " s" : fmtNum(Math.round(v));
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+  // stat hover tooltips
+  $$(".stat[data-tip]").forEach((st) => {
+    const show = () => {
+      const tip = $("#chartTip");
+      tip.textContent = st.dataset.tip;
+      const r = st.getBoundingClientRect();
+      tip.style.left = Math.min(Math.max(r.left + r.width / 2, 160), window.innerWidth - 160) + "px";
+      tip.style.top = (r.bottom + 10) + "px";
+      tip.classList.add("show");
+    };
+    st.addEventListener("mouseenter", show);
+    st.addEventListener("mouseleave", () => $("#chartTip").classList.remove("show"));
+  });
+}
+
+/* ================= Views / nav ================= */
+const VIEW_META = {
+  chat: ["Chat", "Ora-1 Pro · streaming on"],
+  library: ["Prompt library", "12 ready-made prompts"],
+  usage: ["Usage & tokens", "Last 14 days · all models"],
+  settings: ["Settings", "Behaviour, theme & data"]
+};
+function switchView(v) {
+  $$(".view").forEach((s) => s.classList.toggle("active", s.id === "view-" + v));
+  $$("#tabbar [data-tab]").forEach((b) => b.classList.toggle("on", b.dataset.tab === v));
+  $$(".side-nav-item").forEach((b) => b.classList.toggle("on", b.dataset.view === v));
+  if (v === "chat") {
+    const convo = CONVOS.find((c) => c.id === activeConvo);
+    $("#viewTitle").textContent = convo ? convo.title : "New chat";
+    $("#viewSub").textContent = MODELS[model].name + " · streaming " + (prefs.streaming ? "on" : "off");
+  } else {
+    $("#viewTitle").textContent = VIEW_META[v][0];
+    $("#viewSub").textContent = VIEW_META[v][1];
+  }
+  if (v === "usage") renderUsage();
+  if (v === "library") renderLibrary();
+  if (v === "chat") { const sc = $("#chatScroll"); sc.scrollTop = sc.scrollHeight; }
+  closeSidebar();
+}
+function closeSidebar() {
+  $("#sidebar").classList.remove("open");
+  $("#scrim").classList.remove("show");
+}
+
+/* ================= Palette ================= */
+const PALETTE_ACTIONS = [
+  { icon: "＋", label: "New chat", hint: "Action", run: () => newChat() },
+  { icon: "≡", label: "Go to Prompt library", hint: "View", run: () => switchView("library") },
+  { icon: "▦", label: "Go to Usage & tokens", hint: "View", run: () => switchView("usage") },
+  { icon: "⚙", label: "Go to Settings", hint: "View", run: () => switchView("settings") },
+  { icon: "◐", label: "Toggle light / dark theme", hint: "Action", run: () => toggleTheme() },
+  { icon: "✎", label: "Insert suggestion: Plan a product launch", hint: "Prompt", run: () => { switchView("chat"); $("#composer").value = SUGGESTIONS[0]; autoGrow(); } }
+];
+function openPalette() {
+  $("#palette").classList.add("open");
+  renderPalette("");
+  setTimeout(() => $("#paletteInput").focus(), 30);
+}
+function closePalette() { $("#palette").classList.remove("open"); $("#paletteInput").value = ""; }
+function renderPalette(q) {
+  q = (q || "").toLowerCase();
+  const rows = [];
+  PALETTE_ACTIONS.filter((a) => !q || a.label.toLowerCase().includes(q)).forEach((a) => rows.push({ ...a, kind: "action" }));
+  CONVOS.filter((c) => !q || c.title.toLowerCase().includes(q)).forEach((c) => rows.push({ icon: "💬", label: c.title, hint: "Conversation", run: () => openConvo(c.id) }));
+  PROMPTS.filter((p) => !q || p.title.toLowerCase().includes(q) || p.text.toLowerCase().includes(q)).slice(0, 5).forEach((p) => rows.push({ icon: "✦", label: p.title, hint: "Prompt · " + p.cat, run: () => { switchView("chat"); $("#composer").value = p.text; autoGrow(); } }));
+  const list = $("#paletteList");
+  list.innerHTML = rows.length ? rows.map((r, i) => "<button class=\"palette-item" + (i === 0 ? " sel" : "") + "\" data-pi=\"" + i + "\"><span class=\"ic\" style=\"width:16px;height:16px;text-align:center\">" + r.icon + "</span>" + esc(r.label) + "<small>" + esc(r.hint) + "</small></button>").join("") : "<div class=\"empty-note\" style=\"margin:8px\">Nothing found for “" + esc(q) + "”.</div>";
+  $$(".palette-item", list).forEach((b, i) => b.addEventListener("click", () => { closePalette(); rows[+b.dataset.pi].run(); }));
+  list._rows = rows;
+}
+
+/* ================= Model menu ================= */
+function renderModelMenu() {
+  const m = $("#modelMenu");
+  m.innerHTML = Object.entries(MODELS).map(([k, v]) => "<button data-model=\"" + k + "\" role=\"menuitem\"><span style=\"flex:1\"><b>" + v.name + (k === model ? " ✓" : "") + "</b><small>" + v.desc + "</small></span><span class=\"price\">" + v.price + "</span></button>").join("");
+  $$("[data-model]", m).forEach((b) => b.addEventListener("click", () => {
+    model = b.dataset.model;
+    $("#modelName").textContent = MODELS[model].name;
+    $("#modelPrice").textContent = MODELS[model].price;
+    $("#setModel").value = model;
+    m.classList.remove("open");
+    renderChat();
+    toast("Model switched to " + MODELS[model].name);
+  }));
+}
+function toggleModelMenu() {
+  const m = $("#modelMenu");
+  if (m.classList.contains("open")) { m.classList.remove("open"); return; }
+  renderModelMenu();
+  const r = $("#modelBtn").getBoundingClientRect();
+  m.style.top = (r.bottom + 8) + "px";
+  m.style.left = Math.max(12, r.right - 300) + "px";
+  m.classList.add("open");
+}
+
+/* ================= Theme / settings ================= */
+function applyTheme() {
+  const dark = document.documentElement.dataset.theme === "dark";
+  $("#themeBtn2").textContent = dark ? "Switch to light" : "Switch to dark";
+}
+function toggleTheme() {
+  const root = document.documentElement;
+  root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+  try { localStorage.setItem("ora-theme", root.dataset.theme); } catch (e) {}
+  applyTheme();
+  toast(root.dataset.theme === "dark" ? "Dark theme on" : "Light theme on");
+}
+function newChat() {
+  activeConvo = null;
+  renderConvos();
+  renderChat();
+  switchView("chat");
+  $("#composer").focus();
+}
+function bindSwitch(id, key, after) {
+  const el = $(id);
+  el.addEventListener("click", () => {
+    const on = el.getAttribute("aria-checked") !== "true";
+    el.setAttribute("aria-checked", String(on));
+    prefs[key] = on;
+    try { localStorage.setItem("ora-" + key, String(on)); } catch (e) {}
+    if (after) after(on);
+  });
+}
+
+/* ================= Init ================= */
+function init() {
+  try {
+    const savedTheme = localStorage.getItem("ora-theme");
+    if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+    ["streaming", "memory"].forEach((k) => {
+      const v = localStorage.getItem("ora-" + k);
+      if (v !== null) prefs[k] = v === "true";
+    });
+  } catch (e) {}
+  $("#setStreaming").setAttribute("aria-checked", String(prefs.streaming));
+  $("#setMemory").setAttribute("aria-checked", String(prefs.memory));
+  renderConvos();
+  renderChat();
+  renderLibrary();
+  renderUsage();
+
+  $("#newChatBtn").addEventListener("click", newChat);
+  $("#convoSearch").addEventListener("input", renderConvos);
+  $("#settingsBtn").addEventListener("click", () => switchView("settings"));
+  $("#menuBtn").addEventListener("click", () => { $("#sidebar").classList.add("open"); $("#scrim").classList.add("show"); });
+  $("#scrim").addEventListener("click", closeSidebar);
+  $("#themeToggle").addEventListener("click", toggleTheme);
+  $("#themeBtn2").addEventListener("click", toggleTheme);
+  $("#modelBtn").addEventListener("click", (e) => { e.stopPropagation(); toggleModelMenu(); });
+  document.addEventListener("click", (e) => { if (!e.target.closest("#modelMenu") && !e.target.closest("#modelBtn")) $("#modelMenu").classList.remove("open"); });
+
+  $("#sendBtn").addEventListener("click", sendMessage);
+  $("#composer").addEventListener("input", autoGrow);
+  $("#composer").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+  $("#attachBtn").addEventListener("click", () => {
+    const names = ["brief-Q4.pdf", "screenshot-figma.png", "notes-meeting.md", "data-export.csv"];
+    const pick = names[Math.floor(Math.random() * names.length)];
+    if ($$("#attachChips .attach-chip").length >= 3) { toast("Up to 3 files in this demo"); return; }
+    const chip = document.createElement("span");
+    chip.className = "attach-chip";
+    chip.dataset.file = pick;
+    chip.innerHTML = "📎 " + pick + " <button aria-label=\"Remove file\">×</button>";
+    chip.querySelector("button").addEventListener("click", () => chip.remove());
+    $("#attachChips").appendChild(chip);
+  });
+  $("#suggBtn").addEventListener("click", () => {
+    const s = SUGGESTIONS[Math.floor(Math.random() * SUGGESTIONS.length)];
+    $("#composer").value = s; autoGrow(); $("#composer").focus();
+  });
+
+  $$("[data-libcat]").forEach((b) => b.addEventListener("click", () => {
+    $$("[data-libcat]").forEach((x) => x.classList.remove("on"));
+    b.classList.add("on");
+    libCat = b.dataset.libcat;
+    renderLibrary();
+  }));
+  $("#libSearch").addEventListener("input", renderLibrary);
+
+  $$("#tabbar [data-tab]").forEach((b) => b.addEventListener("click", () => switchView(b.dataset.tab)));
+  $$(".side-nav-item").forEach((b) => b.addEventListener("click", () => switchView(b.dataset.view)));
+
+  $("#paletteBtn").addEventListener("click", openPalette);
+  $("#palette").addEventListener("click", (e) => { if (e.target.id === "palette") closePalette(); });
+  $("#paletteInput").addEventListener("input", (e) => renderPalette(e.target.value));
+  $("#paletteInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const first = $("#paletteList .palette-item");
+      if (first) { const rows = $("#paletteList")._rows; closePalette(); if (rows && rows[0]) rows[0].run(); }
+    }
+    if (e.key === "Escape") closePalette();
+  });
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); openPalette(); }
+    if (e.key === "Escape") { closePalette(); $("#modelMenu").classList.remove("open"); }
+  });
+
+  bindSwitch("#setStreaming", "streaming", (on) => { renderChat(); toast(on ? "Streaming on" : "Streaming off — full answers at once"); });
+  bindSwitch("#setMemory", "memory", (on) => toast(on ? "Memory on" : "Memory off — each message stands alone"));
+  bindSwitch("#setMotion", "reduceMotion", (on) => {
+    document.documentElement.style.setProperty("--rm", on ? "1" : "0");
+    document.body.classList.toggle("rm", on);
+    toast(on ? "Motion reduced" : "Motion restored");
+  });
+  $("#setModel").value = model;
+  $("#setModel").addEventListener("change", (e) => {
+    model = e.target.value;
+    $("#modelName").textContent = MODELS[model].name;
+    $("#modelPrice").textContent = MODELS[model].price;
+    renderChat();
+    toast("Default model: " + MODELS[model].name);
+  });
+  $("#clearHistory").addEventListener("click", () => {
+    if (!CONVOS.length) { toast("History is already empty"); return; }
+    CONVOS.length = 0;
+    activeConvo = null;
+    renderConvos(); renderChat();
+    toast("All conversations cleared");
+  });
+  applyTheme();
+  autoGrow();
+}
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
